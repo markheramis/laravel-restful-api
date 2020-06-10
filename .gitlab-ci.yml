@@ -5,7 +5,7 @@ services:
 
 variables:
   MYSQL_DATABASE: homestead
-  MYSQL_ROOT_PASSWORD: secret
+  MYSQL_ROOT_PASSWORD: homestead
   DB_HOST: mysql
   DB_USERNAME: root
 
@@ -15,7 +15,7 @@ stages:
 unit_test:
   stage: test
   script:
-    - cp .env.unittest .env
+    - cp .env.test .env
     - composer install
     - php artisan key:generate
     - php artisan migrate
