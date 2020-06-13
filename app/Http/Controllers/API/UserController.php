@@ -10,6 +10,28 @@ use Validator;
 
 class UserController extends Controller
 {
+    public function all(Request $request) {
+        $users = User::paginate();
+        return response()->json([
+          'status' => 'success',
+          'data' => $users,
+        ], 200);
+    }
+
+    public function single(Request $request, Integer $id) {
+        $user = User::find($id);
+        if($user) {
+            return response()->json([
+              'status' => 'success',
+              'data' => $user,
+            ], 200);
+        } else {
+            return response()->json([
+              'status' => 'error',
+              'message' => 'User not found',
+            ], 404);
+        }
+    }
     /**
      * Register api
      *
@@ -23,16 +45,14 @@ class UserController extends Controller
             'password' => 'required',
             'v_password' => 'required|same:password',
         ]);
-
         if ($validator->fails()) {
             $response = [
-                'success' => false,
+                'status' => 'error',
                 'data' => 'Validation Error.',
                 'message' => $validator->errors()
             ];
             return response()->json($response, 404);
         }
-
         $input = $request->all();
         $input['password'] = bcrypt($input['password']);
         $user = User::create($input);
@@ -40,11 +60,10 @@ class UserController extends Controller
         $success['name'] = $user->name;
 
         $response = [
-            'success' => true,
+            'status' => 'success',
             'data' => $success,
             'message' => 'User register successfully.'
         ];
-
         return response()->json($response, 200);
     }
 
@@ -56,12 +75,16 @@ class UserController extends Controller
     public function login()
     {
         if (Auth::attempt(['email' => request('email'), 'password' => request('password')])) {
-            $user = Auth::user();
-            $success['token'] = $user->createToken('MyApp')->accessToken;
-
-            return response()->json(['success' => $success], 200);
+            $token = Auth::user()->createToken('MyApp')->accessToken;
+            return response()->json([
+                'status' => 'success',
+                'data' => $token
+            ], 200);
         } else {
-            return response()->json(['error' => 'Unauthorised'], 401);
+            return response()->json([
+              'status' => 'error',
+              'message' => 'Unauthorized access',
+            ], 401);
         }
     }
 
@@ -106,6 +129,28 @@ class UserController extends Controller
             }
         } else {
             return response()->json(['error' => 'Not Found'], 404);
+        }
+    }
+
+    public function delete(Request $request, int $id) {
+        $user = User::find($id);
+        if($user) {
+            if ($user->delete()) {
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'User deleted successfully',
+                ], 200);
+            } else {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Failed to delete the user',
+                ], 500);
+            }
+        } else {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User not found',
+            ], 404);
         }
     }
 
