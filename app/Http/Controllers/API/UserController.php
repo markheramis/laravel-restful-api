@@ -51,7 +51,7 @@ class UserController extends Controller
                 'data' => 'Validation Error.',
                 'message' => $validator->errors()
             ];
-            return response()->json($response, 404);
+            return response()->json($response, 400);
         }
         $input = $request->all();
         $input['password'] = bcrypt($input['password']);
