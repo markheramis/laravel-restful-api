@@ -72,8 +72,20 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function login()
+    public function login(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
+        if ($validator->fails()) {
+            $response = [
+                'status' => 'error',
+                'data' => 'Validation Error.',
+                'message' => $validator->errors()
+            ];
+            return response()->json($response, 400);
+        }
         if (Auth::attempt(['email' => request('email'), 'password' => request('password')])) {
             $token = Auth::user()->createToken('MyApp')->accessToken;
             return response()->json([
