@@ -115,7 +115,5 @@ class UserRegisterTest extends TestCase
       ]);
       $response
       ->assertStatus(200);
-
-
     }
 }
