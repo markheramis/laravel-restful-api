@@ -6,6 +6,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\User;
+use Sentinel;
+use Activation;
 
 class UserLoginTest extends TestCase
 {
@@ -61,10 +63,12 @@ class UserLoginTest extends TestCase
 
     public function testWrongPassword()
     {
-        $user = User::create($this->generateUser());
+        $user = Sentinel::register($this->generateUser());
+        $activation = Activation::create($user);
+        Activation::complete($user, $activation->code);
         $response = $this->json('POST','/api/login',[
             'email' => $user->email,
-            'password' => '1234567'
+            'password' => 'p@s5W0rD12347'
         ]);
         $response
         ->assertStatus(401)
@@ -76,10 +80,12 @@ class UserLoginTest extends TestCase
 
     public function testCorrectLogin()
     {
-        $user = User::create($this->generateUser());
+        $user = Sentinel::register($this->generateUser());
+        $activation = Activation::create($user);
+        Activation::complete($user, $activation->code);
         $response = $this->json('POST','/api/login',[
             'email' => $user->email,
-            'password' => '123456'
+            'password' => 'p@s5W0rD1234'
         ]);
         $response
         ->assertStatus(200)
@@ -91,9 +97,10 @@ class UserLoginTest extends TestCase
     private function generateUser()
     {
         return [
-            'name' => $this->faker->firstName(),
             'email' => $this->faker->email(),
-            'password' => bcrypt('123456'),
+            'password' => 'p@s5W0rD1234',
+            'first_name' => $this->faker->firstName(),
+            'last_name' => $this->faker->lastName(),
         ];
     }
 }
