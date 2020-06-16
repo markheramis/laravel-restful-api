@@ -64,7 +64,7 @@ return [
     */
 
     'roles' => [
-        'model' => Cartalyst\Sentinel\Roles\EloquentRole::class,
+        'model' => App\Models\Role::class,
     ],
 
     /*
@@ -89,7 +89,7 @@ return [
     */
 
     'permissions' => [
-        'class' => Cartalyst\Sentinel\Permissions\StandardPermissions::class,
+        'class' => App\Models\Permission::class,
     ],
 
     /*
@@ -103,7 +103,7 @@ return [
     */
 
     'persistences' => [
-        'model' => Cartalyst\Sentinel\Persistences\EloquentPersistence::class,
+        'model' => App\Models\Persistance::class,
 
         'single' => false,
     ],
@@ -140,7 +140,7 @@ return [
     */
 
     'activations' => [
-        'model' => Cartalyst\Sentinel\Activations\EloquentActivation::class,
+        'model' => App\Models\Activation::class,
 
         'expires' => 259200,
 
