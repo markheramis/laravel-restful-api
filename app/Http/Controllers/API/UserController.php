@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Validator;
+use Sentinel;
+use Activation;
 
 class UserController extends Controller
 {
@@ -40,7 +42,6 @@ class UserController extends Controller
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required',
             'email' => 'required|email',
             'password' => 'required',
             'v_password' => 'required|same:password',
@@ -53,18 +54,28 @@ class UserController extends Controller
             ];
             return response()->json($response, 400);
         }
-        $input = $request->all();
-        $input['password'] = bcrypt($input['password']);
-        $user = User::create($input);
-        $success['token'] = $user->createToken('MyApp')->accessToken;
-        $success['name'] = $user->name;
+        $credentials = $request->all();
 
-        $response = [
-            'status' => 'success',
-            'data' => $success,
-            'message' => 'User register successfully.'
-        ];
-        return response()->json($response, 200);
+        $user = Sentinel::register($credentials);
+        if ($user) {
+            if ($activation = Activation::create($user)) {
+                return response()->json([
+                  'status' => 'success',
+                  'data' => $user->createToken('MyApp')->accessToken,
+                  'message' => 'User register successfully.'
+                ], 200);
+            } else {
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Failed to create activation'
+                ], 500);
+            }
+        } else {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to create user'
+            ], 500);
+        }
     }
 
     /**
@@ -79,23 +90,25 @@ class UserController extends Controller
             'password' => 'required'
         ]);
         if ($validator->fails()) {
-            $response = [
+            return response()->json([
                 'status' => 'error',
                 'data' => 'Validation Error.',
                 'message' => $validator->errors()
-            ];
-            return response()->json($response, 400);
+            ], 400);
         }
-        if (Auth::attempt(['email' => request('email'), 'password' => request('password')])) {
-            $token = Auth::user()->createToken('MyApp')->accessToken;
+        if ($user = Sentinel::stateless([
+            'email' => $request->email,
+            'password' => $request->password,
+          ])) {
+            $token = $user->createToken('MyApp')->accessToken;
             return response()->json([
                 'status' => 'success',
                 'data' => $token
             ], 200);
         } else {
             return response()->json([
-              'status' => 'error',
-              'message' => 'Unauthorized access',
+                'status' => 'error',
+                'message' => 'Unauthorized access',
             ], 401);
         }
     }
@@ -105,10 +118,25 @@ class UserController extends Controller
      *
      * @param Request $request
      * @param integer $id
+     * @param string $code
      * @return JSON
      */
-    public function deactivate(Request $request, int $id) {
-
+    public function activate(Request $request, int $id, string $code) {
+        if ($user = User::find($id)) {
+            if (Activation::complete($user, $code)) {
+                return response()->json([
+                    'status' => 'success'
+                ], 200);
+            } else {
+                return response()->json([
+                    'status' => 'error'
+                ], 404);
+            }
+        } else {
+            return response()->json([
+                'status' => 'error',
+            ], 404);
+        }
     }
 
     /**

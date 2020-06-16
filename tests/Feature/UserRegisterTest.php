@@ -29,9 +29,6 @@ class UserRegisterTest extends TestCase
             "status" => "error",
             "data" => "Validation Error.",
             "message" => [
-                "name" => [
-                    "The name field is required."
-                ],
                 "email" => [
                     "The email field is required."
                 ],
@@ -45,30 +42,20 @@ class UserRegisterTest extends TestCase
         ], true);
     }
 
-    public function testWithNameOnlyError()
+    public function testWithEmailOnlyError()
     {
         $response = $this->json('POST','/api/register',[
-            'name' => $this->faker->firstName(),
-        ]);
-
-        $response->assertStatus(400);
-    }
-
-    public function testWithNameAndEmailOnly()
-    {
-        $response = $this->json('POST','/api/register',[
-            'name' => $this->faker->firstName(),
             'email' => $this->faker->email(),
         ]);
+
         $response->assertStatus(400);
     }
 
     public function testPasswordNoVerify()
     {
         $response = $this->json('POST','/api/register',[
-            'name'      => $this->faker->firstName(),
             'email'     => $this->faker->email(),
-            'password'  => '1234567890',
+            'password'  => 'p@s5W0rD1234',
         ]);
 
         $response
@@ -87,10 +74,9 @@ class UserRegisterTest extends TestCase
     public function testPasswordNotVerified()
     {
         $response = $this->json('POST','/api/register', [
-            'name'        => $this->faker->firstName(),
             'email'       => $this->faker->email(),
-            'password'    => '1234567890',
-            'v_password'  => '12345678901',
+            'password'    => 'p@s5W0rD1234',
+            'v_password'  => 'p@s5W0rD12341',
         ]);
         $response
         ->assertStatus(400)
@@ -107,13 +93,26 @@ class UserRegisterTest extends TestCase
 
     public function testCorrectRegister()
     {
-      $response = $this->json('POST','/api/register', [
-          'name'        => $this->faker->firstName(),
-          'email'       => $this->faker->email(),
-          'password'    => '1234567890',
-          'v_password'  => '1234567890',
-      ]);
-      $response
-      ->assertStatus(200);
+        $response = $this->json('POST','/api/register', [
+            'email'       => $this->faker->email(),
+            'password'    => 'p@s5W0rD1234',
+            'v_password'  => 'p@s5W0rD1234',
+        ]);
+        $response
+        ->assertStatus(200);
+    }
+
+    public function testCorrectRegisterWithFullName()
+    {
+        $response = $this->json('POST','/api/register', [
+            'email'=> $this->faker->email(),
+            'password'=> 'p@s5W0rD1234',
+            'v_password'=> 'p@s5W0rD1234',
+            'first_name' => $this->faker->firstName(),
+            'last_name' => $this->faker->lastName(),
+        ]);
+
+        $response
+        ->assertStatus(200);
     }
 }

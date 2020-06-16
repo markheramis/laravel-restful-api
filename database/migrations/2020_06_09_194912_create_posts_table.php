@@ -14,7 +14,7 @@ class CreatePostsTable extends Migration
     public function up()
     {
         Schema::create('posts', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->increments('id');
             $table->string('title');
             $table->string('slug')->nullable();
             $table->longText('content')->nullable();
@@ -27,9 +27,9 @@ class CreatePostsTable extends Migration
             ->default('private')
             ->nullable();
             $table->string('post_type')->default('post')->nullable();
-            $table->bigInteger('created_by')->unsigned()->nullable();
-            $table->bigInteger('updated_by')->unsigned()->nullable();
-            $table->bigInteger('parent_id')->unsigned()->nullable();
+            $table->integer('created_by')->unsigned()->nullable();
+            $table->integer('updated_by')->unsigned()->nullable();
+            $table->integer('parent_id')->unsigned()->nullable();
             $table->integer('comment_count')->default(0);
             $table->timestamps();
         });
