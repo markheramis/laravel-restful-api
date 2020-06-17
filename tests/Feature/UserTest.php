@@ -5,6 +5,8 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use App\Models\Role;
+use App\Models\User;
 use Sentinel;
 use Activation;
 
@@ -12,40 +14,68 @@ class UserTest extends TestCase
 {
     use WithFaker;
 
-    public function testAllUser()
+    private $user = [];
+
+    public function setUp(): void
     {
-      # create admin user
-      $user = Sentinel::register([
-        'email' => 'admin@admin.com',
-        'password' => 'p@s5W0rd12345',
-      ]);
-      $activation = Activation::create($user);
-      Activation::complete($user, $activation->code);
-      $role = Sentinel::findRoleBySlug('administrators');
-      $role->users()->attach($user);
-      $user->save();
+        parent::setUp();
+        $roles = Role::all();
+        for ($i = 0; $i < 20; $i++) {
+          $user = Sentinel::register([
+            'email' => $this->faker->email(),
+            'password' => 'p@s5W0rd12345',
+            'first_name' => $this->faker->firstName(),
+            'last_name' => $this->faker->lastName(),
+          ]);
+          $activation = Activation::create($user);
+          if (rand(0,1)) Activation::complete($user, $activation->code);
+          $role_index = rand(0,count($roles) - 1);
+          $roles[$role_index]->users()->attach($user);
+        }
+    }
+
+    public function testAllUserAsAdmin()
+    {
+      $user = Role::where('slug','administrators')->first()->users()->inRandomOrder()->first();
       $token = $user->createToken('MyApp')->accessToken;
 
-      $users = [];
-      for($i = 0; $i < 5; $i++) {
-        $user = Sentinel::register([
-          'email' => $this->faker->email(),
-          'password' => 'p@s5W0rd12345',
-          'first_name' => $this->faker->firstName(),
-          'last_name' => $this->faker->lastName(),
-        ]);
-        $activation = Activation::create($user);
-        Activation::complete($user, $activation->code);
-        $users[] = $user;
-      }
+      $expected_result = User::paginate()->toArray();
 
       $response = $this->json('GET', '/api/user', [], [
         'Authorization' => 'Bearer ' . $token
       ]);
 
-      $response->assertStatus(200)
-      ->assertJson([
-        "current_page" => 1,
+      $response
+      ->assertStatus(200);
+    }
+
+    public function testAllUserAsModerator()
+    {
+      $user = Role::where('slug','administrators')->first()->users()->inRandomOrder()->first();
+      $token = $user->createToken('MyApp')->accessToken;
+
+      $expected_result = User::paginate()->toArray();
+
+      $response = $this->json('GET', '/api/user', [], [
+        'Authorization' => 'Bearer ' . $token
       ]);
+
+      $response
+      ->assertStatus(200);
+    }
+
+    public function testAllUserAsSubscriber()
+    {
+      $user = Role::where('slug','administrators')->first()->users()->inRandomOrder()->first();
+      $token = $user->createToken('MyApp')->accessToken;
+
+      $expected_result = User::paginate()->toArray();
+
+      $response = $this->json('GET', '/api/user', [], [
+        'Authorization' => 'Bearer ' . $token
+      ]);
+
+      $response
+      ->assertStatus(200);
     }
 }
