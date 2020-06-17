@@ -46,7 +46,6 @@ class UserTest extends TestCase
       $response->assertStatus(200)
       ->assertJson([
         "current_page" => 1,
-        "data" => $users
       ]);
     }
 }
