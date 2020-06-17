@@ -39,7 +39,7 @@ class UserTest extends TestCase
         $users[] = $user;
       }
 
-      $response = $this->json('GET', '/api/user',[
+      $response = $this->json('GET', '/api/user', [], [
         'Authorization' => 'Bearer ' . $token
       ]);
 
