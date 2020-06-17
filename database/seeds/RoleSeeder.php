@@ -13,12 +13,12 @@ class RoleSeeder extends Seeder
     public function run()
     {
         $role = Sentinel::getRoleRepository()->createModel()->create([
-            'name' => 'Administrator',
-            'slug' => 'administrator',
+            'name' => 'Administrators',
+            'slug' => 'administrators',
         ]);
         $role = Sentinel::getRoleRepository()->createModel()->create([
-            'name' => 'Moderator',
-            'slug' => 'moderator',
+            'name' => 'Moderators',
+            'slug' => 'moderators',
         ]);
         $role = Sentinel::getRoleRepository()->createModel()->create([
             'name' => 'Subscribers',

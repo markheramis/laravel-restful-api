@@ -9,15 +9,8 @@ use Tests\TestCase;
 
 class UserRegisterTest extends TestCase
 {
-
-    protected $faker;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-        $this->faker = Factory::create();
-    }
-
+    use WithFaker;
+    
     public function testNoParameterError()
     {
         $response = $this->json('POST','/api/register',[
@@ -112,6 +105,23 @@ class UserRegisterTest extends TestCase
             'last_name' => $this->faker->lastName(),
         ]);
 
+        $response
+        ->assertStatus(200);
+    }
+
+    public function testCorrectRegistrationWithPermissions()
+    {
+        $response = $this->json('POST','/api/register',[
+            'email' => $this->faker->email(),
+            'password' => 'p@s5W0rD1234',
+            'v_password' => 'p@s5W0rD1234',
+            'first_name' => $this->faker->firstName(),
+            'last_name' => $this->faker->lastName(),
+            'permissions' => [
+                'view.user' => true,
+                'update.user' => true,
+            ]
+        ]);
         $response
         ->assertStatus(200);
     }
