@@ -12,23 +12,14 @@ use Activation;
 class UserLoginTest extends TestCase
 {
     use WithFaker;
-    /**
-     * A basic feature test example.
-     *
-     * @return void
-     */
-    public function testExample()
-    {
-        $response = $this->get('/');
-        $test = $this->faker->firstName();
-        $response->assertStatus(200);
-    }
+
 
     public function testNoParameterError()
     {
         $response = $this->json('POST', '/api/login',[]);
         $response
         ->assertStatus(400)
+
         ->assertJson([
             "status" => "error",
             "data" => "Validation Error.",

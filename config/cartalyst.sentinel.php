@@ -160,7 +160,7 @@ return [
     */
 
     'reminders' => [
-        'model' => Cartalyst\Sentinel\Reminders\EloquentReminder::class,
+        'model' => App\Models\Reminder::class,
 
         'expires' => 14400,
 
@@ -210,7 +210,7 @@ return [
     */
 
     'throttling' => [
-        'model' => Cartalyst\Sentinel\Throttling\EloquentThrottle::class,
+        'model' => App\Models\Throttle::class,
 
         'global' => [
             'interval' => 900,
