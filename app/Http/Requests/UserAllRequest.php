@@ -4,8 +4,7 @@ namespace App\Http\Requests;
 
 use Auth;
 use Sentinel;
-use Illuminate\Foundation\Http\FormRequest;
-
+use App\Http\Requests\FormRequest;
 class UserAllRequest extends FormRequest
 {
     /**
@@ -35,38 +34,5 @@ class UserAllRequest extends FormRequest
         ];
     }
 
-    /**
-     * Validate the class instance.
-     *
-     * @return void
-     */
-    public function validateResolved()
-    {
-        $this->prepareForValidation();
 
-        if (! $this->passesAuthorization()) {
-            $this->failedAuthorization();
-            exit(); # I tried exiting to stop execution.
-        }
-
-        $instance = $this->getValidatorInstance();
-
-        if ($instance->fails()) {
-            $this->failedValidation($instance);
-        }
-
-        $this->passedValidation();
-    }
-
-    /**
-     * Handle a failed authorization attempt.
-     *
-     * @return void
-     *
-     * @throws \Illuminate\Auth\Access\AuthorizationException
-     */
-    protected function failedAuthorization()
-    {
-        return response()->json(['status' => 'error', 'message' => 'Request not authorized'], 403);
-    }
 }
