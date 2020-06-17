@@ -20,7 +20,7 @@ class UserTest extends TestCase
     {
         parent::setUp();
         $roles = Role::all();
-        for ($i = 0; $i < 20; $i++) {
+        for ($i = 0; $i < 40; $i++) {
           $user = Sentinel::register([
             'email' => $this->faker->email(),
             'password' => 'p@s5W0rd12345',
@@ -28,7 +28,8 @@ class UserTest extends TestCase
             'last_name' => $this->faker->lastName(),
           ]);
           $activation = Activation::create($user);
-          if (rand(0,1)) Activation::complete($user, $activation->code);
+          #if (rand(0,1)) Activation::complete($user, $activation->code);
+          Activation::complete($user, $activation->code); # activate all users
           $role_index = rand(0,count($roles) - 1);
           $roles[$role_index]->users()->attach($user);
         }
@@ -51,7 +52,7 @@ class UserTest extends TestCase
 
     public function testAllUserAsModerator()
     {
-      $user = Role::where('slug','administrators')->first()->users()->inRandomOrder()->first();
+      $user = Role::where('slug','moderators')->first()->users()->inRandomOrder()->first();
       $token = $user->createToken('MyApp')->accessToken;
 
       $expected_result = User::paginate()->toArray();
@@ -66,7 +67,7 @@ class UserTest extends TestCase
 
     public function testAllUserAsSubscriber()
     {
-      $user = Role::where('slug','administrators')->first()->users()->inRandomOrder()->first();
+      $user = Role::where('slug','subscribers')->first()->users()->inRandomOrder()->first();
       $token = $user->createToken('MyApp')->accessToken;
 
       $expected_result = User::paginate()->toArray();
@@ -76,6 +77,6 @@ class UserTest extends TestCase
       ]);
 
       $response
-      ->assertStatus(200);
+      ->assertStatus(403);
     }
 }

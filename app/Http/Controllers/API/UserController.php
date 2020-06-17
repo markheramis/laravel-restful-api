@@ -2,17 +2,22 @@
 
 namespace App\Http\Controllers\API;
 
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
-use App\Models\User;
 use Validator;
 use Sentinel;
 use Activation;
 
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+
+use App\Models\User;
+
+use App\Http\Requests\UserAllRequest;
+
+
 class UserController extends Controller
 {
-    public function all(Request $request) {
+    public function all(UserAllRequest $request) {
         $users = User::paginate();
         return response()->json($users, 200);
     }
