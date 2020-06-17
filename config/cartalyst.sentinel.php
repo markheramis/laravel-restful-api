@@ -89,7 +89,7 @@ return [
     */
 
     'permissions' => [
-        'class' => Cartalyst\Sentinel\Permissions\StandardPermissions::class,
+        'class' => App\Models\Permission::class,
     ],
 
     /*
@@ -103,7 +103,7 @@ return [
     */
 
     'persistences' => [
-        'model' => App\Models\Persistence::class,
+        'model' => App\Models\Persistance::class,
 
         'single' => false,
     ],
