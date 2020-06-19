@@ -4,7 +4,7 @@ LABEL maintainer="Mark <mark@xplorit.com>"
 RUN apt-get update -y
 RUN apt-get upgrade -y
 
-
+RUN apt-get install apache2
 
 
 #RUN apt-get update -y && apt-get install -y libmcrypt-dev openssl
@@ -17,3 +17,4 @@ COPY . /app
 
 #CMD php artisan serve --host=0.0.0.0 --port=8000
 #EXPOSE 8000
+EXPOSE 80
