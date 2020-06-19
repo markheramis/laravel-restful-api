@@ -4,7 +4,7 @@ LABEL maintainer="Mark <mark@xplorit.com>"
 RUN apt-get update -y
 RUN apt-get upgrade -y
 
-RUN apt-get install apache2
+RUN apt-get install apache2 -y
 
 
 #RUN apt-get update -y && apt-get install -y libmcrypt-dev openssl
