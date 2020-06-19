@@ -1,6 +1,6 @@
 web:
     image: laravel-restful-template
     ports:
-        - 8000:8000
+        - 80:80
     volumes:
         - ./:/app
