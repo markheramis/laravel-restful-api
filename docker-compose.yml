@@ -21,10 +21,10 @@ services:
     container_name: laravelrestful-db
     restart: unless-stopped
     environment:
-      MYSQL_DATABASE: ${DB_DATABASE}
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
-      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_DATABASE: laravelrestful
+      MYSQL_ROOT_PASSWORD: laravelrestful
+      MYSQL_PASSWORD: laravelrestful
+      MYSQL_USER: laravelrestful
       SERVICE_TAGS: dev
       SERVICE_NAME: mysql
     volumes:
