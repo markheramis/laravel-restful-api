@@ -3,22 +3,22 @@ services:
   app:
     build:
       args:
-        user: sammy
+        user: devuser
         uid: 1000
       context: ./
       dockerfile: Dockerfile
-    image: travellist
-    container_name: travellist-app
+    image: laravelrestful
+    container_name: laravelrestful-app
     restart: unless-stopped
     working_dir: /var/www/
     volumes:
       - ./:/var/www
     networks:
-      - travellist
+      - laravelrestful
 
   db:
     image: mysql:5.7
-    container_name: travellist-db
+    container_name: laravelrestful-db
     restart: unless-stopped
     environment:
       MYSQL_DATABASE: ${DB_DATABASE}
@@ -30,11 +30,11 @@ services:
     volumes:
       - ./docker-compose/mysql:/docker-entrypoint-initdb.d
     networks:
-      - travellist
+      - laravelrestful
 
   nginx:
     image: nginx:alpine
-    container_name: travellist-nginx
+    container_name: laravelrestful-nginx
     restart: unless-stopped
     ports:
       - 8000:80
@@ -42,8 +42,8 @@ services:
       - ./:/var/www
       - ./docker-compose/nginx:/etc/nginx/conf.d/
     networks:
-      - travellist
+      - laravelrestful
 
 networks:
-  travellist:
+  laravelrestful:
     driver: bridge
