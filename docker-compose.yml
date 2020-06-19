@@ -1,49 +1,49 @@
-version: "3.7"
-services:
-  app:
-    build:
-      args:
-        user: devuser
-        uid: 1000
-      context: ./
-      dockerfile: Dockerfile
-    image: laravelrestful
-    container_name: laravelrestful-app
-    restart: unless-stopped
-    working_dir: /var/www/
-    volumes:
-      - ./:/var/www
-    networks:
-      - laravelrestful
-
-  db:
-    image: mysql:5.7
-    container_name: laravelrestful-db
-    restart: unless-stopped
-    environment:
-      MYSQL_DATABASE: laravelrestful
-      MYSQL_ROOT_PASSWORD: laravelrestful
-      MYSQL_PASSWORD: laravelrestful
-      MYSQL_USER: laravelrestful
-      SERVICE_TAGS: dev
-      SERVICE_NAME: mysql
-    volumes:
-      - ./docker-compose/mysql:/docker-entrypoint-initdb.d
-    networks:
-      - laravelrestful
-
-  nginx:
-    image: nginx:alpine
-    container_name: laravelrestful-nginx
-    restart: unless-stopped
-    ports:
-      - 8000:80
-    volumes:
-      - ./:/var/www
-      - ./docker-compose/nginx:/etc/nginx/conf.d/
-    networks:
-      - laravelrestful
+version: '3'
 
 networks:
-  laravelrestful:
-    driver: bridge
+  laravel:
+
+services:
+  nginx:
+    image: nginx:stable-alpine
+    container_name: nginx
+    ports:
+      - *8088:80
+    volumes:
+      - ./src:/var/www/html
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php
+      - mysql
+
+    networks:
+      - laravel
+  mysql:
+    image: mysql:5.7.22
+    container_name: mysql
+    restart: unless-stopped
+    tty: true
+    ports: *4306:3306
+    volumes:
+      - ./mysql:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: homestead
+      MYSQL_USER: homestead
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: secret
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    networks:
+      - laravel
+
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      container_name: php
+      volumes:
+        - ./src:/var/www/html
+      ports:
+        - *9000:9000*
+    networks:
+      - laravel
