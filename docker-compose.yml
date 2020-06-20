@@ -57,7 +57,7 @@ services:
       - php
     networks:
       - laravel
-    command: composer install --ignore-platform-reqs
+    command: bash -c "composer update"
 
   npm:
     image: node:13.7
