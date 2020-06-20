@@ -40,12 +40,14 @@ Credits to the [docker-compose-laravel](https://github.com/aschmelyun/docker-com
 
 ## Created with the following technologies
 
-| Package               | Version | Status       |
-|-----------------------|---------|--------------|
-| cartalyst/sentinel    | ^4.0    | Implementing |
-| laravel/passport      | ^9.2    | Complete     |
-| spatie/laravel-backup | ^6.10   | Complete     |
-| laravel/telescope     | ^3.5    | Complete     |
+| Package                       | Version | Status       | Tested  |
+|-------------------------------|---------|--------------|---------|
+| cartalyst/sentinel            | ^4.0    | In Progress  | Not All |
+| laravel/passport              | ^9.2    | Complete     | Yes     |
+| spatie/laravel-backup         | ^6.10   | Complete     | Not All |
+| laravel/telescope             | ^3.5    | Complete     | Yes     |
+| cviebrock/eloquent-sluggable  | ^7.0    | Complete     | Yes     |
+| phpunit/phpunit               | ^8.5    | complete     | Yes     |
 
 ## Learning Laravel
 
