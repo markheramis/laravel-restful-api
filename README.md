@@ -34,6 +34,7 @@ php artisan serve
 docker-compose up -d --build
 docker-compose run --rm composer update
 docker-compose run --rm artisan migrate
+docker-compose run --rm artisan test
 ```
 
 Credits to the [docker-compose-laravel](https://github.com/aschmelyun/docker-compose-laravel) and [Laravel-Docker plug-and-play](https://github.com/shsma/laravel-docker) project on github on the insight for the starter template of the docker-compose file.
