@@ -1,5 +1,3 @@
-
-
 <p align="center"><img src="https://res.cloudinary.com/dtfbvvkyp/image/upload/v1566331377/laravel-logolockup-cmyk-red.svg" width="400"></p>
 
 [![pipeline status](https://gitlab.com/mark-heramis/laravel-restful-api/badges/master/pipeline.svg)](https://gitlab.com/mark-heramis/laravel-restful-api/-/commits/master)
@@ -37,7 +35,23 @@ docker-compose run --rm artisan migrate
 docker-compose run --rm artisan test
 ```
 
-Credits to the [docker-compose-laravel](https://github.com/aschmelyun/docker-compose-laravel) and [Laravel-Docker plug-and-play](https://github.com/shsma/laravel-docker) project on github on the insight for the starter template of the docker-compose file.
+#### Docker Debugging
+
+This is a useful command to debug docker
+
+```
+docker-compose logs -f -t >> docker.log
+```
+
+This command will log all activities within docker as it builds, you can then use the following command to inspect the logs as it runs
+
+```
+tail -f docker.log
+```
+
+#### Credits
+
+Thanks to the creators and contributors of the [docker-compose-laravel](https://github.com/aschmelyun/docker-compose-laravel) and [Laravel-Docker plug-and-play](https://github.com/shsma/laravel-docker) project on github on the insight for the starter template of the docker-compose file.
 
 ## Created with the following technologies
 
