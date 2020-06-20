@@ -57,7 +57,7 @@ services:
       - php
     networks:
       - laravel
-    command: bash -c "composer update && cp .env.example .env"
+    command: bash -c "composer update"
 
 #  npm:
 #    image: node:13.7
