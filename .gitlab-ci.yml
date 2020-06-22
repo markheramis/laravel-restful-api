@@ -11,8 +11,10 @@ variables:
 
 stages:
   - test
+  - build
+  - deploy
 
-unit_test:
+test:
   stage: test
   script:
     - cp .env.testing .env
@@ -24,5 +26,34 @@ unit_test:
     - php artisan serve &
     - php artisan test --env=testing
 
+build:
+  stage: build
+  script: echo "Building the app"
+
+deploy_staging:
+  stage: deploy
+  script:
+    - echo "Deploy to staging server"
+  environment:
+    name: staging
+    url: https://staging.example.com
+  only:
+  - staging
+
+deploy_production:
+  stage: deploy
+  script:
+    - echo "Deploy to staging server"
+  environment:
+    name: production
+    url: https://example.com
+  only:
+  - production
+
+
+
 include:
   - template: Dependency-Scanning.gitlab-ci.yml
+
+include:
+  - template: License-Scanning.gitlab-ci.yml
