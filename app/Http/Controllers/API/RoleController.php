@@ -6,9 +6,15 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Role;
 
+use App\Http\Requests\RoleAllRequest;
+use App\Http\Requests\RoleGetRequest;
+use App\Http\Requests\RoleCreateRequest;
+use App\Http\Requests\RoleUpdateReqeust;
+use App\Http\Requests\RoleDeleteRequest;
+
 class RoleController extends Controller
 {
-    public function all(Request $request) {
+    public function all(RoleAllRequest $request) {
         $roles = Role::all();
         return response()->json([
             'status' => 'success',
@@ -16,7 +22,7 @@ class RoleController extends Controller
         ], 200);
     }
 
-    public function get(Request $request, string $slug) {
+    public function get(RoleGetRequest $request, string $slug) {
         $role = Sentinel::findRoleBySlug($slug);
         if ($role) {
             return response()->json([
@@ -31,7 +37,7 @@ class RoleController extends Controller
         }
     }
 
-    public function create(Request $request) {
+    public function create(RoleCreateRequest $request) {
         $role = Sentinel::getRoleRepository()->createModel()->create([
             'name' => $request->name,
             'slug' => $request->slug,
@@ -39,7 +45,7 @@ class RoleController extends Controller
         ]);
     }
 
-    public function update(Request $request, string $slug) {
+    public function update(RoleUpdateReqeust $request, string $slug) {
         $role = Sentinel::findRoleBySlug($slug);
         if ($role) {
             $role->name = $request->name;
@@ -64,7 +70,7 @@ class RoleController extends Controller
         }
     }
 
-    public function delete(Request $request, string $slug) {
+    public function delete(RoleDeleteRequest $request, string $slug) {
         $role = Sentinel::findRoleBySlug($slug);
         if ($role) {
             if ($role->delete()) {

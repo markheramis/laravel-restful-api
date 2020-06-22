@@ -2,9 +2,10 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
+use Auth;
+use App\Http\Requests\FormRequest;
 
-class SingleUser extends FormRequest
+class UserPermissionAddRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +14,12 @@ class SingleUser extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        if (Auth::check()) {
+          $user = Auth::user();
+          return $user->hasAccess('users.permission.add');
+        } else {
+          return false;
+        }
     }
 
     /**

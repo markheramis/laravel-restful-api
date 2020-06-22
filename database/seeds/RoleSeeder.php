@@ -12,43 +12,64 @@ class RoleSeeder extends Seeder
      */
     public function run()
     {
-        $role = Sentinel::getRoleRepository()->createModel()->create([
+        $role = Sentinel::getRoleRepository()
+        ->createModel()
+        ->create([
             'name' => 'Administrators',
             'slug' => 'administrators',
             'permissions' => [
-                'user.view.all' => true,
-                'user.view.last_login' => true,
-                'user.update.all' => true,
-                'user.update.profile' => true,
-                'user.create' => true,
-                'user.delete.hard' => true,
-                'user.delete.soft' => true,
+                'users.all' => true,
+                'users.get' => true,
+                'users.add' => true,
+                'users.update' => true,
+                'users.delete' => true,
+                'users.permission.get' => true,
+                'users.permission.add' => true,
+                'users.permission.update' => true,
+                'users.permission.delete' => true,
+                'users.role.get' => true,
+                'users.role.add' => true,
+                'users.role.delete' => true,
             ]
         ]);
-        $role = Sentinel::getRoleRepository()->createModel()->create([
+        $role = Sentinel::getRoleRepository()
+        ->createModel()
+        ->create([
             'name' => 'Moderators',
             'slug' => 'moderators',
             'permissions' => [
-                'user.view.all' => true,
-                'user.view.last_login' => true,
-                'user.update.all' => false,
-                'user.update.profile' => true,
-                'user.create' => false,
-                'user.delete.hard' => false,
-                'user.delete.soft' => true,
+                'users.all' => true,
+                'users.get' => true,
+                'users.add' => false,
+                'users.update' => true,
+                'users.delete' => false,
+                'users.permission.get' => true,
+                'users.permission.add' => true,
+                'users.permission.update' => true,
+                'users.permission.delete' => false,
+                'users.role.get' => true,
+                'users.role.add' => false,
+                'users.role.delete' => false,
             ]
         ]);
-        $role = Sentinel::getRoleRepository()->createModel()->create([
+        $role = Sentinel::getRoleRepository()
+        ->createModel()
+        ->create([
             'name' => 'Subscribers',
             'slug' => 'subscribers',
             'permissions' => [
-                'user.view.all' => false,
-                'user.view.last_login' => false,
-                'user.update.all' => false,
-                'user.update.profile' => true,
-                'user.create' => false,
-                'user.delete.hard' => false,
-                'user.delete.soft' => false,
+                'users.all' => true,
+                'users.get' => true,
+                'users.add' => false,
+                'users.update' => false,
+                'users.delete' => false,
+                'users.permission.get' => false,
+                'users.permission.add' => false,
+                'users.permission.update' => false,
+                'users.permission.delete' => false,
+                'users.role.get' => true,
+                'users.role.add' => false,
+                'users.role.delete' => false,
             ]
         ]);
     }

@@ -13,17 +13,21 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 
 use App\Http\Requests\UserAllRequest;
+use App\Http\Requests\UserGetRequest;
+use App\Http\Requests\UserRegisterRequest;
+use App\Http\Requests\UserLoginRequest;
+use App\Http\Requests\UserActivateRequest;
+use App\Http\Requests\UserUpdateRequest;
+use App\Http\Requests\UserDeleteRequest;
 
-
-class UserController extends Controller
-{
+class UserController extends Controller {
     public function all(UserAllRequest $request) {
         $users = User::paginate();
         return response()->json($users, 200);
     }
 
-    public function get(Request $request, string $slug) {
-        $user = Sentinel::findBySlug($slug);
+    public function get(UserGetRequest $request, string $slug) {
+	   $user = User::where('slug', $slug)->first();
         if($user) {
             return response()->json([
               'status' => 'success',
@@ -36,29 +40,14 @@ class UserController extends Controller
             ], 404);
         }
     }
+
     /**
      * Register api
      *
      * @return \Illuminate\Http\Response
      */
-    public function register(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
-            'password' => 'required',
-            'v_password' => 'required|same:password',
-            'permissions' => 'array',
-        ]);
-        if ($validator->fails()) {
-            $response = [
-                'status' => 'error',
-                'data' => 'Validation Error.',
-                'message' => $validator->errors()
-            ];
-            return response()->json($response, 400);
-        }
+    public function register(UserRegisterRequest $request) {
         $credentials = $request->all();
-
         $user = Sentinel::register($credentials);
         if ($user) {
             if ($activation = Activation::create($user)) {
@@ -93,19 +82,7 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function login(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
-            'password' => 'required'
-        ]);
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => 'error',
-                'data' => 'Validation Error.',
-                'message' => $validator->errors()
-            ], 400);
-        }
+    public function login(UserLoginRequest $request) {
         if ($user = Sentinel::stateless([
             'email' => $request->email,
             'password' => $request->password,
@@ -131,7 +108,7 @@ class UserController extends Controller
      * @param string $code
      * @return JSON
      */
-    public function activate(Request $request, int $id, string $code) {
+    public function activate(UserActivateRequest $request, int $id, string $code) {
         if ($user = User::find($id)) {
             if (Activation::complete($user, $code)) {
                 return response()->json([
@@ -156,18 +133,7 @@ class UserController extends Controller
      * @param integer $id
      * @return JSON
      */
-    public function reactivate(Request $request, int $id) {
-
-    }
-
-    /**
-     * Undocumented function
-     *
-     * @param Request $request
-     * @param integer $id
-     * @return JSON
-     */
-    public function update(Request $request, string $slug) {
+    public function update(UserUpdateRequest $request, string $slug) {
         $user = Sentinel::findBySlug($slug);
         if($user) {
             $user->name = $request->name;
@@ -182,7 +148,7 @@ class UserController extends Controller
         }
     }
 
-    public function delete(Request $request, string $slug) {
+    public function delete(UserDeleteRequest $request, string $slug) {
         $user = Sentinel::findBySlug($slug);
         if($user) {
             if ($user->delete()) {
@@ -201,90 +167,6 @@ class UserController extends Controller
                 'status' => 'error',
                 'message' => 'User not found',
             ], 404);
-        }
-    }
-
-    public function get_role(Request $request, string $user_slug) {
-        $user = Sentinel::findBySlug($user_slug);
-        if ($user) {
-            $roles = $user->roles;
-            return response()->json(['status' => 'success', 'data' => $roles], 200);
-        } else {
-            return response()->json(['status' => 'error', 'message' => 'Account not found'], 404);
-        }
-    }
-
-    public function add_role(Request $request, string $slug) {
-        $user = Sentinel::findBySlug($slug);
-        $role = Sentinel::findRoleBySlug($request->slug);
-        if ($user && $role) {
-            $role->users()->attach($user);
-            return response()->json(['status' => 'success', 'message' => 'Role attached successfully'], 200);
-        } else {
-            return response()->json(['status' => 'error', 'message' => 'Account or Role not found'], 404);
-        }
-    }
-
-    public function remove_role(Request $request, string $slug) {
-        $user = Sentinel::findBySlug($slug);
-        $role = Sentinel::findRoleBySlug($request->slug);
-        if ($user && $role) {
-            $role->users()->detach($user);
-            return response()->json(['status' => 'success', 'message' => 'Role detached successfully'], 200);
-        } else {
-            return response()->json(['status' => 'error', 'message' => 'Account or Role not found'], 404);
-        }
-    }
-
-    public function get_permission(Request $request, string $user_slug) {
-        $user = Sentinel::findBySlug($user_slug);
-        if ($user) {
-            $permission = $user->permissions;
-            return response()->json(['status' => 'success', 'data' => $permission], 200);
-        } else {
-            return response()->json(['status' => 'error', 'message' => 'Account not found'], 404);
-        }
-    }
-
-    public function add_permission(Request $request, string $slug) {
-        $user = Sentinel::findBySlug($slug);
-        if ($user) {
-            $user->addPermission($request->slug, $request->value);
-            if ($user->save()) {
-                return response()->json(['status' => 'success', 'message' => 'Permission added successfully'], 200);
-            } else {
-                return response()->json(['status' => 'error', 'message' => 'Failed to add Permission'], 400);
-            }
-        } else {
-            return response()->json(['status' => 'error', 'message' => 'Account not found'], 404);
-        }
-    }
-
-    public function update_permission(Request $request, string $slug) {
-        $user = Sentinel::findBySlug($slug);
-        if ($user) {
-            $user->updatePermission($request->slug, $request->value, true);
-            if ($user->save()) {
-                return response()->json(['status' => 'success', 'message' => 'Permission updated successfully'], 200);
-            } else {
-                return response()->json(['status' => 'error', 'message' => 'Failed to update Permission'], 400);
-            }
-        } else {
-            return response()->json(['status' => 'error', 'message' => 'Account not found'], 404);
-        }
-    }
-
-    public function remove_permission(Request $request, string $slug) {
-        $user = Sentinel::findBySlug($slug);
-        if ($user) {
-            $user->removePermission($request->slug);
-            if ($user->save()) {
-                return response()->json(['status' => 'success', 'message' => 'Permission removed successfully'], 200);
-            } else {
-                return response()->json(['status' => 'error', 'message' => 'Failed to remove Permission'], 400);
-            }
-        } else {
-            return response()->json(['status' => 'error', 'message' => 'Account not found'], 404);
         }
     }
 }
