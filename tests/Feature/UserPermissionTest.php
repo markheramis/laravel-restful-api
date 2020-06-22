@@ -19,7 +19,7 @@ class UserPermissionTest extends TestCase {
         parent::setUp();
         if(env('APP_ENV') == 'testing') {
             $roles = Role::all();
-            for ($i = 0; $i < 15; $i++) {
+            for ($i = 0; $i < 50; $i++) {
                 $user = Sentinel::register([
                     'username' => $this->faker->userName(),
                     'email' => $this->faker->email(),
