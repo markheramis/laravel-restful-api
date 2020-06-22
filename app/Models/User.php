@@ -10,6 +10,7 @@ use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Foundation\Auth\Access\Authorizable;
+use Cviebrock\EloquentSluggable\Sluggable;
 
 
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
@@ -21,7 +22,8 @@ use Cartalyst\Sentinel\Users\EloquentUser as Model;
 class User extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
 {
 
-    use HasApiTokens, Authenticatable, MustVerifyEmail, Notifiable, CanResetPassword, Authorizable;
+    use HasApiTokens, Authenticatable, MustVerifyEmail, Notifiable, CanResetPassword, Authorizable, Sluggable;
+
 
     /**
      * The attributes that are mass assignable.
@@ -29,7 +31,12 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'username',
+        'email',
+        'password',
+        'last_name',
+        'first_name',
+        'permissions',
     ];
 
     /**
@@ -40,4 +47,13 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function sluggable()
+    {
+        return [
+            'slug' => [
+                'source' => 'username'
+            ]
+        ];
+    }
 }

@@ -10,83 +10,47 @@ use Tests\TestCase;
 class UserRegisterTest extends TestCase
 {
     use WithFaker;
-    
-    public function testNoParameterError()
-    {
+
+    public function testNoParameterError() {
         $response = $this->json('POST','/api/register',[
         ]);
 
         $response
-        ->assertStatus(400)
-        ->assertJson([
-            "status" => "error",
-            "data" => "Validation Error.",
-            "message" => [
-                "email" => [
-                    "The email field is required."
-                ],
-                "password" => [
-                    "The password field is required."
-                ],
-                "v_password" => [
-                    "The v password field is required."
-                ]
-            ]
-        ], true);
+        ->assertStatus(422);
     }
 
-    public function testWithEmailOnlyError()
-    {
+    public function testWithEmailOnlyError() {
         $response = $this->json('POST','/api/register',[
             'email' => $this->faker->email(),
         ]);
 
-        $response->assertStatus(400);
+        $response->assertStatus(422);
     }
 
-    public function testPasswordNoVerify()
-    {
+    public function testPasswordNoVerify() {
         $response = $this->json('POST','/api/register',[
             'email'     => $this->faker->email(),
             'password'  => 'p@s5W0rD1234',
         ]);
 
         $response
-        ->assertStatus(400)
-        ->assertJson([
-            "status" => "error",
-            "data" => "Validation Error.",
-            "message" => [
-                "v_password" => [
-                    "The v password field is required."
-                ]
-            ]
-        ], true);
+        ->assertStatus(422);
     }
 
-    public function testPasswordNotVerified()
-    {
+    public function testPasswordNotVerified() {
         $response = $this->json('POST','/api/register', [
+            'username'    => $this->faker->userName(),
             'email'       => $this->faker->email(),
             'password'    => 'p@s5W0rD1234',
             'v_password'  => 'p@s5W0rD12341',
         ]);
         $response
-        ->assertStatus(400)
-        ->assertJson([
-            "status" => "error",
-            "data" => "Validation Error.",
-            "message" => [
-                "v_password" => [
-                    "The v password and password must match."
-                ]
-            ]
-        ], true);
+        ->assertStatus(422);
     }
 
-    public function testCorrectRegister()
-    {
+    public function testCorrectRegister() {
         $response = $this->json('POST','/api/register', [
+            'username'    => $this->faker->userName(),
             'email'       => $this->faker->email(),
             'password'    => 'p@s5W0rD1234',
             'v_password'  => 'p@s5W0rD1234',
@@ -95,9 +59,9 @@ class UserRegisterTest extends TestCase
         ->assertStatus(200);
     }
 
-    public function testCorrectRegisterWithFullName()
-    {
+    public function testCorrectRegisterWithFullName() {
         $response = $this->json('POST','/api/register', [
+            'username' => $this->faker->userName(),
             'email'=> $this->faker->email(),
             'password'=> 'p@s5W0rD1234',
             'v_password'=> 'p@s5W0rD1234',
@@ -109,9 +73,9 @@ class UserRegisterTest extends TestCase
         ->assertStatus(200);
     }
 
-    public function testCorrectRegistrationWithPermissions()
-    {
+    public function testCorrectRegistrationWithPermissions() {
         $response = $this->json('POST','/api/register',[
+            'username' => $this->faker->userName(),
             'email' => $this->faker->email(),
             'password' => 'p@s5W0rD1234',
             'v_password' => 'p@s5W0rD1234',

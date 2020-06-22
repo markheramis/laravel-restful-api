@@ -28,12 +28,12 @@ Route::middleware('auth:api')->prefix('user')->group(function() {
 	Route::put		('/{slug}', 	'API\UserController@update');
 	Route::delete	('/{slug}', 	'API\UserController@delete');
 
-	Route::get		('/{slug}/role',	'API\UserController@get_role');
-	Route::post		('/{slug}/role', 	'API\UserController@add_role');
-	Route::delete ('/{slug}/role', 	'API\UserController@remove_role');
+	Route::get		('/{slug}/role',	'API\UserRoleController@get');
+	Route::post		('/{slug}/role', 	'API\UserRoleController@add');
+	Route::delete 	('/{slug}/role', 	'API\UserRoleController@delete');
 
-	Route::get		('/{slug}/permission',	'API\UserController@get_permission');
-	Route::post		('/{slug}/permission',	'API\UserController@add_permission');
-	Route::put		('/{slug}/permission',	'API\UserController@update_permission');
-	Route::delete	('/{slug}/permission',	'API\UserController@remove_permission');
+	Route::get		('/{slug}/permission',	'API\UserPermissionController@get');
+	Route::post		('/{slug}/permission',	'API\UserPermissionController@add');
+	Route::put		('/{slug}/permission',	'API\UserPermissionController@update');
+	Route::delete	('/{slug}/permission',	'API\UserPermissionController@delete');
 });

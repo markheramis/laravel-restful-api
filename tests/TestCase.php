@@ -7,11 +7,12 @@ abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
 
-    public function setUp(): void
-    {
+    public function setUp(): void {
         parent::setUp();
-        \Artisan::call('migrate:refresh');
-        \Artisan::call('db:seed');
-        \Artisan::call('passport:install');
+        if(env('APP_ENV') == 'testing') {
+          \Artisan::call('migrate:refresh');
+          \Artisan::call('db:seed');
+          \Artisan::call('passport:install');
+        }
     }
 }

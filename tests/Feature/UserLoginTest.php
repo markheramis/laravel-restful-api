@@ -9,51 +9,26 @@ use App\Models\User;
 use Sentinel;
 use Activation;
 
-class UserLoginTest extends TestCase
-{
+class UserLoginTest extends TestCase {
+  
     use WithFaker;
 
 
-    public function testNoParameterError()
-    {
+    public function testNoParameterError() {
         $response = $this->json('POST', '/api/login',[]);
         $response
-        ->assertStatus(400)
-
-        ->assertJson([
-            "status" => "error",
-            "data" => "Validation Error.",
-            "message" => [
-                "email" => [
-                    "The email field is required."
-                ],
-                "password" => [
-                    "The password field is required."
-                ]
-            ]
-        ]);
+        ->assertStatus(422);
     }
 
-    public function testNoPassword()
-    {
+    public function testNoPassword() {
       $response = $this->json('POST', '/api/login',[
           'email' => $this->faker->email(),
       ]);
       $response
-      ->assertStatus(400)
-      ->assertJson([
-          "status" => "error",
-          "data" => "Validation Error.",
-          "message" => [
-              "password" => [
-                  "The password field is required."
-              ]
-          ]
-      ]);
+      ->assertStatus(422);
     }
 
-    public function testWrongPassword()
-    {
+    public function testWrongPassword() {
         $user = Sentinel::register($this->generateUser());
         $activation = Activation::create($user);
         Activation::complete($user, $activation->code);
@@ -69,8 +44,7 @@ class UserLoginTest extends TestCase
         ]);
     }
 
-    public function testCorrectLogin()
-    {
+    public function testCorrectLogin() {
         $user = Sentinel::register($this->generateUser());
         $activation = Activation::create($user);
         Activation::complete($user, $activation->code);
@@ -85,13 +59,17 @@ class UserLoginTest extends TestCase
         ]);
     }
 
-    private function generateUser()
-    {
+    private function generateUser() {
         return [
+            'username' => $this->faker->userName(),
             'email' => $this->faker->email(),
             'password' => 'p@s5W0rD1234',
             'first_name' => $this->faker->firstName(),
             'last_name' => $this->faker->lastName(),
+            'permissions' => [
+              'view.profile' => true,
+              'update.profile' => true
+            ]
         ];
     }
 }
