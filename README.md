@@ -26,6 +26,18 @@ Starting it, just run the command
 php artisan serve
 ```
 
+To run the local unit test, use the command below
+
+First we generate the users (in CI, this is done automatically)
+```bash
+php artisan user:generate 20 # generate 20 users
+```
+
+Then finally we run the test
+```bash
+php artisan test
+```
+
 ### The Docker Way
 
 ```
