@@ -23,3 +23,6 @@ unit_test:
     - php artisan passport:install
     - php artisan serve &
     - php artisan test --env=testing
+
+include:
+  - template: Dependency-Scanning.gitlab-ci.yml
