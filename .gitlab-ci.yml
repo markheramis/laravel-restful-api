@@ -13,11 +13,12 @@ variables:
   GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
 
 stages:
+  - analyse
   - test
   - build
   - deploy
 
-test:
+rest-test:
   stage: test
   script:
     - cp .env.testing .env
@@ -28,6 +29,9 @@ test:
     - php artisan passport:install
     - php artisan serve &
     - php artisan test --env=testing
+  only:
+    - pull_request
+    - master
 
 build:
   stage: build
@@ -54,6 +58,7 @@ deploy_production:
   - production
 
 sonarcloud-check:
+  stage: analyse
   image:
     name: sonarsource/sonar-scanner-cli:latest
     entrypoint: [""]
@@ -64,9 +69,9 @@ sonarcloud-check:
   script:
     - sonar-scanner
   only:
-    - merge_requests
     - master
-    - develop
+    - staging
+    - production
 
 include:
   - template: Dependency-Scanning.gitlab-ci.yml
