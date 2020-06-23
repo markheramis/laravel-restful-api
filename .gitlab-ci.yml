@@ -14,8 +14,10 @@ variables:
 
 stages:
   - test
+  - build
+  - deploy
 
-unit_test:
+test:
   stage: test
   script:
     - cp .env.testing .env
@@ -68,3 +70,6 @@ sonarcloud-check:
 
 include:
   - template: Dependency-Scanning.gitlab-ci.yml
+
+include:
+  - template: License-Scanning.gitlab-ci.yml
