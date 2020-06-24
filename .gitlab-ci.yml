@@ -13,9 +13,9 @@ variables:
   GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
 
 stages:
-  - analyse
   - test
   - build
+  - analyse
   - deploy
 
 rest-test:
