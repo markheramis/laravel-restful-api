@@ -21,6 +21,11 @@ use App\Http\Requests\UserUpdateRequest;
 use App\Http\Requests\UserDeleteRequest;
 
 class UserController extends Controller {
+
+    public function me(){
+        return response()->json(Auth::user());
+    }
+
     public function all(UserAllRequest $request) {
         $users = User::paginate();
         return response()->json($users, 200);

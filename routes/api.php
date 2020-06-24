@@ -13,6 +13,7 @@
 Route::post('register', 'API\UserController@register');
 Route::post('login', 'API\UserController@login');
 Route::get('activate/{id}/{code}','API\UserController@activate');
+Route::get('/me', 'API\UserController@me')->middleware('auth:api');
 
 Route::middleware('auth:api')->prefix('post')->group(function() {
 	Route::get		('/',					'API\PostController@all');
