@@ -19,6 +19,12 @@ Run the following commands
 
 ```bash
 composer install
+```
+
+After execution you must check the `.env` file and correct your appropriate database settings,
+*NOTE:* Make sure the database you set deos exists in your local database system.
+
+```bash
 php artisan migrate
 php artisan db:seed
 php artisan passport:install
