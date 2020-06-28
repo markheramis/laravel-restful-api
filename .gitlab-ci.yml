@@ -31,6 +31,7 @@ rest-test:
     - php artisan test --env=testing
   only:
     - pull_request
+    - push
     - master
 
 build:
@@ -70,8 +71,6 @@ sonarcloud-check:
     - sonar-scanner
   only:
     - master
-    - staging
-    - production
 
 include:
   - template: Dependency-Scanning.gitlab-ci.yml
