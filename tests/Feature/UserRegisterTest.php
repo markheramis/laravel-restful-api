@@ -48,7 +48,7 @@ class UserRegisterTest extends TestCase
         ->assertStatus(422);
     }
 
-    public function testCorrectRegister() {
+    public function testRegisterWithoutFullname() {
         $response = $this->json('POST','/api/register', [
             'username'    => $this->faker->userName(),
             'email'       => $this->faker->email(),
@@ -56,7 +56,7 @@ class UserRegisterTest extends TestCase
             'v_password'  => 'p@s5W0rD1234',
         ]);
         $response
-        ->assertStatus(200);
+        ->assertStatus(422);
     }
 
     public function testCorrectRegisterWithFullName() {

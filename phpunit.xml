@@ -36,6 +36,7 @@
         <server name="MAIL_PASSWORD" value="16ab608c95545d"/>
         <server name="MAIL_ENCRYPTION" value="tls"/>
         <server name="MAIL_FROM_ADDRESS" value="test@laravel_rest.com"/>
+        <server name="MAIL_FROM_NAME" value="${APP_NAME}"/>
 
         <server name="QUEUE_CONNECTION" value="sync"/>
         <server name="SESSION_DRIVER" value="array"/>

@@ -27,6 +27,7 @@ rest-test:
     - php artisan migrate
     - php artisan db:seed
     - php artisan passport:install
+    - php artisan queue:work &
     - php artisan serve &
     - php artisan test --env=testing
   only:

@@ -7,6 +7,10 @@ use Illuminate\Support\Facades\Gate;
 use Laravel\Passport\Passport;
 use Illuminate\Support\Facades\Schema;
 
+use App\Models\User;
+use App\Models\Activation;
+use App\Observers\UserObserver;
+use App\Observers\ActivationObserver;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -38,9 +42,18 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Schema::defaultStringLength(200);
+        Schema::defaultStringLength(200); // Default String Length on Database
         $this->registerPolicies();
+
+        /**
+         * Add passport routes
+         */
         Passport::routes();
- 
+
+        /**
+         * Register Observers
+         */
+        User::observe(UserObserver::class);
+        Activation::observe(ActivationObserver::class);
     }
 }
