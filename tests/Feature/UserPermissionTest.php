@@ -18,9 +18,10 @@ class UserPermissionTest extends TestCase {
 
     public function setUp(): void {
         parent::setUp();
-        $this->createUser('subscribers');
-        $this->createUser('subscribers');
-        $this->createUser('moderators');
+        for($i=0;$i<5;$i++)
+            $this->createUser('subscribers');
+        for($i=0;$i<3;$i++)
+            $this->createUser('moderators');
         $this->createUser('administrators');
     }
     private function get_token(String $role_slug) {
