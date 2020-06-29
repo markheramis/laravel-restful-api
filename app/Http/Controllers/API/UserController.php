@@ -53,32 +53,26 @@ class UserController extends Controller {
      */
     public function register(UserRegisterRequest $request) {
         $credentials = $request->all();
+        $user['permissions'] = [
+            'view.profile' => true,
+            'update.profile' => true,
+        ];
         $user = Sentinel::register($credentials);
-        if ($user) {
-            if ($activation = Activation::create($user)) {
-                $user->permissions = [
-                    'view.profile' => true,
-                    'update.profile' => true,
-                ];
-                $role = Sentinel::findRoleBySlug('subscribers');
-                $role->users()->attach($user);
-                $user->save();
-                return response()->json([
-                  'status' => 'success',
-                  'data' => $user->createToken('MyApp')->accessToken,
-                  'message' => 'User register successfully.'
-                ], 200);
-            } else {
-                return response()->json([
-                    'status' => 'success',
-                    'message' => 'Failed to create activation'
-                ], 500);
-            }
+        if($user) {
+            /**
+             * Attach default Role
+             */
+            $default_role = Sentinel::findRoleBySlug('subscribers');
+            $default_role->users()->attach($user);
+            return response()->json([
+               'status' => 'success',
+               'message' => 'User Registered Successfully',
+            ]);
         } else {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Failed to create user'
-            ], 500);
+                'message' => 'User Registration failed',
+            ]);
         }
     }
 

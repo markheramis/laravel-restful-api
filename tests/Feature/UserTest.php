@@ -3,39 +3,27 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
+
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
 use Sentinel;
 use Activation;
+use Tests\Traits\WithUserGenerator;
 
 class UserTest extends TestCase
 {
-    use WithFaker;
+
+    use WithUserGenerator;
 
     private $user = [];
 
     public function setUp(): void {
         parent::setUp();
-        if(env('APP_ENV') == 'testing') {
-            $roles = Role::all();
-            for ($i = 0; $i < 50; $i++) {
-                $user = Sentinel::register([
-                    'username' => $this->faker->userName(),
-                    'email' => $this->faker->email(),
-                    'password' => 'p@s5W0rd12345',
-                    'first_name' => $this->faker->firstName(),
-                    'last_name' => $this->faker->lastName(),
-                ]);
-
-                $activation = Activation::create($user);
-                #if (rand(0,1)) Activation::complete($user, $activation->code);
-                Activation::complete($user, $activation->code); # activate all users
-                $role_index = rand(0,count($roles) - 1);
-                $roles[$role_index]->users()->attach($user);
-            }
-        }
+        $this->createUser('subscribers');
+        $this->createUser('subscribers');
+        $this->createUser('moderators');
+        $this->createUser('administrators');
     }
 
     private function get_token(String $role_slug) {
