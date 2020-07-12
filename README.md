@@ -25,6 +25,7 @@ After execution you must check the `.env` file and correct your appropriate data
 *NOTE:* Make sure the database you set deos exists in your local database system.
 
 ```bash
+php artisan key:generate
 php artisan migrate
 php artisan db:seed
 php artisan passport:install
