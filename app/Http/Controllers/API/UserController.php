@@ -102,13 +102,13 @@ class UserController extends Controller {
     /**
      * Undocumented function
      *
-     * @param Request $request
-     * @param integer $id
-     * @param string $code
+     * @param App\Http\Requests\UserActivateRequest $request
+     * @param string $slug the user slug
+     * @param string $code the activation code
      * @return JSON
      */
-    public function activate(UserActivateRequest $request, int $id, string $code) {
-        if ($user = User::find($id)) {
+    public function activate(UserActivateRequest $request, string $slug, string $code) {
+        if ($user = User::where('slug', $slug)->first()) {
             if (Activation::complete($user, $code)) {
                 return response()->json([
                     'status' => 'success'
