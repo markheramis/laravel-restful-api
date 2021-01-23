@@ -1,12 +1,11 @@
 version: '3'
-
 networks:
-  laravel:
-
+  "laravel_rest_network":
+    driver: bridge
 services:
   nginx:
     image: nginx:stable-alpine
-    container_name: nginx
+    container_name: laravel_rest_nginx
     ports:
       - "8080:80"
     volumes:
@@ -16,11 +15,10 @@ services:
       - php
       - mysql
     networks:
-      - laravel
-
+      - laravel_rest_network
   mysql:
     image: mysql:5.7.29
-    container_name: mysql
+    container_name: laravel_mysql
     restart: unless-stopped
     tty: true
     ports:
@@ -33,50 +31,48 @@ services:
       SERVICE_TAGS: dev
       SERVICE_NAME: mysql
     networks:
-      - laravel
-
+      - laravel_rest_network
   php:
     build:
       context: .
       dockerfile: ./.docker/php/Dockerfile
-    container_name: php
+    container_name: laravel_rest_php
     volumes:
       - ./:/var/www/html
     ports:
       - "9000:9000"
     networks:
-      - laravel
-
+      - laravel_rest_network
   composer:
-    image: composer:latest
-    container_name: composer
+    container_name: laravel_rest_composer
+    build:
+      context: .
+      dockerfile: ./.docker/composer/Dockerfile
     volumes:
-      - ./:/var/www/html
+      - .:/var/www/html
     working_dir: /var/www/html
-    depends_on:
-      - php
+    user: ubuntu
+    entrypoint: ['composer']
+    env_file:
+      - .env
     networks:
-      - laravel
-    command: bash -c "composer update"
-
+      - laravel_rest_network
   npm:
     image: node:13.7
-    container_name: npm
+    container_name: laravel_rest_npm
     volumes:
       - ./:/var/www/html
     working_dir: /var/www/html
     entrypoint: ['npm']
-
-  artisan:
-    build:
-      context: .
-      dockerfile: ./.docker/artisan/Dockerfile
-    container_name: artisan
-    volumes:
-      - ./:/var/www/html
-    depends_on:
-      - mysql
-    working_dir: /var/www/html
-    entrypoint: ['php', '/var/www/html/artisan']
     networks:
-      - laravel
+      - laravel_rest_network
+
+  redis:
+    container_name: larave_rest_redis
+    image: bitnami/redis:latest
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - .docker/redis/data:/bitnami/redis/data
+    networks:
+      - laravel_rest_network
