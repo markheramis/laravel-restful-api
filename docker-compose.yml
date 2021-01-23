@@ -11,7 +11,7 @@ services:
       - "8080:80"
     volumes:
       - ./:/var/www/html
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./.docker/nginx/server-block.conf:/etc/nginx/conf.d/defaukt.conf
     depends_on:
       - php
       - mysql
@@ -38,7 +38,7 @@ services:
   php:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: ./.docker/php/Dockerfile
     container_name: php
     volumes:
       - ./:/var/www/html
@@ -70,7 +70,7 @@ services:
   artisan:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: ./.docker/artisan/Dockerfile
     container_name: artisan
     volumes:
       - ./:/var/www/html
