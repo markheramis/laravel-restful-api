@@ -14,6 +14,7 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        $user = User::factory()->make();
+        for ($i = 0; $i < 20; $i++)
+            User::factory()->create();
     }
 }
