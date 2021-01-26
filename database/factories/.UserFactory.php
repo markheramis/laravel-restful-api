@@ -1,7 +1,8 @@
 <?php
 
-namespace Database\Factories\Models;
+namespace Database\Factories;
 
+use Sentinel;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -41,7 +42,7 @@ class UserFactory extends Factory
         return $this->afterMaking(function (User $user) {
             //
         })->afterCreating(function (User $user) {
-            //
+            
         });
     }
 }

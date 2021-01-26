@@ -54,8 +54,10 @@ php artisan test
 ```
 docker-compose up -d --build
 docker-compose run --rm composer update
-docker-compose run --rm artisan migrate
-docker-compose run --rm artisan test
+docker-compose exec php php artisan migrate
+docker-compose exec php php artisan db:seed
+docker-compose exec php php artisan passport:install
+docker-compose exec php php artisan test
 ```
 
 #### Docker Debugging

@@ -5,12 +5,14 @@ namespace App\Models;
 
 
 use Laravel\Passport\HasApiTokens;
+use Illuminate\Support\Str;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Cviebrock\EloquentSluggable\Sluggable;
+
 
 
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
@@ -21,9 +23,7 @@ use Cartalyst\Sentinel\Users\EloquentUser as Model;
 
 class User extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
 {
-
     use HasApiTokens, Authenticatable, MustVerifyEmail, Notifiable, CanResetPassword, Authorizable, Sluggable;
-
 
     /**
      * The attributes that are mass assignable.
@@ -38,6 +38,19 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'first_name',
         'permissions',
     ];
+    
+    /**
+     * Boot function for using with User Events
+     *
+     * @return void
+     */
+    protected static function boot()
+    {
+        parent::boot();
+        self::creating(function($model){
+            $model->uuid = Str::uuid();
+        });
+    }
 
     /**
      * The attributes that should be hidden for arrays.
@@ -48,7 +61,12 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'password', 'remember_token',
     ];
 
-    public function sluggable()
+    /**
+     * Return the sluggable configuration array for this model.
+     *
+     * @return array
+     */
+    public function sluggable(): array
     {
         return [
             'slug' => [

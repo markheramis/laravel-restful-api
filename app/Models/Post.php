@@ -9,6 +9,22 @@ class Post extends Model
 {
     use Sluggable;
 
+    protected $fillable = [
+        'status',
+        'title',
+        'abstractContent',
+        'fullContent',
+        'sourceURL',
+        'imageURL',
+        'platforms',
+        'disableComment',
+        'importance',
+        'author',
+        'reviewer',
+        'type',
+        'pageviews',
+    ];
+    
     /**
      * Return the sluggable configuration array for this model.
      *

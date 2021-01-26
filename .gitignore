@@ -3,6 +3,11 @@
 /public/storage
 /storage/*.key
 /vendor
+/nbproject
+
+public/css/
+public/js/
+
 .env
 .env.backup
 .phpunit.result.cache

@@ -46,58 +46,6 @@ class UserController extends Controller {
         }
     }
 
-    /**
-     * Register api
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function register(UserRegisterRequest $request) {
-        $credentials = $request->all();
-        $user['permissions'] = [
-            'view.profile' => true,
-            'update.profile' => true,
-        ];
-        $user = Sentinel::register($credentials);
-        if($user) {
-            /**
-             * Attach default Role
-             */
-            $default_role = Sentinel::findRoleBySlug('subscribers');
-            $default_role->users()->attach($user);
-            return response()->json([
-               'status' => 'success',
-               'message' => 'User Registered Successfully',
-            ]);
-        } else {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'User Registration failed',
-            ]);
-        }
-    }
-
-    /**
-     * Login api
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function login(UserLoginRequest $request) {
-        if ($user = Sentinel::stateless([
-            'email' => $request->email,
-            'password' => $request->password,
-          ])) {
-            $token = $user->createToken('MyApp')->accessToken;
-            return response()->json([
-                'status' => 'success',
-                'data' => $token
-            ], 200);
-        } else {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Unauthorized access',
-            ], 401);
-        }
-    }
 
     /**
      * Undocumented function
@@ -107,9 +55,12 @@ class UserController extends Controller {
      * @param string $code the activation code
      * @return JSON
      */
-    public function activate(UserActivateRequest $request, string $slug, string $code) {
-        if ($user = User::where('slug', $slug)->first()) {
-            if (Activation::complete($user, $code)) {
+    public function activate(UserActivateRequest $request)
+    {
+        if ($user = User::where([
+            'uuid' => $request->uuid,
+        ])->first()) {
+            if (Activation::complete($user, $request->code)) {
                 return response()->json([
                     'status' => 'success'
                 ], 200);

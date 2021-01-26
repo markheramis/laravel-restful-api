@@ -15,22 +15,20 @@ class CreatePostsTable extends Migration
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('slug');
+            $table->enum('status',['published', 'draft']);
             $table->string('title');
-            $table->string('slug')->nullable();
-            $table->longText('content')->nullable();
-            $table->text('excerpt')->nullable();
-            $table->enum('status',[
-                'private',
-                'protected',
-                'public'
-            ])
-            ->default('private')
-            ->nullable();
-            $table->string('post_type')->default('post')->nullable();
-            $table->integer('created_by')->unsigned()->nullable();
-            $table->integer('updated_by')->unsigned()->nullable();
-            $table->integer('parent_id')->unsigned()->nullable();
-            $table->integer('comment_count')->default(0);
+            $table->text('abstractContent')->nullable();
+            $table->text('fullContent')->nullable();
+            $table->string('sourceURL',500);
+            $table->string('imageURL', 500);
+            $table->string('platforms',300)->nullable();
+            $table->boolean('disableComment')->default(false);
+            $table->smallInteger('importance')->default(0);
+            $table->string('author')->nullable();
+            $table->string('reviewer')->nullable();
+            $table->string('type');
+            $table->integer('pageviews')->default(0);
             $table->timestamps();
         });
     }

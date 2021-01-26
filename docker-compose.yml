@@ -1,76 +1,82 @@
-version: '3'
-networks:
-  "laravel_rest_network":
-    driver: bridge
-services:
-  nginx:
-    image: nginx:stable-alpine
-    container_name: laravel_rest_nginx
-    ports:
-      - "8080:80"
-    volumes:
-      - ./:/var/www/html
-      - ./.docker/nginx/server-block.conf:/etc/nginx/conf.d/defaukt.conf
-    depends_on:
-      - php
-      - mysql
-    networks:
-      - laravel_rest_network
-  mysql:
-    image: mysql:5.7.29
-    container_name: laravel_mysql
-    restart: unless-stopped
-    tty: true
-    ports:
-      - "3306:3306"
-    environment:
-      MYSQL_DATABASE: homestead
-      MYSQL_USER: homestead
-      MYSQL_PASSWORD: secret
-      MYSQL_ROOT_PASSWORD: secret
-      SERVICE_TAGS: dev
-      SERVICE_NAME: mysql
-    networks:
-      - laravel_rest_network
-  php:
-    build:
-      context: .
-      dockerfile: ./.docker/php/Dockerfile
-    container_name: laravel_rest_php
-    volumes:
-      - ./:/var/www/html
-    ports:
-      - "9000:9000"
-    networks:
-      - laravel_rest_network
-  composer:
-    container_name: laravel_rest_composer
-    build:
-      context: .
-      dockerfile: ./.docker/composer/Dockerfile
-    volumes:
-      - .:/var/www/html
-    working_dir: /var/www/html
-    user: ubuntu
-    entrypoint: ['composer']
-    networks:
-      - laravel_rest_network
-  npm:
-    image: node:13.7
-    container_name: laravel_rest_npm
-    volumes:
-      - ./:/var/www/html
-    working_dir: /var/www/html
-    entrypoint: ['npm']
-    networks:
-      - laravel_rest_network
+version: "3"
 
-  redis:
-    container_name: larave_rest_redis
-    image: bitnami/redis:latest
-    environment:
-      - ALLOW_EMPTY_PASSWORD=yes
-    volumes:
-      - .docker/redis/data:/bitnami/redis/data
-    networks:
-      - laravel_rest_network
+services:
+    php:
+        container_name: laravel_rest_php
+        build:
+            context: .
+            dockerfile: ./.docker/php/Dockerfile
+        volumes:
+            - .:/var/www/html
+        ports:
+            - 9000:9000
+        depends_on:
+            - composer
+            - redis
+        working_dir: /var/www/html
+        user: ubuntu
+        links:
+            - redis
+        networks:
+            - laravel_rest_network
+    nginx:
+        container_name: laravel_rest_nginx
+        build:
+            context: .
+            dockerfile: ./.docker/nginx/Dockerfile
+        volumes:
+            - .docker/nginx/nginx-local.conf:/etc/nginx/nginx.conf
+            - .:/var/www/html
+        ports:
+            - 80:80
+        links:
+            - php
+        networks:
+            - laravel_rest_network
+    composer:
+        container_name: laravel_rest_composer
+        build:
+            context: .
+            dockerfile: ./.docker/composer/Dockerfile
+        volumes:
+            - .:/var/www/html
+        working_dir: /var/www/html
+        user: ubuntu
+        entrypoint: ['composer']
+        networks:
+            - laravel_rest_network
+    npm:
+        image: node:13.7
+        container_name: laravel_rest_npm
+        volumes:
+            - ./:/var/www/html
+        working_dir: /var/www/html
+        entrypoint: ['npm']
+    redis:
+        container_name: laravel_rest_redis
+        image: bitnami/redis:latest
+        environment:
+            - ALLOW_EMPTY_PASSWORD=yes
+        volumes:
+            - .docker/redis/data:/bitnami/redis/data
+        networks:
+            - laravel_rest_network
+    mysql:
+        image: mysql:5.7.29
+        container_name: laravel_rest_mysql
+        restart: unless-stopped
+        tty: true
+        ports:
+            - 3306:3306
+        environment:
+            MYSQL_DATABASE: homestead
+            MYSQL_USER: homestead
+            MYSQL_PASSWORD: secret
+            MYSQL_ROOT_PASSWORD: secret
+            SERVICE_TAGS: dev
+            SERVICE_NAME: mysql
+        networks:
+            - laravel_rest_network
+networks:
+    laravel_rest_network:
+        driver: bridge

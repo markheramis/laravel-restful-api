@@ -25,7 +25,8 @@ class UserActivateRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'uuid' => 'required',
+            'code' => 'required',
         ];
     }
 }

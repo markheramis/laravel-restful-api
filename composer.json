@@ -13,6 +13,7 @@
         "cviebrock/eloquent-sluggable": "^8.0",
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
+        "goldspecdigital/laravel-eloquent-uuid": "^8.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.12",
         "laravel/passport": "^10.1",
@@ -33,7 +34,7 @@
         "phpunit/phpunit": "^9.3.3"
     },
     "config": {
-        "optimize-autoloader": true,
+        "optimize-autoloader": true,x
         "preferred-install": "dist",
         "sort-packages": true
     },
@@ -51,8 +52,8 @@
             "Database\\Seeders\\": "database/seeders/"
         },
         "classmap": [
-            "database/seeds",
-            "database/factories"
+            "database/factories",
+            "database/seeders"
         ]
     },
     "autoload-dev": {
@@ -65,9 +66,7 @@
     "scripts": {
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php artisan package:discover --ansi"
-        ],
-        "post-root-package-install": [
+            "@php artisan package:discover --ansi",
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
         ],
         "post-create-project-cmd": [
