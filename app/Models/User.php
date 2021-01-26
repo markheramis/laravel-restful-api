@@ -14,7 +14,7 @@ use Illuminate\Foundation\Auth\Access\Authorizable;
 use Cviebrock\EloquentSluggable\Sluggable;
 
 
-
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
@@ -23,7 +23,7 @@ use Cartalyst\Sentinel\Users\EloquentUser as Model;
 
 class User extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
 {
-    use HasApiTokens, Authenticatable, MustVerifyEmail, Notifiable, CanResetPassword, Authorizable, Sluggable;
+    use HasApiTokens, Authenticatable, MustVerifyEmail, Notifiable, CanResetPassword, Authorizable, Sluggable, HasFactory;
 
     /**
      * The attributes that are mass assignable.
