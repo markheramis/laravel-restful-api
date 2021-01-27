@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\User;
+use App\Models\Role;
 
 class UserSeeder extends Seeder
 {
@@ -14,7 +15,10 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        for ($i = 0; $i < 20; $i++)
-            User::factory()->create();
+        for ($i = 0; $i < 10; $i++) {
+            $user = User::factory()->create();
+            $role = Role::inRandomOrder()->first();
+            $role->users()->attach($role);
+        }
     }
 }

@@ -26,7 +26,7 @@ class UserFactory extends Factory
         return [
             'username' => $this->faker->userName,
             'email' => $this->faker->email,
-            'password' => 'password12345',
+            'password' => bcrypt('password12345'),
             'first_name' => $this->faker->firstName,
             'last_name' => $this->faker->lastName,
         ];
@@ -42,8 +42,6 @@ class UserFactory extends Factory
         return $this->afterMaking(function (User $user) {
             //
         })->afterCreating(function (User $user) {
-            $role = Role::inRandomOrder()->first();
-            $role->users()->attach($role);
         });
     }
 }
