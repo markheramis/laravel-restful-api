@@ -11,10 +11,8 @@ abstract class TestCase extends BaseTestCase
     public function setUp(): void
     {
         parent::setUp();
-        if (config('env') == 'testing') {
-            \Artisan::call('migrate:refresh');
-            \Artisan::call('db:seed');
-            \Artisan::call('passport:install');
-        }
+        \Artisan::call('migrate:refresh');
+        \Artisan::call('db:seed');
+        \Artisan::call('passport:install');
     }
 }
