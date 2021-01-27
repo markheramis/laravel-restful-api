@@ -23,11 +23,11 @@
         <server name="CACHE_DRIVER" value="file"/>
 
         <server name="DB_CONNECTION" value="mysql"/>
-        <server name="DB_HOST" value="127.0.0.1"/>
+        <server name="DB_HOST" value="mysql"/>
         <server name="DB_PORT" value="3306"/>
-        <server name="DB_DATABASE" value="laravel_restful_test"/>
+        <server name="DB_DATABASE" value="homestead"/>
         <server name="DB_USERNAME" value="root"/>
-        <server name="DB_PASSWORD" value=""/>
+        <server name="DB_PASSWORD" value="secret"/>
 
         <server name="MAIL_MAILER" value="smtp"/>
         <server name="MAIL_HOST" value="smtp.mailtrap.io"/>

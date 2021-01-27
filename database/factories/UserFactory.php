@@ -3,6 +3,8 @@
 namespace Database\Factories;
 
 use App\Models\User;
+use App\Models\Role;
+
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class UserFactory extends Factory
@@ -24,13 +26,12 @@ class UserFactory extends Factory
         return [
             'username' => $this->faker->userName,
             'email' => $this->faker->email,
-            'password' => 'password12345',
-            'v_password' => 'password12345',
+            'password' => bcrypt('password12345'),
             'first_name' => $this->faker->firstName,
             'last_name' => $this->faker->lastName,
         ];
     }
-    
+
     /**
      * Configure the model factory.
      *
@@ -41,7 +42,6 @@ class UserFactory extends Factory
         return $this->afterMaking(function (User $user) {
             //
         })->afterCreating(function (User $user) {
-            //
         });
     }
 }
