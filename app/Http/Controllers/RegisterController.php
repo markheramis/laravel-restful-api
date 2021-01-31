@@ -28,8 +28,6 @@ class RegisterController extends Controller
                 $this->attachRole($user);
                 return $this->successResponse();
             } else {
-                
-                dd($user);
                 return $this->errorResponse();
             }
         } catch (Exception $ex) {

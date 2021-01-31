@@ -15,24 +15,24 @@ class UserLoginTest extends TestCase
     use WithFaker;
 
 
-    public function testNoParameterError()
+    public function testNoParameterShouldFail()
     {
         $response = $this->json('POST', '/api/login', []);
         $response
             ->assertStatus(422);
     }
 
-    public function testNoPassword()
+    public function testNoPasswordShouldFail()
     {
         $response = $this->json('POST', '/api/login', [
             'email' => $this->faker->email(),
         ]);
         $response
-            ->assertStatus(422);
+        ->assertStatus(422);
     }
 
 
-    public function testWrongPassword()
+    public function testWrongPasswordShouldFail()
     {
         $user = User::factory()->create();
         $activation = Activation::create($user);
@@ -49,7 +49,7 @@ class UserLoginTest extends TestCase
             ]);
     }
 
-    public function testCorrectLogin()
+    public function testCorrectLoginShouldSucceed()
     {
         $user = User::factory()->create();
         $activation = Activation::create($user);

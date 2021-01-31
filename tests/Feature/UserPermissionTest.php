@@ -40,7 +40,7 @@ class UserPermissionTest extends TestCase
         ]);
         $response->assertStatus(200);
     }
-
+    
     public function testGetPermissionAsAdministratorToModerator()
     {
         $token = $this->get_token('administrators');

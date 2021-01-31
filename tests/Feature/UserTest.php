@@ -18,7 +18,8 @@ class UserTest extends TestCase
 
     private $user = [];
 
-    public function setUp(): void {
+    public function setUp(): void
+    {
         parent::setUp();
         for($i=0;$i<5;$i++)
             $this->createUser('subscribers');
@@ -27,7 +28,8 @@ class UserTest extends TestCase
         $this->createUser('administrators');
     }
 
-    private function get_token(String $role_slug) {
+    private function get_token(String $role_slug)
+    {
       return Role::where('slug', $role_slug)
         ->first()
         ->users()
@@ -37,7 +39,8 @@ class UserTest extends TestCase
         ->accessToken;
     }
 
-    private function get_slug($role_slug) {
+    private function get_slug($role_slug)
+    {
       return Role::where('slug', $role_slug)
         ->first()
         ->users()
@@ -46,7 +49,8 @@ class UserTest extends TestCase
         ->slug;
     }
 
-    public function testAllUserAsAdminsShouldBeFine() {
+    public function testGetAllUserAsAdminsShouldSucceed()
+    {
       $token = $this->get_token('administrators');
       $expected_result = User::paginate()->toArray();
       $response = $this->json('GET', '/api/user', [], [
@@ -56,7 +60,8 @@ class UserTest extends TestCase
       ->assertStatus(200);
     }
 
-    public function testAllUserAsModeratorShouldBeFine() {
+    public function testGetAllUserAsModeratorShouldSucceed()
+    {
       $token = $this->get_token('moderators');
       $expected_result = User::paginate()->toArray();
       $response = $this->json('GET', '/api/user', [], [
@@ -66,7 +71,8 @@ class UserTest extends TestCase
       ->assertStatus(200);
     }
 
-    public function testAllUserAsSubscriberShouldBeFine() {
+    public function testGetAllUserAsSubscriberShouldSucceed()
+    {
       $token = $this->get_token('subscribers');
       $expected_result = User::paginate()->toArray();
       $response = $this->json('GET', '/api/user', [], [
@@ -76,7 +82,8 @@ class UserTest extends TestCase
       ->assertStatus(200);
     }
 
-    public function testSingleAsAdministratorToAdminstrator() {
+    public function testGetSingleUserAsAdministratorToAdminstratorShouldSucceed()
+    {
       $token = $this->get_token('administrators');
       $slug = $this->get_slug('administrators');
       $response = $this->json('GET', "/api/user/$slug", [], [
@@ -86,7 +93,8 @@ class UserTest extends TestCase
       ->assertStatus(200);
     }
 
-    public function testSingleAsAdministratorToModerator() {
+    public function testGetSingleUserAsAdministratorToModeratorShouldSucceed()
+    {
       $token = $this->get_token('administrators');
       $slug = $this->get_slug('moderators');
       $response = $this->json('GET', "/api/user/$slug", [], [
@@ -96,7 +104,8 @@ class UserTest extends TestCase
       ->assertStatus(200);
     }
 
-    public function testSingleAsAdministratorToSubscriber() {
+    public function testGetSingleUserAsAdministratorToSubscriberShouldSucceed()
+    {
       $token = $this->get_token('administrators');
       $slug = $this->get_slug('subscribers');
       $response = $this->json('GET', "/api/user/$slug", [] , [
@@ -106,7 +115,8 @@ class UserTest extends TestCase
       ->assertStatus(200);
     }
 
-    public function testSingleAsModeratorToAdministrator() {
+    public function testGetSingleUserAsModeratorToAdministratorShouldSucceed()
+    {
       $token = $this->get_token('moderators');
       $slug = $this->get_slug('administrators');
       $response = $this->json('GET', "/api/user/$slug", [], [
@@ -116,7 +126,8 @@ class UserTest extends TestCase
       ->assertStatus(200);
     }
 
-    public function testSingleAsModeratorToModerator() {
+    public function testGetSingleUserAsModeratorToModeratorShouldSucceed()
+    {
       $token = $this->get_token('moderators');
       $slug = $this->get_slug('moderators');
       $response = $this->json('GET', "/api/user/$slug" , [], [
@@ -126,7 +137,8 @@ class UserTest extends TestCase
       ->assertStatus(200);
     }
 
-    public function testSingleAsModeratorToSubscribers() {
+    public function testGetSingleUserAsModeratorToSubscribersShouldSucceed()
+    {
       $token = $this->get_token('moderators');
       $slug = $this->get_slug('subscribers');
       $response = $this->json('GET', "/api/user/$slug", [], [
@@ -136,7 +148,8 @@ class UserTest extends TestCase
       ->assertStatus(200);
     }
 
-    public function testSingleAsSubscriberToAdministrator() {
+    public function testGetSingleUserAsSubscriberToAdministratorShouldSucceed()
+    {
       $token = $this->get_token('subscribers');
       $slug = $this->get_slug('administrators');
       $response = $this->json('GET', "/api/user/$slug", [], [
@@ -146,7 +159,8 @@ class UserTest extends TestCase
       ->assertStatus(200);
     }
 
-    public function testSingleAsSubscriberToModerator() {
+    public function testGetSingleUserAsSubscriberToModeratorShouldSucceed()
+    {
       $token = $this->get_token('subscribers');
       $slug = $this->get_slug('moderators');
       $response = $this->json('GET', "/api/user/$slug", [], [
@@ -156,7 +170,8 @@ class UserTest extends TestCase
       ->assertStatus(200);
     }
 
-    public function testSingleSubscriberToSubscriber() {
+    public function testGetSingleUserSubscriberToSubscriberShouldSucceed()
+    {
       $token = $this->get_token('subscribers');
       $slug = $this->get_slug('subscribers');
       $response = $this->json('GET',"/api/user/$slug", [], [
@@ -165,6 +180,4 @@ class UserTest extends TestCase
       $response
       ->assertStatus(200);
     }
-
-
 }
