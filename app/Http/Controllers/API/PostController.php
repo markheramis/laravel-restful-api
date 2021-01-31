@@ -11,10 +11,7 @@ class PostController extends Controller
 {
     public function all(Request $request) {
     	$posts = Post::paginate();
-    	return response()->json([
-    		'status' => 'success',
-    		'data' => $posts
-    	], 200);
+      return response()->success($posts);
     }
 
     public function store(Request $request) {
@@ -27,21 +24,18 @@ class PostController extends Controller
     	$post->created_by = Auth::user()->id;
     	$post->parent_id = $request->parent_id;
     	if($post->save()) {
-    		return response()->json(['status' => 'success'], 200);
+        return response()->success('post created');
     	} else {
-    		return response()->json(['status' => 'error'], 406);
+        return response()->error('failed to create post');
     	}
     }
 
     public function get(Request $request, String $slug) {
     	$post = Post::where('slug', $slug)->first();
     	if ($post) {
-    		return response()->json([
-    			'status' => 'success',
-    			'data' => $post
-    		], 200);
+        return response()->success($post);
     	} else {
-    		return response()->json(['status' => 'error'], 404);
+        return response()->error('Post not found', 404);
     	}
     }
 
@@ -56,12 +50,12 @@ class PostController extends Controller
     		$post->updated_by = Auth::user()->id;
     		$post->parent_id = $request->parent_id;
     		if ($post->save()) {
-    			return response()->json(['status' => 'success'], 200);
+          return response()->success('success');
     		} else {
-    			return response()->json(['status' => 'error'], 406);
+          return response()->error('failed to update post', 406);
     		}
     	} else {
-    		return response()->json(['status' => 'error'], 404);
+        return response()->error('Post not found', 404);
     	}
     }
 
@@ -70,11 +64,12 @@ class PostController extends Controller
     	if ($post) {
     		if ($post->delete()) {
     			return response()->json(['status' => 'success'], 200);
+          return response()->success('Post deleted successfully');
     		} else {
-    			return response()->json(['status' => 'error'], 406);
+          return response()->error('Failed to delete post', 406);
     		}
     	} else {
-    		return response()->json(['status' => 'error'], 404);
+        return response()->error('Post not found', 404);
     	}
     }
 }

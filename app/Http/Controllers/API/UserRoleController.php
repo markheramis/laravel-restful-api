@@ -17,15 +17,9 @@ class UserRoleController extends Controller
         $user = User::where('slug', $slug)->first();
         if ($user) {
             $roles = $user->roles;
-            return response()->json([
-            	'status' => 'success', 
-            	'data' => $roles
-            ], 200);
+            return response()->success($roles);
         } else {
-            return response()->json([
-            	'status' => 'error', 
-            	'message' => 'Account not found'
-            ], 404);
+            return response()->error('Not Found', 404);
         }
     }
 
@@ -34,15 +28,9 @@ class UserRoleController extends Controller
         $role = Role::where('slug', $request->slug)->first();
         if ($user && $role) {
             $role->users()->attach($user);
-            return response()->json([
-            	'status' => 'success', 
-            	'message' => 'Role attached successfully'
-            ], 200);
+            return response()->success('Attached Successfully');
         } else {
-            return response()->json([
-            	'status' => 'error', 
-            	'message' => 'Account or Role not found'
-            ], 404);
+            return response()->error('Not Found', 404);
         }
     }
 
@@ -51,15 +39,9 @@ class UserRoleController extends Controller
         $role = Role::where('slug', $slug)->first();
         if ($user && $role) {
             $role->users()->detach($user);
-            return response()->json([
-            	'status' => 'success', 
-            	'message' => 'Role detached successfully'
-            ], 200);
+            return response()->success('Detached Successfully');
         } else {
-            return response()->json([
-            	'status' => 'error', 
-            	'message' => 'Account or Role not found'
-            ], 404);
+            return response()->error('Not Found', 404);
         }
     }
 }

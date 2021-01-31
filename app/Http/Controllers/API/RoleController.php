@@ -16,24 +16,15 @@ class RoleController extends Controller
 {
     public function all(RoleAllRequest $request) {
         $roles = Role::all();
-        return response()->json([
-            'status' => 'success',
-            'data' => $roles,
-        ], 200);
+        return response()->success($roles);
     }
 
     public function get(RoleGetRequest $request, string $slug) {
         $role = Sentinel::findRoleBySlug($slug);
         if ($role) {
-            return response()->json([
-                'status' => 'success',
-                'data' => $role,
-            ], 200);
+            return response()->success($role);
         } else {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Role not found'
-            ], 404);
+            return response()->error('Role not found', 404);
         }
     }
 
@@ -43,6 +34,11 @@ class RoleController extends Controller
             'slug' => $request->slug,
             'permissions' => $request->permissions,
         ]);
+        if($role) {
+          return response()->success('Role created successfully');
+        } else {
+          return response()->error('Failed to create role');
+        }
     }
 
     public function update(RoleUpdateReqeust $request, string $slug) {
@@ -52,21 +48,12 @@ class RoleController extends Controller
             $role->slug = $request->slug;
             $role->permissions = $request->permissions;
             if ($role->save()) {
-                return response()->json([
-                    'status' => 'success',
-                    'message' => 'Role updated successfully',
-                ], 200);
+                return response()->success('Role updated successfully');
             } else {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Failed to update the role',
-                ], 400);
+                return response()->error('Failed to update role', 400);
             }
         } else {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Role not found'
-            ], 404);
+            return response()->error('Role not found', 404);
         }
     }
 
@@ -74,21 +61,12 @@ class RoleController extends Controller
         $role = Sentinel::findRoleBySlug($slug);
         if ($role) {
             if ($role->delete()) {
-                return response()->json([
-                    'status' => 'success',
-                    'message' => 'Role deleted successfully',
-                ], 200);
+                return response()->success('Role deleted successfully');
             } else {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Failed to delete the role',
-                ], 400);
+                return response()->error('Failed to delete role');
             }
         } else {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Role not found',
-            ], 404);
+            return response()->error('Role not found', 404);
         }
     }
 }

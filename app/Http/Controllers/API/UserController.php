@@ -14,34 +14,36 @@ use App\Models\User;
 
 use App\Http\Requests\UserAllRequest;
 use App\Http\Requests\UserGetRequest;
-use App\Http\Requests\UserRegisterRequest;
-use App\Http\Requests\UserLoginRequest;
 use App\Http\Requests\UserActivateRequest;
 use App\Http\Requests\UserUpdateRequest;
 use App\Http\Requests\UserDeleteRequest;
 
-class UserController extends Controller {
+class UserController extends Controller
+{
 
-    public function me(){
+    public function me()
+    {
         return response()->json(Auth::user());
     }
 
-    public function all(UserAllRequest $request) {
+    public function all(UserAllRequest $request)
+    {
         $users = User::paginate();
         return response()->json($users, 200);
     }
 
-    public function get(UserGetRequest $request, string $slug) {
-	   $user = User::where('slug', $slug)->first();
-        if($user) {
+    public function get(UserGetRequest $request, string $slug)
+    {
+        $user = User::where('slug', $slug)->first();
+        if ($user) {
             return response()->json([
-              'status' => 'success',
-              'data' => $user,
+                'status' => 'success',
+                'data' => $user,
             ], 200);
         } else {
             return response()->json([
-              'status' => 'error',
-              'message' => 'User not found',
+                'status' => 'error',
+                'message' => 'User not found',
             ], 404);
         }
     }
@@ -83,24 +85,26 @@ class UserController extends Controller {
      * @param integer $id
      * @return JSON
      */
-    public function update(UserUpdateRequest $request, string $slug) {
+    public function update(UserUpdateRequest $request, string $slug)
+    {
         $user = Sentinel::findBySlug($slug);
-        if($user) {
+        if ($user) {
             $user->name = $request->name;
             $user->email = $request->email;
-            if($user->save()) {
+            if ($user->save()) {
                 return response()->json(['success' => 'User updated'], 201);
             } else {
-                return response()->json(['error' => 'User not updated'],500);
+                return response()->json(['error' => 'User not updated'], 500);
             }
         } else {
             return response()->json(['error' => 'Not Found'], 404);
         }
     }
 
-    public function delete(UserDeleteRequest $request, string $slug) {
+    public function delete(UserDeleteRequest $request, string $slug)
+    {
         $user = Sentinel::findBySlug($slug);
-        if($user) {
+        if ($user) {
             if ($user->delete()) {
                 return response()->json([
                     'status' => 'success',
