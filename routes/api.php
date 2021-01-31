@@ -17,6 +17,7 @@ use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\RoleController;
 use App\Http\Controllers\API\UserPermissionController;
 use App\Http\Controllers\API\PostController;
+use App\Http\Controllers\API\UserRoleController;
 
 Route::post('login', [LoginController::class, 'login'])->name('login');
 Route::post('register', [RegisterController::class, 'register'])->name('register');
@@ -24,26 +25,46 @@ Route::post('register', [RegisterController::class, 'register'])->name('register
 Route::post('activate', [UserController::class, 'activate'])->name('api.user.activate');
 Route::get('me', [UserController::class, 'me'])->middleware('auth:api')->name('api.me');
 
-Route::middleware('auth:api')->prefix('post')->group(function () {
-    Route::get('/', 'API\PostController@all');
-    Route::post('/', 'API\PostController@store');
-    Route::get('/{slug}', 'API\PostController@get');
-    Route::put('/{slug}', 'API\PostController@update');
-    Route::delete('/{slug}', 'API\PostController@delete');
+Route::group([
+    'prefix' => 'post',
+    'middleware' => [
+        'api',
+        'auth:api'
+    ]
+], function () {
+    Route::get('/', [PostController::class, 'all']);
+    Route::post('/', [PostController::class, 'store']);
+    Route::group(['prefix' => '{slug}'], function () {
+        Route::get('/', [PostController::class, 'get']);
+        Route::put('/', [PostController::class, 'update']);
+        Route::delete('/', [PostController::class, 'delete']);
+    });
 });
 
-Route::middleware('auth:api')->prefix('user')->group(function () {
-    Route::get('/', 'API\UserController@all');
-    Route::get('/{slug}', 'API\UserController@get');
-    Route::put('/{slug}', 'API\UserController@update');
-    Route::delete('/{slug}', 'API\UserController@delete');
+Route::group([
+    'prefix' => 'user',
+    'middleware' => [
+        'api',
+        'auth:api',
+    ]
+], function () {
+    Route::get('/', [UserController::class, 'all'])->name('api.user.all');
+    Route::group(['prefix' => '{slug}'], function () {
+        Route::get('/', [UserController::class, 'get']);
+        Route::put('/', [UserController::class, 'update']);
+        Route::delete('/', [UserController::class, 'delete']);
 
-    Route::get('/{slug}/role', 'API\UserRoleController@get');
-    Route::post('/{slug}/role', 'API\UserRoleController@add');
-    Route::delete('/{slug}/role', 'API\UserRoleController@delete');
+        Route::group(['prefix' => 'role'], function () {
+            Route::get('/', [UserRoleController::class, 'get']);
+            Route::post('/', [UserRoleController::class, 'add']);
+            Route::delete('/', [UserRoleController::class, 'delete']);
+        });
 
-    Route::get('/{slug}/permission', 'API\UserPermissionController@get');
-    Route::post('/{slug}/permission', 'API\UserPermissionController@add');
-    Route::put('/{slug}/permission', 'API\UserPermissionController@update');
-    Route::delete('/{slug}/permission', 'API\UserPermissionController@delete');
+        Route::group(['prefix' => 'permission'], function () {
+            Route::get('/', [UserPermissionController::class, 'get']);
+            Route::put('/', [UserPermissionController::class, 'update']);
+            Route::post('/', [UserPermissionController::class, 'add']);
+            Route::delete('/', [UserPermissionController::class, 'delete']);
+        });
+    });
 });
