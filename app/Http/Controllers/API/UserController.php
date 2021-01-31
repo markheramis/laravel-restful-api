@@ -59,9 +59,8 @@ class UserController extends Controller
      */
     public function activate(UserActivateRequest $request)
     {
-        if ($user = User::where([
-            'uuid' => $request->uuid,
-        ])->first()) {
+        $data = ['uuid' => $request->uuid];
+        if ($user = User::where($data)->first()) {
             if (Activation::complete($user, $request->code)) {
                 return response()->json([
                     'status' => 'success'

@@ -2,24 +2,32 @@
 
 namespace App\Http\Controllers\API;
 
+use Sentinel;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Role;
-
 use App\Http\Requests\RoleAllRequest;
 use App\Http\Requests\RoleGetRequest;
-use App\Http\Requests\RoleCreateRequest;
+use App\Http\Requests\RoleStoreRequest;
 use App\Http\Requests\RoleUpdateReqeust;
 use App\Http\Requests\RoleDeleteRequest;
 
 class RoleController extends Controller
 {
-    public function all(RoleAllRequest $request) {
+    public function index(RoleAllRequest $request)
+    {
         $roles = Role::all();
         return response()->success($roles);
     }
 
-    public function get(RoleGetRequest $request, string $slug) {
+    /**
+     * Undocumented function
+     *
+     * @param RoleGetRequest $request
+     * @param string $slug
+     * @return void
+     */
+    public function get(RoleGetRequest $request, string $slug)
+    {
         $role = Sentinel::findRoleBySlug($slug);
         if ($role) {
             return response()->success($role);
@@ -28,20 +36,36 @@ class RoleController extends Controller
         }
     }
 
-    public function create(RoleCreateRequest $request) {
-        $role = Sentinel::getRoleRepository()->createModel()->create([
+    /**
+     * Undocumented function
+     *
+     * @param RoleCreateRequest $request
+     * @return void
+     */
+    public function store(RoleStoreRequest $request)
+    {
+        $data = [
             'name' => $request->name,
             'slug' => $request->slug,
             'permissions' => $request->permissions,
-        ]);
-        if($role) {
-          return response()->success('Role created successfully');
+        ];
+        $role = Sentinel::getRoleRepository()->createModel()->create($data);
+        if ($role) {
+            return response()->success('Role created successfully');
         } else {
-          return response()->error('Failed to create role');
+            return response()->error('Failed to create role');
         }
     }
 
-    public function update(RoleUpdateReqeust $request, string $slug) {
+    /**
+     * Undocumented function
+     *
+     * @param RoleUpdateReqeust $request
+     * @param string $slug
+     * @return void
+     */
+    public function update(RoleUpdateReqeust $request, string $slug)
+    {
         $role = Sentinel::findRoleBySlug($slug);
         if ($role) {
             $role->name = $request->name;
@@ -57,7 +81,15 @@ class RoleController extends Controller
         }
     }
 
-    public function delete(RoleDeleteRequest $request, string $slug) {
+    /**
+     * Undocumented function
+     *
+     * @param RoleDeleteRequest $request
+     * @param string $slug
+     * @return void
+     */
+    public function delete(RoleDeleteRequest $request, string $slug)
+    {
         $role = Sentinel::findRoleBySlug($slug);
         if ($role) {
             if ($role->delete()) {

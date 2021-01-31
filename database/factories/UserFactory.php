@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use Activation;
+
 use App\Models\User;
 use App\Models\Role;
 
@@ -39,9 +41,14 @@ class UserFactory extends Factory
      */
     public function configure()
     {
-        return $this->afterMaking(function (User $user) {
-            //
+        return $this
+        ->afterMaking(function (User $user) {
+            
         })->afterCreating(function (User $user) {
+            $role = Role::inRandomOrder()->first();
+            $role->users()->attach($user);
+            $activation = $user->activation;
+            Activation::complete($user, $activation->code);
         });
     }
 }

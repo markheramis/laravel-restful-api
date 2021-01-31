@@ -15,10 +15,6 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        for ($i = 0; $i < 6; $i++) {
-            $user = User::factory()->create();
-            $role = Role::inRandomOrder()->first();
-            $role->users()->attach($role);
-        }
+        User::factory()->count(15)->create();
     }
 }

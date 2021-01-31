@@ -11,7 +11,7 @@ class UserRegisterTest extends TestCase
 {
     use WithFaker;
 
-    public function testNoParameterError() {
+    public function testNoParameterShouldFail() {
         $response = $this->json('POST','/api/register',[
         ]);
 
@@ -19,7 +19,7 @@ class UserRegisterTest extends TestCase
         ->assertStatus(422);
     }
 
-    public function testWithEmailOnlyError() {
+    public function testWithEmailOnlyShouldFail() {
         $response = $this->json('POST','/api/register',[
             'email' => $this->faker->email(),
         ]);
@@ -27,7 +27,7 @@ class UserRegisterTest extends TestCase
         $response->assertStatus(422);
     }
 
-    public function testPasswordNoVerify() {
+    public function testPasswordNoVerifyShouldFail() {
         $response = $this->json('POST','/api/register',[
             'email'     => $this->faker->email(),
             'password'  => 'p@s5W0rD1234',
@@ -37,7 +37,7 @@ class UserRegisterTest extends TestCase
         ->assertStatus(422);
     }
 
-    public function testPasswordNotVerified() {
+    public function testPasswordNotVerifiedShouldFail() {
         $response = $this->json('POST','/api/register', [
             'username'    => $this->faker->userName(),
             'email'       => $this->faker->email(),
@@ -48,7 +48,7 @@ class UserRegisterTest extends TestCase
         ->assertStatus(422);
     }
 
-    public function testRegisterWithoutFullname() {
+    public function testRegisterWithoutFullnameShouldFail() {
         $response = $this->json('POST','/api/register', [
             'username'    => $this->faker->userName(),
             'email'       => $this->faker->email(),
@@ -59,7 +59,7 @@ class UserRegisterTest extends TestCase
         ->assertStatus(422);
     }
 
-    public function testCorrectRegisterWithFullName() {
+    public function testCorrectRegisterWithFullNameShouldFail() {
         $response = $this->json('POST','/api/register', [
             'username' => $this->faker->userName(),
             'email'=> $this->faker->email(),
@@ -73,7 +73,7 @@ class UserRegisterTest extends TestCase
         ->assertStatus(200);
     }
 
-    public function testCorrectRegistrationWithPermissions() {
+    public function testCorrectRegistrationWithPermissionsShouldSucceed() {
         $response = $this->json('POST','/api/register',[
             'username' => $this->faker->userName(),
             'email' => $this->faker->email(),

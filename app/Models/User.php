@@ -74,4 +74,9 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
             ]
         ];
     }
+    
+    public function activation()
+    {
+        return $this->hasOne(Activation::class);
+    }
 }
