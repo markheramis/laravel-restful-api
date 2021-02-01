@@ -19,6 +19,21 @@ services:
             - redis
         networks:
             - laravel_rest_network
+    artisan:
+        container_name: laravel_rest_artisan
+        build:
+            context: .
+            dockerfile: ./.docker/php/Dockerfile
+        volumes:
+            - .:/var/www/html
+        depends_on:
+            - composer
+            - redis
+        working_dir: /var/www/html
+        user: ubuntu
+        networks:
+            - radicall_restful_network
+        entrypoint: ['php','artisan']
     nginx:
         container_name: laravel_rest_nginx
         build:
