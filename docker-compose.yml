@@ -32,7 +32,7 @@ services:
         working_dir: /var/www/html
         user: ubuntu
         networks:
-            - radicall_restful_network
+            - laravel_rest_network
         entrypoint: ['php','artisan']
     nginx:
         container_name: laravel_rest_nginx
