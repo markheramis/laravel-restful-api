@@ -9,7 +9,8 @@ use Tests\TestCase;
 use Tests\Traits\WithUserGenerator;
 use App\Models\Role;
 
-class RoleTest extends TestCase {
+class RoleTest extends TestCase
+{
 
     use WithFaker;
 
@@ -17,43 +18,43 @@ class RoleTest extends TestCase {
     {
         return Role::where('slug', $role_slug)->first()->users()->inRandomOrder()->first()->createToken('MyApp')->accessToken;
     }
-    
+
     public function testGetAllRolesWithNoUserShouldFail()
     {
-        $response = $this->json('GET','/api/role/');
+        $response = $this->json('GET', '/api/role/');
         $response->assertStatus(401);
     }
-    
+
     public function testGetAllRolesWithSubscriberShouldFail()
     {
         $token = $this->get_token('subscribers');
         $header = [
             'Authorization' => "Bearer $token"
         ];
-        $response = $this->json('GET','/api/role/', [], $header);
+        $response = $this->json('GET', '/api/role/', [], $header);
         $response->assertStatus(403);
     }
-    
+
     public function testGetAllRolesWithModeratorShouldSucceed()
     {
         $token = $this->get_token('moderators');
         $header = [
             'Authorization' => "Bearer $token"
         ];
-        $response = $this->json('GET','/api/role/', [], $header);
+        $response = $this->json('GET', '/api/role/', [], $header);
         $response->assertStatus(200);
     }
-    
+
     public function testGetAllRolesWithAdministratorShouldSucceed()
     {
         $token = $this->get_token('administrators');
         $header = [
             'Authorization' => "Bearer $token"
         ];
-        $response = $this->json('GET','/api/role/', [], $header);
+        $response = $this->json('GET', '/api/role/', [], $header);
         $response->assertStatus(200);
     }
-    
+
     public function testGetSingleWithNoUserShouldFail()
     {
         $data = [
@@ -71,7 +72,7 @@ class RoleTest extends TestCase {
         $response = $this->json('GET', '/api/role/' . $role->slug, $data);
         $response->assertStatus(401);
     }
-    
+
     public function testGetSingleAsSubscriberShouldFail()
     {
         $token = $this->get_token('subscribers');
@@ -93,7 +94,7 @@ class RoleTest extends TestCase {
         $response = $this->json('GET', '/api/role/' . $role->slug, $data, $header);
         $response->assertStatus(403);
     }
-    
+
     public function testGetSingleAsModeratorShouldFail()
     {
         $token = $this->get_token('moderators');
@@ -115,7 +116,7 @@ class RoleTest extends TestCase {
         $response = $this->json('GET', '/api/role/' . $role->slug, $data, $header);
         $response->assertStatus(200);
     }
-    
+
     public function testGetSingleAsAdministratorShouldSucceed()
     {
         $token = $this->get_token('administrators');
@@ -137,7 +138,7 @@ class RoleTest extends TestCase {
         $response = $this->json('GET', '/api/role/' . $role->slug, $data, $header);
         $response->assertStatus(200);
     }
-    
+
     public function testCreateRoleWithNoUserShouldFail()
     {
         $response = $this->json('POST', '/api/role/', [
@@ -216,7 +217,7 @@ class RoleTest extends TestCase {
         $response = $this->json('POST', '/api/role/', $body, $header);
         $response->assertStatus(200);
     }
-    
+
     public function testUpdateRoleWithNoNoUserShouldFail()
     {
         $data = [
@@ -236,7 +237,7 @@ class RoleTest extends TestCase {
         $response = $this->json('PUT', '/api/role/' . $role->slug, $data);
         $response->assertStatus(401);
     }
-    
+
     public function testUpdateRoleAsSubscriberShouldFail()
     {
         $data = [
@@ -260,7 +261,7 @@ class RoleTest extends TestCase {
         $response = $this->json('PUT', '/api/role/' . $role->slug, $data, $header);
         $response->assertStatus(403);
     }
-    
+
     public function testUpdateRoleAsModeratorShouldFail()
     {
         $data = [
@@ -284,7 +285,7 @@ class RoleTest extends TestCase {
         $response = $this->json('PUT', '/api/role/' . $role->slug, $data, $header);
         $response->assertStatus(403);
     }
-    
+
     public function testUpdateRoleAsAdministratorShouldSucceed()
     {
         $data = [
@@ -308,7 +309,7 @@ class RoleTest extends TestCase {
         $response = $this->json('PUT', '/api/role/' . $role->slug, $data, $header);
         $response->assertStatus(200);
     }
-    
+
     public function testDeleteRoleWithNoUser()
     {
         $data = [
@@ -326,7 +327,7 @@ class RoleTest extends TestCase {
         $response = $this->json('DELETE', '/api/role/' . $role->slug, $data);
         $response->assertStatus(401);
     }
-    
+
     public function testDeleteRoleAsSubscriberShouldFail()
     {
         $data = [
@@ -348,7 +349,7 @@ class RoleTest extends TestCase {
         $response = $this->json('PUT', '/api/role/' . $role->slug, $data, $header);
         $response->assertStatus(403);
     }
-    
+
     public function testDeleteRoleAsModeratorShouldFail()
     {
         $data = [
@@ -370,7 +371,7 @@ class RoleTest extends TestCase {
         $response = $this->json('PUT', '/api/role/' . $role->slug, $data, $header);
         $response->assertStatus(403);
     }
-    
+
     public function testDeleteRoleAsAdministratorShouldSucceed()
     {
         $data = [
