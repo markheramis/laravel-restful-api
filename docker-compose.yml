@@ -26,9 +26,6 @@ services:
             dockerfile: ./.docker/php/Dockerfile
         volumes:
             - .:/var/www/html
-        depends_on:
-            - composer
-            - redis
         working_dir: /var/www/html
         user: ubuntu
         networks:
