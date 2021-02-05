@@ -13,14 +13,14 @@ class UserLoginTest extends TestCase
 {
     use WithFaker;
 
-    public function testNoParameterShouldFail()
+    public function testLoginWithNoParameterShouldFail()
     {
         $response = $this->json('POST', '/api/login', []);
         $response
         ->assertStatus(422);
     }
 
-    public function testNoPasswordShouldFail()
+    public function testLoginWithNoPasswordShouldFail()
     {
         $response = $this->json('POST', '/api/login', [
             'username' => $this->faker->userName(),
@@ -29,7 +29,7 @@ class UserLoginTest extends TestCase
         ->assertStatus(422);
     }
 
-    public function testWrongPasswordShouldFail()
+    public function testLoginWithWrongPasswordShouldFail()
     {
         $user = User::factory()->create();
         $activation = Activation::create($user);
@@ -46,7 +46,7 @@ class UserLoginTest extends TestCase
         ]);
     }
     
-    public function testEmailInputShouldFail()
+    public function testLoginWithEmailCredentialsShouldFail()
     {
         $user = User::factory()->create();
         $activation = Activation::create($user);
@@ -63,7 +63,7 @@ class UserLoginTest extends TestCase
         ]);
     }
 
-    public function testCorrectLoginShouldSucceed()
+    public function testLoginWithCorrectCredentialsShouldSucceed()
     {
         $user = User::factory()->create();
         $activation = Activation::create($user);

@@ -11,7 +11,7 @@ class UserRegisterTest extends TestCase
 {
     use WithFaker;
 
-    public function testNoParameterShouldFail() {
+    public function testRegisterWithNoParameterShouldFail() {
         $response = $this->json('POST','/api/register',[
         ]);
 
@@ -19,7 +19,7 @@ class UserRegisterTest extends TestCase
         ->assertStatus(422);
     }
 
-    public function testWithEmailOnlyShouldFail() {
+    public function testRegisterWithEmailOnlyShouldFail() {
         $response = $this->json('POST','/api/register',[
             'email' => $this->faker->email(),
         ]);
@@ -27,7 +27,7 @@ class UserRegisterTest extends TestCase
         $response->assertStatus(422);
     }
 
-    public function testPasswordNoVerifyShouldFail() {
+    public function testRegisterPasswordNoVerifyShouldFail() {
         $response = $this->json('POST','/api/register',[
             'email'     => $this->faker->email(),
             'password'  => 'p@s5W0rD1234',
@@ -37,7 +37,7 @@ class UserRegisterTest extends TestCase
         ->assertStatus(422);
     }
 
-    public function testPasswordNotVerifiedShouldFail() {
+    public function testRegisterWithPasswordNotVerifiedShouldFail() {
         $response = $this->json('POST','/api/register', [
             'username'    => $this->faker->userName(),
             'email'       => $this->faker->email(),
@@ -59,7 +59,7 @@ class UserRegisterTest extends TestCase
         ->assertStatus(422);
     }
 
-    public function testCorrectRegisterWithFullNameShouldFail() {
+    public function testRegisterWithCorrectParametersShouldSucceed() {
         $response = $this->json('POST','/api/register', [
             'username' => $this->faker->userName(),
             'email'=> $this->faker->email(),
@@ -73,7 +73,7 @@ class UserRegisterTest extends TestCase
         ->assertStatus(200);
     }
 
-    public function testCorrectRegistrationWithPermissionsShouldSucceed() {
+    public function testRegisterWithCorrectParametersAndPermissionShouldSucceed() {
         $response = $this->json('POST','/api/register',[
             'username' => $this->faker->userName(),
             'email' => $this->faker->email(),
