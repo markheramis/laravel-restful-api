@@ -60,16 +60,15 @@ class PostController extends Controller
     }
 
     public function delete(Request $request, String $slug) {
-    	$post = Post::where('slug', $slug)->first();
-    	if ($post) {
-    		if ($post->delete()) {
-    			return response()->json(['status' => 'success'], 200);
-          return response()->success('Post deleted successfully');
-    		} else {
-          return response()->error('Failed to delete post', 406);
-    		}
-    	} else {
-        return response()->error('Post not found', 404);
-    	}
+        $post = Post::where('slug', $slug)->first();
+        if($post) {
+            if($post->delete()) {
+                return response()->success('Post deleted successfully');
+            } else {
+                return response()->error('Failed to delete post', 406);
+            }
+        } else {
+            return response()->error('Post not found', 404);
+        }
     }
 }
