@@ -38,7 +38,7 @@ class LoginController extends Controller
     private function loginStateless(UserLoginRequest $request)
     {
         return Sentinel::stateless([
-            'email' => $request->email,
+            'username' => $request->username,
             'password' => $request->password,
           ]);
     }

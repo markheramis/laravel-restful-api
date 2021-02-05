@@ -40,6 +40,13 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     ];
     
     /**
+     * Array of login column names.
+     *
+     * @var array
+     */
+    protected $loginNames = ['username'];
+    
+    /**
      * Boot function for using with User Events
      *
      * @return void
