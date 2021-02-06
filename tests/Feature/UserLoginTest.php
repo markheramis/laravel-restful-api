@@ -32,8 +32,6 @@ class UserLoginTest extends TestCase
     public function testLoginWithWrongPasswordShouldFail()
     {
         $user = User::factory()->create();
-        $activation = Activation::create($user);
-        Activation::complete($user, $activation->code);
         $response = $this->json('POST', '/api/login', [
             'username' => $user->username,
             'password' => 'p@s5W0rD12347'
@@ -46,32 +44,66 @@ class UserLoginTest extends TestCase
         ]);
     }
     
-    public function testLoginWithEmailCredentialsShouldFail()
+    public function testLoginWithInvalidEmailShouldFail()
     {
         $user = User::factory()->create();
-        $activation = Activation::create($user);
-        Activation::complete($user, $activation->code);
         $response = $this->json('POST', '/api/login', [
-            'username' => $user->email,
-            'password' => 'p@s5W0rD12347'
+            'email' => 'notvalidemail',
+            'password' => 'password12345',
         ]);
         $response
-        ->assertStatus(401)
+        ->assertStatus(422)
         ->assertJson([
-            'code' => 50004,
-            'message' => 'Invalid User'
+            'status' => 'error',
+            'data' => [
+                'email' => [
+                    "The email must be a valid email address."
+                ]
+            ],
+            'message' => "Data validation failed"
+        ]);
+    }
+    
+    public function testLoginWithEmailCredentialsShouldSucceed()
+    {
+        $user = User::factory()->create();
+        $response = $this->json('POST', '/api/login', [
+            'email' => $user->email,
+            'password' => 'password12345'
+        ]);
+        $response
+        #->assertStatus(200)
+        ->assertJson([
+            'code' => 20000
         ]);
     }
 
     public function testLoginWithCorrectCredentialsShouldSucceed()
     {
         $user = User::factory()->create();
-        $activation = Activation::create($user);
-        Activation::complete($user, $activation->code);
         $response = $this->json('POST', '/api/login', [
             'username' => $user->username,
             'password' => 'password12345'
         ]);
-        $response->assertStatus(200);
+        $response
+        ->assertStatus(200)
+        ->assertJson([
+            'code' => 20000
+        ]);
+    }
+    
+    public function testLoginWithCorrectCredentialsAndWithEmailAndUsernameShouldSucceed()
+    {
+        $user = User::factory()->create();
+        $response = $this->json('POST', '/api/login', [
+            'email' => $user->email,
+            'username' => $user->username,
+            'password' => 'password12345'
+        ]);
+        $response
+        ->assertStatus(200)
+        ->assertJson([
+            'code' => 20000
+        ]);
     }
 }
