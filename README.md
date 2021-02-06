@@ -1,5 +1,3 @@
-<p align="center"><img src="https://res.cloudinary.com/dtfbvvkyp/image/upload/v1566331377/laravel-logolockup-cmyk-red.svg" width="400"></p>
-
 [![pipeline status](https://gitlab.com/mark-heramis/laravel-restful-api/badges/master/pipeline.svg)](https://gitlab.com/mark-heramis/laravel-restful-api/-/commits/master)
 [![coverage report](https://gitlab.com/mark-heramis/laravel-restful-api/badges/master/coverage.svg)](https://gitlab.com/mark-heramis/laravel-restful-api/-/commits/master)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=mark-heramis_laravel-restful-api&metric=security_rating)](https://sonarcloud.io/dashboard?id=mark-heramis_laravel-restful-api)
@@ -39,13 +37,6 @@ php artisan serve
 ```
 
 To run the local unit test, use the command below
-
-First we generate the users (in CI, this is done automatically)
-```bash
-php artisan user:generate 20 # generate 20 users
-```
-
-Then finally we run the test
 ```bash
 php artisan test
 ```
@@ -55,10 +46,10 @@ php artisan test
 ```
 docker-compose up -d --build
 docker-compose run --rm composer update
-docker-compose exec php php artisan migrate
-docker-compose exec php php artisan db:seed
-docker-compose exec php php artisan passport:install
-docker-compose exec php php artisan test
+docker-compose run --rm artisan migrate
+docker-compose run --rm artisan db:seed
+docker-compose run --rm artisan passport:install
+docker-compose run --rm artisan test
 ```
 
 #### Docker Debugging
@@ -83,7 +74,7 @@ Thanks to the creators and contributors of the [docker-compose-laravel](https://
 
 | Package                       | Version | Status       | Tested  |
 |-------------------------------|---------|--------------|---------|
-| cartalyst/sentinel            | ^4.0    | In Progress  | Not All |
+| cartalyst/sentinel            | ^4.0    | Complete     | Yes     |
 | laravel/passport              | ^9.2    | Complete     | Yes     |
 | spatie/laravel-backup         | ^6.10   | Complete     | Not All |
 | laravel/telescope             | ^3.5    | Complete     | Yes     |
