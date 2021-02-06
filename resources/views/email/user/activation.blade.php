@@ -5,7 +5,7 @@
 <code>{{$code}}</code>
 
 <p>
-    <b>DO NOT SHARE THE CODE WITH ANYONE</b>.
+    <strong>DO NOT SHARE THE CODE WITH ANYONE</strong>.
     If you did not make this request, change your
     password immediately and contact Coins support.
 </p>
@@ -25,4 +25,4 @@
 </p>
 
 <p>Regards,</p>
-<b>The {{ config('app.name') }} TEAM</b>
+<strong>The {{ config('app.name') }} TEAM</strong>
