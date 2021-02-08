@@ -10,7 +10,6 @@
     "require": {
         "php": "^7.3|^8.0",
         "cartalyst/sentinel": "^5.0",
-        "cviebrock/eloquent-sluggable": "^8.0",
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
@@ -19,7 +18,8 @@
         "laravel/tinker": "^2.5",
         "ramsey/uuid": "^4.1",
         "sentry/sentry-laravel": "^2.3",
-        "spatie/laravel-backup": "^6.14"
+        "spatie/laravel-backup": "^6.14",
+        "spatie/laravel-sluggable": "^2.6"
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.7",
@@ -30,7 +30,7 @@
         "laravel/telescope": "^4.4.0",
         "mockery/mockery": "^1.4.2",
         "nunomaduro/collision": "^5.0",
-        "phpunit/phpunit": "^9.3.3"
+        "phpunit/phpunit": "^9.3.3" 
     },
     "config": {
         "optimize-autoloader": true,
