@@ -14,7 +14,7 @@ services:
             - composer
             - redis
         working_dir: /var/www/html
-        user: ubuntu
+        user: dev
         links:
             - redis
         networks:
@@ -23,19 +23,17 @@ services:
         container_name: laravel_rest_artisan
         build:
             context: .
-            dockerfile: ./.docker/php/Dockerfile
+            dockerfile: ./.docker/artisan/Dockerfile
         volumes:
             - .:/var/www/html
         working_dir: /var/www/html
-        user: ubuntu
+        user: dev
         networks:
             - laravel_rest_network
         entrypoint: ['php','artisan']
     nginx:
         container_name: laravel_rest_nginx
-        build:
-            context: .
-            dockerfile: ./.docker/nginx/Dockerfile
+        image: nginx:latest
         volumes:
             - .docker/nginx/nginx-local.conf:/etc/nginx/nginx.conf
             - .:/var/www/html
@@ -47,13 +45,10 @@ services:
             - laravel_rest_network
     composer:
         container_name: laravel_rest_composer
-        build:
-            context: .
-            dockerfile: ./.docker/composer/Dockerfile
+        image: composer:latest
         volumes:
             - .:/var/www/html
         working_dir: /var/www/html
-        user: ubuntu
         entrypoint: ['composer']
         networks:
             - laravel_rest_network
