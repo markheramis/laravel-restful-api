@@ -41,45 +41,36 @@ To run the local unit test, use the command below
 php artisan test
 ```
 
-### The Docker Way
+### The Laravel Sail Way
 
+#### Pre-requisites
+Before starting, you need to setup and install your docker environment first. Please follow the instructions provided in the Docker Documentation.
+
+If you're on windows, you need to follow [this instructions](https://nickjanetakis.com/blog/setting-up-docker-for-windows-and-wsl-to-work-flawlessly) or [this one](https://nickjanetakis.com/blog/setting-up-docker-for-windows-and-wsl-to-work-flawlessly) to setup your WSL environment.
+
+#### Setting up the project
+
+Install Laravel Dependencies (apparently sail do not support composer out of the box, not that its bad, or antything.)
+```bash
+composer install
 ```
-docker-compose up -d --build
-docker-compose run --rm composer update
-docker-compose run --rm artisan migrate
-docker-compose run --rm artisan db:seed
-docker-compose run --rm artisan passport:install
-docker-compose run --rm artisan test
+Then start [Laravel Sail](https://laravel.com/docs/8.x/sail)
+```bash
+sail up # to start 
+```
+Then run migrations and other setup scripts
+```
+sail artisan migrate
+sail artisan db:seed
+sail artisan passport:install
+sail artisan test
 ```
 
-#### Docker Debugging
 
-This is a useful command to debug docker
-
-```
-docker-compose logs -f -t >> docker.log
-```
-
-This command will log all activities within docker as it builds, you can then use the following command to inspect the logs as it runs
-
-```
-tail -f docker.log
-```
-
-#### Credits
-
-Thanks to the creators and contributors of the [docker-compose-laravel](https://github.com/aschmelyun/docker-compose-laravel) and [Laravel-Docker plug-and-play](https://github.com/shsma/laravel-docker) project on github on the insight for the starter template of the docker-compose file.
-
-## Created with the following technologies
-
-| Package                       | Version | Status       | Tested  |
-|-------------------------------|---------|--------------|---------|
-| cartalyst/sentinel            | ^4.0    | Complete     | Yes     |
-| laravel/passport              | ^9.2    | Complete     | Yes     |
-| spatie/laravel-backup         | ^6.10   | Complete     | Not All |
-| laravel/telescope             | ^3.5    | Complete     | Yes     |
-| cviebrock/eloquent-sluggable  | ^7.0    | Complete     | Yes     |
-| phpunit/phpunit               | ^8.5    | complete     | Yes     |
+## TODO
+- Replace cartalyst/sentinel with [laravel/sanctum](https://laravel.com/docs/8.x/sanctum)
+- Add code coverage on test scripts
+- Explore Auto-Deploy solutions
 
 ## Learning Laravel
 
