@@ -12,16 +12,31 @@ variables:
   GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
 
 stages:
-  - test
   - build
+  - test
   - analyse
   - deploy
 
-artisan-test:
-  stage: test
+build-composer:
+  image: lorisleiva/laravel-docker
+  stage: build
   script:
     - cp .env.testing .env
     - composer install
+  only:
+    - pull_request
+    - push
+    - master
+  artifacts:
+    paths:
+      - .env
+      - vendor/
+      - storage/logs
+
+artisan-test:
+  image: lorisleiva/laravel-docker
+  stage: test
+  script:
     - php artisan key:generate
     - php artisan migrate
     - php artisan db:seed
@@ -33,10 +48,11 @@ artisan-test:
     - pull_request
     - push
     - master
-
-build:
-  stage: build
-  script: echo "Building the app"
+  artifacts:
+    paths:
+      - storage/logs/
+  dependencies:
+    - build-composer
 
 deploy_staging:
   stage: deploy
