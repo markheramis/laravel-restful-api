@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
-use Cviebrock\EloquentSluggable\Sluggable;
+#use Cviebrock\EloquentSluggable\Sluggable;
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
 use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
 {
-    use Sluggable;
+    use HasSlug;
 
     protected $fillable = [
         'status',
@@ -24,18 +26,14 @@ class Post extends Model
         'type',
         'pageviews',
     ];
-    
+
     /**
-     * Return the sluggable configuration array for this model.
-     *
-     * @return array
+     * Get the options for generating the slug.
      */
-    public function sluggable()
+    public function getSlugOptions(): SlugOptions
     {
-        return [
-            'slug' => [
-                'source' => 'title'
-            ]
-        ];
+        return SlugOptions::create()
+            ->generateSlugsFrom('username')
+            ->saveSlugsTo('slug');
     }
 }
