@@ -17,7 +17,7 @@ stages:
   - analyse
   - deploy
 
-rest-test:
+artisan-test:
   stage: test
   script:
     - cp .env.testing .env

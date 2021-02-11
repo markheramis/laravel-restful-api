@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
-         bootstrap="vendor/autoload.php"
-         colors="true"
+<phpunit
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
+    bootstrap="vendor/autoload.php"
+    colors="true"
 >
     <testsuites>
         <testsuite name="Unit">
@@ -21,14 +22,12 @@
         <server name="APP_ENV" value="testing"/>
         <server name="BCRYPT_ROUNDS" value="4"/>
         <server name="CACHE_DRIVER" value="file"/>
-
         <server name="DB_CONNECTION" value="mysql"/>
         <server name="DB_HOST" value="mysql"/>
         <server name="DB_PORT" value="3306"/>
         <server name="DB_DATABASE" value="homestead"/>
         <server name="DB_USERNAME" value="root"/>
         <server name="DB_PASSWORD" value="secret"/>
-
         <server name="MAIL_MAILER" value="smtp"/>
         <server name="MAIL_HOST" value="smtp.mailtrap.io"/>
         <server name="MAIL_PORT" value="2525"/>
@@ -37,20 +36,19 @@
         <server name="MAIL_ENCRYPTION" value="tls"/>
         <server name="MAIL_FROM_ADDRESS" value="test@laravel_rest.com"/>
         <server name="MAIL_FROM_NAME" value="${APP_NAME}"/>
-
         <server name="QUEUE_CONNECTION" value="sync"/>
         <server name="SESSION_DRIVER" value="array"/>
-
         <server name="TELESCOPE_ENABLED" value="false"/>
     </php>
+
+    <coverage processUncoveredFiles="true">
+        <include>
+            <directory suffix=".php">./app</directory>
+        </include>
+    </coverage>
+
     <logging>
-    <log
-    	type="coverage-html"
-    	target="./report"
-    	charset="UTF-8"
-        yui="true"
-        highlight="true"
-        lowUpperBound="50"
-        highLowerBound="80"/>
-	</logging>
+        <log type="coverage-clover" target="storage/logs/coverage-report.xml"/>
+        <log type="junit" target="storage/logs/tests-report.xml"/>
+    </logging>
 </phpunit>
