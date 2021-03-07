@@ -2,9 +2,12 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
+use Activation;
 use App\Models\User;
 use App\Models\Role;
+use Illuminate\Database\Seeder;
+use Illuminate\Database\Eloquent\Collection;
+
 
 class UserSeeder extends Seeder
 {
@@ -15,6 +18,24 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        User::factory()->count(20)->create();
+        $users = User::factory()->count(2)->create();
+        $this->__attach_users_to_role($users, 'administrators');
+        $users = User::factory()->count(3)->create();
+        $this->__attach_users_to_role($users, 'moderators');
+        $users = User::factory()->count(5)->create();
+        $this->__attach_users_to_role($users, 'subscribers');
+    }
+
+    private function __attach_users_to_role(Collection $users, string $role_slug)
+    {
+        $role = Role::where('slug', $role_slug)->first();
+        $users->map(function ($user) use ($role) {
+            # automaticall activate generated users
+            $activation = $user->activation;
+            Activation::complete($user, $activation->code);
+            # attached given role
+            $role->users()->attach($user);
+            return $user;
+        });
     }
 }

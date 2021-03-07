@@ -25,12 +25,14 @@ class UserFactory extends Factory
      */
     public function definition()
     {
+        $first_name = $this->faker->firstName;
+        $last_name = $this->faker->lastName;
         return [
-            'username' => $this->faker->userName,
+            'username' => $first_name . $last_name,
             'email' => $this->faker->email,
             'password' => bcrypt('password12345'),
-            'first_name' => $this->faker->firstName,
-            'last_name' => $this->faker->lastName,
+            'first_name' => $first_name,
+            'last_name' => $last_name,
         ];
     }
 
@@ -42,13 +44,10 @@ class UserFactory extends Factory
     public function configure()
     {
         return $this
-        ->afterMaking(function (User $user) {
-            
-        })->afterCreating(function (User $user) {
-            $role = Role::inRandomOrder()->first();
-            $role->users()->attach($user);
-            $activation = $user->activation;
-            Activation::complete($user, $activation->code);
-        });
+            ->afterMaking(function (User $user) {
+            })->afterCreating(function (User $user) {
+                #$activation = $user->activation;
+                #Activation::complete($user, $activation->code);
+            });
     }
 }

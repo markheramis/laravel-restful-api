@@ -3,13 +3,13 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\WithFaker;
-use Tests\Traits\WithUserGenerator;
+use Tests\Traits\userTraits;
 use Tests\TestCase;
 use App\Models\Role;
 
 class UserPermissionTest extends TestCase
 {
-    use WithFaker, WithUserGenerator;
+    use WithFaker, userTraits;
 
     public function setUp(): void
     {
@@ -21,30 +21,20 @@ class UserPermissionTest extends TestCase
         $this->createUser('administrators');
     }
 
-    private function get_token(String $role_slug)
-    {
-        return Role::where('slug', $role_slug)->first()->users()->inRandomOrder()->first()->createToken('MyApp')->accessToken;
-    }
-
-    private function get_slug($role_slug)
-    {
-        return Role::where('slug', $role_slug)->first()->users()->inRandomOrder()->first()->slug;
-    }
-
     public function testGetPermissionAsAdministratorToAdministrator()
     {
-        $token = $this->get_token('administrators');
-        $slug = $this->get_slug('administrators');
+        $token = $this->getTokenByRole('administrators');
+        $slug = $this->getUserSlugByRoleSlug('administrators');
         $response = $this->json('GET', "/api/user/$slug/permission", [], [
             'Authorization' => "Bearer $token"
         ]);
         $response->assertStatus(200);
     }
-    
+
     public function testGetPermissionAsAdministratorToModerator()
     {
-        $token = $this->get_token('administrators');
-        $slug = $this->get_slug('moderators');
+        $token = $this->getTokenByRole('administrators');
+        $slug = $this->getUserSlugByRoleSlug('moderators');
         $response = $this->json('GET', "/api/user/$slug/permission", [], [
             'Authorization' => "Bearer $token"
         ]);
@@ -53,8 +43,8 @@ class UserPermissionTest extends TestCase
 
     public function testGetPermissionAsAdministratorToSubscriber()
     {
-        $token = $this->get_token('administrators');
-        $slug = $this->get_slug('subscribers');
+        $token = $this->getTokenByRole('administrators');
+        $slug = $this->getUserSlugByRoleSlug('subscribers');
         $response = $this->json('GET', "/api/user/$slug/permission", [], [
             'Authorization' => "Bearer $token"
         ]);
@@ -63,8 +53,8 @@ class UserPermissionTest extends TestCase
 
     public function testGetPermissionAsModeratorToAdministrator()
     {
-        $token = $this->get_token('moderators');
-        $slug = $this->get_slug('administrators');
+        $token = $this->getTokenByRole('moderators');
+        $slug = $this->getUserSlugByRoleSlug('administrators');
         $response = $this->json('GET', "/api/user/$slug/permission", [], [
             'Authorization' => "Bearer $token"
         ]);
@@ -73,8 +63,8 @@ class UserPermissionTest extends TestCase
 
     public function testGetPermissionAsModeratorToModerator()
     {
-        $token = $this->get_token('moderators');
-        $slug = $this->get_slug('moderators');
+        $token = $this->getTokenByRole('moderators');
+        $slug = $this->getUserSlugByRoleSlug('moderators');
         $response = $this->json('GET', "/api/user/$slug/permission", [], [
             'Authorization' => "Bearer $token"
         ]);
@@ -83,8 +73,8 @@ class UserPermissionTest extends TestCase
 
     public function testGetPermissionAsModeratorToSubscriber()
     {
-        $token = $this->get_token('moderators');
-        $slug = $this->get_slug('subscribers');
+        $token = $this->getTokenByRole('moderators');
+        $slug = $this->getUserSlugByRoleSlug('subscribers');
         $response = $this->json('GET', "/api/user/$slug/permission", [], [
             'Authorization' => "Bearer $token"
         ]);
@@ -93,8 +83,8 @@ class UserPermissionTest extends TestCase
 
     public function testGetPermissionAsSubscriberToAdministratorShouldFail()
     {
-        $token = $this->get_token('subscribers');
-        $slug = $this->get_slug('administrators');
+        $token = $this->getTokenByRole('subscribers');
+        $slug = $this->getUserSlugByRoleSlug('administrators');
         $response = $this->json('GET', "/api/user/$slug/permission", [], [
             'Authorization' => "Bearer $token"
         ]);
@@ -103,8 +93,8 @@ class UserPermissionTest extends TestCase
 
     public function testGetPermissionAsSubscriberToModeratorShouldFail()
     {
-        $token = $this->get_token('subscribers');
-        $slug = $this->get_slug('moderators');
+        $token = $this->getTokenByRole('subscribers');
+        $slug = $this->getUserSlugByRoleSlug('moderators');
         $response = $this->json('GET', "/api/user/$slug/permission", [], [
             'Authorization' => "Bearer $token"
         ]);
@@ -113,8 +103,8 @@ class UserPermissionTest extends TestCase
 
     public function testGetPermissionAsSubscriberToSubscriberShouldFail()
     {
-        $token = $this->get_token('subscribers');
-        $slug = $this->get_slug('subscribers');
+        $token = $this->getTokenByRole('subscribers');
+        $slug = $this->getUserSlugByRoleSlug('subscribers');
         $response = $this->json('GET', "/api/user/$slug/permission", [], [
             'Authorization' => "Bearer $token"
         ]);
@@ -123,8 +113,8 @@ class UserPermissionTest extends TestCase
 
     public function testAddPermissionAsAdministratorToAdministratorShouldPass()
     {
-        $token = $this->get_token('administrators');
-        $slug = $this->get_slug('administrators');
+        $token = $this->getTokenByRole('administrators');
+        $slug = $this->getUserSlugByRoleSlug('administrators');
         $response = $this->json('POST', "/api/user/$slug/permission", [
             'slug' => 'test_permission',
             'value' => true
@@ -136,8 +126,8 @@ class UserPermissionTest extends TestCase
 
     public function testAddPermissionAsAdministratorToModeratorShouldPass()
     {
-        $token = $this->get_token('administrators');
-        $slug = $this->get_slug('moderators');
+        $token = $this->getTokenByRole('administrators');
+        $slug = $this->getUserSlugByRoleSlug('moderators');
         $response = $this->json('POST', "/api/user/$slug/permission", [
             'slug' => 'test_permission',
             'value' => true
@@ -149,8 +139,8 @@ class UserPermissionTest extends TestCase
 
     public function testAddPermissionAsAdministratorToSubscriberShouldPass()
     {
-        $token = $this->get_token('administrators');
-        $slug = $this->get_slug('subscribers');
+        $token = $this->getTokenByRole('administrators');
+        $slug = $this->getUserSlugByRoleSlug('subscribers');
         $response = $this->json('POST', "/api/user/$slug/permission", [
             'slug' => 'test_permission',
             'value' => true
@@ -162,8 +152,8 @@ class UserPermissionTest extends TestCase
 
     public function testAddPermissionsModeratorToAdministratorShouldFail()
     {
-        $token = $this->get_token('moderators');
-        $slug = $this->get_slug('administrators');
+        $token = $this->getTokenByRole('moderators');
+        $slug = $this->getUserSlugByRoleSlug('administrators');
         $response = $this->json('POST', "/api/user/$slug/permission", [
             'slug' => 'test_permission',
             'value' => true
@@ -175,8 +165,8 @@ class UserPermissionTest extends TestCase
 
     public function testAddPermissionAsModeratorToModeratorShouldFail()
     {
-        $token = $this->get_token('moderators');
-        $slug = $this->get_slug('moderators');
+        $token = $this->getTokenByRole('moderators');
+        $slug = $this->getUserSlugByRoleSlug('moderators');
         $response = $this->json('POST', "/api/user/$slug/permission", [
             'slug' => 'test_permission',
             'value' => true
@@ -188,8 +178,8 @@ class UserPermissionTest extends TestCase
 
     public function testAddPermissionAsModeratorToSubscriberShouldFail()
     {
-        $token = $this->get_token('moderators');
-        $slug = $this->get_slug('subscribers');
+        $token = $this->getTokenByRole('moderators');
+        $slug = $this->getUserSlugByRoleSlug('subscribers');
         $response = $this->json('POST', "/api/user/$slug/permission", [
             'slug' => 'test_permission',
             'value' => true
@@ -201,8 +191,8 @@ class UserPermissionTest extends TestCase
 
     public function testAddPermissionAsSubscriberToAdministratorShouldFail()
     {
-        $token = $this->get_token('subscribers');
-        $slug = $this->get_slug('administrators');
+        $token = $this->getTokenByRole('subscribers');
+        $slug = $this->getUserSlugByRoleSlug('administrators');
         $response = $this->json('POST', "/api/user/$slug/permission", [
             'slug' => 'test_permission',
             'value' => true
@@ -214,8 +204,8 @@ class UserPermissionTest extends TestCase
 
     public function testAddPermissionAsSubscriberToModeratorShouldFail()
     {
-        $token = $this->get_token('subscribers');
-        $slug = $this->get_slug('moderators');
+        $token = $this->getTokenByRole('subscribers');
+        $slug = $this->getUserSlugByRoleSlug('moderators');
         $response = $this->json('POST', "/api/user/$slug/permission", [
             'slug' => 'test_permission',
             'value' => true
@@ -227,8 +217,8 @@ class UserPermissionTest extends TestCase
 
     public function testAddPermissionAsSubscriberToSubscriberShouldFail()
     {
-        $token = $this->get_token('subscribers');
-        $slug = $this->get_slug('subscribers');
+        $token = $this->getTokenByRole('subscribers');
+        $slug = $this->getUserSlugByRoleSlug('subscribers');
         $response = $this->json('POST', "/api/user/$slug/permission", [
             'slug' => 'test_permission',
             'value' => true

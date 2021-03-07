@@ -6,18 +6,13 @@ use Sentinel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
-use Tests\Traits\WithUserGenerator;
+use Tests\Traits\userTraits;
 use App\Models\Role;
 
 class RoleTest extends TestCase
 {
 
-    use WithFaker;
-
-    private function get_token(String $role_slug)
-    {
-        return Role::where('slug', $role_slug)->first()->users()->inRandomOrder()->first()->createToken('MyApp')->accessToken;
-    }
+    use WithFaker, userTraits;
 
     public function testGetAllRolesWithNoUserShouldFail()
     {
@@ -27,7 +22,7 @@ class RoleTest extends TestCase
 
     public function testGetAllRolesWithSubscriberShouldFail()
     {
-        $token = $this->get_token('subscribers');
+        $token = $this->getTokenByRole('subscribers');
         $header = [
             'Authorization' => "Bearer $token"
         ];
@@ -37,7 +32,7 @@ class RoleTest extends TestCase
 
     public function testGetAllRolesWithModeratorShouldSucceed()
     {
-        $token = $this->get_token('moderators');
+        $token = $this->getTokenByRole('moderators');
         $header = [
             'Authorization' => "Bearer $token"
         ];
@@ -47,7 +42,7 @@ class RoleTest extends TestCase
 
     public function testGetAllRolesWithAdministratorShouldSucceed()
     {
-        $token = $this->get_token('administrators');
+        $token = $this->getTokenByRole('administrators');
         $header = [
             'Authorization' => "Bearer $token"
         ];
@@ -68,14 +63,14 @@ class RoleTest extends TestCase
                 'test.delete' => true,
             ]
         ];
-        $role = Sentinel::getRoleRepository()->createModel()->create($data);
+        $role = $this->createRole($data);
         $response = $this->json('GET', '/api/role/' . $role->slug, $data);
         $response->assertStatus(401);
     }
 
     public function testGetSingleAsSubscriberShouldFail()
     {
-        $token = $this->get_token('subscribers');
+        $token = $this->getTokenByRole('subscribers');
         $data = [
             'name' => 'TestRoleGetSubscriber',
             'slug' => 'testrolegetsubscriber',
@@ -87,7 +82,7 @@ class RoleTest extends TestCase
                 'test.delete' => true,
             ]
         ];
-        $role = Sentinel::getRoleRepository()->createModel()->create($data);
+        $role = $this->createRole($data);
         $header = [
             'Authorization' => "Bearer $token"
         ];
@@ -97,7 +92,7 @@ class RoleTest extends TestCase
 
     public function testGetSingleAsModeratorShouldFail()
     {
-        $token = $this->get_token('moderators');
+        $token = $this->getTokenByRole('moderators');
         $data = [
             'name' => 'TestRoleGetModerator',
             'slug' => 'testrolegetmoderator',
@@ -109,7 +104,7 @@ class RoleTest extends TestCase
                 'test.delete' => true,
             ]
         ];
-        $role = Sentinel::getRoleRepository()->createModel()->create($data);
+        $role = $this->createRole($data);
         $header = [
             'Authorization' => "Bearer $token"
         ];
@@ -119,7 +114,7 @@ class RoleTest extends TestCase
 
     public function testGetSingleAsAdministratorShouldSucceed()
     {
-        $token = $this->get_token('administrators');
+        $token = $this->getTokenByRole('administrators');
         $data = [
             'name' => 'TestRoleGetAdministrator',
             'slug' => 'testrolegetadministrator',
@@ -131,7 +126,7 @@ class RoleTest extends TestCase
                 'test.delete' => true,
             ]
         ];
-        $role = Sentinel::getRoleRepository()->createModel()->create($data);
+        $role = $this->createRole($data);
         $header = [
             'Authorization' => "Bearer $token"
         ];
@@ -157,7 +152,7 @@ class RoleTest extends TestCase
 
     public function testCreateRoleAsSubscriberShouldFail()
     {
-        $token = $this->get_token('subscribers');
+        $token = $this->getTokenByRole('subscribers');
         $body = [
             'name' => 'TestRoleSubscriber',
             'slug' => 'testroleSubscriber',
@@ -178,7 +173,7 @@ class RoleTest extends TestCase
 
     public function testCreateRoleAsModeratorShouldFail()
     {
-        $token = $this->get_token('moderators');
+        $token = $this->getTokenByRole('moderators');
         $body = [
             'name' => 'TestRoleModerator',
             'slug' => 'testroleModerator',
@@ -199,7 +194,7 @@ class RoleTest extends TestCase
 
     public function testCreateRoleAsAdminShouldSucceed()
     {
-        $token = $this->get_token('administrators');
+        $token = $this->getTokenByRole('administrators');
         $body = [
             'name' => 'TestRoleAdministrator',
             'slug' => 'testroleAdministrator',
@@ -231,7 +226,7 @@ class RoleTest extends TestCase
                 'test.delete' => true,
             ]
         ];
-        $role = Sentinel::getRoleRepository()->createModel()->create($data);
+        $role = $this->createRole($data);
         $data['name'] = $data['name'] . 'Updated';
         $data['slug'] = $data['name'] . 'updated';
         $response = $this->json('PUT', '/api/role/' . $role->slug, $data);
@@ -251,10 +246,10 @@ class RoleTest extends TestCase
                 'test.delete' => true,
             ]
         ];
-        $role = Sentinel::getRoleRepository()->createModel()->create($data);
+        $role = $this->createRole($data);
         $data['name'] = $data['name'] . 'Updated';
         $data['slug'] = $data['slug'] . 'updated';
-        $token = $this->get_token('subscribers');
+        $token = $this->getTokenByRole('subscribers');
         $header = [
             'Authorization' => "Bearer $token"
         ];
@@ -275,10 +270,10 @@ class RoleTest extends TestCase
                 'test.delete' => true,
             ]
         ];
-        $role = Sentinel::getRoleRepository()->createModel()->create($data);
+        $role = $this->createRole($data);
         $data['name'] = $data['name'] . 'Updated';
         $data['slug'] = $data['slug'] . 'updated';
-        $token = $this->get_token('moderators');
+        $token = $this->getTokenByRole('moderators');
         $header = [
             'Authorization' => "Bearer $token"
         ];
@@ -299,10 +294,10 @@ class RoleTest extends TestCase
                 'test.delete' => true,
             ]
         ];
-        $role = Sentinel::getRoleRepository()->createModel()->create($data);
+        $role = $this->createRole($data);
         $data['name'] = $data['name'] . 'Updated';
         $data['slug'] = $data['slug'] . 'updated';
-        $token = $this->get_token('administrators');
+        $token = $this->getTokenByRole('administrators');
         $header = [
             'Authorization' => "Bearer $token"
         ];
@@ -323,7 +318,7 @@ class RoleTest extends TestCase
                 'test.delete' => true,
             ]
         ];
-        $role = Sentinel::getRoleRepository()->createModel()->create($data);
+        $role = $this->createRole($data);
         $response = $this->json('DELETE', '/api/role/' . $role->slug, $data);
         $response->assertStatus(401);
     }
@@ -341,8 +336,8 @@ class RoleTest extends TestCase
                 'test.delete' => true,
             ]
         ];
-        $role = Sentinel::getRoleRepository()->createModel()->create($data);
-        $token = $this->get_token('subscribers');
+        $role = $this->createRole($data);
+        $token = $this->getTokenByRole('subscribers');
         $header = [
             'Authorization' => "Bearer $token"
         ];
@@ -363,8 +358,8 @@ class RoleTest extends TestCase
                 'test.delete' => true,
             ]
         ];
-        $role = Sentinel::getRoleRepository()->createModel()->create($data);
-        $token = $this->get_token('moderators');
+        $role = $this->createRole($data);
+        $token = $this->getTokenByRole('moderators');
         $header = [
             'Authorization' => "Bearer $token"
         ];
@@ -385,8 +380,8 @@ class RoleTest extends TestCase
                 'test.delete' => true,
             ]
         ];
-        $role = Sentinel::getRoleRepository()->createModel()->create($data);
-        $token = $this->get_token('administrators');
+        $role = $this->createRole($data);
+        $token = $this->getTokenByRole('administrators');
         $header = [
             'Authorization' => "Bearer $token"
         ];

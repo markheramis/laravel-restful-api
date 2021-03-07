@@ -14,15 +14,15 @@ class CreatePostsTable extends Migration
     public function up()
     {
         Schema::create('posts', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->string('slug');
-            $table->enum('status',['published', 'draft']);
+            $table->enum('status', ['published', 'draft']);
             $table->string('title');
             $table->text('abstractContent')->nullable();
             $table->text('fullContent')->nullable();
-            $table->string('sourceURL',500);
+            $table->string('sourceURL', 500);
             $table->string('imageURL', 500);
-            $table->string('platforms',300)->nullable();
+            $table->string('platforms', 300)->nullable();
             $table->boolean('disableComment')->default(false);
             $table->smallInteger('importance')->default(0);
             $table->string('author')->nullable();
