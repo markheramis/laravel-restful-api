@@ -48,6 +48,25 @@ services:
       - sail
     healthcheck:
       test: ["CMD", "mysqladmin", "ping"]
+
+  phpmyadmin:
+    container_name: phpmyadmin
+    image: phpmyadmin
+    restart: always
+    ports:
+      - 8080:80
+    env_file:
+      - .env
+    environment:
+      PMA_ARBITRARY: 1
+      PMA_HOST: mysql
+      PMA_USER: "${DB_USERNAME}"
+      PMA_PASSWORD: "${DB_PASSWORD}"
+      MYSQL_PASSWORD: "${DB_PASSWORD}"
+    depends_on:
+      - mysql
+    networks:
+      - sail
   #    pgsql:
   #        container_name: 'postgresql'
   #        image: postgres:13
