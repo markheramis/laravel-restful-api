@@ -27,7 +27,7 @@ build-composer:
   image: lorisleiva/laravel-docker
   stage: build
   script:
-    - cp .env.testing .env
+    - cp .env.testing.example .env
     - composer install
   only:
     - pull_request
@@ -44,6 +44,7 @@ artisan-test:
   stage: test
   script:
     - cp ./.docker/sail/xdebug.ini /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+    - cp .env.testing.example .env.testing
     - php artisan key:generate
     - php artisan migrate
     - php artisan db:seed
