@@ -5,18 +5,30 @@ namespace App\Http\Controllers\API;
 use Sentinel;
 use App\Http\Controllers\Controller;
 use App\Models\Role;
+use App\Transformers\RoleTransformer;
 use App\Http\Requests\RoleAllRequest;
 use App\Http\Requests\RoleGetRequest;
 use App\Http\Requests\RoleStoreRequest;
 use App\Http\Requests\RoleUpdateReqeust;
 use App\Http\Requests\RoleDeleteRequest;
+use League\Fractal\Pagination\IlluminatePaginatorAdapter;
+use League\Fractal\Serializer\JsonApiSerializer;
 
 class RoleController extends Controller
 {
     public function index(RoleAllRequest $request)
     {
-        $roles = Role::all();
-        return response()->success($roles);
+        $paginator = Role::paginate();
+        $roles = $paginator->getCollection();
+
+        $response = fractal()
+            ->collection($roles)
+            ->transformWith(new RoleTransformer())
+            ->serializeWith(new JsonApiSerializer())
+            ->paginateWith(new IlluminatePaginatorAdapter($paginator))
+            ->toArray();
+
+        return response()->json($response);
     }
 
     /**
@@ -30,7 +42,8 @@ class RoleController extends Controller
     {
         $role = Sentinel::findRoleBySlug($slug);
         if ($role) {
-            return response()->success($role);
+            $response = fractal($role, new RoleTransformer())->toArray();
+            return response()->success($response);
         } else {
             return response()->error('Role not found', 404);
         }
@@ -72,7 +85,8 @@ class RoleController extends Controller
             $role->slug = $request->slug;
             $role->permissions = $request->permissions;
             if ($role->save()) {
-                return response()->success('Role updated successfully');
+                $response = fractal($role, new RoleTransformer())->toArray();
+                return response()->success($response);
             } else {
                 return response()->error('Failed to update role', 400);
             }

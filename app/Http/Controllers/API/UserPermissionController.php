@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use Exception;
 use App\Models\User;
+use App\Transformers\PermissionTransformer;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserPermissionGetRequest;
 use App\Http\Requests\UserPermissionAddRequest;
@@ -17,29 +18,22 @@ class UserPermissionController extends Controller
      * Get User Permission
      *
      * @param UserPermissionGetRequest $request
-     * @param string $slug
+     * @param string $user_slug
      * @return void
      */
-    public function get(UserPermissionGetRequest $request, string $slug)
+    public function get(UserPermissionGetRequest $request, string $user_slug)
     {
         try {
-            $user = User::where('slug', $slug)->first();
+            $user = User::where('slug', $user_slug)->first();
             if ($user) {
                 $permission = $user->permissions;
-                return response()->json([
-                    'status' => 'success',
-                    'data' => $permission
-                ], 200);
+                $response = fractal($permission, new PermissionTransformer())->toArray();
+                return response()->success($response);
             } else {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Account not found'
-                ], 404);
+                return response()->error('User not founnd', 404);
             }
         } catch (Exception $ex) {
-            return response()->json([
-                'message' => $ex->getMessage(),
-            ], $ex->getCode());
+            return response()->error($ex->getMessage(), $ex->getCode());
         }
     }
 
@@ -56,27 +50,14 @@ class UserPermissionController extends Controller
             $user = User::where('slug', $slug)->first();
             if ($user) {
                 $user->addPermission($request->slug, $request->value);
-                if ($user->save()) {
-                    return response()->json([
-                        'status' => 'success',
-                        'message' => 'Permission added successfully'
-                    ], 200);
-                } else {
-                    return response()->json([
-                        'status' => 'error',
-                        'message' => 'Failed to add Permission'
-                    ], 400);
-                }
-            } else {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Account not found'
-                ], 404);
-            }
+                if ($user->save())
+                    return response()->success('Permission added successfully');
+                else
+                    return response()->error('Failed to add permission', 400);
+            } else
+                return response()->error('User not found', 404);
         } catch (Exception $ex) {
-            return response()->json([
-                'message' => $ex->getMessage(),
-            ], $ex->getCode());
+            return response()->error($ex->getMessage(), $ex->getCode());
         }
     }
 
@@ -93,27 +74,14 @@ class UserPermissionController extends Controller
             $user = User::where('slug', $slug)->first();
             if ($user) {
                 $user->updatePermission($request->slug, $request->value, true);
-                if ($user->save()) {
-                    return response()->json([
-                        'status' => 'success',
-                        'message' => 'Permission updated successfully'
-                    ], 200);
-                } else {
-                    return response()->json([
-                        'status' => 'error',
-                        'message' => 'Failed to update Permission'
-                    ], 400);
-                }
-            } else {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Account not found'
-                ], 404);
-            }
+                if ($user->save())
+                    return response()->success('Permission updated successfully');
+                else
+                    return response()->error('Failed to update permission', 400);
+            } else
+                return response()->error('User not found', 404);
         } catch (Exception $ex) {
-            return response()->json([
-                'message' => $ex->getMessage(),
-            ], $ex->getCode());
+            return response()->error($ex->getMessage(), $ex->getCode());
         }
     }
 
@@ -130,27 +98,14 @@ class UserPermissionController extends Controller
             $user = User::where('slug', $slug)->first();
             if ($user) {
                 $user->removePermission($request->slug);
-                if ($user->save()) {
-                    return response()->json([
-                        'status' => 'success',
-                        'message' => 'Permission removed successfully'
-                    ], 200);
-                } else {
-                    return response()->json([
-                        'status' => 'error',
-                        'message' => 'Failed to remove Permission'
-                    ], 400);
-                }
-            } else {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Account not found'
-                ], 404);
-            }
+                if ($user->save())
+                    return response()->success('Permission deleted successfully');
+                else
+                    return response()->error('Failed to delete permission', 400);
+            } else
+                return response()->error('User not found', 404);
         } catch (Exception $ex) {
-            return response()->json([
-                'message' => $ex->getMessage(),
-            ], $ex->getCode());
+            return response()->error($ex->getMessage(), $ex->getCode());
         }
     }
 }

@@ -11,23 +11,21 @@ class UserLoginTest extends TestCase
 {
     use WithFaker, userTraits;
 
-    public function testLoginWithNoParameterShouldFail()
+    public function testLoginWithNoParameterShouldBeUnprocessableEntity()
     {
         $response = $this->json('POST', '/api/login', []);
-        $response
-            ->assertStatus(422);
+        $response->assertStatus(422);
     }
 
-    public function testLoginWithNoPasswordShouldFail()
+    public function testLoginWithNoPasswordShouldBeUnprocessableEntity()
     {
         $response = $this->json('POST', '/api/login', [
             'username' => $this->faker->userName(),
         ]);
-        $response
-            ->assertStatus(422);
+        $response->assertStatus(422);
     }
 
-    public function testLoginWithWrongPasswordShouldFail()
+    public function testLoginWithWrongPasswordShouldBeUnauthorized()
     {
         $user = $this->createUser();
         $response = $this->json('POST', '/api/login', [
@@ -42,7 +40,7 @@ class UserLoginTest extends TestCase
             ]);
     }
 
-    public function testLoginWithInvalidEmailShouldFail()
+    public function testLoginWithInvalidEmailShouldBeUnprocessableEntity()
     {
         $user = $this->createUser();
         $response = $this->json('POST', '/api/login', [
@@ -62,7 +60,7 @@ class UserLoginTest extends TestCase
             ]);
     }
 
-    public function testLoginWithEmailCredentialsShouldSucceed()
+    public function testLoginWithEmailCredentialsShouldLoginSuccessfully()
     {
         $user = $this->createUser();
         $response = $this->json('POST', '/api/login', [
@@ -76,7 +74,7 @@ class UserLoginTest extends TestCase
             ]);
     }
 
-    public function testLoginWithCorrectCredentialsShouldSucceed()
+    public function testLoginWithCorrectCredentialsShouldLoginSuccessfully()
     {
         $user = $this->createUser();
         $response = $this->json('POST', '/api/login', [
@@ -90,7 +88,7 @@ class UserLoginTest extends TestCase
             ]);
     }
 
-    public function testLoginWithCorrectCredentialsAndWithEmailAndUsernameShouldSucceed()
+    public function testLoginWithCorrectCredentialsAndWithEmailAndUsernameShouldLoginSuccessfully()
     {
         $user = $this->createUser();
         $response = $this->json('POST', '/api/login', [

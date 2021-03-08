@@ -11,7 +11,7 @@ class UserRegisterTest extends TestCase
 {
     use WithFaker;
 
-    public function testRegisterWithNoParameterShouldFail()
+    public function testRegisterWithNoParameterShouldBeUnprocessableEntity()
     {
         $response = $this->json('POST', '/api/register', []);
 
@@ -19,7 +19,7 @@ class UserRegisterTest extends TestCase
             ->assertStatus(422);
     }
 
-    public function testRegisterWithEmailOnlyShouldFail()
+    public function testRegisterWithEmailOnlyShouldBeUnprocessableEntity()
     {
         $response = $this->json('POST', '/api/register', [
             'email' => $this->faker->email(),
@@ -28,7 +28,7 @@ class UserRegisterTest extends TestCase
         $response->assertStatus(422);
     }
 
-    public function testRegisterPasswordNoVerifyShouldFail()
+    public function testRegisterPasswordNoVerifyShouldBeUnprocessableEntity()
     {
         $response = $this->json('POST', '/api/register', [
             'email'     => $this->faker->email(),
@@ -39,7 +39,7 @@ class UserRegisterTest extends TestCase
             ->assertStatus(422);
     }
 
-    public function testRegisterWithPasswordNotVerifiedShouldFail()
+    public function testRegisterWithPasswordNotVerifiedShouldBeUnprocessableEntity()
     {
         $response = $this->json('POST', '/api/register', [
             'username'    => $this->faker->userName(),
@@ -51,7 +51,7 @@ class UserRegisterTest extends TestCase
             ->assertStatus(422);
     }
 
-    public function testRegisterWithoutFullnameShouldFail()
+    public function testRegisterWithoutFullnameShouldBeUnprocessableEntity()
     {
         $response = $this->json('POST', '/api/register', [
             'username'    => $this->faker->userName(),
@@ -63,7 +63,7 @@ class UserRegisterTest extends TestCase
             ->assertStatus(422);
     }
 
-    public function testRegisterWithCorrectParametersShouldSucceed()
+    public function testRegisterWithCorrectParametersShouldRegisterSuccessfully()
     {
         $response = $this->json('POST', '/api/register', [
             'username' => $this->faker->userName(),
@@ -78,7 +78,7 @@ class UserRegisterTest extends TestCase
             ->assertStatus(200);
     }
 
-    public function testRegisterWithCorrectParametersAndPermissionShouldSucceed()
+    public function testRegisterWithCorrectParametersAndPermissionShouldRegisterSuccessfully()
     {
         $response = $this->json('POST', '/api/register', [
             'username' => $this->faker->userName(),
