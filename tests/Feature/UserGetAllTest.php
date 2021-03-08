@@ -20,7 +20,7 @@ class UserGetAllTest extends TestCase
         $this->createUser('administrators');
     }
 
-    public function testGetAllUserAsAdminsShouldSucceed()
+    public function testGetAllUserAsAdminsShouldBeAllowed()
     {
         $token = $this->getTokenByRole('administrators');
         $expected_result = User::paginate()->toArray();
@@ -31,7 +31,7 @@ class UserGetAllTest extends TestCase
             ->assertStatus(200);
     }
 
-    public function testGetAllUserAsModeratorShouldSucceed()
+    public function testGetAllUserAsModeratorShouldBeAllowed()
     {
         $token = $this->getTokenByRole('moderators');
         $expected_result = User::paginate()->toArray();
@@ -42,7 +42,7 @@ class UserGetAllTest extends TestCase
             ->assertStatus(200);
     }
 
-    public function testGetAllUserAsSubscriberShouldSucceed()
+    public function testGetAllUserAsSubscriberShouldBeAllowed()
     {
         $token = $this->getTokenByRole('subscribers');
         $expected_result = User::paginate()->toArray();

@@ -20,7 +20,7 @@ class UserGetSingleTest extends TestCase
         $this->createUser('administrators');
     }
 
-    public function testGetSingleUserAsAdministratorToAdminstratorShouldSucceed()
+    public function testGetSingleUserAsAdministratorToAdminstratorShouldBeAllowed()
     {
         $token = $this->getTokenByRole('administrators');
         $slug = $this->getUserSlugByRoleSlug('administrators');
@@ -31,7 +31,7 @@ class UserGetSingleTest extends TestCase
             ->assertStatus(200);
     }
 
-    public function testGetSingleUserAsAdministratorToModeratorShouldSucceed()
+    public function testGetSingleUserAsAdministratorToModeratorShouldBeAllowed()
     {
         $token = $this->getTokenByRole('administrators');
         $slug = $this->getUserSlugByRoleSlug('moderators');
@@ -42,7 +42,7 @@ class UserGetSingleTest extends TestCase
             ->assertStatus(200);
     }
 
-    public function testGetSingleUserAsAdministratorToSubscriberShouldSucceed()
+    public function testGetSingleUserAsAdministratorToSubscriberShouldBeAllowed()
     {
         $token = $this->getTokenByRole('administrators');
         $slug = $this->getUserSlugByRoleSlug('subscribers');
@@ -53,7 +53,7 @@ class UserGetSingleTest extends TestCase
             ->assertStatus(200);
     }
 
-    public function testGetSingleUserAsModeratorToAdministratorShouldSucceed()
+    public function testGetSingleUserAsModeratorToAdministratorShouldBeAllowed()
     {
         $token = $this->getTokenByRole('moderators');
         $slug = $this->getUserSlugByRoleSlug('administrators');
@@ -64,7 +64,7 @@ class UserGetSingleTest extends TestCase
             ->assertStatus(200);
     }
 
-    public function testGetSingleUserAsModeratorToModeratorShouldSucceed()
+    public function testGetSingleUserAsModeratorToModeratorShouldBeAllowed()
     {
         $token = $this->getTokenByRole('moderators');
         $slug = $this->getUserSlugByRoleSlug('moderators');
@@ -75,7 +75,7 @@ class UserGetSingleTest extends TestCase
             ->assertStatus(200);
     }
 
-    public function testGetSingleUserAsModeratorToSubscribersShouldSucceed()
+    public function testGetSingleUserAsModeratorToSubscribersShouldBeAllowed()
     {
         $token = $this->getTokenByRole('moderators');
         $slug = $this->getUserSlugByRoleSlug('subscribers');
@@ -86,7 +86,7 @@ class UserGetSingleTest extends TestCase
             ->assertStatus(200);
     }
 
-    public function testGetSingleUserAsSubscriberToAdministratorShouldSucceed()
+    public function testGetSingleUserAsSubscriberToAdministratorShouldBeAllowed()
     {
         $token = $this->getTokenByRole('subscribers');
         $slug = $this->getUserSlugByRoleSlug('administrators');
@@ -97,7 +97,7 @@ class UserGetSingleTest extends TestCase
             ->assertStatus(200);
     }
 
-    public function testGetSingleUserAsSubscriberToModeratorShouldSucceed()
+    public function testGetSingleUserAsSubscriberToModeratorShouldBeAllowed()
     {
         $token = $this->getTokenByRole('subscribers');
         $slug = $this->getUserSlugByRoleSlug('moderators');
@@ -108,7 +108,7 @@ class UserGetSingleTest extends TestCase
             ->assertStatus(200);
     }
 
-    public function testGetSingleUserSubscriberToSubscriberShouldSucceed()
+    public function testGetSingleUserSubscriberToSubscriberShouldBeAllowed()
     {
         $token = $this->getTokenByRole('subscribers');
         $slug = $this->getUserSlugByRoleSlug('subscribers');
