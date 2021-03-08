@@ -43,7 +43,7 @@ services:
       MYSQL_PASSWORD: "${DB_PASSWORD}"
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
     volumes:
-      - "sailmysql:/var/lib/mysql"
+      - "laravel_restful_api_mysql:/var/lib/mysql"
     networks:
       - laravel_restful_api_sail
     healthcheck:
@@ -113,7 +113,7 @@ networks:
   laravel_restful_api_sail:
     driver: bridge
 volumes:
-  sailmysql:
+  laravel_restful_api_mysql:
     driver: local
   #    sailpostgresql:
   #        driver: local
