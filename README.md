@@ -60,7 +60,7 @@ If you're on windows, you need to follow [this instructions](https://nickjanetak
 
 #### Setting up the project
 
-Install Laravel Dependencies (apparently sail do not support composer out of the box, not that its bad, or antything.)
+Install Laravel Dependencies
 ```bash
 composer install
 ```
