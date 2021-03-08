@@ -36,6 +36,34 @@ class UserFactory extends Factory
         ];
     }
 
+    private function __generate_random_permissions()
+    {
+        $permissions = [
+            'users.all',
+            'users.get',
+            'users.add',
+            'users.update',
+            'users.delete',
+            'users.permission.get',
+            'users.permission.add',
+            'users.permission.update',
+            'users.permission.delete',
+            'users.role.get',
+            'users.role.add',
+            'users.role.delete',
+            'roles.all',
+            'roles.get',
+            'roles.store',
+            'roles.update',
+            'roles.delete'
+        ];
+        $result = [];
+        foreach ($permissions as $permission) {
+            $result[$permission] = rand(0, 1);
+        }
+        return $result;
+    }
+
     /**
      * Configure the model factory.
      *
@@ -46,8 +74,6 @@ class UserFactory extends Factory
         return $this
             ->afterMaking(function (User $user) {
             })->afterCreating(function (User $user) {
-                #$activation = $user->activation;
-                #Activation::complete($user, $activation->code);
             });
     }
 }

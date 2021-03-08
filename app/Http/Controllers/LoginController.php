@@ -14,8 +14,9 @@ class LoginController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function login(UserLoginRequest $request) {
-        try{
+    public function login(UserLoginRequest $request)
+    {
+        try {
             if ($user = $this->loginStateless($request)) {
                 $token = $user->createToken('MyApp')->accessToken;
                 return $this->successResponse($token);
@@ -29,7 +30,7 @@ class LoginController extends Controller
             ], 401);
         }
     }
-    
+
     /**
      * 
      * @param UserLoginRequest $request
@@ -38,15 +39,15 @@ class LoginController extends Controller
     private function loginStateless(UserLoginRequest $request)
     {
         $credentials = ["password" => $request->password];
-        if($request->has("email")) {
+        if ($request->has("email")) {
             $credentials["email"] = $request->email;
         }
-        if($request->has("username")) {
+        if ($request->has("username")) {
             $credentials["username"] = $request->username;
         }
         return Sentinel::stateless($credentials);
     }
-    
+
     /**
      * 
      * @param type $token
@@ -61,7 +62,7 @@ class LoginController extends Controller
             ]
         ], 200);
     }
-    
+
     /**
      * 
      * @return \Illuminate\Http\Response|\Illuminate\Contracts\Routing\ResponseFactory

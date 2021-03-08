@@ -23,33 +23,27 @@ Route::post('login', [LoginController::class, 'login'])->name('login');
 Route::post('register', [RegisterController::class, 'register'])->name('register');
 Route::post('activate', [UserController::class, 'activate'])->name('api.user.activate');
 Route::get('me', [UserController::class, 'me'])->middleware('auth:api')->name('api.me');
-Route::prefix('post')->middleware(['api', 'auth:api'])->group(function ()
-{
+Route::prefix('post')->middleware(['auth:api'])->group(function () {
     Route::get('/', [PostController::class, 'all']);
     Route::post('/', [PostController::class, 'store']);
-    Route::prefix('{slug}')->group(function ()
-    {
+    Route::prefix('{slug}')->group(function () {
         Route::get('/', [PostController::class, 'get']);
         Route::put('/', [PostController::class, 'update']);
         Route::delete('/', [PostController::class, 'delete']);
     });
 });
-Route::prefix('user')->middleware(['api', 'auth:api'])->group(function ()
-{
+Route::prefix('user')->middleware(['auth:api'])->group(function () {
     Route::get('/', [UserController::class, 'all']);
-    Route::prefix('{slug}')->group(function ()
-    {
+    Route::prefix('{slug}')->group(function () {
         Route::get('/', [UserController::class, 'get']);
         Route::put('/', [UserController::class, 'update']);
         Route::delete('/', [UserController::class, 'delete']);
-        Route::prefix('role')->group(function ()
-        {
+        Route::prefix('role')->group(function () {
             Route::get('/', [UserRoleController::class, 'get']);
             Route::post('/', [UserRoleController::class, 'add']);
             Route::delete('/', [UserRoleController::class, 'delete']);
         });
-        Route::prefix('permission')->group(function ()
-        {
+        Route::prefix('permission')->group(function () {
             Route::get('/', [UserPermissionController::class, 'get']);
             Route::put('/', [UserPermissionController::class, 'update']);
             Route::post('/', [UserPermissionController::class, 'add']);
@@ -57,12 +51,10 @@ Route::prefix('user')->middleware(['api', 'auth:api'])->group(function ()
         });
     });
 });
-Route::prefix('role')->middleware(['api', 'auth:api'])->group(function ()
-{
+Route::prefix('role')->middleware(['auth:api'])->group(function () {
     Route::get('/', [RoleController::class, 'index']);
     Route::post('/', [RoleController::class, 'store']);
-    Route::prefix('{slug}')->group(function ()
-    {
+    Route::prefix('{slug}')->group(function () {
         Route::get('/', [RoleController::class, 'get']);
         Route::put('/', [RoleController::class, 'update']);
         Route::delete('/', [RoleController::class, 'delete']);
