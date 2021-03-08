@@ -28,6 +28,7 @@ php artisan key:generate
 php artisan migrate
 php artisan db:seed
 php artisan passport:install
+php artisan passport:client --personal
 ```
 
 Starting it, just run the command
@@ -35,6 +36,15 @@ Starting it, just run the command
 ```bash
 php artisan serve
 ```
+#### Testing
+
+Before testing take note that we need to have a `.env.testing` environment file first, we have an example and to apply it all you need todo is to copy the example file with the following command:
+
+```bash
+cp .env.testing.example .env.testing
+```
+
+Note that we're not on Docker so you should replace the `DB_HOST` value in `.env.testing` with `localhost` in order for it to work.
 
 To run the local unit test, use the command below
 ```bash
@@ -59,18 +69,40 @@ Then start [Laravel Sail](https://laravel.com/docs/8.x/sail)
 sail up # to start 
 ```
 Then run migrations and other setup scripts
-```
+```bash
 sail artisan migrate
 sail artisan db:seed
 sail artisan passport:install
-sail artisan test
+sail artisan passport:client --personal
 ```
 
 
+
+
+#### Services
+After the setup, your services should be available at the following URLs.
+- Laravel Restful API: [http://localhost/](http://localhost)
+- PHPMyAdmin: [http://localhost:8080/](http://localhost:8080)
+- MySQL should be at port 3306 (the default port)
+
+
+#### Testing
+Just like the native way, you also need to copy the `.env.testing.example` file like so:
+
+```bash
+cp .env.testing.example .env.testing
+```
+
+Then you can test the setup with the `artisan test` command to make sure all is going well.
+
+```bash
+sail artisan test
+```
+
 ## TODO
-- Replace cartalyst/sentinel with [laravel/sanctum](https://laravel.com/docs/8.x/sanctum)
-- Add code coverage on test scripts
 - Explore Auto-Deploy solutions
+- Explore Kubernetes
+- Explore Github Actions (will require migrating to [Github](www.github.com))
 
 ## Learning Laravel
 
