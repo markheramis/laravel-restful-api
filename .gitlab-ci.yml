@@ -74,7 +74,7 @@ deploy_staging:
 deploy_production:
   stage: deploy
   script:
-    - php vendor/bin/envoy run deploy --branch=production --refresh=true --host=${{PROJECT_PRODUCTION_HOST}}
+    - php vendor/bin/envoy run deploy --branch=production --host=${{PROJECT_PRODUCTION_HOST}}
   only:
   - production
   dependencies:
