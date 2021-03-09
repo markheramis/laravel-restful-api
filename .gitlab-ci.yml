@@ -65,22 +65,20 @@ artisan-test:
 deploy_staging:
   stage: deploy
   script:
-    - echo "Deploy to staging server"
-  environment:
-    name: staging
-    url: https://staging.example.com
+    - php vendor/bin/envoy run deploy --branch=staging --refresh=true --host=${{PROJECT_STAGING_HOST}}
   only:
   - staging
+  dependencies:
+    - artisan-test
 
 deploy_production:
   stage: deploy
   script:
-    - echo "Deploy to staging server"
-  environment:
-    name: production
-    url: https://example.com
+    - php vendor/bin/envoy run deploy --branch=production --refresh=true --host=${{PROJECT_PRODUCTION_HOST}}
   only:
   - production
+  dependencies:
+    - artisan-test
 
 sonarcloud-check:
   stage: analyse
