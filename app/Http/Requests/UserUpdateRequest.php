@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Auth;
 use App\Http\Requests\FormRequest;
 
-class UserUpdateFormRequest extends FormRequest
+class UserUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -14,7 +14,7 @@ class UserUpdateFormRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return Auth::check();
     }
 
     /**
@@ -25,7 +25,8 @@ class UserUpdateFormRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'username' => ['string', 'max:255', 'unique:users', 'alpha_dash'],
+            'email' => ['string', 'max:255', 'unique:users', 'email'],
         ];
     }
 }
