@@ -24,15 +24,15 @@ stages:
   - deploy
 
 build-composer:
-  image: lorisleiva/laravel-docker
   stage: build
   script:
     - cp .env.testing.example .env
     - composer install
   only:
     - pull_request
-    - push
     - master
+    - staging
+    - production
   artifacts:
     paths:
       - .env
@@ -40,7 +40,6 @@ build-composer:
       - storage/logs
 
 artisan-test:
-  image: lorisleiva/laravel-docker
   stage: test
   script:
     - cp ./.docker/sail/xdebug.ini /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
@@ -54,8 +53,9 @@ artisan-test:
     - php artisan test --env=testing
   only:
     - pull_request
-    - push
     - master
+    - staging
+    - production
   artifacts:
     paths:
       - storage/logs/
@@ -67,7 +67,7 @@ deploy_staging:
   script:
     - php vendor/bin/envoy run deploy --branch=staging --refresh=true --host=${{PROJECT_STAGING_HOST}}
   only:
-  - staging
+    - staging
   dependencies:
     - artisan-test
 
@@ -76,7 +76,7 @@ deploy_production:
   script:
     - php vendor/bin/envoy run deploy --branch=production --refresh=true --host=${{PROJECT_PRODUCTION_HOST}}
   only:
-  - production
+    - production
   dependencies:
     - artisan-test
 
