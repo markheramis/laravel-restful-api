@@ -2,9 +2,10 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\WithFaker;
+
 use Tests\TestCase;
 use Tests\Traits\userTraits;
+use Illuminate\Foundation\Testing\WithFaker;
 
 class RoleUpdateTest extends TestCase
 {
