@@ -89,7 +89,7 @@ services:
     ports:
       - "${FORWARD_REDIS_PORT:-6379}:6379"
     volumes:
-      - "laravel_restful_redis_volume:/data"
+      - "laravel_restful_api_redis_volume:/data"
     networks:
       - laravel_restful_api_network
     healthcheck:
@@ -117,5 +117,5 @@ volumes:
     driver: local
   #    sailpostgresql:
   #        driver: local
-  laravel_restful_redis_volume:
+  laravel_restful_api_redis_volume:
     driver: local
