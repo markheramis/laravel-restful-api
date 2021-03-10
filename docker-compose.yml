@@ -2,7 +2,7 @@
 version: "3"
 services:
   laravel.test:
-    container_name: "laravel_restul_api_laravel"
+    container_name: "laravel_restful_api_laravel"
     build:
       context: ./.docker/sail
       dockerfile: Dockerfile
@@ -18,7 +18,7 @@ services:
     volumes:
       - ".:/var/www/html"
     networks:
-      - laravel_restful_api_sail
+      - laravel_restful_api_network
     depends_on:
       - mysql
       # - pgsql
@@ -30,9 +30,9 @@ services:
   #     volumes:
   #         - '/dev/shm:/dev/shm'
   #     networks:
-  #         - laravel_restful_api_sail
+  #         - laravel_restful_api_network
   mysql:
-    container_name: "laravel_restul_api_mysql"
+    container_name: "laravel_restful_api_mysql"
     image: "mysql:8.0"
     ports:
       - "${FORWARD_DB_PORT:-3306}:3306"
@@ -43,14 +43,14 @@ services:
       MYSQL_PASSWORD: "${DB_PASSWORD}"
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
     volumes:
-      - "laravel_restful_api_mysql:/var/lib/mysql"
+      - "laravel_restful_api_volume:/var/lib/mysql"
     networks:
-      - laravel_restful_api_sail
+      - laravel_restful_api_network
     healthcheck:
       test: ["CMD", "mysqladmin", "ping"]
 
   phpmyadmin:
-    container_name: "laravel_restul_api_phpmyadmin"
+    container_name: "laravel_restful_api_phpmyadmin"
     image: phpmyadmin
     restart: always
     ports:
@@ -66,7 +66,7 @@ services:
     depends_on:
       - mysql
     networks:
-      - laravel_restful_api_sail
+      - laravel_restful_api_network
   #    pgsql:
   #        container_name: 'postgresql'
   #        image: postgres:13
@@ -80,18 +80,18 @@ services:
   #        volumes:
   #            - 'sailpostgresql:/var/lib/postgresql/data'
   #        networks:
-  #            - laravel_restful_api_sail
+  #            - laravel_restful_api_network
   #        healthcheck:
   #          test: ["CMD", "pg_isready", "-q", "-d", "${DB_DATABASE}", "-U", "${DB_USERNAME}"]
   redis:
-    container_name: "laravel_restul_api_redis"
+    container_name: "laravel_restful_api_redis"
     image: "redis:alpine"
     ports:
       - "${FORWARD_REDIS_PORT:-6379}:6379"
     volumes:
-      - "sailredis:/data"
+      - "laravel_restful_redis_volume:/data"
     networks:
-      - laravel_restful_api_sail
+      - laravel_restful_api_network
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
   # memcached:
@@ -102,20 +102,20 @@ services:
   #     networks:
   #         - sail
   mailhog:
-    container_name: "laravel_restul_api_mailhog"
+    container_name: "laravel_restful_api_mailhog"
     image: "mailhog/mailhog:latest"
     ports:
       - "${FORWARD_MAILHOG_PORT:-1025}:1025"
       - "${FORWARD_MAILHOG_DASHBOARD_PORT:-8025}:8025"
     networks:
-      - laravel_restful_api_sail
+      - laravel_restful_api_network
 networks:
-  laravel_restful_api_sail:
+  laravel_restful_api_network:
     driver: bridge
 volumes:
-  laravel_restful_api_mysql:
+  laravel_restful_api_volume:
     driver: local
   #    sailpostgresql:
   #        driver: local
-  sailredis:
+  laravel_restful_redis_volume:
     driver: local
