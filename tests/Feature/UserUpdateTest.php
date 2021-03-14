@@ -32,7 +32,7 @@ class UserUpdateTest extends TestCase
             "username" => $this->faker->userName(),
             "email" => $this->faker->email(),
         ]);
-        $response->assertStatus("401");
+        $response->assertStatus(401);
     }
 
     public function testUpdateModeratorWithNoSessionShouldBeUnauthorized()
@@ -42,7 +42,7 @@ class UserUpdateTest extends TestCase
             "username" => $this->faker->userName(),
             "email" => $this->faker->email(),
         ]);
-        $response->assertStatus("401");
+        $response->assertStatus(401);
     }
 
     public function testUpdateAdministratorWithNoSessionShouldBeUnauthorized()
@@ -52,7 +52,7 @@ class UserUpdateTest extends TestCase
             "username" => $this->faker->userName(),
             "email" => $this->faker->email(),
         ]);
-        $response->assertStatus("401");
+        $response->assertStatus(401);
     }
 
     #########################################
