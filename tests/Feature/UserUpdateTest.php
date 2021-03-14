@@ -71,8 +71,8 @@ class UserUpdateTest extends TestCase
 
     public function testUpdateAnotherSubscriberAsSubscriberShouldBeForbidden()
     {
-        $user = $this->createUser('subscribers');
-        $token = $this->getTokenByRole('subscriber', $user->uuid);
+        $user = $this->createUser("subscribers");
+        $token = $this->getTokenByRole("subscriber", $user->uuid);
         $user_to_update = $this->createUser("subscribers");
         $response = $this->json("PUT", "/api/user/" . $user_to_update->uuid, [
             "username" => $this->faker->userName(),
@@ -86,7 +86,7 @@ class UserUpdateTest extends TestCase
     public function testUpdateAnotherModeratorAsSubscriberShouldBeForbidden()
     {
         $user = $this->createUser("subscriber");
-        $token = $this->getTokenByRole('subscriber', $user->uuid);
+        $token = $this->getTokenByRole("subscriber", $user->uuid);
         $user_to_update = $this->createUser("moderators");
         $response = $this->json("PUT", "/api/user/" . $user_to_update->uuid, [
             "username" => $this->faker->userName(),
@@ -100,7 +100,7 @@ class UserUpdateTest extends TestCase
     public function testUpdateAnotherAdministratorAsSubscriberShouldBeForbidden()
     {
         $user = $this->createUser("subscriber");
-        $token = $this->getTokenByRole('subscriber', $user->uuid);
+        $token = $this->getTokenByRole("subscriber", $user->uuid);
         $user_to_update = $this->createUser("administrators");
         $response = $this->json("PUT", "/api/user/" . $user_to_update->uuid, [
             "username" => $this->faker->userName(),
@@ -113,48 +113,131 @@ class UserUpdateTest extends TestCase
     ########################################
     ############# AS MODERATOR #############
     ########################################
-    /*
+
     public function testUpdateSelfAsModeratorShouldBeAllowed()
     {
-        $user_to_update = $this->createUser("moderators");
+        $user = $this->createUser("moderators");
+        $token = $this->getTokenByRole("moderators", $user->uuid);
+        $response = $this->json("PUT", "/api/user/" . $user->uuid, [
+            "username" => $this->faker->userName(),
+            "email" => $this->faker->email(),
+        ], [
+            "Authorization" => "Bearer $token",
+        ]);
+
+        $response->assertStatus(200);
     }
 
     public function testUpdateAnotherSubscriberAsModeratorShouldBeForbidden()
     {
+        $user = $this->createUser("moderators");
+        $token = $this->getTokenByRole("moderators", $user->uuid);
+        $user_to_update = $this->createUser("subscribers");
+        $response = $this->json("PUT", "/api/user/" . $user_to_update->uuid, [
+            "username" => $this->faker->userName(),
+            "email" => $this->faker->email(),
+        ], [
+            "Authorization" => "Bearer $token",
+        ]);
+        $response->assertStatus(403);
     }
 
     public function testUpdateAnotherModeratorAsModeratorShouldBeForbidden()
     {
+        $user = $this->createUser("moderators");
+        $token = $this->getTokenByRole("moderators", $user->uuid);
+        $user_to_update = $this->createUser("moderators");
+        $response = $this->json("PUT", "/api/user/" . $user_to_update->uuid, [
+            "username" => $this->faker->userName(),
+            "email" => $this->faker->email(),
+        ], [
+            "Authorization" => "Bearer $token",
+        ]);
+        $response->assertStatus(403);
     }
 
     public function testUpdateAnotherAdministratorAsModeratorShouldBeForbidden()
     {
+        $user = $this->createUser("moderators");
+        $token = $this->getTokenByRole("moderators", $user->uuid);
+        $user_to_update = $this->createUser("administrators");
+        $response = $this->json("PUT", "/api/user/" . $user_to_update->uuid, [
+            "username" => $this->faker->userName(),
+            "email" => $this->faker->email(),
+        ], [
+            "Authorization" => "Bearer $token",
+        ]);
+        $response->assertStatus(403);
     }
-    */
+
     ############################################
     ############# AS ADMINISTRATOR #############
     ############################################
-    /*
+
     public function testUpdateSelfAsAdministratorShouldBeAlowed()
     {
-        $user_to_update = $this->createUser("administrators");
+        $user = $this->createUser("administrators");
+        $token = $this->getTokenByRole("administrators", $user->uuid);
+        $response = $this->json("PUT", "/api/user/" . $user->uuid, [
+            "username" => $this->faker->userName(),
+            "email" => $this->faker->email(),
+        ], [
+            "Authorization" => "Bearer $token",
+        ]);
+        $response->assertStatus(200);
     }
 
-    public function testUpdateAnotherSubscriberAsAdministratorShouldBeAllowed()
+    /**
+     * 
+     * @todo Administrators should be able to edit Subscribers
+     * @return void
+     */
+    public function testUpdateAnotherSubscriberAsAdministratorShouldBeForbidden()
     {
+        $user = $this->createUser("administrators");
+        $token = $this->getTokenByRole("administrators", $user->uuid);
+        $user_to_update = $this->createUser("subscribers");
+        $response = $this->json("PUT", "/api/user/" . $user_to_update->uuid, [
+            "username" => $this->faker->userName(),
+            "email" => $this->faker->email(),
+        ], [
+            "Authorization" => "Bearer $token",
+        ]);
+        $response->assertStatus(403);
     }
 
-    public function testUpdateAnotherModeratorAsAdministratorShouldBeAllowed()
+    /**
+     * @todo Administrators should be able to edit Moderators user details
+     * @return void
+     */
+    public function testUpdateAnotherModeratorAsAdministratorShouldBeForbidden()
     {
+        $user = $this->createUser("administrators");
+        $token = $this->getTokenByRole("administrators", $user->uuid);
+        $user_to_update = $this->createUser("moderators");
+        $response = $this->json("PUT", "/api/user/" . $user_to_update->uuid, [
+            "username" => $this->faker->userName(),
+            "email" => $this->faker->email(),
+        ], [
+            "Authorization" => "Bearer $token",
+        ]);
+        $response->assertStatus(403);
     }
-    */
     /**
      * @todo an admin shouldn"t be able to edit an admin, let"s change this in the future.
      * @return void
      */
-    /*
-    public function testUpdateAnotherAdministratorAsAdministratorShouldBeAllowed()
+    public function testUpdateAnotherAdministratorAsAdministratorShouldBeForbidden()
     {
+        $user = $this->createUser("administrators");
+        $token = $this->getTokenByRole("administrators", $user->uuid);
+        $user_to_update = $this->createUser("moderators");
+        $response = $this->json("PUT", "/api/user/" . $user_to_update->uuid, [
+            "username" => $this->faker->userName(),
+            "email" => $this->faker->email(),
+        ], [
+            "Authorization" => "Bearer $token",
+        ]);
+        $response->assertStatus(403);
     }
-    */
 }
