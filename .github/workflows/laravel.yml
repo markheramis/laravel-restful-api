@@ -1,11 +1,6 @@
 name: Laravel
-
-on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
-
+# Triggered when code is pushed to any branch in a repository
+on: [push, pull_request]
 jobs:
   laravel-test-job:
     runs-on: ubuntu-latest
