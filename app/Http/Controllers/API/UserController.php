@@ -39,7 +39,7 @@ class UserController extends Controller
             ->paginateWith(new IlluminatePaginatorAdapter($paginator))
             ->toArray();
 
-        return response()->json($response);
+        return response()->json($response, 200);
     }
 
     public function get(UserGetRequest $request, string $slug)
@@ -47,7 +47,7 @@ class UserController extends Controller
         $user = User::where('slug', $slug)->first();
         if ($user) {
             $response = fractal($user, new UserTransformer())->toArray();
-            return response()->success($response);
+            return response()->success($response, 200);
         } else {
             return response()->error('User not found', 404);
         }

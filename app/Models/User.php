@@ -49,7 +49,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      *
      * @var string
      */
-    protected $primaryKey = 'slug';
+    #protected $primaryKey = 'slug';
 
     /**
      * Boot function for using with User Events
@@ -85,6 +85,6 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
     public function activation()
     {
-        return $this->hasOne(Activation::class, 'id');
+        return $this->hasOne(Activation::class);
     }
 }
