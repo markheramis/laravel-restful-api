@@ -50,7 +50,7 @@ trait userTraits
     public function getTokenByRole(string $role_slug, string $user_uuid = null): string
     {
         return Role::where('slug', $role_slug)
-            ->when($user_slug, function ($query) use ($user_uuid) {
+            ->when($user_uuid, function ($query) use ($user_uuid) {
                 $query->where('uuid', $user_uuid);
             })
             ->first()
