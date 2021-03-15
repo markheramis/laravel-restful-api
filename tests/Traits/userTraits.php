@@ -47,11 +47,11 @@ trait userTraits
      * @param string $user_slug
      * @return string
      */
-    public function getTokenByRole(string $role_slug, string $user_uuid = null): string
+    public function getTokenByRole(string $role_slug, string $slug = null): string
     {
         return Role::where('slug', $role_slug)
-            ->when($user_uuid, function ($query) use ($user_uuid) {
-                $query->where('uuid', $user_uuid);
+            ->when($slug, function ($query) use ($slug) {
+                $query->where('slug', $slug);
             })
             ->first()
             ->users()

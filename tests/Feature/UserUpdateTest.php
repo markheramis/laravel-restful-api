@@ -28,7 +28,7 @@ class UserUpdateTest extends TestCase
     public function testUpdateSubscriberWithNoSessionShouldBeUnauthorized()
     {
         $user = $this->createUser("subscribers");
-        $response = $this->json("PUT", "/api/user/" . $user->uuid, [
+        $response = $this->json("PUT", "/api/user/" . $user->slug, [
             "username" => $this->faker->userName(),
             "email" => $this->faker->email(),
         ]);
@@ -38,7 +38,7 @@ class UserUpdateTest extends TestCase
     public function testUpdateModeratorWithNoSessionShouldBeUnauthorized()
     {
         $user = $this->createUser("moderators");
-        $response = $this->json("PUT", "/api/user/" . $user->uuid, [
+        $response = $this->json("PUT", "/api/user/" . $user->slug, [
             "username" => $this->faker->userName(),
             "email" => $this->faker->email(),
         ]);
@@ -48,7 +48,7 @@ class UserUpdateTest extends TestCase
     public function testUpdateAdministratorWithNoSessionShouldBeUnauthorized()
     {
         $user = $this->createUser("administrators");
-        $response = $this->json("PUT", "/api/user/" . $user->uuid, [
+        $response = $this->json("PUT", "/api/user/" . $user->slug, [
             "username" => $this->faker->userName(),
             "email" => $this->faker->email(),
         ]);
@@ -62,8 +62,8 @@ class UserUpdateTest extends TestCase
     public function testUpdateSelfAsSubscriberShouldBeAllowed()
     {
         $user = $this->createUser("subscribers");
-        $token = $this->getTokenByRole('subscribers', $user->uuid);
-        $response = $this->json("PUT", "/api/user/" . $user->uuid, [
+        $token = $this->getTokenByRole('subscribers', $user->slug);
+        $response = $this->json("PUT", "/api/user/" . $user->slug, [
             "username" => $this->faker->userName(),
             "email" => $this->faker->email(),
         ], [
@@ -75,9 +75,9 @@ class UserUpdateTest extends TestCase
     public function testUpdateAnotherSubscriberAsSubscriberShouldBeForbidden()
     {
         $user = $this->createUser("subscribers");
-        $token = $this->getTokenByRole("subscribers", $user->uuid);
+        $token = $this->getTokenByRole("subscribers", $user->slug);
         $user_to_update = $this->createUser("subscribers");
-        $response = $this->json("PUT", "/api/user/" . $user_to_update->uuid, [
+        $response = $this->json("PUT", "/api/user/" . $user_to_update->slug, [
             "username" => $this->faker->userName(),
             "email" => $this->faker->email(),
         ], [
@@ -89,9 +89,9 @@ class UserUpdateTest extends TestCase
     public function testUpdateAnotherModeratorAsSubscriberShouldBeForbidden()
     {
         $user = $this->createUser("subscribers");
-        $token = $this->getTokenByRole("subscribers", $user->uuid);
+        $token = $this->getTokenByRole("subscribers", $user->slug);
         $user_to_update = $this->createUser("moderators");
-        $response = $this->json("PUT", "/api/user/" . $user_to_update->uuid, [
+        $response = $this->json("PUT", "/api/user/" . $user_to_update->slug, [
             "username" => $this->faker->userName(),
             "email" => $this->faker->email(),
         ], [
@@ -103,9 +103,9 @@ class UserUpdateTest extends TestCase
     public function testUpdateAnotherAdministratorAsSubscriberShouldBeForbidden()
     {
         $user = $this->createUser("subscribers");
-        $token = $this->getTokenByRole("subscribers", $user->uuid);
+        $token = $this->getTokenByRole("subscribers", $user->slug);
         $user_to_update = $this->createUser("administrators");
-        $response = $this->json("PUT", "/api/user/" . $user_to_update->uuid, [
+        $response = $this->json("PUT", "/api/user/" . $user_to_update->slug, [
             "username" => $this->faker->userName(),
             "email" => $this->faker->email(),
         ], [
@@ -120,8 +120,8 @@ class UserUpdateTest extends TestCase
     public function testUpdateSelfAsModeratorShouldBeAllowed()
     {
         $user = $this->createUser("moderators");
-        $token = $this->getTokenByRole("moderators", $user->uuid);
-        $response = $this->json("PUT", "/api/user/" . $user->uuid, [
+        $token = $this->getTokenByRole("moderators", $user->slug);
+        $response = $this->json("PUT", "/api/user/" . $user->slug, [
             "username" => $this->faker->userName(),
             "email" => $this->faker->email(),
         ], [
@@ -134,9 +134,9 @@ class UserUpdateTest extends TestCase
     public function testUpdateAnotherSubscriberAsModeratorShouldBeForbidden()
     {
         $user = $this->createUser("moderators");
-        $token = $this->getTokenByRole("moderators", $user->uuid);
+        $token = $this->getTokenByRole("moderators", $user->slug);
         $user_to_update = $this->createUser("subscribers");
-        $response = $this->json("PUT", "/api/user/" . $user_to_update->uuid, [
+        $response = $this->json("PUT", "/api/user/" . $user_to_update->slug, [
             "username" => $this->faker->userName(),
             "email" => $this->faker->email(),
         ], [
@@ -148,9 +148,9 @@ class UserUpdateTest extends TestCase
     public function testUpdateAnotherModeratorAsModeratorShouldBeForbidden()
     {
         $user = $this->createUser("moderators");
-        $token = $this->getTokenByRole("moderators", $user->uuid);
+        $token = $this->getTokenByRole("moderators", $user->slug);
         $user_to_update = $this->createUser("moderators");
-        $response = $this->json("PUT", "/api/user/" . $user_to_update->uuid, [
+        $response = $this->json("PUT", "/api/user/" . $user_to_update->slug, [
             "username" => $this->faker->userName(),
             "email" => $this->faker->email(),
         ], [
@@ -162,9 +162,9 @@ class UserUpdateTest extends TestCase
     public function testUpdateAnotherAdministratorAsModeratorShouldBeForbidden()
     {
         $user = $this->createUser("moderators");
-        $token = $this->getTokenByRole("moderators", $user->uuid);
+        $token = $this->getTokenByRole("moderators", $user->slug);
         $user_to_update = $this->createUser("administrators");
-        $response = $this->json("PUT", "/api/user/" . $user_to_update->uuid, [
+        $response = $this->json("PUT", "/api/user/" . $user_to_update->slug, [
             "username" => $this->faker->userName(),
             "email" => $this->faker->email(),
         ], [
@@ -180,8 +180,8 @@ class UserUpdateTest extends TestCase
     public function testUpdateSelfAsAdministratorShouldBeAlowed()
     {
         $user = $this->createUser("administrators");
-        $token = $this->getTokenByRole("administrators", $user->uuid);
-        $response = $this->json("PUT", "/api/user/" . $user->uuid, [
+        $token = $this->getTokenByRole("administrators", $user->slug);
+        $response = $this->json("PUT", "/api/user/" . $user->slug, [
             "username" => $this->faker->userName(),
             "email" => $this->faker->email(),
         ], [
@@ -199,9 +199,9 @@ class UserUpdateTest extends TestCase
     public function testUpdateAnotherSubscriberAsAdministratorShouldBeForbidden()
     {
         $user = $this->createUser("administrators");
-        $token = $this->getTokenByRole("administrators", $user->uuid);
+        $token = $this->getTokenByRole("administrators", $user->slug);
         $user_to_update = $this->createUser("subscribers");
-        $response = $this->json("PUT", "/api/user/" . $user_to_update->uuid, [
+        $response = $this->json("PUT", "/api/user/" . $user_to_update->slug, [
             "username" => $this->faker->userName(),
             "email" => $this->faker->email(),
         ], [
@@ -218,9 +218,9 @@ class UserUpdateTest extends TestCase
     public function testUpdateAnotherModeratorAsAdministratorShouldBeForbidden()
     {
         $user = $this->createUser("administrators");
-        $token = $this->getTokenByRole("administrators", $user->uuid);
+        $token = $this->getTokenByRole("administrators", $user->slug);
         $user_to_update = $this->createUser("moderators");
-        $response = $this->json("PUT", "/api/user/" . $user_to_update->uuid, [
+        $response = $this->json("PUT", "/api/user/" . $user_to_update->slug, [
             "username" => $this->faker->userName(),
             "email" => $this->faker->email(),
         ], [
@@ -237,9 +237,9 @@ class UserUpdateTest extends TestCase
     public function testUpdateAnotherAdministratorAsAdministratorShouldBeForbidden()
     {
         $user = $this->createUser("administrators");
-        $token = $this->getTokenByRole("administrators", $user->uuid);
+        $token = $this->getTokenByRole("administrators", $user->slug);
         $user_to_update = $this->createUser("moderators");
-        $response = $this->json("PUT", "/api/user/" . $user_to_update->uuid, [
+        $response = $this->json("PUT", "/api/user/" . $user_to_update->slug, [
             "username" => $this->faker->userName(),
             "email" => $this->faker->email(),
         ], [
