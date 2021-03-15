@@ -1,12 +1,13 @@
 image: lorisleiva/laravel-docker
 
 services:
-  - mysql:5.7
+  - mysql:8.0
 
 variables:
   DB_HOST: mysql
   MYSQL_DATABASE: homestead
-  DB_USERNAME: root
+  MYSQL_USER: homestead
+  MYSQL_PASSWORD: secret
   MYSQL_ROOT_PASSWORD: secret
   SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
   GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
