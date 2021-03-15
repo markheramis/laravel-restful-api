@@ -30,6 +30,7 @@ build-composer:
     - composer install
   only:
     - pull_request
+    - push
     - master
     - staging
     - production
@@ -53,6 +54,7 @@ artisan-test:
     - php artisan test --env=testing
   only:
     - pull_request
+    - push
     - master
     - staging
     - production
