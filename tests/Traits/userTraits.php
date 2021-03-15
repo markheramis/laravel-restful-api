@@ -47,15 +47,16 @@ trait userTraits
      * @param string $user_slug
      * @return string
      */
-    public function getTokenByRole(string $role_slug, string $slug = null): string
+    public function getTokenByRole(string $role_slug, string $user_slug = null): string
     {
         return Role::where('slug', $role_slug)
-            ->when($slug, function ($query) use ($slug) {
-                $query->where('slug', $slug);
-            })
             ->first()
             ->users()
-            ->inRandomOrder()
+            ->when($user_slug != null, function ($query) use ($user_slug) {
+                $query->where('slug', $user_slug);
+            }, function ($query) {
+                $query->inRandomOrder();
+            })
             ->first()
             ->createToken('MyApp')
             ->accessToken;
