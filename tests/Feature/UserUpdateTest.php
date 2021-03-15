@@ -62,9 +62,12 @@ class UserUpdateTest extends TestCase
     public function testUpdateSelfAsSubscriberShouldBeAllowed()
     {
         $user = $this->createUser("subscribers");
+        $token = $this->getTokenByRole('subscribers', $user->uuid);
         $response = $this->json("PUT", "/api/user/" . $user->uuid, [
             "username" => $this->faker->userName(),
             "email" => $this->faker->email(),
+        ], [
+            "Authorization" => "Bearer $token",
         ]);
         $response->assertStatus(200);
     }
