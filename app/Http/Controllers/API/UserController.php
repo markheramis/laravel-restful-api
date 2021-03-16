@@ -28,7 +28,7 @@ class UserController extends Controller
         return response()->json(Auth::user());
     }
 
-    public function all(UserAllRequest $request) 
+    public function all(UserAllRequest $request)
     {
         $paginator = User::paginate();
         $users = $paginator->getCollection();
@@ -39,7 +39,7 @@ class UserController extends Controller
             ->paginateWith(new IlluminatePaginatorAdapter($paginator))
             ->toArray();
 
-        return response()->json($response);
+        return response()->json($response, 200);
     }
 
     public function get(UserGetRequest $request, string $slug)
@@ -47,7 +47,7 @@ class UserController extends Controller
         $user = User::where('slug', $slug)->first();
         if ($user) {
             $response = fractal($user, new UserTransformer())->toArray();
-            return response()->success($response);
+            return response()->success($response, 200);
         } else {
             return response()->error('User not found', 404);
         }
@@ -83,9 +83,9 @@ class UserController extends Controller
      */
     public function update(UserUpdateRequest $request, string $slug)
     {
-        $user = Sentinel::findBySlug($slug);
+        $user = User::where('slug', $slug)->first();
         if ($user) {
-            $user->name = $request->name;
+            $user->username = $request->username;
             $user->email = $request->email;
             if ($user->save())
                 return response()->success('User updated', 201);
@@ -97,7 +97,7 @@ class UserController extends Controller
 
     public function delete(UserDeleteRequest $request, string $slug)
     {
-        $user = Sentinel::findBySlug($slug);
+        $user = User::where('slug', $slug)->first();
         if ($user) {
             if ($user->delete())
                 return response()->success('User deleted successfully');
