@@ -14,7 +14,7 @@ trait userTraits
 
     use WithFaker;
 
-    public function createUser($role = 'subscribers', $activated = 1): User
+    public function createUser(string $role = 'subscribers', bool $activated = true): User
     {
         $role = Role::where('slug', $role)->first();
         $user = User::factory()->create();
@@ -47,15 +47,16 @@ trait userTraits
      * @param string $user_slug
      * @return string
      */
-    public function getTokenByRole(string $role_slug, string $user_uuid = null): string
+    public function getTokenByRole(string $role_slug, string $user_slug = null): string
     {
         return Role::where('slug', $role_slug)
-            ->when($user_uuid, function ($query) use ($user_uuid) {
-                $query->where('uuid', $user_uuid);
-            })
             ->first()
             ->users()
-            ->inRandomOrder()
+            ->when($user_slug != null, function ($query) use ($user_slug) {
+                $query->where('slug', $user_slug);
+            }, function ($query) {
+                $query->inRandomOrder();
+            })
             ->first()
             ->createToken('MyApp')
             ->accessToken;
