@@ -13,38 +13,38 @@ class RoleGetAllTest extends TestCase
 
     public function testGetAllRolesWithNoUserShouldBeBeUnauthorized()
     {
-        $response = $this->json('GET', '/api/role/');
+        $response = $this->json("GET", "/api/role/");
         $response->assertStatus(401);
     }
 
     public function testGetAllRolesWithSubscriberShouldBeForbidden()
     {
-        $token = $this->getTokenByRole('subscribers');
+        $token = $this->getTokenByRole("subscriber");
         $header = [
-            'Authorization' => "Bearer $token"
+            "Authorization" => "Bearer $token"
         ];
-        $response = $this->json('GET', '/api/role/', [], $header);
+        $response = $this->json("GET", "/api/role/", [], $header);
         $response->assertStatus(403);
     }
 
     public function testGetAllRolesWithModeratorShouldBeAllowed()
     {
-        $token = $this->getTokenByRole('moderators');
+        $token = $this->getTokenByRole("moderator");
         $header = [
-            'Authorization' => "Bearer $token"
+            "Authorization" => "Bearer $token"
         ];
-        $response = $this->json('GET', '/api/role/', [], $header);
+        $response = $this->json("GET", "/api/role/", [], $header);
         $response->assertStatus(200);
     }
 
 
     public function testGetAllRolesWithAdministratorShouldBeAllowed()
     {
-        $token = $this->getTokenByRole('administrators');
+        $token = $this->getTokenByRole("administrator");
         $header = [
-            'Authorization' => "Bearer $token"
+            "Authorization" => "Bearer $token"
         ];
-        $response = $this->json('GET', '/api/role/', [], $header);
+        $response = $this->json("GET", "/api/role/", [], $header);
         $response->assertStatus(200);
     }
 }

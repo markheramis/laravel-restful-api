@@ -1,12 +1,13 @@
 image: lorisleiva/laravel-docker
 
 services:
-  - mysql:5.7
+  - mysql:8.0
 
 variables:
   DB_HOST: mysql
   MYSQL_DATABASE: homestead
-  DB_USERNAME: root
+  MYSQL_USER: homestead
+  MYSQL_PASSWORD: secret
   MYSQL_ROOT_PASSWORD: secret
   SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
   GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
@@ -24,7 +25,6 @@ stages:
   - deploy
 
 build-composer:
-  image: lorisleiva/laravel-docker
   stage: build
   script:
     - cp .env.testing.example .env
@@ -33,6 +33,8 @@ build-composer:
     - pull_request
     - push
     - master
+    - staging
+    - production
   artifacts:
     paths:
       - .env
@@ -40,7 +42,6 @@ build-composer:
       - storage/logs
 
 artisan-test:
-  image: lorisleiva/laravel-docker
   stage: test
   script:
     - cp ./.docker/sail/xdebug.ini /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
@@ -56,6 +57,8 @@ artisan-test:
     - pull_request
     - push
     - master
+    - staging
+    - production
   artifacts:
     paths:
       - storage/logs/
@@ -65,22 +68,20 @@ artisan-test:
 deploy_staging:
   stage: deploy
   script:
-    - echo "Deploy to staging server"
-  environment:
-    name: staging
-    url: https://staging.example.com
+    - php vendor/bin/envoy run deploy --branch=staging --refresh=true --host=${{PROJECT_STAGING_HOST}}
   only:
-  - staging
+    - staging
+  dependencies:
+    - artisan-test
 
 deploy_production:
   stage: deploy
   script:
-    - echo "Deploy to staging server"
-  environment:
-    name: production
-    url: https://example.com
+    - php vendor/bin/envoy run deploy --branch=production --host=${{PROJECT_PRODUCTION_HOST}}
   only:
-  - production
+    - production
+  dependencies:
+    - artisan-test
 
 sonarcloud-check:
   stage: analyse

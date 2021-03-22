@@ -36,14 +36,21 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'first_name',
         'permissions',
     ];
-    
+
     /**
      * Array of login column names.
      *
      * @var array
      */
     protected $loginNames = ['email', 'username'];
-    
+
+    /**
+     * The primary key for the model.
+     *
+     * @var string
+     */
+    #protected $primaryKey = 'slug';
+
     /**
      * Boot function for using with User Events
      *
@@ -52,7 +59,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     protected static function boot()
     {
         parent::boot();
-        self::creating(function($model){
+        self::creating(function ($model) {
             $model->uuid = Str::uuid();
         });
     }
@@ -69,13 +76,13 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     /**
      * Get the options for generating the slug.
      */
-    public function getSlugOptions() : SlugOptions
+    public function getSlugOptions(): SlugOptions
     {
         return SlugOptions::create()
             ->generateSlugsFrom('username')
             ->saveSlugsTo('slug');
     }
-    
+
     public function activation()
     {
         return $this->hasOne(Activation::class);
