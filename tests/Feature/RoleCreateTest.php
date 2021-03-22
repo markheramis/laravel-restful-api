@@ -12,15 +12,15 @@ class RoleCreateTest extends TestCase
 
     public function testCreateRoleWithNoUserShouldBeUnauthorized()
     {
-        $response = $this->json('POST', '/api/role/', [
-            'name' => 'TestRole',
-            'slug' => 'testrole',
-            'permissions' => [
-                'test.all' => true,
-                'test.get' => true,
-                'test.update' => true,
-                'test.store' => true,
-                'test.delete' => true,
+        $response = $this->json("POST", "/api/role/", [
+            "name" => "TestRole",
+            "slug" => "testrole",
+            "permissions" => [
+                "test.all" => true,
+                "test.get" => true,
+                "test.update" => true,
+                "test.store" => true,
+                "test.delete" => true,
             ]
         ]);
         $response->assertStatus(401);
@@ -28,64 +28,64 @@ class RoleCreateTest extends TestCase
 
     public function testCreateRoleAsSubscriberShouldBeForbidden()
     {
-        $token = $this->getTokenByRole('subscribers');
+        $token = $this->getTokenByRole("subscriber");
         $body = [
-            'name' => 'TestRoleSubscriber',
-            'slug' => 'testroleSubscriber',
-            'permissions' => [
-                'test.all' => true,
-                'test.get' => true,
-                'test.update' => true,
-                'test.store' => true,
-                'test.delete' => true,
+            "name" => "TestRoleSubscriber",
+            "slug" => "testroleSubscriber",
+            "permissions" => [
+                "test.all" => true,
+                "test.get" => true,
+                "test.update" => true,
+                "test.store" => true,
+                "test.delete" => true,
             ]
         ];
         $header = [
-            'Authorization' => "Bearer $token"
+            "Authorization" => "Bearer $token"
         ];
-        $response = $this->json('POST', '/api/role/', $body, $header);
+        $response = $this->json("POST", "/api/role/", $body, $header);
         $response->assertStatus(403);
     }
 
     public function testCreateRoleAsModeratorShouldBeForbidden()
     {
-        $token = $this->getTokenByRole('moderators');
+        $token = $this->getTokenByRole("moderator");
         $body = [
-            'name' => 'TestRoleModerator',
-            'slug' => 'testroleModerator',
-            'permissions' => [
-                'test.all' => true,
-                'test.get' => true,
-                'test.update' => true,
-                'test.store' => true,
-                'test.delete' => true,
+            "name" => "TestRoleModerator",
+            "slug" => "testroleModerator",
+            "permissions" => [
+                "test.all" => true,
+                "test.get" => true,
+                "test.update" => true,
+                "test.store" => true,
+                "test.delete" => true,
             ]
         ];
         $header = [
-            'Authorization' => "Bearer $token"
+            "Authorization" => "Bearer $token"
         ];
-        $response = $this->json('POST', '/api/role/', $body, $header);
+        $response = $this->json("POST", "/api/role/", $body, $header);
         $response->assertStatus(403);
     }
 
     public function testCreateRoleAsAdminShouldBeAllowed()
     {
-        $token = $this->getTokenByRole('administrators');
+        $token = $this->getTokenByRole("administrator");
         $body = [
-            'name' => 'TestRoleAdministrator',
-            'slug' => 'testroleAdministrator',
-            'permissions' => [
-                'test.all' => true,
-                'test.get' => true,
-                'test.update' => true,
-                'test.store' => true,
-                'test.delete' => true,
+            "name" => "TestRoleAdministrator",
+            "slug" => "testroleAdministrator",
+            "permissions" => [
+                "test.all" => true,
+                "test.get" => true,
+                "test.update" => true,
+                "test.store" => true,
+                "test.delete" => true,
             ]
         ];
         $header = [
-            'Authorization' => "Bearer $token"
+            "Authorization" => "Bearer $token"
         ];
-        $response = $this->json('POST', '/api/role/', $body, $header);
+        $response = $this->json("POST", "/api/role/", $body, $header);
         $response->assertStatus(200);
     }
 }

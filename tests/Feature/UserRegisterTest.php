@@ -13,7 +13,7 @@ class UserRegisterTest extends TestCase
 
     public function testRegisterWithNoParameterShouldBeUnprocessableEntity()
     {
-        $response = $this->json('POST', '/api/register', []);
+        $response = $this->json("POST", "/api/register", []);
 
         $response
             ->assertStatus(422);
@@ -21,8 +21,8 @@ class UserRegisterTest extends TestCase
 
     public function testRegisterWithEmailOnlyShouldBeUnprocessableEntity()
     {
-        $response = $this->json('POST', '/api/register', [
-            'email' => $this->faker->email(),
+        $response = $this->json("POST", "/api/register", [
+            "email" => $this->faker->email(),
         ]);
 
         $response->assertStatus(422);
@@ -30,9 +30,9 @@ class UserRegisterTest extends TestCase
 
     public function testRegisterPasswordNoVerifyShouldBeUnprocessableEntity()
     {
-        $response = $this->json('POST', '/api/register', [
-            'email'     => $this->faker->email(),
-            'password'  => 'p@s5W0rD1234',
+        $response = $this->json("POST", "/api/register", [
+            "email"     => $this->faker->email(),
+            "password"  => "p@s5W0rD1234",
         ]);
 
         $response
@@ -41,11 +41,11 @@ class UserRegisterTest extends TestCase
 
     public function testRegisterWithPasswordNotVerifiedShouldBeUnprocessableEntity()
     {
-        $response = $this->json('POST', '/api/register', [
-            'username'    => $this->faker->userName(),
-            'email'       => $this->faker->email(),
-            'password'    => 'p@s5W0rD1234',
-            'v_password'  => 'p@s5W0rD12341',
+        $response = $this->json("POST", "/api/register", [
+            "username"    => $this->faker->userName(),
+            "email"       => $this->faker->email(),
+            "password"    => "p@s5W0rD1234",
+            "v_password"  => "p@s5W0rD12341",
         ]);
         $response
             ->assertStatus(422);
@@ -53,11 +53,11 @@ class UserRegisterTest extends TestCase
 
     public function testRegisterWithoutFullnameShouldBeUnprocessableEntity()
     {
-        $response = $this->json('POST', '/api/register', [
-            'username'    => $this->faker->userName(),
-            'email'       => $this->faker->email(),
-            'password'    => 'p@s5W0rD1234',
-            'v_password'  => 'p@s5W0rD1234',
+        $response = $this->json("POST", "/api/register", [
+            "username"    => $this->faker->userName(),
+            "email"       => $this->faker->email(),
+            "password"    => "p@s5W0rD1234",
+            "v_password"  => "p@s5W0rD1234",
         ]);
         $response
             ->assertStatus(422);
@@ -65,13 +65,13 @@ class UserRegisterTest extends TestCase
 
     public function testRegisterWithCorrectParametersShouldRegisterSuccessfully()
     {
-        $response = $this->json('POST', '/api/register', [
-            'username' => $this->faker->userName(),
-            'email' => $this->faker->email(),
-            'password' => 'p@s5W0rD1234',
-            'v_password' => 'p@s5W0rD1234',
-            'first_name' => $this->faker->firstName(),
-            'last_name' => $this->faker->lastName(),
+        $response = $this->json("POST", "/api/register", [
+            "username" => $this->faker->userName(),
+            "email" => $this->faker->email(),
+            "password" => "p@s5W0rD1234",
+            "v_password" => "p@s5W0rD1234",
+            "first_name" => $this->faker->firstName(),
+            "last_name" => $this->faker->lastName(),
         ]);
 
         $response
@@ -80,16 +80,16 @@ class UserRegisterTest extends TestCase
 
     public function testRegisterWithCorrectParametersAndPermissionShouldRegisterSuccessfully()
     {
-        $response = $this->json('POST', '/api/register', [
-            'username' => $this->faker->userName(),
-            'email' => $this->faker->email(),
-            'password' => 'p@s5W0rD1234',
-            'v_password' => 'p@s5W0rD1234',
-            'first_name' => $this->faker->firstName(),
-            'last_name' => $this->faker->lastName(),
-            'permissions' => [
-                'view.user' => true,
-                'update.user' => true,
+        $response = $this->json("POST", "/api/register", [
+            "username" => $this->faker->userName(),
+            "email" => $this->faker->email(),
+            "password" => "p@s5W0rD1234",
+            "v_password" => "p@s5W0rD1234",
+            "first_name" => $this->faker->firstName(),
+            "last_name" => $this->faker->lastName(),
+            "permissions" => [
+                "view.user" => true,
+                "update.user" => true,
             ]
         ]);
         $response

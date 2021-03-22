@@ -19,11 +19,11 @@ class UserSeeder extends Seeder
     public function run()
     {
         $users = User::factory()->count(2)->create();
-        $this->__attach_users_to_role($users, 'administrators');
+        $this->__attach_users_to_role($users, 'administrator');
         $users = User::factory()->count(3)->create();
-        $this->__attach_users_to_role($users, 'moderators');
+        $this->__attach_users_to_role($users, 'moderator');
         $users = User::factory()->count(5)->create();
-        $this->__attach_users_to_role($users, 'subscribers');
+        $this->__attach_users_to_role($users, 'subscriber');
     }
 
     private function __attach_users_to_role(Collection $users, string $role_slug)

@@ -2,8 +2,11 @@
 
 namespace App\Http\Requests;
 
+use Log;
 use Auth;
+use App\Models\User;
 use App\Http\Requests\FormRequest;
+
 
 class UserUpdateRequest extends FormRequest
 {
@@ -14,7 +17,16 @@ class UserUpdateRequest extends FormRequest
      */
     public function authorize()
     {
-        return Auth::check();
+        $user = Auth::user();
+        $can_update = $user->hasAccess("user.update");
+        return (bool) $can_update || $this->isUpdatingSelf();
+    }
+
+    private function isUpdatingSelf()
+    {
+        $user = Auth::user();
+        $request_slug = request()->slug;
+        return $user->slug == $request_slug;
     }
 
     /**
@@ -25,8 +37,8 @@ class UserUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'username' => ['string', 'max:255', 'unique:users', 'alpha_dash'],
-            'email' => ['string', 'max:255', 'unique:users', 'email'],
+            "username" => ["min:8", "max:255", "unique:users"],
+            "email" => ["max:255", "unique:users", "email"],
         ];
     }
 }
