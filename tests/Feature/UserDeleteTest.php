@@ -60,7 +60,7 @@ class UserDeleteTest extends TestCase
     {
         $user = $this->createUser("subscriber");
         $user_to_delete = $this->createUser("administrator");
-        $token = $this->getTokenByRole("administrator", $user->slug);
+        $token = $this->getTokenByRole("subscriber", $user->slug);
         $response = $this->json("DELETE", "/api/user/{$user_to_delete->slug}", [], [
             "Authorization" => "Bearer $token",
         ]);
