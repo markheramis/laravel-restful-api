@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Sentinel;
 use Exception;
-use Illuminate\Http\Request;
 
 use App\Http\Requests\UserRegisterRequest;
 
@@ -15,7 +14,8 @@ class RegisterController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function register(UserRegisterRequest $request) {
+    public function register(UserRegisterRequest $request)
+    {
         $credentials = [
             "username" => $request->username,
             "email" => $request->email,
@@ -23,31 +23,26 @@ class RegisterController extends Controller
             "first_name" => $request->first_name,
             "last_name" => $request->last_name
         ];
-        try{
-            if($user = Sentinel::register($credentials)) {
+        try {
+            if ($user = Sentinel::register($credentials)) {
                 $this->attachRole($user);
                 return $this->successResponse();
-            } else {
+            } else
                 return $this->errorResponse();
-            }
         } catch (Exception $ex) {
-            if($ex->getCode() == 23000) {
+            if ($ex->getCode() == 23000)
                 return $this->errorResponse("Email already taken");
-            } else {
+            else
                 return $this->errorResponse($ex->getMessage());
-            }
         }
     }
-    
+
     private function attachRole($user)
     {
-        /**
-         * Attach default Role
-         */
-        $default_role = Sentinel::findRoleBySlug('subscribers');
+        $default_role = Sentinel::findRoleBySlug('subscriber');
         $default_role->users()->attach($user);
     }
-    
+
     /**
      * 
      * @return \Illuminate\Http\Response|\Illuminate\Contracts\Routing\ResponseFactory
@@ -55,11 +50,11 @@ class RegisterController extends Controller
     private function successResponse()
     {
         return response()->json([
-           'status' => 'success',
-           'message' => 'User Registered Successfully',
+            'status' => 'success',
+            'message' => 'User Registered Successfully',
         ], 200);
     }
-    
+
     /**
      * 
      * @return \Illuminate\Http\Response|\Illuminate\Contracts\Routing\ResponseFactory
