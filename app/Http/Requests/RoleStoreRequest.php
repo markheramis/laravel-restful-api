@@ -5,18 +5,19 @@ namespace App\Http\Requests;
 use Auth;
 use App\Http\Requests\FormRequest;
 
-class RoleStoreRequest extends FormRequest {
+class RoleStoreRequest extends FormRequest
+{
 
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-    public function authorize() 
+    public function authorize()
     {
         if (Auth::check()) {
             $user = Auth::user();
-            return $user->hasAccess('roles.store');
+            return $user->hasAccess("role.store");
         } else {
             return false;
         }
@@ -27,13 +28,12 @@ class RoleStoreRequest extends FormRequest {
      *
      * @return array
      */
-    public function rules() 
+    public function rules()
     {
         return [
-            #'name' => 'required',
-            #'slug' => 'required',
-            #'permissions' => 'array|required'
+            #"name" => "required",
+            #"slug" => "required",
+            #"permissions" => "array|required"
         ];
     }
-
 }

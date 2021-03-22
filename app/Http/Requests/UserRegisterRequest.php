@@ -25,12 +25,12 @@ class UserRegisterRequest extends FormRequest
     public function rules()
     {
         return [
-            'username' => 'required',
-            'email' => 'required|email',
-            'password' => 'required',
-            'v_password' => 'required|same:password',
-            'first_name' => 'required',
-            'last_name' => 'required',
+            "username" => "required",
+            "email" => "required|email",
+            "password" => "required",
+            "v_password" => "required|same:password",
+            "first_name" => "required",
+            "last_name" => "required",
         ];
     }
 }
