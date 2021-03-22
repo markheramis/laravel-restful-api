@@ -20,6 +20,36 @@ class UserPermissionAddTest extends TestCase
         $this->createUser("administrator");
     }
 
+    public function testAddPermissionToSubscriberWithNoSession()
+    {
+        $slug = $this->getUserSlugByRoleSlug("subscrbier");
+        $response = $this->json("POST", "/api/user/$slug/permission", [
+            "slug" => "test_permission_subscriber_no_session",
+            "value" => true,
+        ]);
+        $response->assertStatus(401);
+    }
+
+    public function testAddPermissionToModeratorWithNoSession()
+    {
+        $slug = $this->getUserSlugByRoleSlug("moderator");
+        $response = $this->json("POST", "/api/user/$slug/permission", [
+            "slug" => "test_permission_moderator_no_session",
+            "value" => true,
+        ]);
+        $response->assertStatus(401);
+    }
+
+    public function testAddPermissionToAdministratorWithNoSession()
+    {
+        $slug = $this->getUserSlugByRoleSlug("administrator");
+        $response = $this->json("POST", "/api/user/$slug/permission", [
+            "slug" => "test_permmission_administrator_no_session",
+            "value" => true
+        ]);
+        $response->assertStatus(401);
+    }
+
     public function testAddPermissionAsAdministratorToAdministratorShouldBeAllowed()
     {
         $token = $this->getTokenByRole("administrator");

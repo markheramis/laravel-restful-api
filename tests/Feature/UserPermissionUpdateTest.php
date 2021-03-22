@@ -20,63 +20,17 @@ class UserPermissionUpdateTest extends TestCase
         $this->createUser('administrators');
     }
 
-    public function testUpdateNonExistingPermissionAsSubscriberShouldBe404()
+    public function testUpdateSubscriberWithNoSessionShouldBeUnauthorized()
+    {
+        $user = $this->createUser('subscriber');
+          
+    }
+
+    public function testUpdateModeratorWithNoSessionShouldBeUnauthorized()
     {
     }
 
-    public function testUpdateOwnPermissionAsSubscriberShouldBeAllowed()
-    {
-    }
-
-    public function testUpdateOtherSubscriberPermissionAsSubscriberShouldBeForbidden()
-    {
-    }
-
-    public function testUpdateOtherModeratorPermissionAsSubscriberShouldBeForbidden()
-    {
-    }
-
-    public function testUpdateOtherAdministratorPermissionAsSubscriberShouldBeForbidden()
-    {
-    }
-
-    public function updateNonExistingPermissionAsModeratorShouldBe404()
-    {
-    }
-
-    public function updateOwnPermissionAsModeratorShouldBeAllowed()
-    {
-    }
-
-    public function testUpdateOtherSubscriberPermissionAsModeratorShouldBeForbidden()
-    {
-    }
-
-    public function testUpdateOtherModeratorPermissionAsModeratorShouldBeForbidden()
-    {
-    }
-
-    public function testUpdateNonExistingPermissionAsAdministratorShouldBe404()
-    {
-    }
-
-    public function testUpdateOwnPermissionAsAdministratorShouldBeAllowed()
-    {
-    }
-
-    public function testUpdateOtherAdministratorPermissionAsModeratorShouldBeForbidden()
-    {
-    }
-
-    public function testUpdateOtherSubscriberPermissionAsAdministratorShouldBeAllowed()
-    {
-    }
-
-    public function testUpdateOtherModeratorPermissionAsAdministratorShouldBeAllowed()
-    {
-    }
-
-    public function testUpdateOtherAdministratorPermissionAsAdministratorShouldBeForbidden()
+    public function testUpdateAdministratorWithNoSessionShouldBeUnauthorized()
     {
     }
 }
