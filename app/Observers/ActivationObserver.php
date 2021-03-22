@@ -16,10 +16,10 @@ class ActivationObserver
      */
     public function created(Activation $activation)
     {
-        if(!config('app.env') == 'testing') {
+        if (!config('app.env') == 'testing') {
             /**
-            * Get user email of the owner of the activation.
-            */
+             * Get user email of the owner of the activation.
+             */
             $email = $activation->user->email;
             /**
              * send Activation link.
