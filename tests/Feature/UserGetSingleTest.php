@@ -42,8 +42,8 @@ class UserGetSingleTest extends TestCase
     }
     public function testGetSingleUserAsAdministratorToSubscriberShouldBeAllowed()
     {
-        $token = $this->getTokenByRole("administrators");
-        $slug = $this->getUserSlugByRoleSlug("subscribers");
+        $token = $this->getTokenByRole("administrator");
+        $slug = $this->getUserSlugByRoleSlug("subscriber");
         $response = $this->json("GET", "/api/user/$slug", [], [
             "Authorization" => "Bearer $token"
         ]);
