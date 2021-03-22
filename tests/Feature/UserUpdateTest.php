@@ -61,7 +61,6 @@ class UserUpdateTest extends TestCase
         ]);
         $response->assertStatus(200);
     }
-
     public function testUpdateAnotherSubscriberAsSubscriberShouldBeForbidden()
     {
         $user = $this->createUser("subscriber");
@@ -104,11 +103,9 @@ class UserUpdateTest extends TestCase
         ]);
         $response->assertStatus(403);
     }
-
     ########################################
     ############# AS MODERATOR #############
     ########################################
-
     public function testUpdateSelfAsModeratorShouldBeAllowed()
     {
         $user = $this->createUser("moderator");
@@ -163,11 +160,9 @@ class UserUpdateTest extends TestCase
         ]);
         $response->assertStatus(403);
     }
-
     ############################################
     ############# AS ADMINISTRATOR #############
     ############################################
-
     public function testUpdateSelfAsAdministratorShouldBeAlowed()
     {
         $user = $this->createUser("administrator");
@@ -180,12 +175,6 @@ class UserUpdateTest extends TestCase
         ]);
         $response->assertStatus(200);
     }
-
-    /**
-     * 
-     * @todo Administrators should be able to edit Subscribers
-     * @return void
-     */
     public function testUpdateAnotherSubscriberAsAdministratorShouldBeAllowed()
     {
         $user = $this->createUser("administrator");
@@ -199,7 +188,6 @@ class UserUpdateTest extends TestCase
         ]);
         $response->assertStatus(200);
     }
-
     public function testUpdateAnotherModeratorAsAdministratorShouldBeAllowed()
     {
         $user = $this->createUser("administrator");
@@ -213,7 +201,6 @@ class UserUpdateTest extends TestCase
         ]);
         $response->assertStatus(200);
     }
-
     public function testUpdateAnotherAdministratorAsAdministratorShouldBeAllowed()
     {
         $user = $this->createUser("administrator");
