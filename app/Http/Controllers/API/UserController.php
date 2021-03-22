@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use Log;
 use Sentinel;
 use Activation;
 

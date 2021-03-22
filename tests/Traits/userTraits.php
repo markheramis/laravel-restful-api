@@ -14,7 +14,7 @@ trait userTraits
 
     use WithFaker;
 
-    public function createUser(string $role = 'subscribers', bool $activated = true): User
+    public function createUser(string $role = 'subscriber', bool $activated = true): User
     {
         $role = Role::where('slug', $role)->first();
         $user = User::factory()->create();
