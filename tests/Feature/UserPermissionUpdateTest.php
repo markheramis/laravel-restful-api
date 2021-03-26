@@ -2,35 +2,41 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\WithFaker;
-use Tests\Traits\userTraits;
 use Tests\TestCase;
+use Tests\Traits\userTraits;
+use Illuminate\Foundation\Testing\WithFaker;
 
 class UserPermissionUpdateTest extends TestCase
 {
     use WithFaker, userTraits;
 
-    public function setUp(): void
-    {
-        parent::setUp();
-        for ($i = 0; $i < 5; $i++)
-            $this->createUser('subscribers');
-        for ($i = 0; $i < 3; $i++)
-            $this->createUser('moderators');
-        $this->createUser('administrators');
-    }
-
     public function testUpdateSubscriberWithNoSessionShouldBeUnauthorized()
     {
         $user = $this->createUser('subscriber');
-          
+        $user->addPermission('test.permission', true);
+        $response  = $this->json('PUT', "/api/user/{$user->slug}/permission", [
+            'test.permission' => false
+        ]);
+        $response->assertStatus(401);
     }
 
     public function testUpdateModeratorWithNoSessionShouldBeUnauthorized()
     {
+        $user = $this->createUser('moderator');
+        $user->addPermission('test.permission', true);
+        $response = $this->json("PUT", "/api/user/{$user->slug}/permission", [
+            'test.permission' => false
+        ]);
+        $response->assertStatus(401);
     }
 
     public function testUpdateAdministratorWithNoSessionShouldBeUnauthorized()
     {
+        $user = $this->createUser("administrator");
+        $user->addPermission('test.permission', true);
+        $response = $this->json("PUT", "/api/user/{$user->slug}/permission", [
+            'test.permission' => false,
+        ]);
+        $response->assertStatus(401);
     }
 }
