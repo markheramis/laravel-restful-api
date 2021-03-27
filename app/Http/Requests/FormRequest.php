@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Auth;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Validation\ValidationException;
@@ -54,6 +55,16 @@ abstract class FormRequest extends LaravelFormRequest
    */
   protected function failedAuthorization()
   {
-    throw new HttpResponseException(response()->json(['status' => 'error', 'message' => 'Access Denied'], 403));
+    if ($this->bearerToken() && Auth::check()) {
+      throw new HttpResponseException(response()->json([
+        'status' => 'error',
+        'message' => 'Access Forbidden'
+      ], JsonResponse::HTTP_FORBIDDEN));
+    } else {
+      throw new HttpResponseException(response()->json([
+        'status' => 'error',
+        'message' => 'Access Denied'
+      ], JsonResponse::HTTP_UNAUTHORIZED));
+    }
   }
 }
