@@ -14,10 +14,10 @@
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\API\UserController;
-use App\Http\Controllers\API\RoleController;
 use App\Http\Controllers\API\UserPermissionController;
 use App\Http\Controllers\API\PostController;
 use App\Http\Controllers\API\UserRoleController;
+use App\Http\Controllers\API\RoleController;
 
 Route::post('login', [LoginController::class, 'login'])->name('login');
 Route::post('register', [RegisterController::class, 'register'])->name('register');
@@ -51,12 +51,18 @@ Route::prefix('user')->middleware(['auth:api'])->group(function () {
         });
     });
 });
+
 Route::prefix('role')->middleware(['auth:api'])->group(function () {
     Route::get('/', [RoleController::class, 'index']);
     Route::post('/', [RoleController::class, 'store']);
     Route::prefix('{slug}')->group(function () {
-        Route::get('/', [RoleController::class, 'get']);
+        Route::get('/', [RoleController::class, 'show']);
         Route::put('/', [RoleController::class, 'update']);
         Route::delete('/', [RoleController::class, 'delete']);
     });
 });
+
+
+/*
+Route::resource('role', RoleController::class)->except(['create', 'edit']);
+*/

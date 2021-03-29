@@ -99,6 +99,13 @@ Then you can test the setup with the `artisan test` command to make sure all is 
 sail artisan test
 ```
 
+## Documentation
+
+For the API end point documentation, see the following URLs
+
+- native (http://localhost:8000/docs/index.html)
+- sail/docker (http://localhost/docs/index.html)
+
 ## TODO
 - Explore Auto-Deploy solutions
 - Explore Kubernetes
