@@ -47,7 +47,7 @@ abstract class FormRequest extends LaravelFormRequest
   }
 
   /**
-   * Handle a failed authorization attempt.
+   * Handle a failed authorization attempt
    *
    * @return void
    *
@@ -55,16 +55,9 @@ abstract class FormRequest extends LaravelFormRequest
    */
   protected function failedAuthorization()
   {
-    if ($this->bearerToken() && Auth::check()) {
-      throw new HttpResponseException(response()->json([
-        'status' => 'error',
-        'message' => 'Access Forbidden'
-      ], JsonResponse::HTTP_FORBIDDEN));
-    } else {
-      throw new HttpResponseException(response()->json([
-        'status' => 'error',
-        'message' => 'Access Denied'
-      ], JsonResponse::HTTP_UNAUTHORIZED));
-    }
+    throw new HttpResponseException(response()->json([
+      'status' => 'error',
+      'message' => 'Access Forbidden'
+    ], JsonResponse::HTTP_FORBIDDEN));
   }
 }
