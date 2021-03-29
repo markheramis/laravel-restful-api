@@ -2,21 +2,35 @@
 
 namespace App\Http\Controllers\API;
 
-use Sentinel;
 use App\Http\Controllers\Controller;
 use App\Models\Role;
 use App\Transformers\RoleTransformer;
 use App\Http\Requests\RoleAllRequest;
-use App\Http\Requests\RoleGetRequest;
+use App\Http\Requests\RoleShowRequest;
 use App\Http\Requests\RoleStoreRequest;
 use App\Http\Requests\RoleUpdateReqeust;
 use App\Http\Requests\RoleDeleteRequest;
+use App\Http\Requests\RoleIndexRequest;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Serializer\JsonApiSerializer;
+use Illuminate\Http\JsonResponse;
 
 class RoleController extends Controller
 {
-    public function index(RoleAllRequest $request)
+    /**
+     * Get all Roles
+     * 
+     * This endpoint lets you get all the Roles
+     *
+     * @authenticated
+     * @param RoleAllRequest $request
+     * @uses App\Models\Role $paginator
+     * @uses App\Transformers\RoleTransformer RoleTransformer
+     * @uses League\Fractal\Serializer\JsonApiSerializer JsonApiSerializer
+     * @uses League\Fractal\Pagination\IlluminatePaginatorAdapter IlluminatePaginatorAdapter
+     * @return JsonResponse
+     */
+    public function index(RoleIndexRequest $request): JsonResponse
     {
         $paginator = Role::paginate();
         $roles = $paginator->getCollection();
@@ -32,54 +46,68 @@ class RoleController extends Controller
     }
 
     /**
-     * Undocumented function
-     *
-     * @param RoleGetRequest $request
-     * @param string $slug
-     * @return void
+     * Store a Role
+     * 
+     * This endpoint lets you store a new Role
+     * 
+     * @authenticated
+     * @param RoleStoreRequest $request
+     * @return JsonResponse
      */
-    public function get(RoleGetRequest $request, string $slug)
-    {
-        $role = Sentinel::findRoleBySlug($slug);
-        if ($role) {
-            $response = fractal($role, new RoleTransformer())->toArray();
-            return response()->success($response);
-        } else {
-            return response()->error('Role not found', 404);
-        }
-    }
-
-    /**
-     * Undocumented function
-     *
-     * @param RoleCreateRequest $request
-     * @return void
-     */
-    public function store(RoleStoreRequest $request)
+    public function store(RoleStoreRequest $request): JsonResponse
     {
         $data = [
             'name' => $request->name,
             'slug' => $request->slug,
             'permissions' => $request->permissions,
         ];
-        $role = Sentinel::getRoleRepository()->createModel()->create($data);
+        $role = Role::create($data);
         if ($role) {
-            return response()->success('Role created successfully');
+            $response = fractal($role, new RoleTransformer())->toArray();
+            return response()->success($response);
         } else {
             return response()->error('Failed to create role');
         }
     }
 
     /**
-     * Undocumented function
+     * Show a Role
+     * 
+     * This endpoint lets you get a Role
      *
-     * @param RoleUpdateReqeust $request
-     * @param string $slug
-     * @return void
+     * @authenticated
+     * @todo 2nd parameter should auto resolve to the Role model instance
+     * @param RoleShowRequest $request
+     * @param string $slug the slug of the role to look for
+     * @uses App\Transformers\RoleTransformer RoleTransformer
+     * @return JsonResponse
      */
-    public function update(RoleUpdateReqeust $request, string $slug)
+    public function show(RoleShowRequest $request, string $slug): JsonResponse
     {
-        $role = Sentinel::findRoleBySlug($slug);
+        $role = Role::where('slug', $slug)->first();
+        if ($role) {
+            $response = fractal($role, new RoleTransformer())->toArray();
+            return response()->success($response);
+        } else {
+            return response()->error("Role not found", 404);
+        }
+    }
+
+    /**
+     * Update a Role
+     * 
+     * This endpoint lets you update a single Role
+     *
+     * @authenticated
+     * @todo 2nd parameter should autoresolve to Role model instance.
+     * @param RoleUpdateReqeust $request
+     * @param string $slug the slug of the role to to update
+     * @uses App\Models\Role $role
+     * @return JsonResponse
+     */
+    public function update(RoleUpdateReqeust $request, string $slug): JsonResponse
+    {
+        $role = Role::where('slug', $slug)->first();
         if ($role) {
             $role->name = $request->name;
             $role->slug = $request->slug;
@@ -96,20 +124,26 @@ class RoleController extends Controller
     }
 
     /**
-     * Undocumented function
+     * Delete a Role
+     * 
+     * This endpoint lets you delete a single Role
      *
+     * @authenticated
+     * @todo 2nd parameter should autoresolve to the Role model instance.
+     * @todo add body parameter `force` that allows force delete when user is an admin.
      * @param RoleDeleteRequest $request
-     * @param string $slug
-     * @return void
+     * @param string $slug the slug of thw Role to delete
+     * @uses App\Models\Role $role
+     * @return JsonResponse
      */
-    public function delete(RoleDeleteRequest $request, string $slug)
+    public function destroy(RoleDeleteRequest $request, string $slug): JsonResponse
     {
-        $role = Sentinel::findRoleBySlug($slug);
+        $role = Role::where('slug', $slug)->first();
         if ($role) {
             if ($role->delete()) {
                 return response()->success('Role deleted successfully');
             } else {
-                return response()->error('Failed to delete role');
+                return response()->error('Failed to delete role', 500);
             }
         } else {
             return response()->error('Role not found', 404);

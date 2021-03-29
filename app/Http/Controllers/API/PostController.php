@@ -4,18 +4,43 @@ namespace App\Http\Controllers\API;
 
 use Auth;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Models\Post;
-
+/**
+ * @group Post Management
+ * 
+ * APIs for managing Posts
+ */
 class PostController extends Controller
 {
-	public function all(Request $request)
+	/**
+	 * Get all Posts
+	 * 
+	 * This endpoint lets you get all Posts
+	 *
+	 * @todo Add Transformer
+	 * @param Request $request
+	 * @uses App\Models\Post $posts
+	 * @return JsonResponse
+	 */
+	public function all(Request $request): JsonResponse
 	{
 		$posts = Post::paginate();
 		return response()->success($posts);
 	}
 
-	public function store(Request $request)
+	/**
+	 * Store new Post
+	 * 
+	 * This endpoint lets you store a new Post
+	 * 
+	 * @authenticated
+	 * @param Request $request
+	 * @uses App\Models\Post $post
+	 * @return JsonResponse
+	 */
+	public function store(Request $request): JsonResponse
 	{
 		$post = new Post;
 		$post->title = $request->title;
@@ -32,7 +57,17 @@ class PostController extends Controller
 		}
 	}
 
-	public function get(Request $request, String $slug)
+	/**
+	 * Get a Post
+	 * 
+	 * This endpoint lets you get a Post
+	 *
+	 * @todo 2nd parameter should auto resolve into a Post model instance
+	 * @param Request $request
+	 * @param String $slug the slug of the post we want
+	 * @return JsonResponse
+	 */
+	public function get(Request $request, String $slug): JsonResponse
 	{
 		$post = Post::where('slug', $slug)->first();
 		if ($post) {
@@ -42,7 +77,18 @@ class PostController extends Controller
 		}
 	}
 
-	public function update(Request $request, String $slug)
+	/**
+	 * Update a Post
+	 * 
+	 * This endpoint lets you update a Post
+	 *
+	 * @authenticated
+	 * @todo 2nd parameter should auto resolve into an Post model instance
+	 * @param Request $request
+	 * @param String $slug the slug of the Post we want to update
+	 * @return JsonResponse
+	 */
+	public function update(Request $request, String $slug): JsonResponse
 	{
 		$post = Post::where('slug', $slug)->first();
 		if ($post) {
@@ -63,7 +109,20 @@ class PostController extends Controller
 		}
 	}
 
-	public function delete(Request $request, String $slug)
+	/**
+	 * Delete a Post
+	 * 
+	 * This endpoint lets you delete a Post
+	 *
+	 * @authenticated
+	 * @todo 2nd parameter should auto resolve into a Post model instance
+	 * @todo by default we should only soft delete
+	 * @todo add bodyParam `force` to add ability to specify if we want to hard delete.
+	 * @param Request $request
+	 * @param String $slug the slug of the Post we want to delete
+	 * @return JsonResponse
+	 */
+	public function delete(Request $request, String $slug): JsonResponse
 	{
 		$post = Post::where('slug', $slug)->first();
 		if ($post) {

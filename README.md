@@ -99,6 +99,19 @@ Then you can test the setup with the `artisan test` command to make sure all is 
 sail artisan test
 ```
 
+## Documentation
+
+For the API endpoint documentation, you can use the command below to generate the documentation file
+
+```bash
+php artisan scribe:generate
+```
+
+The documentation will then be available depending on your setup on the list below
+
+- native (http://localhost:8000/docs/index.html)
+- sail/docker (http://localhost/docs/index.html)
+
 ## TODO
 - Explore Auto-Deploy solutions
 - Explore Kubernetes

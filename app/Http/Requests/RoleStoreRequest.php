@@ -36,4 +36,29 @@ class RoleStoreRequest extends FormRequest
             #"permissions" => "array|required"
         ];
     }
+
+    public function bodyParameters()
+    {
+        return [
+            /*
+            "name" => [
+                "description" => "The name of the new Role",
+                "example" => "Admin",
+            ],
+            "slug" => [
+                "description" => "The slug of the new Role",
+                "example" => "admin",
+            ],
+            "permissions" => [
+                "description" => "The permission for this Role",
+                "example" =>  [
+                    "test.all" => true,
+                    "test.get" => true,
+                    "test.add" => false,
+                    "test.update" => false,
+                    "test.delete" => false,
+                ]
+            ]
+            */];
+    }
 }
