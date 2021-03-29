@@ -101,7 +101,13 @@ sail artisan test
 
 ## Documentation
 
-For the API end point documentation, see the following URLs
+For the API endpoint documentation, you can use the command below to generate the documentation file
+
+```bash
+php artisan scribe:generate
+```
+
+The documentation will then be available depending on your setup on the list below
 
 - native (http://localhost:8000/docs/index.html)
 - sail/docker (http://localhost/docs/index.html)
