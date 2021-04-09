@@ -22,7 +22,7 @@ class UserPermissionAddTest extends TestCase
 
     public function testAddPermissionToSubscriberWithNoSession()
     {
-        $slug = $this->getUserSlugByRoleSlug("subscrbier");
+        $slug = $this->getUserSlugByRoleSlug("subscriber");
         $response = $this->json("POST", "/api/user/$slug/permission", [
             "slug" => "test_permission_subscriber_no_session",
             "value" => true,
