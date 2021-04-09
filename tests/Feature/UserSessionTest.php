@@ -10,25 +10,15 @@ use Illuminate\Foundation\Testing\WithFaker;
 class UserSessionTest extends TestCase
 {
     use WithFaker, userTraits;
-    /**
-     * A basic feature test example.
-     *
-     * @return void
-     */
-    public function test_example()
-    {
-        $response = $this->get('/');
 
-        $response->assertStatus(200);
-    }
 
-    public function testMeAPIWithoutSession()
+    public function testGetCurrentUserWithoutSession()
     {
         $response = $this->json("GET", '/api/me');
         $response->assertStatus(401);
     }
 
-    public function testMeAPIWithASubscriber()
+    public function testGetCurrentUserAsSubscriber()
     {
         $user = $this->createUser('subscriber');
         $token = $this->getTokenByRole('subscriber', $user->slug);
@@ -38,7 +28,7 @@ class UserSessionTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function testMeAPIWithAModerator()
+    public function testGetCurrentUserAsModerator()
     {
         $user = $this->createUser("moderator");
         $token = $this->getTokenByRole("moderator", $user->slug);
@@ -48,7 +38,7 @@ class UserSessionTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function testMeAPIWithAnAdministrator()
+    public function testGetCurrentUserAsAdministrator()
     {
         $user = $this->createUser("administrator");
         $token = $this->getTokenByRole("administrator", $user->slug);
