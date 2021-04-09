@@ -8,6 +8,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UserLoginRequest;
 use App\Http\Requests\UserRegisterRequest;
 
+/**
+ * @group Auth Management
+ * 
+ * APIs for managing authentication
+ */
 class AuthController extends Controller
 {
 
