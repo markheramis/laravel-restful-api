@@ -49,10 +49,7 @@ class RegisterController extends Controller
      */
     private function successResponse()
     {
-        return response()->json([
-            'status' => 'success',
-            'message' => 'User Registered Successfully',
-        ], 200);
+        return response()->success('User Registered Successfully');
     }
 
     /**
@@ -61,9 +58,6 @@ class RegisterController extends Controller
      */
     private function errorResponse($message = 'User Registration failed')
     {
-        return response()->json([
-            'status' => 'error',
-            'message' => $message,
-        ], 400);
+        return response()->error($message, 400);
     }
 }

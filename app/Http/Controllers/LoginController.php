@@ -24,10 +24,7 @@ class LoginController extends Controller
                 return $this->failureResponse();
             }
         } catch (Exception $ex) {
-            return response()->json([
-                'code' => 50004,
-                'message' => $ex->getMessage(),
-            ], 401);
+            return response()->error($ex->getMessage(), $ex->getCode());
         }
     }
 
