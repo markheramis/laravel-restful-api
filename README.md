@@ -109,8 +109,8 @@ php artisan scribe:generate
 
 The documentation will then be available depending on your setup on the list below
 
-- native (http://localhost:8000/docs/index.html)
-- sail/docker (http://localhost/docs/index.html)
+- native (http://localhost:8000/docs/)
+- sail/docker (http://localhost/docs/)
 
 ## TODO
 - Explore Auto-Deploy solutions
