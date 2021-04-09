@@ -19,8 +19,9 @@ use App\Http\Controllers\API\UserRoleController;
 use App\Http\Controllers\API\RoleController;
 
 
-Route::post('login', [AuthController::class, 'login'])->name('login');
-Route::post('register', [AuthController::class, 'register'])->name('register');
+Route::get('me', [UserAuthController::class, 'me'])->name('api.me');
+Route::post('login', [AuthController::class, 'login'])->name('api.login');
+Route::post('register', [AuthController::class, 'register'])->name('api.register');
 Route::post('activate', [UserController::class, 'activate'])->name('api.user.activate');
 Route::get('me', [UserController::class, 'me'])->middleware('auth:api')->name('api.me');
 Route::prefix('post')->middleware(['auth:api'])->group(function () {

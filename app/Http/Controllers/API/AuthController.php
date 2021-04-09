@@ -12,6 +12,23 @@ class AuthController extends Controller
 {
 
     /**
+     * Me API
+     * 
+     * This endpoint will return the currently logged-in user.
+     *
+     * @return \Illuminate\Http\Response|\Illuminate\Contracts\Routing\ResponseFactory
+     */
+    public function me()
+    {
+        if (Sentinel::check()) {
+            $user = Sentinel::getUser();
+            return response()->success($user);
+        } else {
+            // no session
+            return response()->error(null, 401);
+        }
+    }
+    /**
      * Login API
      * 
      * This endpoint allows you to login users.
@@ -57,9 +74,13 @@ class AuthController extends Controller
             "last_name" => $request->last_name
         ];
         try {
-            if ($user = Sentinel::register($credentials)) {
-                $this->attachRole($user);
-                return response()->success('User Registered Successfully');
+            if (Sentinel::validForCreation($credentials)) {
+                if ($user = Sentinel::register($credentials)) {
+                    $this->attachRole($user);
+                    return response()->success('User Registered Successfully');
+                }
+            } else {
+                return response()->error('Could not create user');
             }
         } catch (Exception $e) {
             if ($e->getCode() == 23000) {
