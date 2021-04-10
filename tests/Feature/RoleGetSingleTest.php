@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use Log;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Tests\Traits\userTraits;

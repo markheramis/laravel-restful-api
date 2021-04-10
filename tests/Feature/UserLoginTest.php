@@ -33,11 +33,7 @@ class UserLoginTest extends TestCase
             "password" => "p@s5W0rD12347"
         ]);
         $response
-            ->assertStatus(401)
-            ->assertJson([
-                "code" => 50004,
-                "message" => "Invalid User"
-            ]);
+            ->assertStatus(401);
     }
 
     public function testLoginWithInvalidEmailShouldBeUnprocessableEntity()
@@ -67,11 +63,7 @@ class UserLoginTest extends TestCase
             "email" => $user->email,
             "password" => "password12345"
         ]);
-        $response
-            #->assertStatus(200)
-            ->assertJson([
-                "code" => 20000
-            ]);
+        $response->assertStatus(200);
     }
 
     public function testLoginWithCorrectCredentialsShouldLoginSuccessfully()
@@ -81,11 +73,7 @@ class UserLoginTest extends TestCase
             "username" => $user->username,
             "password" => "password12345"
         ]);
-        $response
-            ->assertStatus(200)
-            ->assertJson([
-                "code" => 20000
-            ]);
+        $response->assertStatus(200);
     }
 
     public function testLoginWithCorrectCredentialsAndWithEmailAndUsernameShouldLoginSuccessfully()
@@ -96,10 +84,6 @@ class UserLoginTest extends TestCase
             "username" => $user->username,
             "password" => "password12345"
         ]);
-        $response
-            ->assertStatus(200)
-            ->assertJson([
-                "code" => 20000
-            ]);
+        $response->assertStatus(200);
     }
 }
