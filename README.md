@@ -64,6 +64,8 @@ Install Laravel Dependencies
 ```bash
 composer install
 ```
+Then before you start sail, add sail to your path first, please see the Laravel Sail [Documentation](https://laravel.com/docs/8.x/sail) for more information.
+
 Then start [Laravel Sail](https://laravel.com/docs/8.x/sail)
 ```bash
 sail up # to start 
@@ -105,6 +107,12 @@ For the API endpoint documentation, you can use the command below to generate th
 
 ```bash
 php artisan scribe:generate
+```
+
+or
+
+```bash
+sail artisan scribe:generate
 ```
 
 The documentation will then be available depending on your setup on the list below
