@@ -14,18 +14,18 @@ class UserGetAllTest extends TestCase
     {
         parent::setUp();
         for ($i = 0; $i < 5; $i++)
-            $this->createUser('subscribers');
+            $this->createUser("subscriber");
         for ($i = 0; $i < 3; $i++)
-            $this->createUser('moderators');
-        $this->createUser('administrators');
+            $this->createUser("moderator");
+        $this->createUser("administrator");
     }
 
     public function testGetAllUserAsAdminsShouldBeAllowed()
     {
-        $token = $this->getTokenByRole('administrators');
+        $token = $this->getTokenByRole("administrator");
         $expected_result = User::paginate()->toArray();
-        $response = $this->json('GET', '/api/user', [], [
-            'Authorization' => "Bearer $token"
+        $response = $this->json("GET", "/api/user", [], [
+            "Authorization" => "Bearer $token"
         ]);
         $response
             ->assertStatus(200);
@@ -33,10 +33,10 @@ class UserGetAllTest extends TestCase
 
     public function testGetAllUserAsModeratorShouldBeAllowed()
     {
-        $token = $this->getTokenByRole('moderators');
+        $token = $this->getTokenByRole("moderator");
         $expected_result = User::paginate()->toArray();
-        $response = $this->json('GET', '/api/user', [], [
-            'Authorization' => "Bearer $token"
+        $response = $this->json("GET", "/api/user", [], [
+            "Authorization" => "Bearer $token"
         ]);
         $response
             ->assertStatus(200);
@@ -44,10 +44,10 @@ class UserGetAllTest extends TestCase
 
     public function testGetAllUserAsSubscriberShouldBeAllowed()
     {
-        $token = $this->getTokenByRole('subscribers');
+        $token = $this->getTokenByRole("subscriber");
         $expected_result = User::paginate()->toArray();
-        $response = $this->json('GET', '/api/user', [], [
-            'Authorization' => "Bearer $token"
+        $response = $this->json("GET", "/api/user", [], [
+            "Authorization" => "Bearer $token"
         ]);
         $response
             ->assertStatus(200);

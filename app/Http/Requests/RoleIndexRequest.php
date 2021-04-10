@@ -3,9 +3,9 @@
 namespace App\Http\Requests;
 
 use Auth;
-use App\Http\Requests\FormRequest;
+use Illuminate\Foundation\Http\FormRequest;
 
-class RoleGetRequest extends FormRequest
+class RoleIndexRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -14,12 +14,12 @@ class RoleGetRequest extends FormRequest
      */
     public function authorize()
     {
-      if (Auth::check()) {
-        $user = Auth::user();
-        return $user->hasAccess('roles.get');
-      } else {
-        return false;
-      }
+        if (Auth::check()) {
+            $user = Auth::user();
+            return $user->hasAccess("role.all");
+        } else {
+            return false;
+        }
     }
 
     /**

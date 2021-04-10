@@ -2,92 +2,92 @@
 
 namespace Database\Seeders;
 
-use Sentinel;
+use App\Models\Role;
 use Illuminate\Database\Seeder;
 
-class RoleSeeder extends Seeder {
+class RoleSeeder extends Seeder
+{
 
     /**
      * Run the database seeds.
      *
      * @return void
      */
-    public function run() 
+    public function run()
     {
         $this->create([
-            'name' => 'Administrators',
-            'slug' => 'administrators',
-            'permissions' => [
-                'users.all' => true,
-                'users.get' => true,
-                'users.add' => true,
-                'users.update' => true,
-                'users.delete' => true,
-                'users.permission.get' => true,
-                'users.permission.add' => true,
-                'users.permission.update' => true,
-                'users.permission.delete' => true,
-                'users.role.get' => true,
-                'users.role.add' => true,
-                'users.role.delete' => true,
-                'roles.all' => true,
-                'roles.get' => true,
-                'roles.store' => true,
-                'roles.update' => true,
-                'roles.delete' => true
+            "name" => "Administrator",
+            "slug" => "administrator",
+            "permissions" => [
+                "user.all" => true,
+                "user.get" => true,
+                "user.add" => true,
+                "user.update" => true,
+                "user.delete" => true,
+                "user.permission.get" => true,
+                "user.permission.add" => true,
+                "user.permission.update" => true,
+                "user.permission.delete" => true,
+                "user.role.get" => true,
+                "user.role.add" => true,
+                "user.role.delete" => true,
+                "role.all" => true,
+                "role.show" => true,
+                "role.store" => true,
+                "role.update" => true,
+                "role.delete" => true
             ]
         ]);
         $this->create([
-            'name' => 'Moderators',
-            'slug' => 'moderators',
-            'permissions' => [
-                'users.all' => true,
-                'users.get' => true,
-                'users.add' => false,
-                'users.update' => true,
-                'users.delete' => false,
-                'users.permission.get' => true,
-                'users.permission.add' => true,
-                'users.permission.update' => true,
-                'users.permission.delete' => false,
-                'users.role.get' => true,
-                'users.role.add' => false,
-                'users.role.delete' => false,
-                'roles.all' => true,
-                'roles.get' => true,
-                'roles.store' => false,
-                'roles.update' => false,
-                'roles.delete' => false
+            "name" => "Moderator",
+            "slug" => "moderator",
+            "permissions" => [
+                "user.all" => true,
+                "user.get" => true,
+                "user.add" => false,
+                "user.update" => false,
+                "user.delete" => false,
+                "user.permission.get" => true,
+                "user.permission.add" => true,
+                "user.permission.update" => true,
+                "user.permission.delete" => false,
+                "user.role.get" => true,
+                "user.role.add" => false,
+                "user.role.delete" => false,
+                "role.all" => true,
+                "role.show" => true,
+                "role.store" => false,
+                "role.update" => false,
+                "role.delete" => false
             ]
         ]);
         $this->create([
-            'name' => 'Subscribers',
-            'slug' => 'subscribers',
-            'permissions' => [
-                'users.all' => true,
-                'users.get' => true,
-                'users.add' => false,
-                'users.update' => false,
-                'users.delete' => false,
-                'users.permission.get' => false,
-                'users.permission.add' => false,
-                'users.permission.update' => false,
-                'users.permission.delete' => false,
-                'users.role.get' => true,
-                'users.role.add' => false,
-                'users.role.delete' => false,
-                'roles.all' => false,
-                'roles.get' => false,
-                'roles.store' => false,
-                'roles.update' => false,
-                'roles.delete' => false
+            "name" => "Subscriber",
+            "slug" => "subscriber",
+            "permissions" => [
+                "user.all" => true,
+                "user.get" => true,
+                "user.add" => false,
+                "user.update" => false,
+                "user.delete" => false,
+                "user.permission.get" => false,
+                "user.permission.add" => false,
+                "user.permission.update" => false,
+                "user.permission.delete" => false,
+                "user.role.get" => true,
+                "user.role.add" => false,
+                "user.role.delete" => false,
+                "role.all" => false,
+                "role.show" => false,
+                "role.store" => false,
+                "role.update" => false,
+                "role.delete" => false
             ]
         ]);
-    }
-    
-    private function create($data)
-    {
-        $role = Sentinel::getRoleRepository()->createModel()->create($data);
     }
 
+    private function create($data)
+    {
+        $role = Role::create($data);
+    }
 }

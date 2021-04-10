@@ -10,21 +10,31 @@ use App\Http\Requests\UserPermissionGetRequest;
 use App\Http\Requests\UserPermissionAddRequest;
 use App\Http\Requests\UserPermissionUpdateRequest;
 use App\Http\Requests\UserPermissionDeleteRequest;
+use \Illuminate\Http\JsonResponse;
 
+/**
+ * @group Usrr Permission Management
+ * 
+ * APIs for managing a User's Permissions
+ */
 class UserPermissionController extends Controller
 {
 
     /**
      * Get User Permission
+     * 
+     * This endpoint lets you get a User's Permissions
      *
+     * @authenticated
+     * @todo 2nd parameter should auto resolve into a User model instance
      * @param UserPermissionGetRequest $request
-     * @param string $user_slug
-     * @return void
+     * @param string $slug the slug of the User we want to get the Permissions from
+     * @return JsonResponse
      */
-    public function get(UserPermissionGetRequest $request, string $user_slug)
+    public function get(UserPermissionGetRequest $request, string $slug): JsonResponse
     {
         try {
-            $user = User::where('slug', $user_slug)->first();
+            $user = User::where('slug', $slug)->first();
             if ($user) {
                 $permission = $user->permissions;
                 $response = fractal($permission, new PermissionTransformer())->toArray();
@@ -40,11 +50,15 @@ class UserPermissionController extends Controller
     /**
      * Add User Permission
      *
+     * This endpoint lets you add a Permission to a User
+     * 
+     * @authenticated
+     * @todo 2nd parameter should autoresolve into a User model instance
      * @param UserPermissionAddRequest $request
-     * @param string $slug
-     * @return void
+     * @param string $slug the slug of the User we want this Permission to be added.
+     * @return JsonResponse
      */
-    public function add(UserPermissionAddRequest $request, string $slug)
+    public function add(UserPermissionAddRequest $request, string $slug): JsonResponse
     {
         try {
             $user = User::where('slug', $slug)->first();
@@ -64,11 +78,15 @@ class UserPermissionController extends Controller
     /**
      * Update User Permission
      *
+     * This endpoint lets you update a Permission from a User
+     * 
+     * @authenticated
+     * @todo 2nd parameter should auto resolve into a User model instance
      * @param UserPermissionUpdateRequest $request
-     * @param string $slug
-     * @return void
+     * @param string $slug the slug of the User thaat we want to update Permissions
+     * @return JsonResponse
      */
-    public function update(UserPermissionUpdateRequest $request, string $slug)
+    public function update(UserPermissionUpdateRequest $request, string $slug): JsonResponse
     {
         try {
             $user = User::where('slug', $slug)->first();
@@ -87,12 +105,16 @@ class UserPermissionController extends Controller
 
     /**
      * Delete User Permission
+     * 
+     * This endpoint lets you delete a Permission from a User
      *
+     * @authenticated
+     * @todo 2nd parameter should auto resolve into a User model instance
      * @param UserPermissionDeleteRequest $request
      * @param string $slug
-     * @return void
+     * @return JsonResponse
      */
-    public function delete(UserPermissionDeleteRequest $request, string $slug)
+    public function delete(UserPermissionDeleteRequest $request, string $slug): JsonResponse
     {
         try {
             $user = User::where('slug', $slug)->first();

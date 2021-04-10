@@ -14,10 +14,10 @@ class UserPermissionGetTest extends TestCase
     {
         parent::setUp();
         for ($i = 0; $i < 5; $i++)
-            $this->createUser('subscribers');
+            $this->createUser("subscriber");
         for ($i = 0; $i < 3; $i++)
-            $this->createUser('moderators');
-        $this->createUser('administrators');
+            $this->createUser("moderator");
+        $this->createUser("administrator");
     }
 
     /**
@@ -26,30 +26,30 @@ class UserPermissionGetTest extends TestCase
 
     public function testGetPermissionAsAdministratorToAdministratorShouldBeAllowed()
     {
-        $token = $this->getTokenByRole('administrators');
-        $slug = $this->getUserSlugByRoleSlug('administrators');
-        $response = $this->json('GET', "/api/user/$slug/permission", [], [
-            'Authorization' => "Bearer $token"
+        $token = $this->getTokenByRole("administrator");
+        $slug = $this->getUserSlugByRoleSlug("administrator");
+        $response = $this->json("GET", "/api/user/$slug/permission", [], [
+            "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
     }
 
     public function testGetPermissionAsAdministratorToModeratorShouldBeAllowed()
     {
-        $token = $this->getTokenByRole('administrators');
-        $slug = $this->getUserSlugByRoleSlug('moderators');
-        $response = $this->json('GET', "/api/user/$slug/permission", [], [
-            'Authorization' => "Bearer $token"
+        $token = $this->getTokenByRole("administrator");
+        $slug = $this->getUserSlugByRoleSlug("moderator");
+        $response = $this->json("GET", "/api/user/$slug/permission", [], [
+            "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
     }
 
     public function testGetPermissionAsAdministratorToSubscriberShouldBeAllowed()
     {
-        $token = $this->getTokenByRole('administrators');
-        $slug = $this->getUserSlugByRoleSlug('subscribers');
-        $response = $this->json('GET', "/api/user/$slug/permission", [], [
-            'Authorization' => "Bearer $token"
+        $token = $this->getTokenByRole("administrator");
+        $slug = $this->getUserSlugByRoleSlug("subscriber");
+        $response = $this->json("GET", "/api/user/$slug/permission", [], [
+            "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
     }
@@ -60,30 +60,30 @@ class UserPermissionGetTest extends TestCase
 
     public function testGetPermissionAsModeratorToAdministratorShouldBeAllowed()
     {
-        $token = $this->getTokenByRole('moderators');
-        $slug = $this->getUserSlugByRoleSlug('administrators');
-        $response = $this->json('GET', "/api/user/$slug/permission", [], [
-            'Authorization' => "Bearer $token"
+        $token = $this->getTokenByRole("moderator");
+        $slug = $this->getUserSlugByRoleSlug("administrator");
+        $response = $this->json("GET", "/api/user/$slug/permission", [], [
+            "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
     }
 
     public function testGetPermissionAsModeratorToModeratorShouldBeAllowed()
     {
-        $token = $this->getTokenByRole('moderators');
-        $slug = $this->getUserSlugByRoleSlug('moderators');
-        $response = $this->json('GET', "/api/user/$slug/permission", [], [
-            'Authorization' => "Bearer $token"
+        $token = $this->getTokenByRole("moderator");
+        $slug = $this->getUserSlugByRoleSlug("moderator");
+        $response = $this->json("GET", "/api/user/$slug/permission", [], [
+            "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
     }
 
     public function testGetPermissionAsModeratorToSubscriberShouldBeAllowed()
     {
-        $token = $this->getTokenByRole('moderators');
-        $slug = $this->getUserSlugByRoleSlug('subscribers');
-        $response = $this->json('GET', "/api/user/$slug/permission", [], [
-            'Authorization' => "Bearer $token"
+        $token = $this->getTokenByRole("moderator");
+        $slug = $this->getUserSlugByRoleSlug("subscriber");
+        $response = $this->json("GET", "/api/user/$slug/permission", [], [
+            "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
     }
@@ -94,30 +94,30 @@ class UserPermissionGetTest extends TestCase
 
     public function testGetPermissionAsSubscriberToAdministratorShouldBeForbidden()
     {
-        $token = $this->getTokenByRole('subscribers');
-        $slug = $this->getUserSlugByRoleSlug('administrators');
-        $response = $this->json('GET', "/api/user/$slug/permission", [], [
-            'Authorization' => "Bearer $token"
+        $token = $this->getTokenByRole("subscriber");
+        $slug = $this->getUserSlugByRoleSlug("administrator");
+        $response = $this->json("GET", "/api/user/$slug/permission", [], [
+            "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(403);
     }
 
     public function testGetPermissionAsSubscriberToModeratorShouldBeForbidden()
     {
-        $token = $this->getTokenByRole('subscribers');
-        $slug = $this->getUserSlugByRoleSlug('moderators');
-        $response = $this->json('GET', "/api/user/$slug/permission", [], [
-            'Authorization' => "Bearer $token"
+        $token = $this->getTokenByRole("subscriber");
+        $slug = $this->getUserSlugByRoleSlug("moderator");
+        $response = $this->json("GET", "/api/user/$slug/permission", [], [
+            "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(403);
     }
 
     public function testGetPermissionAsSubscriberToSubscriberShouldBeForbidden()
     {
-        $token = $this->getTokenByRole('subscribers');
-        $slug = $this->getUserSlugByRoleSlug('subscribers');
-        $response = $this->json('GET', "/api/user/$slug/permission", [], [
-            'Authorization' => "Bearer $token"
+        $token = $this->getTokenByRole("subscriber");
+        $slug = $this->getUserSlugByRoleSlug("subscriber");
+        $response = $this->json("GET", "/api/user/$slug/permission", [], [
+            "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(403);
     }

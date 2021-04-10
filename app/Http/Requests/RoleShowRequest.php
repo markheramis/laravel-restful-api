@@ -3,9 +3,9 @@
 namespace App\Http\Requests;
 
 use Auth;
-use App\Http\Requests\FormRequest;
+use Illuminate\Foundation\Http\FormRequest;
 
-class UserRegisterRequest extends FormRequest
+class RoleShowRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -14,7 +14,10 @@ class UserRegisterRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        if (Auth::check()) {
+            $user = Auth::user();
+            return $user->hasAccess("role.show");
+        }
     }
 
     /**
@@ -25,12 +28,7 @@ class UserRegisterRequest extends FormRequest
     public function rules()
     {
         return [
-            "username" => "required",
-            "email" => "required|email",
-            "password" => "required",
-            "v_password" => "required|same:password",
-            "first_name" => "required",
-            "last_name" => "required",
+            //
         ];
     }
 }

@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Models\Activation;
 use App\Observers\UserObserver;
 use App\Observers\ActivationObserver;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -19,7 +20,7 @@ class AppServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        'App\Model' => 'App\Policies\ModelPolicy',
+        #'App\Model' => 'App\Policies\ModelPolicy',
     ];
 
     /**
