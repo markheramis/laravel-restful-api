@@ -15,12 +15,12 @@ use App\Http\Requests\UserRegisterRequest;
  */
 class AuthController extends Controller
 {
-
     /**
      * Me API
      * 
      * This endpoint will return the currently logged-in user.
-     *
+     * 
+     * @authenticated
      * @return \Illuminate\Http\Response|\Illuminate\Contracts\Routing\ResponseFactory
      */
     public function me()

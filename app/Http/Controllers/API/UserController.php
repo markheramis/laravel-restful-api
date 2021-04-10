@@ -30,18 +30,6 @@ use League\Fractal\Serializer\JsonApiSerializer;
 class UserController extends Controller
 {
     /**
-     * Get current User
-     * 
-     * This endpoint lets you get the currently logged in User.
-     * @authenticated
-     * @return JsonResponse
-     */
-    public function me(): JsonResponse
-    {
-        return response()->json(Auth::user());
-    }
-
-    /**
      * Get all Users
      * 
      * This endpoint lets you get all Users.
