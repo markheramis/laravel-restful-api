@@ -52,6 +52,15 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     #protected $primaryKey = 'slug';
 
     /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'password', 'email', 'remember_token',
+    ];
+
+    /**
      * Boot function for using with User Events
      *
      * @return void
@@ -64,14 +73,12 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         });
     }
 
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
-    protected $hidden = [
-        'password', 'remember_token',
-    ];
+
+
+    public function findForPassport($username)
+    {
+        return $this->where('email', $username)->first();
+    }
 
     /**
      * Get the options for generating the slug.

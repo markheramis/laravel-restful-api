@@ -19,7 +19,7 @@ use App\Http\Controllers\API\UserRoleController;
 use App\Http\Controllers\API\RoleController;
 
 
-Route::get('me', [AuthController::class, 'me'])->name('api.me');
+Route::get('me', [AuthController::class, 'me'])->middleware(['auth:api'])->name('api.me');
 Route::post('login', [AuthController::class, 'login'])->name('api.login');
 Route::post('register', [AuthController::class, 'register'])->name('api.register');
 Route::post('activate', [UserController::class, 'activate'])->name('api.user.activate');

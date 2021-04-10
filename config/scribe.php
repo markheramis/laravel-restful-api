@@ -130,7 +130,7 @@ return [
      * - "static" will generate a static HTMl page in the /public/docs folder,
      * - "laravel" will generate the documentation as a Blade view, so you can add routing and authentication.
      */
-    'type' => env('SCRIBE_TYPE', 'static'),
+    'type' => env('SCRIBE_TYPE', 'laravel'),
 
     /*
      * Settings for `static` type output.
