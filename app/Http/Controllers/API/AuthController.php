@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use Auth;
 use Sentinel;
 use Exception;
 use App\Http\Controllers\Controller;
@@ -25,11 +26,10 @@ class AuthController extends Controller
      */
     public function me()
     {
-        if (Sentinel::check()) {
-            $user = Sentinel::getUser();
+        if (Auth::check()) {
+            $user = Auth::user();
             return response()->success($user);
         } else {
-            // no session
             return response()->error(null, 401);
         }
     }
