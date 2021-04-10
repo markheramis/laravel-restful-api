@@ -15,6 +15,11 @@ use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Serializer\JsonApiSerializer;
 use Illuminate\Http\JsonResponse;
 
+/**
+ * @group Role Management
+ * 
+ * APIs for managing Roles
+ */
 class RoleController extends Controller
 {
     /**
