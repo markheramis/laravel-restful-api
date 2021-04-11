@@ -26,12 +26,8 @@ class AuthController extends Controller
      */
     public function me()
     {
-        if (Auth::check()) {
-            $user = Auth::user();
-            return response()->success($user);
-        } else {
-            return response()->error(null, 401);
-        }
+        $user = Auth::user();
+        return response()->success($user);
     }
     /**
      * Login API
