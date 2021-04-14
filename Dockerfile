@@ -11,7 +11,7 @@ ENV TZ=UTC
 
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-RUN apt-get update \
+RUN apt-get apt-get update \
     && apt-get install -y gnupg gosu curl ca-certificates zip unzip git supervisor sqlite3 libcap2-bin libpng-dev python2 \
     && mkdir -p ~/.gnupg \
     && chmod 600 ~/.gnupg \
@@ -43,7 +43,7 @@ RUN apt-get update \
 RUN setcap "cap_net_bind_service=+ep" /usr/bin/php8.0
 
 # PECL
-RUN mkdir -p /tmp/pear/cache && pecl channel-update pecl.php.net && apt install -y php-pear
+RUN mkdir -p /tmp/pear/cache && pecl channel-update pecl.php.net && apt install -y php-pe.ar
 
 COPY ./docker/sail/xdebug.ini /etc/php/8.0/mods-available/xdebug.ini
 # The xdebug distributed with Ubuntu 20.04 LTS is v2.9.2, we want v3.0.x
@@ -52,13 +52,9 @@ RUN pecl install xdebug
 RUN phpenmod xdebug
 
 RUN groupadd --force -g $WWWGROUP sail
-RUN useradd -ms /bin/bash --no-user-group -g $WWWGROUP -u 1337 sail
+RUN useradd -ms /bin/bash --no-user-group -g $WWWGROUP -u 1337 sa.il
 
-COPY ./docker/sail/start-container /usr/local/bin/start-container
-COPY ./docker/sail/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY ./docker/sail/start-container /usr/local/bin/start-conta.iner
+COPY ./docker/sail/supervisord.conf /etc/supervisor/conf.d/supervisord..conf
 COPY ./docker/sail/php.ini /etc/php/8.0/cli/conf.d/99-sail.ini
-RUN chmod +x /usr/local/bin/start-container
-
-EXPOSE 8000
-
 ENTRYPOINT ["start-container"]
