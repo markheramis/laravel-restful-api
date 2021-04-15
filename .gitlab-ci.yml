@@ -8,12 +8,16 @@ variables:
   MYSQL_ROOT_PASSWORD: secret
   SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
   GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
+  DOCKER_DRIVER: overlay2
 
 include:
   - template: Dependency-Scanning.gitlab-ci.yml
 
 include:
   - template: License-Scanning.gitlab-ci.yml
+
+include:
+  - template: Container-Scanning.gitlab-ci.yml
 
 stages:
   - build
@@ -25,7 +29,15 @@ build-docker:
   stage: build
   image: docker:stable
   script:
-    - echo "test"
+    - docker info
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    - docker build -t $IMAGE .
+    - docker push $IMAGE
+
+  services:
+    - docker:19.03.12-dind
+  variables:
+    IMAGE: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA
   only:
     - master
 
