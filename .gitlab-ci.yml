@@ -1,5 +1,3 @@
-image: lorisleiva/laravel-docker
-
 services:
   - mysql:8.0
 
@@ -24,7 +22,16 @@ stages:
   - analyse
   - deploy
 
+build-docker:
+  stage: build
+  image: docker:stable
+  script:
+    - echo "test"
+  only:
+    - master
+
 build-composer:
+  image: lorisleiva/laravel-docker
   stage: build
   script:
     - cp .env.testing.example .env
@@ -42,6 +49,7 @@ build-composer:
       - storage/logs
 
 artisan-test:
+  image: lorisleiva/laravel-docker
   stage: test
   script:
     - cp ./.docker/sail/xdebug.ini /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
@@ -66,6 +74,7 @@ artisan-test:
     - build-composer
 
 deploy_staging:
+  image: lorisleiva/laravel-docker
   stage: deploy
   script:
     - php vendor/bin/envoy run deploy --branch=staging --refresh=true --host=${{PROJECT_STAGING_HOST}}
@@ -75,6 +84,7 @@ deploy_staging:
     - artisan-test
 
 deploy_production:
+  image: lorisleiva/laravel-docker
   stage: deploy
   script:
     - php vendor/bin/envoy run deploy --branch=production --host=${{PROJECT_PRODUCTION_HOST}}
