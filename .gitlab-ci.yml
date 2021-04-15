@@ -1,5 +1,4 @@
-services:
-  - mysql:8.0
+
 
 variables:
   DB_HOST: mysql
@@ -51,6 +50,8 @@ build-composer:
 artisan-test:
   image: lorisleiva/laravel-docker
   stage: test
+  services:
+    - mysql:8.0
   script:
     - cp ./.docker/sail/xdebug.ini /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
     - cp .env.testing.example .env.testing
