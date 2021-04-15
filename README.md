@@ -124,6 +124,7 @@ The documentation will then be available depending on your setup on the list bel
 - Explore Auto-Deploy solutions
 - Explore Kubernetes
 - Explore Github Actions (will require migrating to [Github](www.github.com))
+- Configure Sail && Docker to use Google's Container Optimize OS instead of Ubuntu 20.04 for better security
 
 ## Learning Laravel
 

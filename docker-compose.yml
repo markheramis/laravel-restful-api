@@ -4,7 +4,7 @@ services:
   laravel.test:
     container_name: "laravel_restful_api_laravel"
     build:
-      context: ./.docker/sail
+      context: ./
       dockerfile: Dockerfile
       args:
         WWWGROUP: "${WWWGROUP}"
