@@ -2,7 +2,7 @@ FROM ubuntu:20.04
 
 LABEL maintainer="Taylor Otwell"
 
-ARG WWWGROUP
+ARG WWWGROUP=1000
 
 COPY . /var/www/html
 WORKDIR /var/www/html
