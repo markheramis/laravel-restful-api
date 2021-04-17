@@ -25,7 +25,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Copy xdebug configuration
-      run: cp ./.docker/sail/xdebug.ini /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+      run: cp ./resources/docker/sail/xdebug.ini /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
     - name: Copy .env
       run: php -r "file_exists('.env') || copy('.env.testing.example', '.env');"
