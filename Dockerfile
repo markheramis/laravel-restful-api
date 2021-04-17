@@ -4,6 +4,7 @@ LABEL maintainer="Taylor Otwell"
 
 ARG WWWGROUP=1000
 
+COPY . /var/www/html
 WORKDIR /var/www/html
 
 ENV DEBIAN_FRONTEND noninteractive
@@ -44,7 +45,7 @@ RUN mkdir -p /tmp/pear/cache
 RUN pecl channel-update pecl.php.net
 RUN apt install -y php-pear
 
-COPY ./.docker/sail/xdebug.ini /etc/php/8.0/mods-available/xdebug.ini
+COPY ./resource/docker/sail/xdebug.ini /etc/php/8.0/mods-available/xdebug.ini
 # The xdebug distributed with Ubuntu 20.04 LTS is v2.9.2, we want v3.0.x
 RUN pecl install xdebug
 # Enable xdebug by default
@@ -53,9 +54,9 @@ RUN phpenmod xdebug
 RUN groupadd --force -g $WWWGROUP sail
 RUN useradd -ms /bin/bash --no-user-group -g $WWWGROUP -u 1337 sail
 
-COPY ./.docker/sail/start-container /usr/local/bin/start-container
-COPY ./.docker/sail/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-COPY ./.docker/sail/php.ini /etc/php/8.0/cli/conf.d/99-sail.ini
+COPY ./resource/docker/sail/start-container /usr/local/bin/start-container
+COPY ./resource/docker/sail/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY ./resource/docker/sail/php.ini /etc/php/8.0/cli/conf.d/99-sail.ini
 RUN chmod +x /usr/local/bin/start-container
 
 EXPOSE 8000
