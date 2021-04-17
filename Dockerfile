@@ -4,7 +4,6 @@ LABEL maintainer="Taylor Otwell"
 
 ARG WWWGROUP=1000
 
-COPY . /var/www/html
 WORKDIR /var/www/html
 
 ENV DEBIAN_FRONTEND noninteractive
