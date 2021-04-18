@@ -48,11 +48,11 @@ spec:
             timeoutSeconds: 30
           ports:
             - containerPort: 80
-          #readinessProbe:
-          #  initialDelaySeconds: 10
-          #  periodSeconds: 10
-          #  tcpSocket:
-          #    port: 80
+          readinessProbe:
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            tcpSocket:
+              port: 80
           workingDir: /var/www/html
           resources:
             limits:
@@ -71,19 +71,24 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  labels:
+    app: laravel-restful-api-service
   name: laravel-restful-api-service
 spec:
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
   selector:
     app: laravel-restful-api-selector
-  ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 80
+  type: ClusterIP
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: laravel-restful-api-ingress
+  labels:
+    app: laravel-restful-api-ingress
   annotations:
     ingress.kubernetes.io/rewrite-target: /
 spec:

@@ -14,8 +14,8 @@ data:
   QUEUE_DRIVER: file
   SESSION_DRIVER: file
   DB_CONNECTION: mysql
+  DB_HOST: mysql-service
   DB_DATABASE: mysql
-  DB_HOST: mysql
   DB_USERNAME: homestead
   DB_PASSWORD: secret
   DB_PORT: "3306"
