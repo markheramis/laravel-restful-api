@@ -4,8 +4,7 @@ LABEL maintainer="Taylor Otwell"
 
 ARG WWWGROUP=1000
 
-COPY . /var/www/html
-WORKDIR /var/www/html
+
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV TZ=UTC
@@ -53,6 +52,11 @@ RUN phpenmod xdebug
 
 RUN groupadd --force -g $WWWGROUP sail
 RUN useradd -ms /bin/bash --no-user-group -g $WWWGROUP -u 1337 sail
+
+COPY . /var/www/html
+RUN chown -R sail:sail /var/www/html
+WORKDIR /var/www/html
+
 
 COPY ./resources/docker/sail/start-container /usr/local/bin/start-container
 COPY ./resources/docker/sail/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
