@@ -45,7 +45,7 @@ Route::prefix('user')->middleware(['auth:api'])->group(function () {
 Route::prefix('role')->middleware(['auth:api'])->group(function () {
     Route::get('/', [RoleController::class, 'index']);
     Route::post('/', [RoleController::class, 'store']);
-    Route::prefix('{slug}')->group(function () {
+    Route::prefix('{role}')->group(function () {
         Route::get('/', [RoleController::class, 'show']);
         Route::put('/', [RoleController::class, 'update']);
         Route::delete('/', [RoleController::class, 'delete']);
