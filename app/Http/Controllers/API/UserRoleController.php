@@ -28,12 +28,11 @@ class UserRoleController extends Controller
      * @authenticated
      * @todo 2nd paramter should auto resolve into a User model instance.
      * @param UserRoleGetRequest $request
-     * @param string $slug the slug of the User we want to get the Role from
+     * @param App\Models\User $user auto reolved instance of User
      * @return JsonResponse
      */
-    public function show(UserRoleShowRequest $request, string $slug): JsonResponse
+    public function show(UserRoleShowRequest $request, User $user): JsonResponse
     {
-        $user = User::where('slug', $slug)->first();
         if ($user) {
             $roles = $user->roles;
             $response = fractal($roles, new RoleTransformer())->toArray();
@@ -50,12 +49,11 @@ class UserRoleController extends Controller
      * @authenticated
      * @todo 2nd paramter should auto resolve into a User model instance.
      * @param UserRoleAddRequest $request
-     * @param string $slug the slug of the User that we want to add the Role into.
+     * @param App\Models\User $user auto reolved instance of User
      * @return JsonResponse
      */
-    public function add(UserRoleAddRequest $request, string $slug): JsonResponse
+    public function add(UserRoleAddRequest $request, User $user): JsonResponse
     {
-        $user = User::where('slug', $slug)->first();
         $role = Role::where('slug', $request->slug)->first();
         if ($user && $role) {
             $role->users()->attach($user);
@@ -73,13 +71,12 @@ class UserRoleController extends Controller
      * @authenticated
      * @todo 2nd parameter should auto resolve to a User model instance.
      * @param UserRoleDeleteRequest $request
-     * @param string $slug the slug of the User where we want the Role removed from.
+     * @param App\Models\User $user auto reolved instance of User
      * @return JsonResponse
      */
-    public function delete(UserRoleDeleteRequest $request, string $slug): JsonResponse
+    public function delete(UserRoleDeleteRequest $request, User $user): JsonResponse
     {
-        $user = User::where('slug', $slug)->first();
-        $role = Role::where('slug', $slug)->first();
+        $role = Role::where('slug', $request->slug)->first();
         if ($user && $role) {
             $role->users()->detach($user);
             return response()->success('Detached Successfully');
