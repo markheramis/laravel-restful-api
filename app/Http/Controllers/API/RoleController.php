@@ -83,13 +83,12 @@ class RoleController extends Controller
      * @authenticated
      * @todo 2nd parameter should auto resolve to the Role model instance
      * @param RoleShowRequest $request
-     * @param string $slug the slug of the role to look for
+     * @param App\Models\Role $role auto resolved instance of Eloquent Role
      * @uses App\Transformers\RoleTransformer RoleTransformer
      * @return JsonResponse
      */
-    public function show(RoleShowRequest $request, string $slug): JsonResponse
+    public function show(RoleShowRequest $request, Role $role): JsonResponse
     {
-        $role = Role::where('slug', $slug)->first();
         if ($role) {
             $response = fractal($role, new RoleTransformer())->toArray();
             return response()->success($response);
@@ -106,13 +105,12 @@ class RoleController extends Controller
      * @authenticated
      * @todo 2nd parameter should autoresolve to Role model instance.
      * @param RoleUpdateReqeust $request
-     * @param string $slug the slug of the role to to update
+     * @param App\Models\Role $role auto resolved instance of Eloquent Role
      * @uses App\Models\Role $role
      * @return JsonResponse
      */
-    public function update(RoleUpdateReqeust $request, string $slug): JsonResponse
+    public function update(RoleUpdateReqeust $request, Role $role): JsonResponse
     {
-        $role = Role::where('slug', $slug)->first();
         if ($role) {
             $role->name = $request->name;
             $role->slug = $request->slug;
@@ -137,13 +135,12 @@ class RoleController extends Controller
      * @todo 2nd parameter should autoresolve to the Role model instance.
      * @todo add body parameter `force` that allows force delete when user is an admin.
      * @param RoleDeleteRequest $request
-     * @param string $slug the slug of thw Role to delete
+     * @param App\Models\Role $role auto resolved instance of Eloquent Role
      * @uses App\Models\Role $role
      * @return JsonResponse
      */
-    public function destroy(RoleDeleteRequest $request, string $slug): JsonResponse
+    public function destroy(RoleDeleteRequest $request, Role $role): JsonResponse
     {
-        $role = Role::where('slug', $slug)->first();
         if ($role) {
             if ($role->delete()) {
                 return response()->success('Role deleted successfully');
