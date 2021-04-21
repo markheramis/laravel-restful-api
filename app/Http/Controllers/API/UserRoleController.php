@@ -6,11 +6,9 @@ use App\Http\Controllers\Controller;
 
 use App\Models\User;
 use App\Models\Role;
-
 use App\Transformers\RoleTransformer;
-
-use App\Http\Requests\UserRoleGetRequest;
 use App\Http\Requests\UserRoleAddRequest;
+use App\Http\Requests\UserRoleShowRequest;
 use App\Http\Requests\UserRoleDeleteRequest;
 use Illuminate\Http\JsonResponse;
 
@@ -33,7 +31,7 @@ class UserRoleController extends Controller
      * @param string $slug the slug of the User we want to get the Role from
      * @return JsonResponse
      */
-    public function get(UserRoleGetRequest $request, string $slug): JsonResponse
+    public function show(UserRoleShowRequest $request, string $slug): JsonResponse
     {
         $user = User::where('slug', $slug)->first();
         if ($user) {

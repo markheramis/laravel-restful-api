@@ -6,7 +6,7 @@ use Exception;
 use App\Models\User;
 use App\Transformers\PermissionTransformer;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\UserPermissionGetRequest;
+use App\Http\Requests\UserPermissionShowRequest;
 use App\Http\Requests\UserPermissionAddRequest;
 use App\Http\Requests\UserPermissionUpdateRequest;
 use App\Http\Requests\UserPermissionDeleteRequest;
@@ -28,22 +28,17 @@ class UserPermissionController extends Controller
      * @authenticated
      * @todo 2nd parameter should auto resolve into a User model instance
      * @param UserPermissionGetRequest $request
-     * @param string $slug the slug of the User we want to get the Permissions from
+     * @param App\Models\User $$user auto resolved User eloquent instance.
      * @return JsonResponse
      */
-    public function get(UserPermissionGetRequest $request, string $slug): JsonResponse
+    public function show(UserPermissionShowRequest $request, User $user): JsonResponse
     {
-        try {
-            $user = User::where('slug', $slug)->first();
-            if ($user) {
-                $permission = $user->permissions;
-                $response = fractal($permission, new PermissionTransformer())->toArray();
-                return response()->success($response);
-            } else {
-                return response()->error('User not founnd', 404);
-            }
-        } catch (Exception $ex) {
-            return response()->error($ex->getMessage(), $ex->getCode());
+        if ($user) {
+            $permission = $user->permissions;
+            $response = fractal($permission, new PermissionTransformer())->toArray();
+            return response()->success($response);
+        } else {
+            return response()->error('User not founnd', 404);
         }
     }
 
@@ -55,23 +50,19 @@ class UserPermissionController extends Controller
      * @authenticated
      * @todo 2nd parameter should autoresolve into a User model instance
      * @param UserPermissionAddRequest $request
-     * @param string $slug the slug of the User we want this Permission to be added.
+     * @param App\Models\User $$user auto resolved User eloquent instance.
      * @return JsonResponse
      */
-    public function add(UserPermissionAddRequest $request, string $slug): JsonResponse
+    public function add(UserPermissionAddRequest $request, User $user): JsonResponse
     {
-        try {
-            $user = User::where('slug', $slug)->first();
-            if ($user) {
-                $user->addPermission($request->slug, $request->value);
-                if ($user->save())
-                    return response()->success('Permission added successfully');
-                else
-                    return response()->error('Failed to add permission', 400);
-            } else
-                return response()->error('User not found', 404);
-        } catch (Exception $ex) {
-            return response()->error($ex->getMessage(), $ex->getCode());
+        if ($user) {
+            $user->addPermission($request->slug, $request->value);
+            if ($user->save())
+                return response()->success('Permission added successfully');
+            else
+                return response()->error('Failed to add permission', 400);
+        } else {
+            return response()->error('User not found', 404);
         }
     }
 
@@ -83,23 +74,19 @@ class UserPermissionController extends Controller
      * @authenticated
      * @todo 2nd parameter should auto resolve into a User model instance
      * @param UserPermissionUpdateRequest $request
-     * @param string $slug the slug of the User thaat we want to update Permissions
+     * @param App\Models\User $$user auto resolved User eloquent instance.
      * @return JsonResponse
      */
-    public function update(UserPermissionUpdateRequest $request, string $slug): JsonResponse
+    public function update(UserPermissionUpdateRequest $request, User $user): JsonResponse
     {
-        try {
-            $user = User::where('slug', $slug)->first();
-            if ($user) {
-                $user->updatePermission($request->slug, $request->value, true);
-                if ($user->save())
-                    return response()->success('Permission updated successfully');
-                else
-                    return response()->error('Failed to update permission', 400);
-            } else
-                return response()->error('User not found', 404);
-        } catch (Exception $ex) {
-            return response()->error($ex->getMessage(), $ex->getCode());
+        if ($user) {
+            $user->updatePermission($request->slug, $request->value, true);
+            if ($user->save())
+                return response()->success('Permission updated successfully');
+            else
+                return response()->error('Failed to update permission', 400);
+        } else {
+            return response()->error('User not found', 404);
         }
     }
 
@@ -111,23 +98,19 @@ class UserPermissionController extends Controller
      * @authenticated
      * @todo 2nd parameter should auto resolve into a User model instance
      * @param UserPermissionDeleteRequest $request
-     * @param string $slug
+     * @param App\Models\User $$user auto resolved User eloquent instance.
      * @return JsonResponse
      */
-    public function delete(UserPermissionDeleteRequest $request, string $slug): JsonResponse
+    public function delete(UserPermissionDeleteRequest $request, User $user): JsonResponse
     {
-        try {
-            $user = User::where('slug', $slug)->first();
-            if ($user) {
-                $user->removePermission($request->slug);
-                if ($user->save())
-                    return response()->success('Permission deleted successfully');
-                else
-                    return response()->error('Failed to delete permission', 400);
-            } else
-                return response()->error('User not found', 404);
-        } catch (Exception $ex) {
-            return response()->error($ex->getMessage(), $ex->getCode());
+        if ($user) {
+            $user->removePermission($request->slug);
+            if ($user->save())
+                return response()->success('Permission deleted successfully');
+            else
+                return response()->error('Failed to delete permission', 400);
+        } else {
+            return response()->error('User not found', 404);
         }
     }
 }

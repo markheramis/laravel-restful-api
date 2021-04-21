@@ -21,7 +21,7 @@ class UserSessionTest extends TestCase
     public function testGetCurrentUserAsSubscriber()
     {
         $user = $this->createUser('subscriber');
-        $token = $this->getTokenByRole('subscriber', $user->slug);
+        $token = $this->getTokenByRole('subscriber', $user->id);
         $response = $this->json("GET", "/api/me", [], [
             "Authorization" => "Bearer $token"
         ]);
@@ -31,7 +31,7 @@ class UserSessionTest extends TestCase
     public function testGetCurrentUserAsModerator()
     {
         $user = $this->createUser("moderator");
-        $token = $this->getTokenByRole("moderator", $user->slug);
+        $token = $this->getTokenByRole("moderator", $user->id);
         $response = $this->json("GET", "/api/me", [], [
             "Authorization" => "Bearer $token",
         ]);
@@ -41,7 +41,7 @@ class UserSessionTest extends TestCase
     public function testGetCurrentUserAsAdministrator()
     {
         $user = $this->createUser("administrator");
-        $token = $this->getTokenByRole("administrator", $user->slug);
+        $token = $this->getTokenByRole("administrator", $user->id);
         $response = $this->json("GET", "/api/me", [], [
             "Authorization" => "Bearer $token"
         ]);
