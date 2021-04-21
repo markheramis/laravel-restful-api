@@ -2,9 +2,6 @@
 
 namespace App\Models;
 
-
-use Spatie\Sluggable\HasSlug;
-use Spatie\Sluggable\SlugOptions;
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Support\Str;
 use Illuminate\Auth\Authenticatable;
@@ -21,7 +18,7 @@ use Cartalyst\Sentinel\Users\EloquentUser as Model;
 
 class User extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
 {
-    use HasApiTokens, Authenticatable, MustVerifyEmail, Notifiable, CanResetPassword, Authorizable, HasFactory, HasSlug;
+    use HasApiTokens, Authenticatable, MustVerifyEmail, Notifiable, CanResetPassword, Authorizable, HasFactory;
 
     /**
      * The attributes that are mass assignable.
@@ -73,6 +70,15 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         });
     }
 
+    /**
+     * Get the route key for the model.
+     *
+     * @return string
+     */
+    public function getRouteKeyName()
+    {
+        return 'id';
+    }
 
 
     public function findForPassport($username)
@@ -80,15 +86,6 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         return $this->where('email', $username)->first();
     }
 
-    /**
-     * Get the options for generating the slug.
-     */
-    public function getSlugOptions(): SlugOptions
-    {
-        return SlugOptions::create()
-            ->generateSlugsFrom('username')
-            ->saveSlugsTo('slug');
-    }
 
     public function activation()
     {

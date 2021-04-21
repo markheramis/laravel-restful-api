@@ -12,8 +12,8 @@ use Illuminate\Http\JsonResponse;
 
 use App\Models\User;
 use App\Transformers\UserTransformer;
-use App\Http\Requests\UserAllRequest;
-use App\Http\Requests\UserGetRequest;
+use App\Http\Requests\UserIndexRequest;
+use App\Http\Requests\UserShowRequest;
 use App\Http\Requests\UserActivateRequest;
 use App\Http\Requests\UserUpdateRequest;
 use App\Http\Requests\UserDeleteRequest;
@@ -42,7 +42,7 @@ class UserController extends Controller
      * @uses League\Fractal\Serializer\JsonApiSerializer JsonApiSerializer
      * @return JsonResponse
      */
-    public function all(UserAllRequest $request): JsonResponse
+    public function index(UserIndexRequest $request): JsonResponse
     {
         $rolePaginator = User::paginate();
         $users = $rolePaginator->getCollection();
@@ -63,14 +63,13 @@ class UserController extends Controller
      * @authenticated
      * @todo 2nd parameter should auto resolve into a User model instance
      * @param UserGetRequest $request
-     * @param string $slug the slug of the user to update.
+     * @param App\Models\User $user
      * @uses App\Models\User $user
      * @uses App\Transformers\UserTransformer UserTransformer
      * @return JsonResponse
      */
-    public function get(UserGetRequest $request, string $slug): JsonResponse
+    public function show(UserShowRequest $request, User $user): JsonResponse
     {
-        $user = User::where('slug', $slug)->first();
         if ($user) {
             $response = fractal($user, new UserTransformer())->toArray();
             return response()->success($response, 200);
@@ -78,7 +77,6 @@ class UserController extends Controller
             return response()->error('User not found', 404);
         }
     }
-
 
     /**
      * Activate a User
@@ -111,12 +109,11 @@ class UserController extends Controller
      * @authenticated
      * @todo 2nd paramter $slug should auto resolve to a User model instance
      * @param UserUpdateRequest $request
-     * @param string $slug the slug of the user to update.
+     * @param App\Models\User $user
      * @return JsonResponse
      */
-    public function update(UserUpdateRequest $request, string $slug): JsonResponse
+    public function update(UserUpdateRequest $request, User $user): JsonResponse
     {
-        $user = User::where('slug', $slug)->first();
         if ($user) {
             $user->username = $request->username;
             $user->email = $request->email;
@@ -138,12 +135,12 @@ class UserController extends Controller
      * @authenticated
      * @todo 2nd parameter $slug should auto resolve to a User model instance
      * @param UserDeleteRequest $request
-     * @param string $slug the slug of the user to delete.
+     * @param App\Models\User $user
      * @return JsonResponse
      */
-    public function delete(UserDeleteRequest $request, string $slug): JsonResponse
+    public function delete(UserDeleteRequest $request, User $user): JsonResponse
     {
-        $user = User::where('slug', $slug)->first();
+        \Log::info("UserController\n" . json_encode($user, JSON_PRETTY_PRINT));
         if ($user) {
             if ($user->delete()) {
                 return response()->success('User deleted successfully');

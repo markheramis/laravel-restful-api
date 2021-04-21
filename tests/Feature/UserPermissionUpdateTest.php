@@ -14,7 +14,7 @@ class UserPermissionUpdateTest extends TestCase
     {
         $user = $this->createUser('subscriber');
         $user->addPermission('test.permission', true);
-        $response  = $this->json('PUT', "/api/user/{$user->slug}/permission", [
+        $response  = $this->json('PUT', "/api/user/{$user->id}/permission", [
             'test.permission' => false
         ]);
         $response->assertStatus(401);
@@ -24,7 +24,7 @@ class UserPermissionUpdateTest extends TestCase
     {
         $user = $this->createUser('moderator');
         $user->addPermission('test.permission', true);
-        $response = $this->json("PUT", "/api/user/{$user->slug}/permission", [
+        $response = $this->json("PUT", "/api/user/{$user->id}/permission", [
             'test.permission' => false
         ]);
         $response->assertStatus(401);
@@ -34,7 +34,7 @@ class UserPermissionUpdateTest extends TestCase
     {
         $user = $this->createUser("administrator");
         $user->addPermission('test.permission', true);
-        $response = $this->json("PUT", "/api/user/{$user->slug}/permission", [
+        $response = $this->json("PUT", "/api/user/{$user->id}/permission", [
             'test.permission' => false,
         ]);
         $response->assertStatus(401);

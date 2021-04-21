@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Auth;
 use App\Http\Requests\FormRequest;
 
-class UserRoleGetRequest extends FormRequest
+class UserIndexRequest extends FormRequest
 {
   /**
    * Determine if the user is authorized to make this request.
@@ -16,7 +16,7 @@ class UserRoleGetRequest extends FormRequest
   {
     if (Auth::check()) {
       $user = Auth::user();
-      return $user->hasAccess("user.role.get");
+      return $user->hasAccess("user.all");
     } else {
       return false;
     }

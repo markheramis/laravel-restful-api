@@ -8,112 +8,113 @@ use Tests\Traits\userTraits;
 class UserGetSingleTest extends TestCase
 {
     use userTraits;
-    public function setUp(): void
-    {
-        parent::setUp();
-        for ($i = 0; $i < 5; $i++)
-            $this->createUser("subscriber");
-        for ($i = 0; $i < 3; $i++)
-            $this->createUser("moderator");
-        $this->createUser("administrator");
-    }
+
     #################################################
     ############# TEST AS ADMINISTRATOR #############
     #################################################
     public function testGetSingleUserAsAdministratorToAdminstratorShouldBeAllowed()
     {
-        $token = $this->getTokenByRole("administrator");
-        $slug = $this->getUserSlugByRoleSlug("administrator");
-        $response = $this->json("GET", "/api/user/$slug", [], [
+        $user1 = $this->createUser("administrator");
+        $user2 = $this->createUser("administrator");
+        $token = $this->getTokenByRole("administrator", $user1->id);
+        $id = $user2->id;
+        $response = $this->json("GET", "/api/user/$id", [], [
             "Authorization" => "Bearer $token"
         ]);
-        $response
-            ->assertStatus(200);
+        $response->assertStatus(200);
     }
     public function testGetSingleUserAsAdministratorToModeratorShouldBeAllowed()
     {
-        $token = $this->getTokenByRole("administrator");
-        $slug = $this->getUserSlugByRoleSlug("moderator");
-        $response = $this->json("GET", "/api/user/$slug", [], [
+        $user1 = $this->createUser("administrator");
+        $user2 = $this->createUser("moderator");
+        $token = $this->getTokenByRole("administrator", $user1->id);
+        $id = $user2->id;
+        $response = $this->json("GET", "/api/user/$id", [], [
             "Authorization" => "Bearer $token"
         ]);
-        $response
-            ->assertStatus(200);
+        $response->assertStatus(200);
     }
     public function testGetSingleUserAsAdministratorToSubscriberShouldBeAllowed()
     {
-        $token = $this->getTokenByRole("administrator");
-        $slug = $this->getUserSlugByRoleSlug("subscriber");
-        $response = $this->json("GET", "/api/user/$slug", [], [
+        $user1 = $this->createUser("administrator");
+        $user2 = $this->createUser("subscriber");
+        $token = $this->getTokenByRole("administrator", $user1->id);
+        $id = $user2->id;
+        $response = $this->json("GET", "/api/user/$id", [], [
             "Authorization" => "Bearer $token"
         ]);
-        $response
-            ->assertStatus(200);
+        $response->assertStatus(200);
     }
     #############################################
     ############# TEST AS MODERATOR #############
     #############################################
     public function testGetSingleUserAsModeratorToAdministratorShouldBeAllowed()
     {
-        $token = $this->getTokenByRole("moderator");
-        $slug = $this->getUserSlugByRoleSlug("administrator");
-        $response = $this->json("GET", "/api/user/$slug", [], [
+        $user1 = $this->createUser("moderator");
+        $user2 = $this->createUser("administrator");
+        $token = $this->getTokenByRole("moderator", $user1->id);
+        $id = $user2->id;
+        $response = $this->json("GET", "/api/user/$id", [], [
             "Authorization" => "Bearer $token"
         ]);
-        $response
-            ->assertStatus(200);
+        $response->assertStatus(200);
     }
     public function testGetSingleUserAsModeratorToModeratorShouldBeAllowed()
     {
-        $token = $this->getTokenByRole("moderator");
-        $slug = $this->getUserSlugByRoleSlug("moderator");
-        $response = $this->json("GET", "/api/user/$slug", [], [
+        $user1 = $this->createUser("moderator");
+        $user2 = $this->createUser("moderator");
+        $token = $this->getTokenByRole("moderator", $user1->id);
+        $id = $user2->id;
+        $response = $this->json("GET", "/api/user/$id", [], [
             "Authorization" => "Bearer $token"
         ]);
-        $response
-            ->assertStatus(200);
+        $response->assertStatus(200);
     }
     public function testGetSingleUserAsModeratorToSubscribersShouldBeAllowed()
     {
-        $token = $this->getTokenByRole("moderator");
-        $slug = $this->getUserSlugByRoleSlug("subscriber");
-        $response = $this->json("GET", "/api/user/$slug", [], [
+        $user1 = $this->createUser("moderator");
+        $user2 = $this->createUser("subscriber");
+        $token = $this->getTokenByRole("moderator", $user1->id);
+        $id = $user2->id;
+        $response = $this->json("GET", "/api/user/$id", [], [
             "Authorization" => "Bearer $token"
         ]);
-        $response
-            ->assertStatus(200);
+        $response->assertStatus(200);
     }
     ##############################################
     ############# TEST AS SUBSCRIBER #############
     ##############################################
     public function testGetSingleUserAsSubscriberToAdministratorShouldBeAllowed()
     {
-        $token = $this->getTokenByRole("subscriber");
-        $slug = $this->getUserSlugByRoleSlug("administrator");
-        $response = $this->json("GET", "/api/user/$slug", [], [
+        $user1 = $this->createUser("subscriber");
+        $user2 = $this->createUser("administrator");
+        $token = $this->getTokenByRole("subscriber", $user1->id);
+        $id = $user2->id;
+        $response = $this->json("GET", "/api/user/$id", [], [
             "Authorization" => "Bearer $token"
         ]);
-        $response
-            ->assertStatus(200);
+        $response->assertStatus(200);
     }
     public function testGetSingleUserAsSubscriberToModeratorShouldBeAllowed()
     {
-        $token = $this->getTokenByRole("subscriber");
-        $slug = $this->getUserSlugByRoleSlug("moderator");
-        $response = $this->json("GET", "/api/user/$slug", [], [
+        $user1 = $this->createUser("subscriber");
+        $user2 = $this->createUser("moderator");
+        $token = $this->getTokenByRole("subscriber", $user1->id);
+        $id = $user2->id;
+        $response = $this->json("GET", "/api/user/$id", [], [
             "Authorization" => "Bearer $token"
         ]);
-        $response
-            ->assertStatus(200);
+        $response->assertStatus(200);
     }
     public function testGetSingleUserSubscriberToSubscriberShouldBeAllowed()
     {
-        $token = $this->getTokenByRole("subscriber");
-        $slug = $this->getUserSlugByRoleSlug("subscriber");
-        $response = $this->json("GET", "/api/user/$slug", [], [
+        $user1 = $this->createUser("subscriber");
+        $user2 = $this->createUser("subscriber");
+        $token = $this->getTokenByRole("subscriber", $user1->id);
+        $id = $user2->id;
+        $response = $this->json("GET", "/api/user/$id", [], [
             "Authorization" => "Bearer $token"
         ]);
-        $response
-            ->assertStatus(200);
+        $response->assertStatus(200);
     }
 }

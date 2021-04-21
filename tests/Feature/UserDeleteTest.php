@@ -13,22 +13,22 @@ class UserDeleteTest extends TestCase
 
     public function testDeleteSubscriberWithNoSessionShouldBeUnauthorized()
     {
-        $user = $this->createUser("subscriber");
-        $response = $this->json("DELETE", "/api/user/{$user->slug}");
+        $user1 = $this->createUser("subscriber");
+        $response = $this->json("DELETE", "/api/user/{$user1->id}");
         $response->assertStatus(401);
     }
 
     public function testDeleteModeratorWithNoSessionShouldBeUnauthorized()
     {
-        $user = $this->createUser("moderator");
-        $response = $this->json("DELETE", "/api/user/{$user->slug}");
+        $user1 = $this->createUser("moderator");
+        $response = $this->json("DELETE", "/api/user/{$user1->id}");
         $response->assertStatus(401);
     }
 
     public function testDeleteAdministratorWithNoSessionShouldBeUnauthorized()
     {
-        $user = $this->createUser("administrator");
-        $response = $this->json("DELETE", "/api/user/{$user->slug}");
+        $user1 = $this->createUser("administrator");
+        $response = $this->json("DELETE", "/api/user/{$user1->id}");
         $response->assertStatus(401);
     }
     #########################################
@@ -36,10 +36,10 @@ class UserDeleteTest extends TestCase
     #########################################
     public function testDeleteSubscriberAsSubscriberShouldBeForbidden()
     {
-        $user = $this->createUser("subscriber");
-        $user_to_delete = $this->createUser("subscriber");
-        $token = $this->getTokenByRole("subscriber", $user->slug);
-        $response = $this->json("DELETE", "/api/user/{$user_to_delete->slug}", [], [
+        $user1 = $this->createUser("subscriber");
+        $user2 = $this->createUser("subscriber");
+        $token = $this->getTokenByRole("subscriber", $user1->id);
+        $response = $this->json("DELETE", "/api/user/{$user2->id}", [], [
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(403);
@@ -47,10 +47,10 @@ class UserDeleteTest extends TestCase
 
     public function testDeleteModeratorAsSubscriberShouldBeForbidden()
     {
-        $user = $this->createUser("subscriber");
-        $user_to_delete = $this->createUser("moderator");
-        $token = $this->getTokenByRole("subscriber", $user->slug);
-        $response = $this->json("DELETE", "/api/user/{$user_to_delete->slug}", [], [
+        $user1 = $this->createUser("subscriber");
+        $user2 = $this->createUser("moderator");
+        $token = $this->getTokenByRole("subscriber", $user1->id);
+        $response = $this->json("DELETE", "/api/user/{$user2->id}", [], [
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(403);
@@ -58,10 +58,10 @@ class UserDeleteTest extends TestCase
 
     public function testDeleteAdministratorAsSubscrbierShouldBeForbidden()
     {
-        $user = $this->createUser("subscriber");
-        $user_to_delete = $this->createUser("administrator");
-        $token = $this->getTokenByRole("subscriber", $user->slug);
-        $response = $this->json("DELETE", "/api/user/{$user_to_delete->slug}", [], [
+        $user1 = $this->createUser("subscriber");
+        $user2 = $this->createUser("administrator");
+        $token = $this->getTokenByRole("subscriber", $user1->id);
+        $response = $this->json("DELETE", "/api/user/{$user2->id}", [], [
             "Authorization" => "Bearer $token",
         ]);
         $response->assertStatus(403);
@@ -71,65 +71,71 @@ class UserDeleteTest extends TestCase
     ########################################
     public function testDeleteSubscriberAsModeratorShouldBeForbidden()
     {
-        $user = $this->createUser("moderator");
-        $user_to_delete = $this->createUser("subscriber");
-        $token = $this->getTokenByRole("moderator", $user->slug);
-        $response = $this->json("DELETE", "/api/user/{$user_to_delete->slug}", [], [
+        $user1 = $this->createUser("moderator");
+        $user2 = $this->createUser("subscriber");
+        $token = $this->getTokenByRole("moderator", $user1->id);
+        $response = $this->json("DELETE", "/api/user/{$user2->id}", [], [
             "Authorization" => "Bearer $token",
         ]);
         $response->assertStatus(403);
     }
     public function testDeleteModeratorAsModeratorShouldBeForbidden()
     {
-        $user = $this->createUser("moderator");
-        $user_to_delete = $this->createUser("moderator");
-        $token = $this->getTokenByRole("moderator", $user->slug);
-        $response = $this->json("DELETE", "/api/user/{$user_to_delete->slug}", [], [
+        $user1 = $this->createUser("moderator");
+        $user2 = $this->createUser("moderator");
+        $token = $this->getTokenByRole("moderator", $user1->id);
+        $response = $this->json("DELETE", "/api/user/{$user2->id}", [], [
             "Authorization" => "Bearer $token",
         ]);
         $response->assertStatus(403);
     }
     public function testDeleteAdministratorAsModeratorShouldBeForbidden()
     {
-        $user = $this->createUser("moderator");
-        $user_to_delete = $this->createUser("administrator");
-        $token = $this->getTokenByRole("moderator", $user->slug);
-        $response = $this->json("DELETE", "/api/user/{$user_to_delete->slug}", [], [
+        $user1 = $this->createUser("moderator");
+        $user2 = $this->createUser("administrator");
+        $token = $this->getTokenByRole("moderator", $user1->id);
+        $response = $this->json("DELETE", "/api/user/{$user2->id}", [], [
             "Authorization" => "Bearer $token",
         ]);
         $response->assertStatus(403);
     }
+
+
+
     ############################################
     ############# AS ADMINISTRATOR #############
     ############################################
-    public function testDeleteSubscriberAsAdministratorShouldBeForbidden()
+    public function testDeleteSubscriberAsAdministratorShouldBeAllowed()
     {
-        $user = $this->createUser("administrator");
-        $user_to_delete = $this->createUser("administrator");
-        $token = $this->getTokenByRole("administrator", $user->slug);
-        $response = $this->json("DELETE", "/api/user/{$user_to_delete->slug}", [], [
+        $user1 = $this->createUser("administrator");
+        $user2 = $this->createUser("subscriber");
+        $token = $this->getTokenByRole("administrator", $user1->id);
+        $url = "/api/user/{$user2->id}";
+        $response = $this->json("DELETE", $url, [], [
             "Authorization" => "Bearer $token",
         ]);
         $response->assertStatus(200);
     }
 
-    public function testDeleteModeratorAsAdministratorShouldBeForbidden()
+    public function testDeleteModeratorAsAdministratorShouldBeAllowed()
     {
-        $user = $this->createUser("administrator");
-        $user_to_delete = $this->createUser("administrator");
-        $token = $this->getTokenByRole("administrator", $user->slug);
-        $response = $this->json("DELETE", "/api/user/{$user_to_delete->slug}", [], [
+        $user1 = $this->createUser("administrator");
+        $user2 = $this->createUser("moderator");
+        $token = $this->getTokenByRole("administrator", $user1->id);
+        $url = "/api/user/{$user2->id}";
+        $response = $this->json("DELETE", $url, [], [
             "Authorization" => "Bearer $token",
         ]);
         $response->assertStatus(200);
     }
 
-    public function testDeleteAdministratorAsAdministratorShouldBeForbidden()
+    public function testDeleteAdministratorAsAdministratorShouldBeAllowed()
     {
-        $user = $this->createUser("administrator");
-        $user_to_delete = $this->createUser("administrator");
-        $token = $this->getTokenByRole("administrator", $user->slug);
-        $response = $this->json("DELETE", "/api/user/{$user_to_delete->slug}", [], [
+        $user1 = $this->createUser("administrator");
+        $user2 = $this->createUser("administrator");
+        $token = $this->getTokenByRole("administrator", $user1->id);
+        $url = "/api/user/{$user2->id}";
+        $response = $this->json("DELETE", $url, [], [
             "Authorization" => "Bearer $token",
         ]);
         $response->assertStatus(200);

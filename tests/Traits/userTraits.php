@@ -44,16 +44,16 @@ trait userTraits
      * Get passport token from a user that matches the role slug and/or user slug
      *
      * @param string $role_slug
-     * @param string $user_slug
+     * @param int $user_id
      * @return string
      */
-    public function getTokenByRole(string $role_slug, string $user_slug = null): string
+    public function getTokenByRole(string $role_slug, int $user_id = null): string
     {
         return Role::where('slug', $role_slug)
             ->first()
             ->users()
-            ->when($user_slug != null, function ($query) use ($user_slug) {
-                $query->where('slug', $user_slug);
+            ->when($user_id != null, function ($query) use ($user_id) {
+                $query->where('users.id', $user_id);
             }, function ($query) {
                 $query->inRandomOrder();
             })
