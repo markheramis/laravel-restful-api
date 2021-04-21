@@ -31,9 +31,9 @@ class UserRoleController extends Controller
      * @param string $slug the slug of the User we want to get the Role from
      * @return JsonResponse
      */
-    public function show(UserRoleShowRequest $request, string $slug): JsonResponse
+    public function show(UserRoleShowRequest $request, User $user): JsonResponse
     {
-        $user = User::where('slug', $slug)->first();
+        /* $user = User::where('id', $id)->first(); */
         if ($user) {
             $roles = $user->roles;
             $response = fractal($roles, new RoleTransformer())->toArray();
