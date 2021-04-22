@@ -17,8 +17,7 @@ use App\Http\Requests\UserShowRequest;
 use App\Http\Requests\UserActivateRequest;
 use App\Http\Requests\UserUpdateRequest;
 use App\Http\Requests\UserDeleteRequest;
-
-
+use Illuminate\Http\Request;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Serializer\JsonApiSerializer;
 
@@ -112,7 +111,7 @@ class UserController extends Controller
      * @param App\Models\User $user
      * @return JsonResponse
      */
-    public function update(UserUpdateRequest $request, User $user): JsonResponse
+    public function update(Request $request, User $user): JsonResponse
     {
         if ($user) {
             $user->username = $request->username;
