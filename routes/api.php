@@ -16,7 +16,7 @@ use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\UserPermissionController;
 use App\Http\Controllers\API\UserRoleController;
 use App\Http\Controllers\API\RoleController;
-
+use Illuminate\Support\Facades\Route;
 
 Route::get('me', [AuthController::class, 'me'])->middleware(['auth:api'])->name('api.me');
 Route::post('login', [AuthController::class, 'login'])->name('api.login');
