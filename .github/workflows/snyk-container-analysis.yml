@@ -5,9 +5,7 @@
 # For more examples, including how to limit scans to only high-severity
 # issues, monitor images for newly disclosed vulnerabilities in Snyk and
 # fail PR checks for new vulnerabilities, see https://github.com/snyk/actions/
-
 name: Snyk Container
-
 on:
   push:
     branches: [ master ]
@@ -16,7 +14,6 @@ on:
     branches: [ master ]
   schedule:
     - cron: '44 4 * * 2'
-
 jobs:
   snyk:
     runs-on: ubuntu-latest
