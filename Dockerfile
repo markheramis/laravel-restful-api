@@ -61,6 +61,7 @@ WORKDIR /var/www/html
 COPY ./resources/docker/sail/start-container /usr/local/bin/start-container
 COPY ./resources/docker/sail/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY ./resources/docker/sail/php.ini /etc/php/8.0/cli/conf.d/99-sail.ini
+
 RUN chmod +x /usr/local/bin/start-container
 
 EXPOSE 8000

@@ -1,0 +1,15 @@
+# test docker compose deploy for local development
+#
+# @todo run artisan test on the test environment
+#
+name: Docker Compose Test
+on: [push, pull_request]
+jobs:
+    test_compose:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+            - name: Set Environment
+              run: cp .env.example .env && cp .env.testing.example .env.testing
+            - name: Build the stack
+              run: docker-compose up -d
