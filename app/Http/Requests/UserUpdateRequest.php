@@ -38,7 +38,7 @@ class UserUpdateRequest extends FormRequest
     {
         return [
             "username" => ["min:8", "max:255", "unique:users"],
-            "email" => ["max:255", "unique:users", "email"],
+            "email" => ["min:8", "max:255", "unique:users", "email"],
         ];
     }
 }
