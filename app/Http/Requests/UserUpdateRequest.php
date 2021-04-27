@@ -19,14 +19,16 @@ class UserUpdateRequest extends FormRequest
         $user = Auth::user();
         /* $can_update = $user->hasAccess("user.update"); */
         /* return (bool) $can_update || $this->isUpdatingSelf(); */
-        return Sentinel::findById($user->id)->hasAccess('user.update');
+        $can_update = Sentinel::findById($user->id)->hasAccess("user.update");
+        return $can_update || $this->isUpdatingSelf();
     }
 
     private function isUpdatingSelf()
     {
         $user = Auth::user();
-        $request_slug = request()->slug;
-        return $user->slug == $request_slug;
+        /* $request_slug = request()->slug; */
+        /* return $user->slug == $request_slug; */
+        return $user->id === $this->user->id;
     }
 
     /**
