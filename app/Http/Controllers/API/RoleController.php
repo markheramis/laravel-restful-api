@@ -64,7 +64,7 @@ class RoleController extends Controller
         $data = [
             'name' => $request->name,
             'slug' => $request->slug,
-            'permissions' => $request->permissions,
+            /* 'permissions' => $request->permissions, */
         ];
         $role = Role::create($data);
         if ($role) {

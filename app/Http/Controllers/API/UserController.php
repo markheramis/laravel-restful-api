@@ -17,8 +17,7 @@ use App\Http\Requests\UserShowRequest;
 use App\Http\Requests\UserActivateRequest;
 use App\Http\Requests\UserUpdateRequest;
 use App\Http\Requests\UserDeleteRequest;
-
-
+use Illuminate\Http\Request;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Serializer\JsonApiSerializer;
 
@@ -116,6 +115,8 @@ class UserController extends Controller
     {
         $user->username = $request->username;
         $user->email = $request->email;
+        $user->first_name = $request->firstName;
+        $user->last_name = $request->lastName;
         if ($user->update()) {
             return response()->success('User updated', 201);
         } else {
