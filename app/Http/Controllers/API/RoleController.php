@@ -89,12 +89,8 @@ class RoleController extends Controller
      */
     public function show(RoleShowRequest $request, Role $role): JsonResponse
     {
-        if ($role) {
-            $response = fractal($role, new RoleTransformer())->toArray();
-            return response()->success($response);
-        } else {
-            return response()->error("Role not found", 404);
-        }
+        $response = fractal($role, new RoleTransformer())->toArray();
+        return response()->success($response);
     }
 
     /**
@@ -111,18 +107,15 @@ class RoleController extends Controller
      */
     public function update(RoleUpdateReqeust $request, Role $role): JsonResponse
     {
-        if ($role) {
-            $role->name = $request->name;
-            $role->slug = $request->slug;
-            /* $role->permissions = $request->permissions; */
-            if ($role->save()) {
-                $response = fractal($role, new RoleTransformer())->toArray();
-                return response()->success($response);
-            } else {
-                return response()->error('Failed to update role', 400);
-            }
+        $role->name = $request->name;
+        $role->slug = $request->slug;
+        $role->permissions = $request->permissions;
+        /* $role->permissions = $request->permissions; */
+        if ($role->save()) {
+            $response = fractal($role, new RoleTransformer())->toArray();
+            return response()->success($response);
         } else {
-            return response()->error('Role not found', 404);
+            return response()->error('Failed to update role', 400);
         }
     }
 
@@ -141,14 +134,10 @@ class RoleController extends Controller
      */
     public function destroy(RoleDeleteRequest $request, Role $role): JsonResponse
     {
-        if ($role) {
-            if ($role->delete()) {
-                return response()->success('Role deleted successfully');
-            } else {
-                return response()->error('Failed to delete role', 500);
-            }
+        if ($role->delete()) {
+            return response()->success('Role deleted successfully');
         } else {
-            return response()->error('Role not found', 404);
+            return response()->error('Failed to delete role', 500);
         }
     }
 }
