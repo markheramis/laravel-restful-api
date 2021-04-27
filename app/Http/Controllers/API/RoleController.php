@@ -64,7 +64,7 @@ class RoleController extends Controller
         $data = [
             'name' => $request->name,
             'slug' => $request->slug,
-            'permissions' => $request->permissions,
+            /* 'permissions' => $request->permissions, */
         ];
         $role = Role::create($data);
         if ($role) {
@@ -114,7 +114,7 @@ class RoleController extends Controller
         if ($role) {
             $role->name = $request->name;
             $role->slug = $request->slug;
-            $role->permissions = $request->permissions;
+            /* $role->permissions = $request->permissions; */
             if ($role->save()) {
                 $response = fractal($role, new RoleTransformer())->toArray();
                 return response()->success($response);
