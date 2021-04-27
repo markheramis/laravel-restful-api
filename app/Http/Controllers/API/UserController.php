@@ -111,12 +111,12 @@ class UserController extends Controller
      * @param App\Models\User $user
      * @return JsonResponse
      */
-    public function update(Request $request, User $user): JsonResponse
+    public function update(UserUpdateRequest $request, User $user): JsonResponse
     {
         if ($user) {
             $user->username = $request->username;
             $user->email = $request->email;
-            if ($user->save()) {
+            if ($user->update()) {
                 return response()->success('User updated', 201);
             } else {
                 return response()->error('Failed to update user');
