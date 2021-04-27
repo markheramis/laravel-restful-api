@@ -33,12 +33,9 @@ class UserRoleController extends Controller
      */
     public function show(UserRoleShowRequest $request, User $user): JsonResponse
     {
-        if ($user) {
-            $roles = $user->roles;
-            $response = fractal($roles, new RoleTransformer())->toArray();
-            return response()->success($response);
-        } else
-            return response()->error('Not Found', 404);
+        $roles = $user->roles;
+        $response = fractal($roles, new RoleTransformer())->toArray();
+        return response()->success($response);
     }
 
     /**
