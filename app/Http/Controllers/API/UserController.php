@@ -113,16 +113,12 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user): JsonResponse
     {
-        if ($user) {
-            $user->username = $request->username;
-            $user->email = $request->email;
-            if ($user->save()) {
-                return response()->success('User updated', 201);
-            } else {
-                return response()->error('Failed to update user');
-            }
+        $user->username = $request->username;
+        $user->email = $request->email;
+        if ($user->update()) {
+            return response()->success('User updated', 201);
         } else {
-            return response()->error('User not found', 404);
+            return response()->error('Failed to update user');
         }
     }
 
@@ -139,15 +135,10 @@ class UserController extends Controller
      */
     public function delete(UserDeleteRequest $request, User $user): JsonResponse
     {
-        \Log::info("UserController\n" . json_encode($user, JSON_PRETTY_PRINT));
-        if ($user) {
-            if ($user->delete()) {
-                return response()->success('User deleted successfully');
-            } else {
-                return response()->error('Failed to delete user');
-            }
+        if ($user->delete()) {
+            return response()->success('User deleted successfully');
         } else {
-            return response()->error('User not found', 404);
+            return response()->error('Failed to delete user');
         }
     }
 }
