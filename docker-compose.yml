@@ -34,6 +34,7 @@ services:
   composer:
     container_name: "laravel_restful_api_composer"
     image: composer
+    user: "${WWWUSER:-1000}:${WWWGROUP:-1000}"
     volumes:
       - .:/var/www/html
     working_dir: /var/www/html
