@@ -25,11 +25,11 @@ class UserFactory extends Factory
      */
     public function definition()
     {
-        $first_name = $this->faker->firstName;
-        $last_name = $this->faker->lastName;
+        $first_name = $this->faker->firstName();
+        $last_name = $this->faker->lastName();
         return [
             'username' => $first_name . $last_name,
-            'email' => $this->faker->email,
+            'email' => $this->faker->email(),
             'password' => bcrypt('password12345'),
             'first_name' => $first_name,
             'last_name' => $last_name,
