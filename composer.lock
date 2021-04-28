@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9ed1c4881a3782188ea589b37a90d0a6",
+    "content-hash": "317d6dde8cb82661548703a9263c3540",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -810,16 +810,16 @@
         },
         {
             "name": "fruitcake/laravel-cors",
-            "version": "v2.0.3",
+            "version": "v2.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fruitcake/laravel-cors.git",
-                "reference": "01de0fe5f71c70d1930ee9a80385f9cc28e0f63a"
+                "reference": "a8ccedc7ca95189ead0e407c43b530dc17791d6a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fruitcake/laravel-cors/zipball/01de0fe5f71c70d1930ee9a80385f9cc28e0f63a",
-                "reference": "01de0fe5f71c70d1930ee9a80385f9cc28e0f63a",
+                "url": "https://api.github.com/repos/fruitcake/laravel-cors/zipball/a8ccedc7ca95189ead0e407c43b530dc17791d6a",
+                "reference": "a8ccedc7ca95189ead0e407c43b530dc17791d6a",
                 "shasum": ""
             },
             "require": {
@@ -832,8 +832,8 @@
             },
             "require-dev": {
                 "laravel/framework": "^6|^7|^8",
-                "orchestra/testbench-dusk": "^4|^5|^6",
-                "phpunit/phpunit": "^6|^7|^8",
+                "orchestra/testbench-dusk": "^4|^5|^6|^7",
+                "phpunit/phpunit": "^6|^7|^8|^9",
                 "squizlabs/php_codesniffer": "^3.5"
             },
             "type": "library",
@@ -875,7 +875,7 @@
             ],
             "support": {
                 "issues": "https://github.com/fruitcake/laravel-cors/issues",
-                "source": "https://github.com/fruitcake/laravel-cors/tree/v2.0.3"
+                "source": "https://github.com/fruitcake/laravel-cors/tree/v2.0.4"
             },
             "funding": [
                 {
@@ -883,7 +883,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2020-10-22T13:57:20+00:00"
+            "time": "2021-04-26T11:24:25+00:00"
         },
         {
             "name": "graham-campbell/result-type",
@@ -1111,16 +1111,16 @@
         },
         {
             "name": "guzzlehttp/psr7",
-            "version": "1.8.1",
+            "version": "1.8.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/psr7.git",
-                "reference": "35ea11d335fd638b5882ff1725228b3d35496ab1"
+                "reference": "dc960a912984efb74d0a90222870c72c87f10c91"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/psr7/zipball/35ea11d335fd638b5882ff1725228b3d35496ab1",
-                "reference": "35ea11d335fd638b5882ff1725228b3d35496ab1",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/dc960a912984efb74d0a90222870c72c87f10c91",
+                "reference": "dc960a912984efb74d0a90222870c72c87f10c91",
                 "shasum": ""
             },
             "require": {
@@ -1180,9 +1180,9 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/psr7/issues",
-                "source": "https://github.com/guzzle/psr7/tree/1.8.1"
+                "source": "https://github.com/guzzle/psr7/tree/1.8.2"
             },
-            "time": "2021-03-21T16:25:00+00:00"
+            "time": "2021-04-26T09:17:50+00:00"
         },
         {
             "name": "http-interop/http-factory-guzzle",
@@ -1299,16 +1299,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v8.37.0",
+            "version": "v8.40.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "cf4082973abc796ec285190f0603380021f6d26f"
+                "reference": "a654897ad7f97aea9d7ef292803939798c4a02a4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/cf4082973abc796ec285190f0603380021f6d26f",
-                "reference": "cf4082973abc796ec285190f0603380021f6d26f",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/a654897ad7f97aea9d7ef292803939798c4a02a4",
+                "reference": "a654897ad7f97aea9d7ef292803939798c4a02a4",
                 "shasum": ""
             },
             "require": {
@@ -1463,7 +1463,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2021-04-13T13:49:49+00:00"
+            "time": "2021-04-28T14:38:56+00:00"
         },
         {
             "name": "laravel/passport",
@@ -7934,16 +7934,16 @@
         },
         {
             "name": "filp/whoops",
-            "version": "2.12.0",
+            "version": "2.12.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/filp/whoops.git",
-                "reference": "d501fd2658d55491a2295ff600ae5978eaad7403"
+                "reference": "c13c0be93cff50f88bbd70827d993026821914dd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/filp/whoops/zipball/d501fd2658d55491a2295ff600ae5978eaad7403",
-                "reference": "d501fd2658d55491a2295ff600ae5978eaad7403",
+                "url": "https://api.github.com/repos/filp/whoops/zipball/c13c0be93cff50f88bbd70827d993026821914dd",
+                "reference": "c13c0be93cff50f88bbd70827d993026821914dd",
                 "shasum": ""
             },
             "require": {
@@ -7993,7 +7993,7 @@
             ],
             "support": {
                 "issues": "https://github.com/filp/whoops/issues",
-                "source": "https://github.com/filp/whoops/tree/2.12.0"
+                "source": "https://github.com/filp/whoops/tree/2.12.1"
             },
             "funding": [
                 {
@@ -8001,7 +8001,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-03-30T12:00:00+00:00"
+            "time": "2021-04-25T12:00:00+00:00"
         },
         {
             "name": "hamcrest/hamcrest-php",
@@ -8346,16 +8346,16 @@
         },
         {
             "name": "laravel/sail",
-            "version": "v1.4.12",
+            "version": "v1.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/sail.git",
-                "reference": "d1a91b03885c9c29bc2d88d61a4b10bd1f678156"
+                "reference": "7f2d520f8c7d6fc0e5e4949c1363f6ddff0ff116"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/sail/zipball/d1a91b03885c9c29bc2d88d61a4b10bd1f678156",
-                "reference": "d1a91b03885c9c29bc2d88d61a4b10bd1f678156",
+                "url": "https://api.github.com/repos/laravel/sail/zipball/7f2d520f8c7d6fc0e5e4949c1363f6ddff0ff116",
+                "reference": "7f2d520f8c7d6fc0e5e4949c1363f6ddff0ff116",
                 "shasum": ""
             },
             "require": {
@@ -8402,7 +8402,7 @@
                 "issues": "https://github.com/laravel/sail/issues",
                 "source": "https://github.com/laravel/sail"
             },
-            "time": "2021-04-13T15:35:40+00:00"
+            "time": "2021-04-20T16:17:55+00:00"
         },
         {
             "name": "laravel/telescope",
@@ -8467,160 +8467,6 @@
                 "source": "https://github.com/laravel/telescope/tree/v4.4.9"
             },
             "time": "2021-04-13T15:47:06+00:00"
-        },
-        {
-            "name": "lstrojny/functional-php",
-            "version": "1.17.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/lstrojny/functional-php.git",
-                "reference": "e459d5cb307bc6e10e9e992c4e96bb71a0262506"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/lstrojny/functional-php/zipball/e459d5cb307bc6e10e9e992c4e96bb71a0262506",
-                "reference": "e459d5cb307bc6e10e9e992c4e96bb71a0262506",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^7.1|~8"
-            },
-            "require-dev": {
-                "friendsofphp/php-cs-fixer": "^2.17",
-                "phpunit/phpunit": "^7.0 || ^8.0 || ^9.5",
-                "squizlabs/php_codesniffer": "~3.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Functional\\": "src/Functional"
-                },
-                "files": [
-                    "src/Functional/Ary.php",
-                    "src/Functional/Average.php",
-                    "src/Functional/ButLast.php",
-                    "src/Functional/Capture.php",
-                    "src/Functional/ConstFunction.php",
-                    "src/Functional/CompareOn.php",
-                    "src/Functional/CompareObjectHashOn.php",
-                    "src/Functional/Compose.php",
-                    "src/Functional/Concat.php",
-                    "src/Functional/Contains.php",
-                    "src/Functional/Converge.php",
-                    "src/Functional/Curry.php",
-                    "src/Functional/CurryN.php",
-                    "src/Functional/Difference.php",
-                    "src/Functional/DropFirst.php",
-                    "src/Functional/DropLast.php",
-                    "src/Functional/Each.php",
-                    "src/Functional/Equal.php",
-                    "src/Functional/ErrorToException.php",
-                    "src/Functional/Every.php",
-                    "src/Functional/False.php",
-                    "src/Functional/Falsy.php",
-                    "src/Functional/Filter.php",
-                    "src/Functional/First.php",
-                    "src/Functional/FirstIndexOf.php",
-                    "src/Functional/FlatMap.php",
-                    "src/Functional/Flatten.php",
-                    "src/Functional/Flip.php",
-                    "src/Functional/GreaterThan.php",
-                    "src/Functional/GreaterThanOrEqual.php",
-                    "src/Functional/Group.php",
-                    "src/Functional/Head.php",
-                    "src/Functional/Id.php",
-                    "src/Functional/IfElse.php",
-                    "src/Functional/Identical.php",
-                    "src/Functional/IndexesOf.php",
-                    "src/Functional/Intersperse.php",
-                    "src/Functional/Invoke.php",
-                    "src/Functional/InvokeFirst.php",
-                    "src/Functional/InvokeIf.php",
-                    "src/Functional/InvokeLast.php",
-                    "src/Functional/Invoker.php",
-                    "src/Functional/Last.php",
-                    "src/Functional/LastIndexOf.php",
-                    "src/Functional/LessThan.php",
-                    "src/Functional/LessThanOrEqual.php",
-                    "src/Functional/LexicographicCompare.php",
-                    "src/Functional/Map.php",
-                    "src/Functional/Matching.php",
-                    "src/Functional/Maximum.php",
-                    "src/Functional/Memoize.php",
-                    "src/Functional/Minimum.php",
-                    "src/Functional/None.php",
-                    "src/Functional/Noop.php",
-                    "src/Functional/Not.php",
-                    "src/Functional/OmitKeys.php",
-                    "src/Functional/PartialAny.php",
-                    "src/Functional/PartialLeft.php",
-                    "src/Functional/PartialMethod.php",
-                    "src/Functional/PartialRight.php",
-                    "src/Functional/Partition.php",
-                    "src/Functional/Pick.php",
-                    "src/Functional/Pluck.php",
-                    "src/Functional/Poll.php",
-                    "src/Functional/Product.php",
-                    "src/Functional/Ratio.php",
-                    "src/Functional/ReduceLeft.php",
-                    "src/Functional/ReduceRight.php",
-                    "src/Functional/Reindex.php",
-                    "src/Functional/Reject.php",
-                    "src/Functional/Repeat.php",
-                    "src/Functional/Retry.php",
-                    "src/Functional/Select.php",
-                    "src/Functional/SelectKeys.php",
-                    "src/Functional/SequenceConstant.php",
-                    "src/Functional/SequenceExponential.php",
-                    "src/Functional/SequenceLinear.php",
-                    "src/Functional/Some.php",
-                    "src/Functional/Sort.php",
-                    "src/Functional/Sum.php",
-                    "src/Functional/SuppressError.php",
-                    "src/Functional/Tap.php",
-                    "src/Functional/Tail.php",
-                    "src/Functional/TailRecursion.php",
-                    "src/Functional/TakeLeft.php",
-                    "src/Functional/TakeRight.php",
-                    "src/Functional/True.php",
-                    "src/Functional/Truthy.php",
-                    "src/Functional/Unique.php",
-                    "src/Functional/ValueToKey.php",
-                    "src/Functional/With.php",
-                    "src/Functional/Zip.php",
-                    "src/Functional/ZipAll.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Lars Strojny",
-                    "email": "lstrojny@php.net",
-                    "homepage": "https://usrportage.de"
-                },
-                {
-                    "name": "Max Beutel",
-                    "email": "nash12@gmail.com"
-                }
-            ],
-            "description": "Functional primitives for PHP",
-            "keywords": [
-                "functional"
-            ],
-            "support": {
-                "issues": "https://github.com/lstrojny/functional-php/issues",
-                "source": "https://github.com/lstrojny/functional-php/tree/1.17.0"
-            },
-            "funding": [
-                {
-                    "url": "https://github.com/lstrojny",
-                    "type": "github"
-                }
-            ],
-            "time": "2021-03-07T00:25:34+00:00"
         },
         {
             "name": "mnapoli/front-yaml",
@@ -9221,28 +9067,31 @@
         },
         {
             "name": "phpbench/container",
-            "version": "1.2.1",
+            "version": "2.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpbench/container.git",
-                "reference": "2f2b269b3b8cb9a0053cf98f1c3a84866fe7f0e2"
+                "reference": "def10824b6009d31028fa8dc9f73f4b26b234a67"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpbench/container/zipball/2f2b269b3b8cb9a0053cf98f1c3a84866fe7f0e2",
-                "reference": "2f2b269b3b8cb9a0053cf98f1c3a84866fe7f0e2",
+                "url": "https://api.github.com/repos/phpbench/container/zipball/def10824b6009d31028fa8dc9f73f4b26b234a67",
+                "reference": "def10824b6009d31028fa8dc9f73f4b26b234a67",
                 "shasum": ""
             },
             "require": {
-                "psr/container": "^1.0"
+                "psr/container": "^1.0",
+                "symfony/options-resolver": "^4.2 || ^5.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "^4.8.36"
+                "friendsofphp/php-cs-fixer": "^2.16",
+                "phpstan/phpstan": "^0.12.52",
+                "phpunit/phpunit": "^8"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.0-dev"
+                    "dev-master": "2.0-dev"
                 }
             },
             "autoload": {
@@ -9263,30 +9112,32 @@
             "description": "Simple, configurable, service container.",
             "support": {
                 "issues": "https://github.com/phpbench/container/issues",
-                "source": "https://github.com/phpbench/container/tree/1.2.1"
+                "source": "https://github.com/phpbench/container/tree/2.1.0"
             },
-            "time": "2020-08-23T23:43:00+00:00"
+            "time": "2021-04-04T07:23:17+00:00"
         },
         {
             "name": "phpbench/dom",
-            "version": "0.2.0",
+            "version": "0.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpbench/dom.git",
-                "reference": "b135378dd0004c05ba5446aeddaf0b83339c1c4c"
+                "reference": "d26e615c4d64da41d168ab1096e4f55d97f2344f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpbench/dom/zipball/b135378dd0004c05ba5446aeddaf0b83339c1c4c",
-                "reference": "b135378dd0004c05ba5446aeddaf0b83339c1c4c",
+                "url": "https://api.github.com/repos/phpbench/dom/zipball/d26e615c4d64da41d168ab1096e4f55d97f2344f",
+                "reference": "d26e615c4d64da41d168ab1096e4f55d97f2344f",
                 "shasum": ""
             },
             "require": {
                 "ext-dom": "*",
-                "php": "^5.4|^7.0"
+                "php": "^7.2||^8.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "^4.6"
+                "friendsofphp/php-cs-fixer": "^2.18",
+                "phpstan/phpstan": "^0.12.83",
+                "phpunit/phpunit": "^8.0||^9.0"
             },
             "type": "library",
             "extra": {
@@ -9312,22 +9163,22 @@
             "description": "DOM wrapper to simplify working with the PHP DOM implementation",
             "support": {
                 "issues": "https://github.com/phpbench/dom/issues",
-                "source": "https://github.com/phpbench/dom/tree/master"
+                "source": "https://github.com/phpbench/dom/tree/0.3.1"
             },
-            "time": "2016-02-27T12:15:56+00:00"
+            "time": "2021-04-21T20:44:19+00:00"
         },
         {
             "name": "phpbench/phpbench",
-            "version": "0.17.1",
+            "version": "1.0.0-beta1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpbench/phpbench.git",
-                "reference": "3211debc3afb9da79d796cf7471d52cad97b17f1"
+                "reference": "d3262826d103a4e3ae728e21fc79b05f0fb8f0fd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpbench/phpbench/zipball/3211debc3afb9da79d796cf7471d52cad97b17f1",
-                "reference": "3211debc3afb9da79d796cf7471d52cad97b17f1",
+                "url": "https://api.github.com/repos/phpbench/phpbench/zipball/d3262826d103a4e3ae728e21fc79b05f0fb8f0fd",
+                "reference": "d3262826d103a4e3ae728e21fc79b05f0fb8f0fd",
                 "shasum": ""
             },
             "require": {
@@ -9338,13 +9189,13 @@
                 "ext-pcre": "*",
                 "ext-reflection": "*",
                 "ext-spl": "*",
-                "lstrojny/functional-php": "1.0 || ^1.2.3",
-                "php": "^7.2",
-                "phpbench/container": "~1.2",
-                "phpbench/dom": "~0.2.0",
+                "ext-tokenizer": "*",
+                "php": "^7.2 || ^8.0",
+                "phpbench/container": "^2.1",
+                "phpbench/dom": "~0.3.0",
+                "psr/log": "^1.1",
                 "seld/jsonlint": "^1.1",
                 "symfony/console": "^4.2 || ^5.0",
-                "symfony/debug": "^4.2 || ^5.0",
                 "symfony/filesystem": "^4.2 || ^5.0",
                 "symfony/finder": "^4.2 || ^5.0",
                 "symfony/options-resolver": "^4.2 || ^5.0",
@@ -9352,15 +9203,17 @@
                 "webmozart/path-util": "^2.3"
             },
             "require-dev": {
-                "doctrine/dbal": "^2.4",
+                "dantleech/invoke": "^1.2",
                 "friendsofphp/php-cs-fixer": "^2.13.1",
+                "jangregor/phpstan-prophecy": "^0.8.1",
                 "padraic/phar-updater": "^1.0",
-                "phpspec/prophecy": "^1.8",
+                "phpspec/prophecy": "^1.12",
                 "phpstan/phpstan": "^0.12.7",
-                "phpunit/phpunit": "^8.5"
+                "phpunit/phpunit": "^8.5.8 || ^9.0",
+                "symfony/error-handler": "^5.2",
+                "symfony/var-dumper": "^4.0 || ^5.0"
             },
             "suggest": {
-                "ext-curl": "For (web) reports extension",
                 "ext-xdebug": "For Xdebug profiling extension."
             },
             "bin": [
@@ -9375,7 +9228,6 @@
             "autoload": {
                 "psr-4": {
                     "PhpBench\\": "lib/",
-                    "PhpBench\\Extensions\\Dbal\\": "extensions/dbal/lib/",
                     "PhpBench\\Extensions\\XDebug\\": "extensions/xdebug/lib/",
                     "PhpBench\\Extensions\\Reports\\": "extensions/reports/lib/"
                 }
@@ -9393,9 +9245,9 @@
             "description": "PHP Benchmarking Framework",
             "support": {
                 "issues": "https://github.com/phpbench/phpbench/issues",
-                "source": "https://github.com/phpbench/phpbench/tree/master"
+                "source": "https://github.com/phpbench/phpbench/tree/1.0.0-beta1"
             },
-            "time": "2020-06-13T11:59:17+00:00"
+            "time": "2021-04-13T15:31:36+00:00"
         },
         {
             "name": "phpdocumentor/reflection-common",
@@ -11116,75 +10968,6 @@
                 "source": "https://github.com/shalvah/clara/tree/2.6.0"
             },
             "time": "2020-04-12T11:08:11+00:00"
-        },
-        {
-            "name": "symfony/debug",
-            "version": "v4.4.20",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/debug.git",
-                "reference": "157bbec4fd773bae53c5483c50951a5530a2cc16"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/debug/zipball/157bbec4fd773bae53c5483c50951a5530a2cc16",
-                "reference": "157bbec4fd773bae53c5483c50951a5530a2cc16",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7.1.3",
-                "psr/log": "~1.0",
-                "symfony/polyfill-php80": "^1.15"
-            },
-            "conflict": {
-                "symfony/http-kernel": "<3.4"
-            },
-            "require-dev": {
-                "symfony/http-kernel": "^3.4|^4.0|^5.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Symfony\\Component\\Debug\\": ""
-                },
-                "exclude-from-classmap": [
-                    "/Tests/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "https://symfony.com/contributors"
-                }
-            ],
-            "description": "Provides tools to ease debugging PHP code",
-            "homepage": "https://symfony.com",
-            "support": {
-                "source": "https://github.com/symfony/debug/tree/v4.4.20"
-            },
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
-            ],
-            "time": "2021-01-28T16:54:48+00:00"
         },
         {
             "name": "symfony/filesystem",

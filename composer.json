@@ -32,7 +32,7 @@
         "laravel/telescope": "^4.4.0",
         "mockery/mockery": "^1.4.2",
         "nunomaduro/collision": "^5.0",
-        "phpbench/phpbench": "^0.17.1",
+        "phpbench/phpbench": "1.0.0-beta1",
         "phpunit/php-code-coverage": "^9.2",
         "phpunit/phpunit": "^9.3.3"
     },
@@ -61,7 +61,8 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\": "tests/"
+            "Tests\\": "tests/",
+            "Tests\\Benchmark\\": "tests/Benchmark/"
         }
     },
     "minimum-stability": "dev",
@@ -80,6 +81,9 @@
         ],
         "doc": [
             "@php artisan scribe:generate --force"
+        ],
+        "bench": [
+            "@php vendor/bin/phpbench run"
         ]
     }
 }
