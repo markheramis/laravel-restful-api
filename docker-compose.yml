@@ -6,7 +6,6 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
-      
       args:
         WWWGROUP: "${WWWGROUP:-1000}"
     image: sail-8.0/app
@@ -15,7 +14,7 @@ services:
       #- "9003:9003"
     environment:
       WWWUSER: "${WWWUSER:-1000}"
-      LARAVEL_SAIL: 1
+      laravel_SAIL: 1
     volumes:
       - ".:/var/www/html"
     networks:
@@ -29,7 +28,6 @@ services:
       - mysql
       # - pgsql
       - redis
-      - composer
       # - selenium
   # selenium:
   #     container_name: 'selenium'
