@@ -21,44 +21,30 @@ jobs:
           - 33306:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
     steps:
-
     - uses: actions/checkout@v2
-
     - name: Copy xdebug configuration
-      run: cp ./.docker/sail/xdebug.ini /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-
+      run: cp ./resources/docker/sail/xdebug.ini /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
     - name: Copy .env
       run: php -r "file_exists('.env') || copy('.env.testing.example', '.env');"
-    
     - name: Copy .env.testing
       run: php -r "file_exists('.env.testing') || copy('.env.testing.example', '.env.testing');"
-
     - name: Install Dependencies
       run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
-
     - name: cache config
       run: php artisan config:cache
-
     - name: show config
       run: cat bootstrap/cache/config.php
-    
     - name: Generate key
       run: php artisan key:generate
-    
     - name: Create Database and run migration
       env:
         DB_PORT: ${{ job.services.mysql.ports[3306] }}
       run: php artisan migrate --seed
-
     - name: Install passport
       run: php artisan passport:install && php artisan passport:client --personal -n
-
     - name: Start queue
       run: php artisan queue:work &
-    
     - name: Run Laravel Project
       run: php artisan serve &
-    
     - name: Execute tests
       run: php artisan test --env=testing
-      

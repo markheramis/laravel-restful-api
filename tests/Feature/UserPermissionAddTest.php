@@ -5,25 +5,17 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\Traits\userTraits;
 use Tests\TestCase;
+use App\Models\User;
 
 class UserPermissionAddTest extends TestCase
 {
     use WithFaker, userTraits;
 
-    public function setUp(): void
-    {
-        parent::setUp();
-        for ($i = 0; $i < 5; $i++)
-            $this->createUser("subscriber");
-        for ($i = 0; $i < 3; $i++)
-            $this->createUser("moderator");
-        $this->createUser("administrator");
-    }
 
     public function testAddPermissionToSubscriberWithNoSession()
     {
-        $slug = $this->getUserSlugByRoleSlug("subscriber");
-        $response = $this->json("POST", "/api/user/$slug/permission", [
+        $user = $this->createUser('subscriber');
+        $response = $this->json("POST", "/api/user/{$user->id}/permission", [
             "slug" => "test_permission_subscriber_no_session",
             "value" => true,
         ]);
@@ -32,8 +24,8 @@ class UserPermissionAddTest extends TestCase
 
     public function testAddPermissionToModeratorWithNoSession()
     {
-        $slug = $this->getUserSlugByRoleSlug("moderator");
-        $response = $this->json("POST", "/api/user/$slug/permission", [
+        $user = $this->createUser('moderator');
+        $response = $this->json("POST", "/api/user/{$user->id}/permission", [
             "slug" => "test_permission_moderator_no_session",
             "value" => true,
         ]);
@@ -42,8 +34,8 @@ class UserPermissionAddTest extends TestCase
 
     public function testAddPermissionToAdministratorWithNoSession()
     {
-        $slug = $this->getUserSlugByRoleSlug("administrator");
-        $response = $this->json("POST", "/api/user/$slug/permission", [
+        $user = $this->createUser("administrator");
+        $response = $this->json("POST", "/api/user/{$user->id}/permission", [
             "slug" => "test_permmission_administrator_no_session",
             "value" => true
         ]);
@@ -52,118 +44,154 @@ class UserPermissionAddTest extends TestCase
 
     public function testAddPermissionAsAdministratorToAdministratorShouldBeAllowed()
     {
-        $token = $this->getTokenByRole("administrator");
-        $slug = $this->getUserSlugByRoleSlug("administrator");
-        $response = $this->json("POST", "/api/user/$slug/permission", [
+        $user1 = $this->createUser("administrator");
+        $user2 = $this->createUser("administrator");
+        $token = $this->getTokenByRole("administrator", $user1->id);
+        $url = "/api/user/{$user2->id}/permission";
+        \Log::info("testAddPermissionAsAdministratorToAdministratorShouldBeAllowed\nUrl: $url");
+        $response = $this->json("POST", $url, [
             "slug" => "test_permission",
             "value" => true
         ], [
             "Authorization" => "Bearer $token"
         ]);
+        \Log::info(json_encode($response, JSON_PRETTY_PRINT));
         $response->assertStatus(200);
     }
 
     public function testAddPermissionAsAdministratorToModeratorShouldBeAllowed()
     {
-        $token = $this->getTokenByRole("administrator");
-        $slug = $this->getUserSlugByRoleSlug("moderator");
-        $response = $this->json("POST", "/api/user/$slug/permission", [
+        $user1 = $this->createUser("administrator");
+        $user2 = $this->createUser("moderator");
+        $token = $this->getTokenByRole("administrator", $user1->id);
+        $url = "/api/user/{$user2->id}/permission";
+        \Log::info("testAddPermissionAsAdministratorToModeratorShouldBeAllowed\nUrl: $url");
+        $response = $this->json("POST", $url, [
             "slug" => "test_permission",
             "value" => true
         ], [
             "Authorization" => "Bearer $token"
         ]);
+        \Log::info(json_encode($response, JSON_PRETTY_PRINT));
         $response->assertStatus(200);
     }
 
     public function testAddPermissionAsAdministratorToSubscriberShouldBeAllowed()
     {
-        $token = $this->getTokenByRole("administrator");
-        $slug = $this->getUserSlugByRoleSlug("subscriber");
-        $response = $this->json("POST", "/api/user/$slug/permission", [
+        $user1 = $this->createUser("administrator");
+        $user2 = $this->createUser("subscriber");
+        $token = $this->getTokenByRole("administrator", $user1->id);
+        $url = "/api/user/{$user2->id}/permission";
+        \Log::info("testAddPermissionAsAdministratorToSubscriberShouldBeAllowed\nUrl: $url");
+        $response = $this->json("POST", $url, [
             "slug" => "test_permission",
             "value" => true
         ], [
             "Authorization" => "Bearer $token"
         ]);
+        \Log::info(json_encode($response, JSON_PRETTY_PRINT));
         $response->assertStatus(200);
     }
 
     public function testAddPermissionsModeratorToAdministratorShouldBeAllowed()
     {
-        $token = $this->getTokenByRole("moderator");
-        $slug = $this->getUserSlugByRoleSlug("administrator");
-        $response = $this->json("POST", "/api/user/$slug/permission", [
+        $user1 = $this->createUser("moderator");
+        $user2 = $this->createUser("administrator");
+        $token = $this->getTokenByRole("moderator", $user1->id);
+        $url = "/api/user/{$user2->id}/permission";
+        \Log::info("testAddPermissionsModeratorToAdministratorShouldBeAllowed\nUrl: $url");
+        $response = $this->json("POST", $url, [
             "slug" => "test_permission",
             "value" => true
         ], [
             "Authorization" => "Bearer $token"
         ]);
+        \Log::info(json_encode($response, JSON_PRETTY_PRINT));
         $response->assertStatus(200);
     }
 
     public function testAddPermissionAsModeratorToModeratorShouldShouldBeAllowed()
     {
-        $token = $this->getTokenByRole("moderator");
-        $slug = $this->getUserSlugByRoleSlug("moderator");
-        $response = $this->json("POST", "/api/user/$slug/permission", [
+        $user1 = $this->createUser("moderator");
+        $user2 = $this->createUser("moderator");
+        $token = $this->getTokenByRole("moderator", $user1->id);
+        $url = "/api/user/{$user2->id}/permission";
+        \Log::info("testAddPermissionAsModeratorToModeratorShouldShouldBeAllowed\nUrl: $url");
+        $response = $this->json("POST", $url, [
             "slug" => "test_permission",
             "value" => true
         ], [
             "Authorization" => "Bearer $token"
         ]);
+        \Log::info(json_encode($response, JSON_PRETTY_PRINT));
         $response->assertStatus(200);
     }
 
     public function testAddPermissionAsModeratorToSubscriberShouldBeAllowed()
     {
-        $token = $this->getTokenByRole("moderator");
-        $slug = $this->getUserSlugByRoleSlug("subscriber");
-        $response = $this->json("POST", "/api/user/$slug/permission", [
+        $user1 = $this->createUser("moderator");
+        $user2 = $this->createUser("subscriber");
+        $token = $this->getTokenByRole("moderator", $user1->id);
+        $url = "/api/user/{$user2->id}/permission";
+        \Log::info("testAddPermissionAsModeratorToSubscriberShouldBeAllowed\nUrl: $url");
+        $response = $this->json("POST", $url, [
             "slug" => "test_permission",
             "value" => true
         ], [
             "Authorization" => "Bearer $token"
         ]);
+        \Log::info(json_encode($response, JSON_PRETTY_PRINT));
         $response->assertStatus(200);
     }
 
     public function testAddPermissionAsSubscriberToAdministratorShouldBeForbidden()
     {
-        $token = $this->getTokenByRole("subscriber");
-        $slug = $this->getUserSlugByRoleSlug("administrator");
-        $response = $this->json("POST", "/api/user/$slug/permission", [
+        $user1 = $this->createUser("subscriber");
+        $user2 = $this->createUser("administrator");
+        $token = $this->getTokenByRole("subscriber", $user1->id);
+        $url = "/api/user/{$user2->id}/permission";
+        \Log::info("testAddPermissionAsSubscriberToAdministratorShouldBeForbidden\nUrl: $url");
+        $response = $this->json("POST", $url, [
             "slug" => "test_permission",
             "value" => true
         ], [
             "Authorization" => "Bearer $token"
         ]);
+        \Log::info(json_encode($response, JSON_PRETTY_PRINT));
         $response->assertStatus(403);
     }
 
     public function testAddPermissionAsSubscriberToModeratorShouldBeForbidden()
     {
-        $token = $this->getTokenByRole("subscriber");
-        $slug = $this->getUserSlugByRoleSlug("moderator");
-        $response = $this->json("POST", "/api/user/$slug/permission", [
+        $user1 = $this->createUser("subscriber");
+        $user2 = $this->createUser("moderator");
+        $token = $this->getTokenByRole("subscriber", $user1->id);
+        $url = "/api/user/{$user2->id}/permission";
+        \Log::info("testAddPermissionAsSubscriberToModeratorShouldBeForbidden\nUrl: $url");
+        $response = $this->json("POST", $url, [
             "slug" => "test_permission",
             "value" => true
         ], [
             "Authorization" => "Bearer $token"
         ]);
+        \Log::info(json_encode($response, JSON_PRETTY_PRINT));
         $response->assertStatus(403);
     }
 
     public function testAddPermissionAsSubscriberToSubscriberShouldBeForbidden()
     {
-        $token = $this->getTokenByRole("subscriber");
-        $slug = $this->getUserSlugByRoleSlug("subscriber");
-        $response = $this->json("POST", "/api/user/$slug/permission", [
+        $user1 = $this->createUser("subscriber");
+        $user2 = $this->createUser("subscriber");
+        $token = $this->getTokenByRole("subscriber", $user1->id);
+        $url = "/api/user/{$user2->id}/permission";
+        \Log::info("testAddPermissionAsSubscriberToSubscriberShouldBeForbidden\nUrl: $url");
+        $response = $this->json("POST", $url, [
             "slug" => "test_permission",
             "value" => true
         ], [
             "Authorization" => "Bearer $token"
         ]);
+        \Log::info(json_encode($response, JSON_PRETTY_PRINT));
         $response->assertStatus(403);
     }
 }

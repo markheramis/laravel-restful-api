@@ -1,0 +1,21 @@
+
+
+# Ignore devspace.yaml file to prevent image rebuilding after config changes
+devspace.yaml
+.devspace/
+
+
+# Ignore devspace.yaml file to prevent image rebuilding after config changes
+devspace.yaml
+.devspace/
+
+# Ignore Laravel Generated Files
+bootstrap/cache/*
+storage/logs/*
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/testing/*
+storage/framework/views/*
+
+vendor
+node_modules

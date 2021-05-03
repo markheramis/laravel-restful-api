@@ -1,0 +1,104 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: laravel-restful-api-deployment
+  labels:
+    app: laravel-restful-api-selector
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: laravel-restful-api-selector
+  template:
+    metadata:
+      labels:
+        app: laravel-restful-api-selector
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - laravel-restful-api-selector
+                topologyKey: kubernetes.io/hostname
+              weight: 100
+      initContainers:
+        - name: dependency-init
+          image: chumheramis/laravel-restful-api:latest
+          command: ["sh", "-c", "composer install"]
+          volumeMounts:
+            - name: composer-dependency-volume
+              mountPath: /var/www/html/vendor
+      containers:
+        - name: app
+          envFrom:
+            - configMapRef:
+                name: laravel-restful-api-config
+          image: chumheramis/laravel-restful-api:latest
+          imagePullPolicy: Always
+          livenessProbe:
+            initialDelaySeconds: 10
+            periodSeconds: 15
+            tcpSocket:
+              port: 80
+            timeoutSeconds: 30
+          ports:
+            - containerPort: 80
+          readinessProbe:
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            tcpSocket:
+              port: 80
+          workingDir: /var/www/html
+          resources:
+            limits:
+              cpu: 200m
+              memory: 400M
+            requests:
+              cpu: 100m
+              memory: 200M
+          volumeMounts:
+            - name: composer-dependency-volume
+              mountPath: /var/www/html/vendor
+      volumes:
+        - name: composer-dependency-volume
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: laravel-restful-api-service
+  name: laravel-restful-api-service
+spec:
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+  selector:
+    app: laravel-restful-api-selector
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: laravel-restful-api-ingress
+  labels:
+    app: laravel-restful-api-ingress
+  annotations:
+    ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: laravel-restful-api-service
+                port:
+                  number: 80

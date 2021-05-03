@@ -40,6 +40,8 @@ class UserTransformer extends TransformerAbstract
             'id' => $user->id,
             'uuid' => $user->uuid,
             'slug' => $user->slug,
+            'email' => $user->email,
+            'role' => $user->roles()->pluck('slug'),
             'username' => $user->username,
             'permissions' => $user->permission,
             'first_name' => $user->first_name,
