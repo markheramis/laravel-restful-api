@@ -60,10 +60,17 @@ If you're on windows, you need to follow [this instructions](https://nickjanetak
 
 #### Setting up the project
 
-Install Laravel Dependencies
+###### Install Laravel Dependencies
+
+If you have composer installed
 ```bash
 composer install
 ```
+If you want to do it full docker way, you can use the composer docker image.
+```bash
+docker run --rm --interactive --tty --volume $PWD:/app --user $(id -u):$(id -g) composer install
+```
+
 Then before you start sail, add sail to your path first, please see the Laravel Sail [Documentation](https://laravel.com/docs/8.x/sail) for more information.
 
 Then start [Laravel Sail](https://laravel.com/docs/8.x/sail)
