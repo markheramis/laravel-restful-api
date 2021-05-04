@@ -31,6 +31,10 @@ class RoleSeeder extends Seeder
                 "role.update" => true,
                 "role.delete" => true,
 
+                "user.role.show" => true,
+                "user.role.add" => true,
+                "user.role.delete" => true,
+
                 "user.permission.add" => true,
                 "user.permission.get" => true,
                 "user.permission.delete" => true,
@@ -52,6 +56,10 @@ class RoleSeeder extends Seeder
                 "role.update" => false,
                 "role.delete" => false,
 
+                "user.role.show" => true,
+                "user.role.add" => true,
+                "user.role.delete" => false,
+
                 "user.permission.add" => true,
                 "user.permission.get" => true,
                 "user.permission.delete" => false,
@@ -72,6 +80,10 @@ class RoleSeeder extends Seeder
                 "role.store" => false,
                 "role.update" => false,
                 "role.delete" => false,
+
+                "user.role.show" => true,
+                "user.role.add" => false,
+                "user.role.delete" => false,
 
                 "user.permission.add" => false,
                 "user.permission.get" => false,
