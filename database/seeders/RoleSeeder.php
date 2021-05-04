@@ -29,7 +29,11 @@ class RoleSeeder extends Seeder
                 "role.show" => true,
                 "role.store" => true,
                 "role.update" => true,
-                "role.delete" => true
+                "role.delete" => true,
+
+                "user.permission.add" => true,
+                "user.permission.get" => true,
+                "user.permission.delete" => true,
             ]
         ]);
         $this->create([
@@ -46,7 +50,11 @@ class RoleSeeder extends Seeder
                 "role.show" => true,
                 "role.store" => false,
                 "role.update" => false,
-                "role.delete" => false
+                "role.delete" => false,
+
+                "user.permission.add" => true,
+                "user.permission.get" => true,
+                "user.permission.delete" => false,
             ]
         ]);
         $this->create([
@@ -63,7 +71,11 @@ class RoleSeeder extends Seeder
                 "role.show" => false,
                 "role.store" => false,
                 "role.update" => false,
-                "role.delete" => false
+                "role.delete" => false,
+
+                "user.permission.add" => false,
+                "user.permission.get" => false,
+                "user.permission.delete" => false,
             ]
         ]);
     }
