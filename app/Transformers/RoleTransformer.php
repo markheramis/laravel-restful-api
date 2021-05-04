@@ -39,7 +39,7 @@ class RoleTransformer extends TransformerAbstract
             'id' => $role->id,
             'slug' => $role->slug,
             'name' => $role->name,
-            /* 'permissions' => $role->permission, */
+            'permissions' => $role->permissions,
             'created_at' => $created_at,
             'updated_at' => $updated_at,
         ];

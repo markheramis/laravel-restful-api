@@ -2,8 +2,9 @@
 
 namespace App\Http\Requests;
 
-use Auth;
+use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class RoleShowRequest extends FormRequest
 {
@@ -14,10 +15,9 @@ class RoleShowRequest extends FormRequest
      */
     public function authorize()
     {
-        if (Auth::check()) {
-            $user = Auth::user();
-            return $user->hasAccess("role.show");
-        }
+        $authUser = Auth::user();
+        $user = Sentinel::findById($authUser->id);
+        return $user->hasAccess("role.show");
     }
 
     /**
