@@ -151,14 +151,32 @@ container_scanning:
     - if: '$CI_COMMIT_BRANCH == "master"' # Run container_scanning in pipelines on the master branch (but not in other branch pipelines)
     - if: "$CI_COMMIT_TAG" # Run container_scanning in pipelines for tags
 
+phpcs-security-audit-sast:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"' # Run phpcs-security-audit-sast in merge request pipelines
+    - if: '$CI_COMMIT_BRANCH == "master"' # Run phpcs-security-audit-sast in pipelines on the master branch (but not in other branch pipelines)
+    - if: "$CI_COMMIT_TAG" # Run phpcs-security-audit-sast in pipelines for tags
+
 nodejs-scan-sast:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"' # Run nodejs-scan-sast in merge request pipelines
     - if: '$CI_COMMIT_BRANCH == "master"' # Run nodejs-scan-sast in pipelines on the master branch (but not in other branch pipelines)
     - if: "$CI_COMMIT_TAG" # Run nodejs-scan-sast in pipelines for tags
 
+eslint-sast:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"' # Run eslint-sast in merge request pipelines
+    - if: '$CI_COMMIT_BRANCH == "master"' # Run eslint-sast in pipelines on the master branch (but not in other branch pipelines)
+    - if: "$CI_COMMIT_TAG" # Run eslint-sast in pipelines for tags
+
 secret_detection:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"' # Run secret_detection in merge request pipelines
     - if: '$CI_COMMIT_BRANCH == "master"' # Run secret_detection in pipelines on the master branch (but not in other branch pipelines)
     - if: "$CI_COMMIT_TAG" # Run secret_detection in pipelines for tags
+
+license_scanning:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"' # Run license_scanning in merge request pipelines
+    - if: '$CI_COMMIT_BRANCH == "master"' # Run license_scanning in pipelines on the master branch (but not in other branch pipelines)
+    - if: "$CI_COMMIT_TAG" # Run license_scanning in pipelines for tags
