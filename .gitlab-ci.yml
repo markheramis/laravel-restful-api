@@ -1,12 +1,11 @@
-
 variables:
   DB_HOST: mysql
   MYSQL_DATABASE: homestead
   MYSQL_USER: homestead
   MYSQL_PASSWORD: secret
   MYSQL_ROOT_PASSWORD: secret
-  SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
-  GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
+  SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar" # Defines the location of the analysis task cache
+  GIT_DEPTH: "0" # Tells git to fetch all the branches of the project, required by the analysis task
   DOCKER_DRIVER: overlay2
   CLAIR_OUTPUT: High
 
@@ -121,3 +120,38 @@ sonarcloud-check:
     - master
   dependencies:
     - artisan-test
+
+code_quality:
+  only:
+    - master
+    - pull_request
+
+code_intelligence_go:
+  only:
+    - master
+    - pull_request
+
+gemnasium-dependency_scanning:
+  only:
+    - master
+    - pull_request
+
+retire-js-dependency_scanning:
+  only:
+    - master
+    - pull_request
+
+container_scanning:
+  only:
+    - master
+    - pull_request
+
+nodejs-scan-sast:
+  only:
+    - master
+    - pull_request
+
+secret_detection:
+  only:
+    - master
+    - pull_request
