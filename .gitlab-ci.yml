@@ -122,36 +122,43 @@ sonarcloud-check:
     - artisan-test
 
 code_quality:
-  only:
-    - master
-    - pull_request
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"' # Run code_quality in merge request pipelines
+    - if: '$CI_COMMIT_BRANCH == "master"' # Run code_quality in pipelines on the master branch (but not in other branch pipelines)
+    - if: "$CI_COMMIT_TAG" # Run code_quality in pipelines for tags
 
 code_intelligence_go:
-  only:
-    - master
-    - pull_request
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"' # Run code_intelligence_go in merge request pipelines
+    - if: '$CI_COMMIT_BRANCH == "master"' # Run code_intelligence_go in pipelines on the master branch (but not in other branch pipelines)
+    - if: "$CI_COMMIT_TAG" # Run code_intelligence_go in pipelines for tags
 
 gemnasium-dependency_scanning:
-  only:
-    - master
-    - pull_request
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"' # Run gemnasium-dependency_scanning in merge request pipelines
+    - if: '$CI_COMMIT_BRANCH == "master"' # Run gemnasium-dependency_scanning in pipelines on the master branch (but not in other branch pipelines)
+    - if: "$CI_COMMIT_TAG" # Run gemnasium-dependency_scanning in pipelines for tags
 
 retire-js-dependency_scanning:
-  only:
-    - master
-    - pull_request
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"' # Run retire-js-dependency_scanning in merge request pipelines
+    - if: '$CI_COMMIT_BRANCH == "master"' # Run retire-js-dependency_scanning in pipelines on the master branch (but not in other branch pipelines)
+    - if: "$CI_COMMIT_TAG" # Run retire-js-dependency_scanning in pipelines for tags
 
 container_scanning:
-  only:
-    - master
-    - pull_request
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"' # Run container_scanning in merge request pipelines
+    - if: '$CI_COMMIT_BRANCH == "master"' # Run container_scanning in pipelines on the master branch (but not in other branch pipelines)
+    - if: "$CI_COMMIT_TAG" # Run container_scanning in pipelines for tags
 
 nodejs-scan-sast:
-  only:
-    - master
-    - pull_request
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"' # Run nodejs-scan-sast in merge request pipelines
+    - if: '$CI_COMMIT_BRANCH == "master"' # Run nodejs-scan-sast in pipelines on the master branch (but not in other branch pipelines)
+    - if: "$CI_COMMIT_TAG" # Run nodejs-scan-sast in pipelines for tags
 
 secret_detection:
-  only:
-    - master
-    - pull_request
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"' # Run secret_detection in merge request pipelines
+    - if: '$CI_COMMIT_BRANCH == "master"' # Run secret_detection in pipelines on the master branch (but not in other branch pipelines)
+    - if: "$CI_COMMIT_TAG" # Run secret_detection in pipelines for tags
