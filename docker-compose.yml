@@ -38,7 +38,7 @@ services:
   #         - laravel_restful_api_network
   mysql:
     container_name: "laravel_restful_api_mysql"
-    image: "mysql:8.0"
+    image: mysql
     environment:
       MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
       MYSQL_DATABASE: "${DB_DATABASE}"
@@ -96,7 +96,7 @@ services:
   #          retries: 10
   redis:
     container_name: "laravel_restful_api_redis"
-    image: "redis:alpine"
+    image: redis:alpine
     ports:
       - "${FORWARD_REDIS_PORT:-6379}:6379"
     volumes:
@@ -117,7 +117,7 @@ services:
   #         - sail
   mailhog:
     container_name: "laravel_restful_api_mailhog"
-    image: "mailhog/mailhog:latest"
+    image: mailhog/mailhog:latest
     ports:
       - "${FORWARD_MAILHOG_PORT:-1025}:1025"
       - "${FORWARD_MAILHOG_DASHBOARD_PORT:-8025}:8025"
