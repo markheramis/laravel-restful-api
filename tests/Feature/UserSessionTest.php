@@ -31,14 +31,11 @@ class UserSessionTest extends TestCase
             ->assertJson([
                 "data" => [
                     "id" => $user->id,
-                    "uuid" => $user->uuid,
                     "username" => $user->username,
                     "email" => $user->email,
                     "first_name" => $user->first_name,
                     "last_name" => $user->last_name,
                     "roles" => $user->roles->toArray(),
-                    "created_at" => $user->created_at,
-                    "updated_at" => $user->updated_at,
                 ]
             ]);
     }
@@ -56,14 +53,11 @@ class UserSessionTest extends TestCase
             ->assertJson([
                 "data" => [
                     "id" => $user->id,
-                    "uuid" => $user->uuid,
                     "username" => $user->username,
                     "email" => $user->email,
                     "first_name" => $user->first_name,
                     "last_name" => $user->last_name,
                     "roles" => $user->roles->toArray(),
-                    "created_at" => $user->created_at,
-                    "updated_at" => $user->updated_at,
                 ]
             ]);
     }
@@ -81,14 +75,11 @@ class UserSessionTest extends TestCase
             ->assertJson([
                 "data" => [
                     "id" => $user->id,
-                    "uuid" => $user->uuid,
                     "username" => $user->username,
                     "email" => $user->email,
                     "first_name" => $user->first_name,
                     "last_name" => $user->last_name,
                     "roles" => $user->roles->toArray(),
-                    "created_at" => $user->created_at,
-                    "updated_at" => $user->updated_at,
                 ]
             ]);
     }
