@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\API;
 
-use Auth;
-use Sentinel;
 use Exception;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserLoginRequest;
 use App\Http\Requests\UserRegisterRequest;
+use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * @group Auth Management
@@ -26,8 +26,9 @@ class AuthController extends Controller
      */
     public function me()
     {
-        $user = Auth::user();
-        return response()->success($user);
+        $authUser = Auth::user();
+        $userData = Sentinel::findById($authUser->id)->load('roles');
+        return response()->success($userData);
     }
     /**
      * Login API
