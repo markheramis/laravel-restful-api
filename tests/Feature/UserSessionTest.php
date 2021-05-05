@@ -21,30 +21,39 @@ class UserSessionTest extends TestCase
     public function testGetCurrentUserAsSubscriber()
     {
         $user = $this->createUser('subscriber');
+        $user->roles = $user->roles()->select('slug', 'name', 'permissions')->get();
         $token = $this->getTokenByRole('subscriber', $user->id);
         $response = $this->json("GET", "/api/me", [], [
             "Authorization" => "Bearer $token"
         ]);
-        $response->assertStatus(200);
+        $response
+            ->assertStatus(200)
+            ->assertJson($user);
     }
 
     public function testGetCurrentUserAsModerator()
     {
         $user = $this->createUser("moderator");
+        $user->roles = $user->roles()->select('slug', 'name', 'permissions')->get();
         $token = $this->getTokenByRole("moderator", $user->id);
         $response = $this->json("GET", "/api/me", [], [
             "Authorization" => "Bearer $token",
         ]);
-        $response->assertStatus(200);
+        $response
+            ->assertStatus(200)
+            ->assertJson($user);
     }
 
     public function testGetCurrentUserAsAdministrator()
     {
         $user = $this->createUser("administrator");
+        $user->roles = $user->roles()->select('slug', 'name', 'permissions')->get();
         $token = $this->getTokenByRole("administrator", $user->id);
         $response = $this->json("GET", "/api/me", [], [
             "Authorization" => "Bearer $token"
         ]);
-        $response->assertStatus(200);
+        $response
+            ->assertStatus(200)
+            ->assertJson($user);
     }
 }
