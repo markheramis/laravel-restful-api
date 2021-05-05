@@ -27,6 +27,7 @@ class AuthController extends Controller
     public function me()
     {
         $user = Auth::user();
+        $user->roles = $user->roles()->select('slug', 'name', 'permissions')->get();
         return response()->success($user);
     }
     /**
