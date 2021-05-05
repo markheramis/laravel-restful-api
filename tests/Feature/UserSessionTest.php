@@ -28,7 +28,19 @@ class UserSessionTest extends TestCase
         ]);
         $response
             ->assertStatus(200)
-            ->assertJson($user);
+            ->assertJson([
+                "data" => [
+                    "id" => $user->id,
+                    "uuid" => $user->uuid,
+                    "username" => $user->username,
+                    "email" => $user->email,
+                    "first_name" => $user->first_name,
+                    "last_name" => $user->last_name,
+                    "roles" => $user->roles->toArray(),
+                    "created_at" => $user->created_at,
+                    "updated_at" => $user->updated_at,
+                ]
+            ]);
     }
 
     public function testGetCurrentUserAsModerator()
@@ -41,7 +53,19 @@ class UserSessionTest extends TestCase
         ]);
         $response
             ->assertStatus(200)
-            ->assertJson($user);
+            ->assertJson([
+                "data" => [
+                    "id" => $user->id,
+                    "uuid" => $user->uuid,
+                    "username" => $user->username,
+                    "email" => $user->email,
+                    "first_name" => $user->first_name,
+                    "last_name" => $user->last_name,
+                    "roles" => $user->roles->toArray(),
+                    "created_at" => $user->created_at,
+                    "updated_at" => $user->updated_at,
+                ]
+            ]);
     }
 
     public function testGetCurrentUserAsAdministrator()
@@ -54,6 +78,18 @@ class UserSessionTest extends TestCase
         ]);
         $response
             ->assertStatus(200)
-            ->assertJson($user);
+            ->assertJson([
+                "data" => [
+                    "id" => $user->id,
+                    "uuid" => $user->uuid,
+                    "username" => $user->username,
+                    "email" => $user->email,
+                    "first_name" => $user->first_name,
+                    "last_name" => $user->last_name,
+                    "roles" => $user->roles->toArray(),
+                    "created_at" => $user->created_at,
+                    "updated_at" => $user->updated_at,
+                ]
+            ]);
     }
 }
