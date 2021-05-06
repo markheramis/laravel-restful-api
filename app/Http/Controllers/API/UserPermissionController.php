@@ -13,7 +13,7 @@ use App\Http\Requests\UserPermissionDeleteRequest;
 use \Illuminate\Http\JsonResponse;
 
 /**
- * @group Usrr Permission Management
+ * @group User Permission Management
  * 
  * APIs for managing a User's Permissions
  */
@@ -73,9 +73,9 @@ class UserPermissionController extends Controller
     public function update(UserPermissionUpdateRequest $request, User $user): JsonResponse
     {
         $user->updatePermission($request->slug, $request->value, true);
-        if ($user->save()){
+        if ($user->save()) {
             return response()->success('Permission updated successfully');
-        } else {                
+        } else {
             return response()->error('Failed to update permission', 400);
         }
     }

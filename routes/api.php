@@ -16,6 +16,8 @@ use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\UserPermissionController;
 use App\Http\Controllers\API\UserRoleController;
 use App\Http\Controllers\API\RoleController;
+use App\Http\Controllers\API\OptionController;
+
 use Illuminate\Support\Facades\Route;
 
 Route::get('me', [AuthController::class, 'me'])->middleware(['auth:api'])->name('api.me');
@@ -49,6 +51,16 @@ Route::prefix('role')->middleware(['auth:api'])->group(function () {
         Route::get('/', [RoleController::class, 'show']);
         Route::put('/', [RoleController::class, 'update']);
         Route::delete('/', [RoleController::class, 'delete']);
+    });
+});
+
+Route::prefix('option')->middleware(['auth:api'])->group(function () {
+    Route::get('/', [OptionController::class, 'index']);
+    Route::post('/', [OptionController::class, 'store']);
+    Route::prefix('{option}')->group(function () {
+        Route::get('/', [OptionController::class,  'get']);
+        Route::put('/', [OptionController::class, 'update']);
+        Route::delete('/', [OptionController::class, 'destory']);
     });
 });
 
