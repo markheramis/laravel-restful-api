@@ -51,8 +51,7 @@ class UserRoleController extends Controller
      */
     public function add(UserRoleAddRequest $request, User $user): JsonResponse
     {
-        $role = Role::where('slug', $request->slug)->first();
-        if ($user && $role) {
+        if ($role = Role::where('slug', $request->slug)->first()) {
             $role->users()->attach($user);
             return response()->success('Attached Successfully');
         } else {
@@ -73,8 +72,7 @@ class UserRoleController extends Controller
      */
     public function delete(UserRoleDeleteRequest $request, User $user): JsonResponse
     {
-        $role = Role::where('slug', $request->slug)->first();
-        if ($user && $role) {
+        if ($role = Role::where('slug', $request->slug)->first()) {
             $role->users()->detach($user);
             return response()->success('Detached Successfully');
         } else {

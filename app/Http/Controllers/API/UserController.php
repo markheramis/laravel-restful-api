@@ -69,12 +69,8 @@ class UserController extends Controller
      */
     public function show(UserShowRequest $request, User $user): JsonResponse
     {
-        if ($user) {
-            $response = fractal($user, new UserTransformer())->toArray();
-            return response()->success($response, 200);
-        } else {
-            return response()->error('User not found', 404);
-        }
+        $response = fractal($user, new UserTransformer())->toArray();
+        return response()->success($response, 200);
     }
 
     /**
