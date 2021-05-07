@@ -2,11 +2,10 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Foundation\Http\FormRequest;
 
-class CategoryAllRequest extends FormRequest
+class CategoryUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -15,9 +14,12 @@ class CategoryAllRequest extends FormRequest
      */
     public function authorize()
     {
-        $authUser = Auth::user();
-        $user = Sentinel::findByid($authUser->id);
-        return $user->hasAccess("category.index");
+        if (Auth::check()) {
+            $user = Auth::user();
+            return $user->hasAccess("category.update");
+          } else {
+            return false;
+          }
     }
 
     /**
