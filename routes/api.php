@@ -34,6 +34,7 @@ Route::prefix('user')->middleware(['auth:api'])->group(function () {
         Route::prefix('role')->group(function () {
             Route::get('/', [UserRoleController::class, 'show']);
             Route::post('/', [UserRoleController::class, 'add']);
+            Route::put('/', [UserRoleController::class, 'update']);
             Route::delete('/', [UserRoleController::class, 'delete']);
         });
         Route::prefix('permission')->group(function () {

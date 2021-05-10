@@ -2,8 +2,9 @@
 
 namespace App\Http\Requests;
 
-use Auth;
 use App\Http\Requests\FormRequest;
+use Illuminate\Support\Facades\Auth;
+use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 
 class UserRoleDeleteRequest extends FormRequest
 {
@@ -14,12 +15,9 @@ class UserRoleDeleteRequest extends FormRequest
    */
   public function authorize()
   {
-    if (Auth::check()) {
-      $user = Auth::user();
-      return $user->hasAccess("user.role.delete");
-    } else {
-      return false;
-    }
+    $user = Auth::user();
+    $can_delete_role = Sentinel::findById($user->id)->hasAccess("user.role.delete");
+    return $can_delete_role;
   }
 
   /**
@@ -30,7 +28,7 @@ class UserRoleDeleteRequest extends FormRequest
   public function rules()
   {
     return [
-      //
+      "slug" => ["min:2", "max:100"],
     ];
   }
 }

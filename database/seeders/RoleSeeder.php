@@ -33,6 +33,7 @@ class RoleSeeder extends Seeder
 
                 "user.role.show" => true,
                 "user.role.add" => true,
+                "user.role.update" => true,
                 "user.role.delete" => true,
 
                 "user.permission.add" => true,
