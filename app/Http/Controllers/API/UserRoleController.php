@@ -10,6 +10,7 @@ use App\Transformers\RoleTransformer;
 use App\Http\Requests\UserRoleAddRequest;
 use App\Http\Requests\UserRoleShowRequest;
 use App\Http\Requests\UserRoleDeleteRequest;
+use App\Http\Requests\UserRoleUpdateRequest;
 use Illuminate\Http\JsonResponse;
 
 /**
@@ -79,4 +80,16 @@ class UserRoleController extends Controller
             return response()->error('Not Found', 404);
         }
     }
+
+    public function update(UserRoleUpdateRequest $request, User $user): JsonResponse
+    {
+        $role = Role::where('slug', $request->slug)->first();
+        if ($role) {
+            $user->roles()->sync($role->id);
+            return response()->success('User role Updated');
+        } else {
+            return response()->error('Not Found', 404);
+        }
+    }
+
 }
