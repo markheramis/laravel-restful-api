@@ -110,8 +110,7 @@ class RoleController extends Controller
         $role->name = $request->name;
         $role->slug = $request->slug;
         $role->permissions = $request->permissions;
-        /* $role->permissions = $request->permissions; */
-        if ($role->save()) {
+        if ($role->update()) {
             $response = fractal($role, new RoleTransformer())->toArray();
             return response()->success($response);
         } else {

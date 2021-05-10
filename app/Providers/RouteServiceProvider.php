@@ -6,6 +6,7 @@ use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvi
 use Illuminate\Support\Facades\Route;
 use App\Models\User;
 use App\Models\Role;
+use App\Models\Option;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -35,6 +36,7 @@ class RouteServiceProvider extends ServiceProvider
         //
         Route::model('user', User::class);
         Route::model('role', Role::class);
+        Route::model('option', Option::class);
 
         parent::boot();
     }

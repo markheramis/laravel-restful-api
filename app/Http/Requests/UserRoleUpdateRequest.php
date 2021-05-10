@@ -2,11 +2,11 @@
 
 namespace App\Http\Requests;
 
-use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\FormRequest;
+use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 
-class RoleShowRequest extends FormRequest
+class UserRoleUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -15,9 +15,9 @@ class RoleShowRequest extends FormRequest
      */
     public function authorize()
     {
-        $authUser = Auth::user();
-        $user = Sentinel::findById($authUser->id);
-        return $user->hasAccess("role.show");
+        $user = Auth::user();
+        $can_update_role = Sentinel::findById($user->id)->hasAccess("user.role.update");
+        return $can_update_role;
     }
 
     /**
@@ -28,7 +28,7 @@ class RoleShowRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+          'slug' => ['required', 'min:2', 'max:20'],
         ];
     }
 }

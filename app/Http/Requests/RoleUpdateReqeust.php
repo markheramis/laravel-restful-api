@@ -2,8 +2,9 @@
 
 namespace App\Http\Requests;
 
-use Auth;
 use App\Http\Requests\FormRequest;
+use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
+use Illuminate\Support\Facades\Auth;
 
 class RoleUpdateReqeust extends FormRequest
 {
@@ -14,12 +15,9 @@ class RoleUpdateReqeust extends FormRequest
    */
   public function authorize()
   {
-    if (Auth::check()) {
-      $user = Auth::user();
-      return $user->hasAccess("role.update");
-    } else {
-      return false;
-    }
+    $authUser = Auth::user();
+    $user = Sentinel::findById($authUser->id);
+    return $user->hasAccess("role.update");
   }
 
   /**
