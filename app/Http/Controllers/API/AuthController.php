@@ -26,9 +26,9 @@ class AuthController extends Controller
      */
     public function me()
     {
-        $authUser = Auth::user();
-        $userData = Sentinel::findById($authUser->id)->load('roles');
-        return response()->success($userData);
+        $user = Auth::user();
+        $user->roles = $user->roles()->select('slug', 'name', 'permissions')->get();
+        return response()->success($user);
     }
     /**
      * Login API

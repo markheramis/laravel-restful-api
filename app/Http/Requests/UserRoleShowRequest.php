@@ -15,9 +15,9 @@ class UserRoleShowRequest extends FormRequest
    */
   public function authorize()
   {
-      $authUser = Auth::user();
-      $user = Sentinel::findById($authUser->id);
-      return $user->hasAccess("role.show");
+    $authUser = Auth::user();
+    $user = Sentinel::findById($authUser->id);
+    return $user->hasAccess("user.role.show");
   }
 
   /**
