@@ -49,7 +49,6 @@ class MediaController extends Controller
             ->toArray();
 
         return response()->json($response);
-
     }
 
     /**
@@ -65,11 +64,12 @@ class MediaController extends Controller
     {
         $data = $request->all();
         $media = Media::create($data);
+        $request->file->move(public_path('storage'), $media);
 
-        if($media->save()) {
-            return response()->success('New media item created successfully');
+        if ($media->save()) {
+            return response()->success('New media item stored successfully', 200);
         } else {
-            return response()->error('Failed to create new media');
+            return response()->error('Failed to stored new media', 500);
         }
     }
 
@@ -120,7 +120,7 @@ class MediaController extends Controller
     public function destroy(MediaDestroyRequest $request, Media $media)
     {
         if ($media->delete()) {
-            return response()->success('Media deleted successfully');
+            return response()->success('Media deleted successfully', 200);
         } else {
             return response()->error('Media not found', 404);
         }

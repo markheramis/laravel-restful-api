@@ -18,7 +18,7 @@ class CreateMediaTable extends Migration
             $table->unsignedBigInteger('owner_id');
             $table->string('path');
             $table->text('description');
-            $table->enum('status', ['private', 'public'])->default('private');
+            $table->enum('status', ['private', 'public'])->default('public');
             $table->timestamps();
         });
     }
