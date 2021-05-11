@@ -16,7 +16,7 @@ class RoleDeleteTest extends TestCase
             "name" => "TestRoleDelete",
             "slug" => "testroleDelete",
             "permissions" => [
-                "test.all" => true,
+                "test.index" => true,
                 "test.get" => true,
                 "test.update" => true,
                 "test.store" => true,
@@ -34,7 +34,7 @@ class RoleDeleteTest extends TestCase
             "name" => "TestRoleDeleteAsSubscriber",
             "slug" => "testroleDeleteAsSubscriber",
             "permissions" => [
-                "test.all" => true,
+                "test.index" => true,
                 "test.get" => true,
                 "test.update" => true,
                 "test.store" => true,
@@ -56,7 +56,7 @@ class RoleDeleteTest extends TestCase
             "name" => "TestRoleDeleteAsModerator",
             "slug" => "testroleDeleteAsModerator",
             "permissions" => [
-                "test.all" => true,
+                "test.index" => true,
                 "test.get" => true,
                 "test.update" => true,
                 "test.store" => true,
@@ -78,7 +78,7 @@ class RoleDeleteTest extends TestCase
             "name" => "TestRoleDeleteAsAdministrator",
             "slug" => "testroleDeleteAsAdministrator",
             "permissions" => [
-                "test.all" => true,
+                "test.index" => true,
                 "test.get" => true,
                 "test.update" => true,
                 "test.store" => true,
