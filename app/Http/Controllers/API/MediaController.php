@@ -62,11 +62,11 @@ class MediaController extends Controller
      */
     public function store(MediaStoreRequest $request): JsonResponse
     {
-        $data = $request->all();
-        $media = Media::create($data);
-        $request->file->move(public_path('storage'), $media);
         
-        if ($media->save()) {
+        $path = $request->path;
+        $request->file('file')->store($path);
+
+        if ($request->save()) {
             return response()->success('New media item stored successfully', 200);
         } else {
             return response()->error('Failed to stored new media', 500);
