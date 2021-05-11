@@ -65,7 +65,7 @@ class MediaController extends Controller
         $data = $request->all();
         $media = Media::create($data);
         $request->file->move(public_path('storage'), $media);
-
+        
         if ($media->save()) {
             return response()->success('New media item stored successfully', 200);
         } else {
