@@ -28,9 +28,11 @@ class UserRegisterRequest extends FormRequest
             "username" => "required",
             "email" => "required|email",
             "password" => "required",
-            "v_password" => "required|same:password",
-            "first_name" => "required",
-            "last_name" => "required",
+            /* "v_password" => "required|same:password", */
+            "firstName" => "required",
+            "lastName" => "required",
+            "role" => "required",
+            "activate" => "required",
         ];
     }
 }
