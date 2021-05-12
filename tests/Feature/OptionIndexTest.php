@@ -29,7 +29,9 @@ class OptionIndexTest extends TestCase
         ];
         $response = $this
             ->json("GET", "/api/option", [], $header)
-            ->assertStatus(200);
+            ->assertJson([
+                "Option" => $option
+            ], 200);
     }
 
     public function testGetOptionIndexAsModeratorShouldBeAllowed()
@@ -44,7 +46,9 @@ class OptionIndexTest extends TestCase
         ];
         $response = $this
             ->json("GET", "/api/option", [], $header)
-            ->assertStatus(200);
+            ->assertJson([
+                "Option" => $option
+            ], 200);
     }
 
     public function testGetOptionIndexAsSubscriberShouldBeAllowed()
@@ -59,6 +63,8 @@ class OptionIndexTest extends TestCase
         ];
         $response = $this
             ->json("GET", "/api/option", [], $header)
-            ->assertStatus(200);
+            ->assertJson([
+                "Option" => $option
+            ], 200);
     }
 }

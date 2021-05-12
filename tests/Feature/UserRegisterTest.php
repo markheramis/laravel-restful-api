@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Models\User;
+use App\Models\Role;
 use Faker\Factory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -10,6 +12,18 @@ use Tests\TestCase;
 class UserRegisterTest extends TestCase
 {
     use WithFaker;
+
+    public function testRegisterWithNoRoleShouldBeUnprocessableEntity(User $user)
+    {
+        $response = $this->json("POST", "/api/register", []);
+        $roles  = $user->role;
+        if (!$roles){
+            $response
+            ->assertJson([
+                'message' => 'No role added for this user',
+            ], 422);
+        }
+    }
 
     public function testRegisterWithNoParameterShouldBeUnprocessableEntity()
     {
@@ -25,7 +39,8 @@ class UserRegisterTest extends TestCase
             "email" => $this->faker->email(),
         ]);
 
-        $response->assertStatus(422);
+        $response
+            ->assertStatus(422);
     }
 
     public function testRegisterPasswordNoVerifyShouldBeUnprocessableEntity()
@@ -70,8 +85,8 @@ class UserRegisterTest extends TestCase
             "email" => $this->faker->email(),
             "password" => "p@s5W0rD1234",
             "v_password" => "p@s5W0rD1234",
-            "first_name" => $this->faker->firstName(),
-            "last_name" => $this->faker->lastName(),
+            "firstName" => $this->faker->firstName(),
+            "lastName" => $this->faker->lastName(),
         ]);
 
         $response
@@ -85,8 +100,8 @@ class UserRegisterTest extends TestCase
             "email" => $this->faker->email(),
             "password" => "p@s5W0rD1234",
             "v_password" => "p@s5W0rD1234",
-            "first_name" => $this->faker->firstName(),
-            "last_name" => $this->faker->lastName(),
+            "firstName" => $this->faker->firstName(),
+            "lastName" => $this->faker->lastName(),
             "permissions" => [
                 "view.user" => true,
                 "update.user" => true,
