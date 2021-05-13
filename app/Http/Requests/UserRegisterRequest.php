@@ -26,13 +26,13 @@ class UserRegisterRequest extends FormRequest
     {
         return [
             "username" => "required",
-            "email" => "required|email",
+            "email" => "required|email|unique:users,email",
             "password" => "required",
             /* "v_password" => "required|same:password", */
             "firstName" => "required",
             "lastName" => "required",
             "role" => "required",
-            "activate" => "required",
+            "activate" => "required"
         ];
     }
 }

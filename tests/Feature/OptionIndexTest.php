@@ -19,52 +19,41 @@ class OptionIndexTest extends TestCase
 
     public function testGetOptionIndexAsAdministratorShouldBeAllowed()
     {
-        $option = Option::factory()->count(5)->create([
-            "autoload" => 1,
-        ]);
-
+        Option::factory()->count(2)->create();
+        $expected_response = Option::select(['name', 'value'])->where('autoload', true)->get()->toArray();
         $token = $this->getTokenByRole("administrator");
         $header = [
             "Authorization" => "Bearer $token",
         ];
-        $response = $this
-            ->json("GET", "/api/option", [], $header)
-            ->assertJson([
-                "Option" => $option
-            ], 200);
+        $response = $this->json("GET", "/api/option", [], $header);
+        $response->assertStatus(200)
+        ->assertJson($expected_response);
     }
-
+    
     public function testGetOptionIndexAsModeratorShouldBeAllowed()
     {
-        $option = Option::factory()->count(5)->create([
-            "autoload" => 1,
-        ]);
-
+        Option::factory()->count(2)->create();
+        $expected_response = Option::select(['name', 'value'])->where('autoload', true)->get()->toArray();
         $token = $this->getTokenByRole("moderator");
         $header = [
             "Authorization" => "Bearer $token",
         ];
-        $response = $this
-            ->json("GET", "/api/option", [], $header)
-            ->assertJson([
-                "Option" => $option
-            ], 200);
+        $response = $this->json("GET", "/api/option", [], $header);
+        $response->assertStatus(200)
+        ->assertJson($expected_response);
     }
 
     public function testGetOptionIndexAsSubscriberShouldBeAllowed()
     {
-        $option = Option::factory()->count(5)->create([
-            "autoload" => 1,
-        ]);
-
+        Option::factory()->count(2)->create();
+        $expected_response = Option::select(['name', 'value'])->where('autoload', true)->get()->toArray();
         $token = $this->getTokenByRole("subscriber");
         $header = [
             "Authorization" => "Bearer $token",
         ];
-        $response = $this
-            ->json("GET", "/api/option", [], $header)
-            ->assertJson([
-                "Option" => $option
-            ], 200);
+        $response = $this->json("GET", "/api/option", [], $header);
+        $response->assertStatus(200)
+        ->assertJson($expected_response);
     }
+    
 }

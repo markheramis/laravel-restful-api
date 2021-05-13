@@ -111,8 +111,8 @@ class UserController extends Controller
     {
         $user->username = $request->username;
         $user->email = $request->email;
-        $user->first_name = $request->firstName;
-        $user->last_name = $request->lastName;
+        $user->firstName = $request->firstName;
+        $user->lastName = $request->lastName;
         if ($user->update()) {
             return response()->success('User updated', 201);
         } else {

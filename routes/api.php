@@ -17,6 +17,7 @@ use App\Http\Controllers\API\UserPermissionController;
 use App\Http\Controllers\API\UserRoleController;
 use App\Http\Controllers\API\RoleController;
 use App\Http\Controllers\API\OptionController;
+use App\Http\Controllers\API\UserRegisterController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -45,6 +46,7 @@ Route::prefix('user')->middleware(['auth:api'])->group(function () {
         });
     });
 });
+
 Route::prefix('role')->middleware(['auth:api'])->group(function () {
     Route::get('/', [RoleController::class, 'index']);
     Route::post('/', [RoleController::class, 'store']);
@@ -64,6 +66,7 @@ Route::prefix('option')->middleware(['auth:api'])->group(function () {
         Route::delete('/', [OptionController::class, 'destory']);
     });
 });
+
 
 /*
 Route::resource('role', RoleController::class)->except(['create', 'edit']);

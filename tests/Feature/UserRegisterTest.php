@@ -13,17 +13,6 @@ class UserRegisterTest extends TestCase
 {
     use WithFaker;
 
-    public function testRegisterWithNoRoleShouldBeUnprocessableEntity(User $user)
-    {
-        $response = $this->json("POST", "/api/register", []);
-        $roles  = $user->role;
-        if (!$roles){
-            $response
-            ->assertJson([
-                'message' => 'No role added for this user',
-            ], 422);
-        }
-    }
 
     public function testRegisterWithNoParameterShouldBeUnprocessableEntity()
     {
@@ -78,7 +67,7 @@ class UserRegisterTest extends TestCase
             ->assertStatus(422);
     }
 
-    public function testRegisterWithCorrectParametersShouldRegisterSuccessfully()
+    public function testRegisterWithNoRoleShouldBeUnprocessableEntity()
     {
         $response = $this->json("POST", "/api/register", [
             "username" => $this->faker->userName(),
@@ -90,7 +79,25 @@ class UserRegisterTest extends TestCase
         ]);
 
         $response
+            ->assertStatus(422);
+    }
+
+    public function testRegisterWithCorrectParametersShouldRegisterSuccessfully()
+    {
+        $response = $this->json("POST", "/api/register", [
+            "username" => $this->faker->userName(),
+            "email" => $this->faker->email(),
+            "password" => "p@s5W0rD1234",
+            "v_password" => "p@s5W0rD1234",
+            "firstName" => $this->faker->firstName(),
+            "lastName" => $this->faker->lastName(),
+            "role" => "subscriber",
+            "activate" => true,
+        ]);
+
+        $response
             ->assertStatus(200);
+       
     }
 
     public function testRegisterWithCorrectParametersAndPermissionShouldRegisterSuccessfully()
@@ -102,6 +109,8 @@ class UserRegisterTest extends TestCase
             "v_password" => "p@s5W0rD1234",
             "firstName" => $this->faker->firstName(),
             "lastName" => $this->faker->lastName(),
+            "role" => "subscriber",
+            "activate" => true,
             "permissions" => [
                 "view.user" => true,
                 "update.user" => true,
@@ -110,4 +119,5 @@ class UserRegisterTest extends TestCase
         $response
             ->assertStatus(200);
     }
+
 }
