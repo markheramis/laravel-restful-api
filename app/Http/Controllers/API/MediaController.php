@@ -74,6 +74,7 @@ class MediaController extends Controller
 
         $save = $user->media()->create([
           'path' => $path,
+          'description' => $file->getClientOriginalName(),
         ]);
 
         if ($save) {
