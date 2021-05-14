@@ -13,11 +13,11 @@ class CreateMediaTable extends Migration
      */
     public function up()
     {
-        Schema::create('media', function (Blueprint $table) {
+        Schema::create('medias', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('owner_id');
+            $table->unsignedBigInteger('user_id')->refences('id')->on('users');
             $table->string('path');
-            $table->text('description');
+            $table->text('description')->nullable();
             $table->enum('status', ['private', 'public'])->default('public');
             $table->timestamps();
         });
@@ -30,6 +30,6 @@ class CreateMediaTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('media');
+        Schema::dropIfExists('medias');
     }
 }
