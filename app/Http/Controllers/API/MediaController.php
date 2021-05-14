@@ -10,9 +10,13 @@ use App\Http\Requests\MediaGetRequest;
 use App\Http\Requests\MediaIndexRequest;
 use App\Http\Requests\MediaStoreRequest;
 use App\Http\Requests\MediaUpdateRequest;
+use App\Models\User;
+use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Serializer\JsonApiSerializer;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 
 
@@ -62,11 +66,17 @@ class MediaController extends Controller
      */
     public function store(MediaStoreRequest $request): JsonResponse
     {
-        
-        $path = $request->path;
-        $request->file('file')->store($path);
+        $file = $request->file;
+        $authUser = Auth::user();
+        $user = Sentinel::findById($authUser->id);
 
-        if ($request->save()) {
+        $path = $file->store('/dicom', 'public');
+
+        $save = $user->media()->create([
+          'path' => $path,
+        ]);
+
+        if ($save) {
             return response()->success('New media item stored successfully', 200);
         } else {
             return response()->error('Failed to stored new media', 500);
