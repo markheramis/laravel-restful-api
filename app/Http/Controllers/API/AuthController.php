@@ -76,7 +76,7 @@ class AuthController extends Controller
             "lastName" => $request->lastName,
         ];
         $role = $request->role;
-        $activate = $request->activate === "true" ? true: false;
+        $activate = $request->activate === "true" ? true : false;
 
         try {
             if (Sentinel::validForCreation($credentials)) {
@@ -88,9 +88,8 @@ class AuthController extends Controller
                 return response()->error('Could not create user');
             }
         } catch (Exception $e) {
-                return response()->error($e->getMessage(), $e->getCode());
+            return response()->error($e->getMessage(), $e->getCode());
         }
-
     }
 
     private function attachRole($user, $role)
