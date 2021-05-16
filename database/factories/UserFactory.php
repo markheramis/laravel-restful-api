@@ -31,8 +31,8 @@ class UserFactory extends Factory
             'username' => $first_name . $last_name,
             'email' => $this->faker->email,
             'password' => bcrypt('password12345'),
-            'first_name' => $first_name,
-            'last_name' => $last_name,
+            'firstName' => $first_name,
+            'lastName' => $last_name,
         ];
     }
 

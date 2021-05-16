@@ -33,8 +33,8 @@ class UserSessionTest extends TestCase
                     "id" => $user->id,
                     "username" => $user->username,
                     "email" => $user->email,
-                    "first_name" => $user->first_name,
-                    "last_name" => $user->last_name,
+                    "firstName" => $user->firstName,
+                    "lastName" => $user->lastName,
                     "roles" => $user->roles->toArray(),
                 ]
             ]);
@@ -55,8 +55,8 @@ class UserSessionTest extends TestCase
                     "id" => $user->id,
                     "username" => $user->username,
                     "email" => $user->email,
-                    "first_name" => $user->first_name,
-                    "last_name" => $user->last_name,
+                    "firstName" => $user->firstName,
+                    "lastName" => $user->lastName,
                     "roles" => $user->roles->toArray(),
                 ]
             ]);
@@ -77,8 +77,8 @@ class UserSessionTest extends TestCase
                     "id" => $user->id,
                     "username" => $user->username,
                     "email" => $user->email,
-                    "first_name" => $user->first_name,
-                    "last_name" => $user->last_name,
+                    "firstName" => $user->firstName,
+                    "lastName" => $user->lastName,
                     "roles" => $user->roles->toArray(),
                 ]
             ]);
