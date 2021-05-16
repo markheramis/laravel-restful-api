@@ -18,7 +18,6 @@ use App\Http\Controllers\API\UserPermissionController;
 use App\Http\Controllers\API\UserRoleController;
 use App\Http\Controllers\API\RoleController;
 use App\Http\Controllers\API\OptionController;
-
 use Illuminate\Support\Facades\Route;
 
 Route::get('me', [AuthController::class, 'me'])->middleware(['auth:api'])->name('api.me');
@@ -48,6 +47,7 @@ Route::prefix('user')->middleware(['auth:api'])->group(function () {
             Route::post('/', [UserPermissionController::class, 'add']);
             Route::delete('/', [UserPermissionController::class, 'delete']);
         });
+
     });
 });
 
