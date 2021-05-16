@@ -26,7 +26,7 @@ Route::post('login', [AuthController::class, 'login'])->name('api.login');
 Route::post('register', [AuthController::class, 'register'])->name('api.register');
 Route::post('activate', [UserController::class, 'activate'])->name('api.user.activate');
 
-Route::prefix('/upload/dicom')->middleware(['auth:api'])->group(function () {
+Route::prefix('/media')->middleware(['auth:api'])->group(function () {
     Route::post('/', [MediaController::class, 'store']);
 });
 
