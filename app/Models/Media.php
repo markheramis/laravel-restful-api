@@ -10,15 +10,11 @@ class Media extends Model
 {
     use HasFactory;
 
+    protected $table = 'medias';
+    protected $guarded = [];
 
-    public function owner()
+    public function user()
     {
         $this->belongsTo(User::class);
     }
-    
-    protected $fillable = [
-        'path',
-        'description',
-        'status'
-    ];
 }

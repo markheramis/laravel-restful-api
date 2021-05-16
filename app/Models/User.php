@@ -91,4 +91,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     {
         return $this->hasOne(Activation::class);
     }
+
+    public function media() {
+        return $this->hasMany(Media::class);
+    }
 }
