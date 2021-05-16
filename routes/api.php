@@ -18,11 +18,7 @@ use App\Http\Controllers\API\UserPermissionController;
 use App\Http\Controllers\API\UserRoleController;
 use App\Http\Controllers\API\RoleController;
 use App\Http\Controllers\API\OptionController;
-<<<<<<< HEAD
-use App\Http\Controllers\API\UserRegisterController;
 
-=======
->>>>>>> master
 use Illuminate\Support\Facades\Route;
 
 Route::get('me', [AuthController::class, 'me'])->middleware(['auth:api'])->name('api.me');
@@ -30,8 +26,8 @@ Route::post('login', [AuthController::class, 'login'])->name('api.login');
 Route::post('register', [AuthController::class, 'register'])->name('api.register');
 Route::post('activate', [UserController::class, 'activate'])->name('api.user.activate');
 
-Route::prefix('/upload/dicom')->middleware(['auth:api'])->group(function(){
-  Route::post('/', [MediaController::class, 'store']); 
+Route::prefix('/upload/dicom')->middleware(['auth:api'])->group(function () {
+    Route::post('/', [MediaController::class, 'store']);
 });
 
 Route::prefix('user')->middleware(['auth:api'])->group(function () {
@@ -52,7 +48,6 @@ Route::prefix('user')->middleware(['auth:api'])->group(function () {
             Route::post('/', [UserPermissionController::class, 'add']);
             Route::delete('/', [UserPermissionController::class, 'delete']);
         });
-
     });
 });
 
