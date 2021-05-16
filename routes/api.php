@@ -24,11 +24,6 @@ Route::get('me', [AuthController::class, 'me'])->middleware(['auth:api'])->name(
 Route::post('login', [AuthController::class, 'login'])->name('api.login');
 Route::post('register', [AuthController::class, 'register'])->name('api.register');
 Route::post('activate', [UserController::class, 'activate'])->name('api.user.activate');
-
-Route::prefix('/upload/dicom')->middleware(['auth:api'])->group(function(){
-  Route::post('/', [MediaController::class, 'store']); 
-});
-
 Route::prefix('user')->middleware(['auth:api'])->group(function () {
     Route::get('/', [UserController::class, 'index']);
     Route::prefix('{user}')->group(function () {
@@ -47,7 +42,6 @@ Route::prefix('user')->middleware(['auth:api'])->group(function () {
             Route::post('/', [UserPermissionController::class, 'add']);
             Route::delete('/', [UserPermissionController::class, 'delete']);
         });
-
     });
 });
 Route::prefix('role')->middleware(['auth:api'])->group(function () {
@@ -59,7 +53,15 @@ Route::prefix('role')->middleware(['auth:api'])->group(function () {
         Route::delete('/', [RoleController::class, 'delete']);
     });
 });
-
+Route::prefix('media')->middleware(['auth:api'])->group(function () {
+    Route::get('/', [MediaController::class, 'index'])->name('media.index');
+    Route::post('/', [MediaController::class, 'store'])->name('media.store');
+    Route::prefix('{media}', function () {
+        Route::get('/', [MediaController::class, 'show'])->name('media.show');
+        Route::put('/', [MediaController::class, 'update'])->name('media.update');
+        Route::delete('/', [MediaController::class, 'delete'])->name('media.delete');
+    });
+});
 Route::prefix('option')->middleware(['auth:api'])->group(function () {
     Route::get('/', [OptionController::class, 'index']);
     Route::post('/', [OptionController::class, 'store']);
@@ -69,7 +71,3 @@ Route::prefix('option')->middleware(['auth:api'])->group(function () {
         Route::delete('/', [OptionController::class, 'destory']);
     });
 });
-
-/*
-Route::resource('role', RoleController::class)->except(['create', 'edit']);
-*/

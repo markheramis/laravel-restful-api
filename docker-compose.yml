@@ -45,6 +45,7 @@ services:
       MYSQL_USER: "${DB_USERNAME}"
       MYSQL_PASSWORD: "${DB_PASSWORD}"
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    restart: always
     ports:
       - "${FORWARD_MYSQL_PORT:-3306}:3306"
     volumes:
@@ -97,6 +98,7 @@ services:
   redis:
     container_name: "laravel_restful_api_redis"
     image: redis:alpine
+    restart: always
     ports:
       - "${FORWARD_REDIS_PORT:-6379}:6379"
     volumes:
@@ -118,6 +120,7 @@ services:
   mailhog:
     container_name: "laravel_restful_api_mailhog"
     image: mailhog/mailhog:latest
+    restart: always
     ports:
       - "${FORWARD_MAILHOG_PORT:-1025}:1025"
       - "${FORWARD_MAILHOG_DASHBOARD_PORT:-8025}:8025"
