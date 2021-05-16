@@ -47,7 +47,7 @@ class OptionUpdateTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function testUpdateOptionAsModeratorShouldBeForbidden()
+    public function testUpdateOptionAsSubscriberShouldBeForbidden()
     {
         $option = Option::factory()->create();
         $token = $this->getTokenByRole("subscriber");
