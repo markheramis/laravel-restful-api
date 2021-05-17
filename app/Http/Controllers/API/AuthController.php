@@ -72,11 +72,12 @@ class AuthController extends Controller
             "username" => $request->username,
             "email" => $request->email,
             "password" => $request->password,
-            "first_name" => $request->firstName,
-            "last_name" => $request->lastName
+            "firsName" => $request->firstName,
+            "lastName" => $request->lastName,
         ];
         $role = $request->role;
-        $activate = $request->activate;
+        $activate = $request->activate === "true" ? true : false;
+
         try {
             if (Sentinel::validForCreation($credentials)) {
                 if ($user = Sentinel::register($credentials, $activate)) {
@@ -87,11 +88,7 @@ class AuthController extends Controller
                 return response()->error('Could not create user');
             }
         } catch (Exception $e) {
-            if ($e->getCode() == 23000) {
-                return response()->error("Email already taken", 400);
-            } else {
-                return response()->error($e->getMessage(), $e->getCode());
-            }
+            return response()->error($e->getMessage(), $e->getCode());
         }
     }
 

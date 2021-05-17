@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Models\User;
+use App\Models\Role;
 use Faker\Factory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -10,6 +12,7 @@ use Tests\TestCase;
 class UserRegisterTest extends TestCase
 {
     use WithFaker;
+
 
     public function testRegisterWithNoParameterShouldBeUnprocessableEntity()
     {
@@ -25,7 +28,8 @@ class UserRegisterTest extends TestCase
             "email" => $this->faker->email(),
         ]);
 
-        $response->assertStatus(422);
+        $response
+            ->assertStatus(422);
     }
 
     public function testRegisterPasswordNoVerifyShouldBeUnprocessableEntity()
@@ -63,6 +67,21 @@ class UserRegisterTest extends TestCase
             ->assertStatus(422);
     }
 
+    public function testRegisterWithNoRoleShouldBeUnprocessableEntity()
+    {
+        $response = $this->json("POST", "/api/register", [
+            "username" => $this->faker->userName(),
+            "email" => $this->faker->email(),
+            "password" => "p@s5W0rD1234",
+            "v_password" => "p@s5W0rD1234",
+            "firstName" => $this->faker->firstName(),
+            "lastName" => $this->faker->lastName(),
+        ]);
+
+        $response
+            ->assertStatus(422);
+    }
+
     public function testRegisterWithCorrectParametersShouldRegisterSuccessfully()
     {
         $response = $this->json("POST", "/api/register", [
@@ -70,12 +89,15 @@ class UserRegisterTest extends TestCase
             "email" => $this->faker->email(),
             "password" => "p@s5W0rD1234",
             "v_password" => "p@s5W0rD1234",
-            "first_name" => $this->faker->firstName(),
-            "last_name" => $this->faker->lastName(),
+            "firstName" => $this->faker->firstName(),
+            "lastName" => $this->faker->lastName(),
+            "role" => "subscriber",
+            "activate" => true,
         ]);
 
         $response
             ->assertStatus(200);
+       
     }
 
     public function testRegisterWithCorrectParametersAndPermissionShouldRegisterSuccessfully()
@@ -85,8 +107,10 @@ class UserRegisterTest extends TestCase
             "email" => $this->faker->email(),
             "password" => "p@s5W0rD1234",
             "v_password" => "p@s5W0rD1234",
-            "first_name" => $this->faker->firstName(),
-            "last_name" => $this->faker->lastName(),
+            "firstName" => $this->faker->firstName(),
+            "lastName" => $this->faker->lastName(),
+            "role" => "subscriber",
+            "activate" => true,
             "permissions" => [
                 "view.user" => true,
                 "update.user" => true,
@@ -95,4 +119,5 @@ class UserRegisterTest extends TestCase
         $response
             ->assertStatus(200);
     }
+
 }
