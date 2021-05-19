@@ -1,7 +1,7 @@
 # For more information: https://laravel.com/docs/sail
 version: "3.1"
 services:
-  laravel.test:
+  laravel.app:
     container_name: "laravel_restful_api_laravel"
     build:
       context: ./
@@ -18,7 +18,7 @@ services:
     volumes:
       - ".:/var/www/html"
     networks:
-      - laravel_restful_api_network
+      - "laravel_restful_api_network"
     healthcheck:
       test: curl --fail -s http://localhost:80/ || exit 1
       interval: 1m30s
@@ -35,7 +35,7 @@ services:
   #     volumes:
   #         - '/dev/shm:/dev/shm'
   #     networks:
-  #         - laravel_restful_api_network
+  #         - "laravel_restful_api_network"
   mysql:
     container_name: "laravel_restful_api_mysql"
     image: mysql
@@ -49,9 +49,9 @@ services:
     ports:
       - "${FORWARD_MYSQL_PORT:-3306}:3306"
     volumes:
-      - "laravel_restful_api_volume:/var/lib/mysql"
+      - "mysql_volume:/var/lib/mysql"
     networks:
-      - laravel_restful_api_network
+      - "laravel_restful_api_network"
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       timeout: 45s
@@ -75,7 +75,7 @@ services:
     depends_on:
       - mysql
     networks:
-      - laravel_restful_api_network
+      - "laravel_restful_api_network"
   #    pgsql:
   #        container_name: 'postgresql'
   #        image: postgres:13
@@ -89,7 +89,7 @@ services:
   #        volumes:
   #            - 'sailpostgresql:/var/lib/postgresql/data'
   #        networks:
-  #            - laravel_restful_api_network
+  #            - "laravel_restful_api_network"
   #        healthcheck:
   #          test: ["CMD", "pg_isready", "-q", "-d", "${DB_DATABASE}", "-U", "${DB_USERNAME}"]
   #          timeout: 45s
@@ -102,9 +102,9 @@ services:
     ports:
       - "${FORWARD_REDIS_PORT:-6379}:6379"
     volumes:
-      - "laravel_restful_api_redis_volume:/data"
+      - "redis_volume:/data"
     networks:
-      - laravel_restful_api_network
+      - "laravel_restful_api_network"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       timeout: 45s
@@ -125,14 +125,15 @@ services:
       - "${FORWARD_MAILHOG_PORT:-1025}:1025"
       - "${FORWARD_MAILHOG_DASHBOARD_PORT:-8025}:8025"
     networks:
-      - laravel_restful_api_network
+      - "laravel_restful_api_network"
 networks:
-  laravel_restful_api_network:
+  "laravel_restful_api_network":
     driver: bridge
+    
 volumes:
-  laravel_restful_api_volume:
+  mysql_volume:
     driver: local
   #    sailpostgresql:
   #        driver: local
-  laravel_restful_api_redis_volume:
+  redis_volume:
     driver: local
