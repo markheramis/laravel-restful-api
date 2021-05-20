@@ -40,6 +40,12 @@ class RoleSeeder extends Seeder
                 "user.permission.get" => true,
                 "user.permission.delete" => true,
 
+                "category.index" => true,
+                "category/store" => true,
+                "category.get" => true,
+                "category.update" => true,
+                "category.destroy" => true,
+
                 "option.index" => true,
                 "option.store" => true,
                 "option.get" => true,
@@ -71,6 +77,12 @@ class RoleSeeder extends Seeder
                 "user.permission.get" => true,
                 "user.permission.delete" => false,
 
+                "category.index" => true,
+                "category.store" => false,
+                "category.get" => true,
+                "category.update" => true,
+                "category.destroy" => false,
+
                 "option.index" => true,
                 "option.store" => false,
                 "option.get" => true,
@@ -101,6 +113,12 @@ class RoleSeeder extends Seeder
                 "user.permission.add" => false,
                 "user.permission.get" => false,
                 "user.permission.delete" => false,
+
+                "category.index" => true,
+                "category.store" => false,
+                "category.get" => true,
+                "category.update" => false,
+                "category.destroy" => false,
 
                 "option.index" => true,
                 "option.store" => false,

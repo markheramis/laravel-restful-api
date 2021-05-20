@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\FormRequest;
 
 class RoleStoreRequest extends FormRequest
