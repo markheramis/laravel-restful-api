@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\API;
 
 use Auth;
-use Sentinel;
 use Exception;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserLoginRequest;
 use App\Http\Requests\UserRegisterRequest;
+use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 
 /**
  * @group Auth Management
@@ -72,30 +72,29 @@ class AuthController extends Controller
             "username" => $request->username,
             "email" => $request->email,
             "password" => $request->password,
-            "first_name" => $request->first_name,
-            "last_name" => $request->last_name
+            "firsName" => $request->firstName,
+            "lastName" => $request->lastName,
         ];
+        $role = $request->role;
+        $activate = $request->activate === "true" ? true : false;
+
         try {
             if (Sentinel::validForCreation($credentials)) {
-                if ($user = Sentinel::register($credentials)) {
-                    $this->attachRole($user);
+                if ($user = Sentinel::register($credentials, $activate)) {
+                    $this->attachRole($user, $role);
                     return response()->success('User Registered Successfully');
                 }
             } else {
                 return response()->error('Could not create user');
             }
         } catch (Exception $e) {
-            if ($e->getCode() == 23000) {
-                return response()->error("Email already taken", 400);
-            } else {
-                return response()->error($e->getMessage(), $e->getCode());
-            }
+            return response()->error($e->getMessage(), $e->getCode());
         }
     }
 
-    private function attachRole($user)
+    private function attachRole($user, $role)
     {
-        $default_role = Sentinel::findRoleBySlug('subscriber');
-        $default_role->users()->attach($user);
+        $selectedRole = Sentinel::findRoleBySlug($role);
+        $selectedRole->users()->attach($user);
     }
 }
