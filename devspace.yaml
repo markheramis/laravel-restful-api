@@ -61,15 +61,37 @@ deployments:
       service:
         ports:
         - port: 3306
-- name: laravel-restful-api
+- name: app
   helm:
     componentChart: true
     values:
+      initContainers:
+      - name: app-init
+        image: chumheramis/laravel-restful-api
+        volumeMounts:
+        - containerPath: /var/www/html/vendor
+          volume:
+            name: vendor-volume
+            readOnly: false
+        command:
+          - sh
+          - -c
+          - composer install
       containers:
       - image: chumheramis/laravel-restful-api
+        volumeMounts:
+        - containerPath: /var/www/html/vendor
+          volume:
+            name: vendor-volume
+            readOnly: false
+      volumes:
+      - name: vendor-volume
+        size: "5Gi"
       service:
         ports:
         - port: 80
+
+
 dev:
   ports:
   - imageName: app
