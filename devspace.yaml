@@ -25,22 +25,6 @@ images:
     build:
       disabled: true
 deployments:
-- name: phpmyadmin
-  helm:
-    componentChart: true
-    values:
-      containers:
-      - image: phpmyadmin:latest
-        env:
-          - name: PMA_HOST
-            value: mysql
-          - name: PMA_USER
-            value: "${DB_USERNAME}"
-          - name: PMA_PASSWORD
-            value: "${DB_PASSWORD}"
-      service:
-        ports:
-        - port: 80
 - name: mysql
   helm:
     componentChart: true
@@ -48,40 +32,60 @@ deployments:
       containers:
       - env:
         - name: MYSQL_ROOT_PASSWORD
-          value: secret
+          value: "${DB_PASSWORD}"
         - name: MYSQL_DATABASE
-          value: homestead
+          value: "${DB_DATABASE}"
         - name: MYSQL_USER
-          value: homestead
+          value: "${DB_USERNAME}"
         - name: MYSQL_PASSWORD
-          value: secret
+          value: "${DB_PASSWORD}"
         - name: MYSQL_ALLOW_EMPTY_PASSWORD
           value: "yes"
         image: mysql:latest
       service:
         ports:
         - port: 3306
-- name: laravel-restful-api
+- name: app
   helm:
     componentChart: true
     values:
+      initContainers:
+      - name: app-init
+        image: chumheramis/laravel-restful-api
+        volumeMounts:
+        - containerPath: /var/www/html/vendor
+          volume:
+            name: composer-volume
+            readOnly: false
+        command:
+          - sh
+          - -c
+          - composer install
       containers:
       - image: chumheramis/laravel-restful-api
+        volumeMounts:
+        - containerPath: /var/www/html/vendor
+          volume:
+            name: composer-volume
+            readOnly: false
+      volumes:
+      - name: composer-volume
+        size: "5Gi"
       service:
         ports:
-        - port: 80
+        - port: 8000
 dev:
   ports:
   - imageName: app
     forward:
-    - port: 80
-  - imageName: phpmyadmin
-    forward:
-    - port: 8080
+    - port: 8000
       remotePort: 80
+  - imageName: mysql
+    forward:
+    - port: 3306
+      remotePort: 3306
   open:
   - url: http://localhost:80
-  - url: http://localhost:8080
   sync:
   - imageName: app
     excludePaths:
