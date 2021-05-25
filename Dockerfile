@@ -1,7 +1,9 @@
 FROM lorisleiva/laravel-docker:latest
 LABEL maintainer Mark <chumheramis@gmail.com>
 
-RUN addgroup -S -g 1000 sail
+ARG WWWGROUP=1000
+
+RUN addgroup -S -g ${WWWGROUP} sail
 RUN adduser -s /bin/bash --no-create-home --disabled-password -G sail --uid "1337" sail
 
 COPY . /var/www/html
