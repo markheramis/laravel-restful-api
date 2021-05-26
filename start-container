@@ -1,9 +1,4 @@
 #!/usr/bin/env bash
-
-if [ ! -z "$WWWUSER" ]; then
-    usermod -u $WWWUSER sail
-fi
-
 if [ ! -d /.composer ]; then
     mkdir /.composer
 fi
@@ -13,5 +8,7 @@ chmod -R ugo+rw /.composer
 if [ $# -gt 0 ];then
     exec gosu $WWWUSER "$@"
 else
-    php /var/www/html/artisan serve
+    composer install
+    php artisan migrate
+    php artisan serve
 fi
