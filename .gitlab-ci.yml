@@ -64,7 +64,6 @@ artisan-test:
   services:
     - mysql:8.0
   script:
-    - cp ./resources/docker/sail/xdebug.ini /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
     - cp .env.testing.example .env.testing
     - php artisan key:generate
     - php artisan migrate
