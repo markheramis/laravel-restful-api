@@ -1,18 +1,17 @@
 #!/usr/bin/env bash
+# run composer install if it vendor does not exists.
+if [ ! -d "vendor" ]; then
+    composer install
+fi
 
-#if [ ! -z "$WWWUSER" ]; then
-#    usermod -u $WWWUSER sail
-#fi
-
-if [ ! -d /.composer ]; then
-    mkdir /.composer
-    chmod -R ugo+rw /.composer
+if [[ -z "${ARTISAN_MIGRATE}" ]]; then
+    php artisan migrate
 fi
 
 if [ $# -gt 0 ];then
     exec gosu $WWWUSER "$@"
 else
-    composer install
-    php artisan migrate
-    php artisan serve --host 0.0.0.0 --port 8000
+    if [[ -z "${ARTISAN_SERVE}" ]]; then
+        php artisan serve --host 0.0.0.0 --port 8000
+    fi
 fi
