@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+#if [ ! -z "$WWWUSER" ]; then
+#    usermod -u $WWWUSER sail
+#fi
+
+if [ ! -d /.composer ]; then
+    mkdir /.composer
+    chmod -R ugo+rw /.composer
+fi
+
+if [ $# -gt 0 ];then
+    exec gosu $WWWUSER "$@"
+else
+    composer install
+    php artisan migrate
+    php artisan serve --host 0.0.0.0 --port 8000
+fi

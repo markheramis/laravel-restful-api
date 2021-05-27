@@ -49,27 +49,15 @@ deployments:
   helm:
     componentChart: true
     values:
-      initContainers:
-      - name: app-init
-        image: chumheramis/laravel-restful-api
-        volumeMounts:
-        - containerPath: /var/www/html/vendor
-          volume:
-            name: composer-volume
-            readOnly: false
-        command:
-          - sh
-          - -c
-          - composer install
       containers:
       - image: chumheramis/laravel-restful-api
         volumeMounts:
-        - containerPath: /var/www/html/vendor
+        - containerPath: /var/www/html
           volume:
-            name: composer-volume
+            name: app-volume
             readOnly: false
       volumes:
-      - name: composer-volume
+      - name: app-volume
         size: "5Gi"
       service:
         ports:
