@@ -24,7 +24,7 @@ jobs:
     # Ensure test job passes before pushing image.
     needs: test
     runs-on: ubuntu-latest
-    if: ${GITHUB_REF##*/} != 'master'
+    if: github.ref == 'refs/heads/master'
     steps:
       - uses: actions/checkout@v2
       - name: Build image
