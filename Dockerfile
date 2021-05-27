@@ -3,7 +3,7 @@ LABEL maintainer Mark <chumheramis@gmail.com>
 
 ARG WWWGROUP=1000
 
-RUN addgroup -S -g ${WWWGROUP} sail
+RUN addgroup -S -g $WWWGROUP sail
 RUN adduser -s /bin/bash --no-create-home --disabled-password -G sail --uid "1337" sail
 
 COPY . /var/www/html
