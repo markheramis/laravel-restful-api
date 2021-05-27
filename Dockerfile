@@ -3,8 +3,8 @@ LABEL maintainer Mark <chumheramis@gmail.com>
 
 ARG WWWGROUP=1000
 
-ENV ARTISAN_MIGRATE=TRUE
-ENV ARTISAN_SERVE=TRUE
+ENV ARTISAN_MIGRATE=1
+ENV ARTISAN_SERVE=1
 
 RUN addgroup -S -g $WWWGROUP sail
 RUN adduser -s /bin/bash --disabled-password -G sail --uid "1337" sail

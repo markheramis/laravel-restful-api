@@ -4,14 +4,14 @@ if [ ! -d "vendor" ]; then
     composer install
 fi
 
-if [[ -z "${ARTISAN_MIGRATE}" ]]; then
+if [[ "${ARTISAN_MIGRATE}" = 1 ]]; then
     php artisan migrate
 fi
 
 if [ $# -gt 0 ];then
     exec gosu $WWWUSER "$@"
 else
-    if [[ -z "${ARTISAN_SERVE}" ]]; then
+    if [[ "${ARTISAN_SERVE}" = 1 ]]; then
         php artisan serve --host 0.0.0.0 --port 8000
     fi
 fi
