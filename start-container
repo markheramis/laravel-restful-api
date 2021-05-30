@@ -3,11 +3,12 @@
 if [ ! -d "vendor" ]; then
     composer install
 fi
-
 if [[ "${ARTISAN_MIGRATE}" = 1 ]]; then
     php artisan migrate
+    if [[ "${ARTISAN_SEED}" = 1 ]]; then
+        php artisan db:seed
+    fi
 fi
-
 if [ $# -gt 0 ];then
     exec gosu $WWWUSER "$@"
 else
