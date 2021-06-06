@@ -13,6 +13,7 @@ COPY . /var/www/html
 RUN chown -R sail:sail /var/www/html
 WORKDIR /var/www/html
 
+COPY ./resources/docker/xdebug.ini /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 COPY ./start-container /usr/local/bin/start-container
 
 RUN chmod +x /usr/local/bin/start-container
