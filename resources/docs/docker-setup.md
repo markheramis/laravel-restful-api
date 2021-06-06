@@ -56,3 +56,36 @@ congratulations, you should have everything setup... to verify, please check the
 |App|8000| [https://localhost:8000](https://localhost:8000) |
 |MySQL | 3306 | N/A |
 |PHPMyAdmin|8080| [https://localhost:8080](https://localhost:8080) |
+
+
+#### Testing
+Just like the native way, you also need to copy the `.env.testing.example` file like so:
+
+```bash
+cp .env.testing.example .env.testing
+```
+
+Then you can test the setup with the `artisan test` command to make sure all is going well.
+
+```bash
+sail artisan test
+```
+
+## Documentation
+
+For the API endpoint documentation, you can use the command below to generate the documentation file
+
+```bash
+php artisan scribe:generate
+```
+
+or
+
+```bash
+sail artisan scribe:generate
+```
+
+The documentation will then be available depending on your setup on the list below
+
+- native (http://localhost:8000/docs/)
+- sail/docker (http://localhost/docs/)
