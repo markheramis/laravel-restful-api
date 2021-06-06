@@ -53,70 +53,11 @@ php artisan test
 
 ### The Docker and Laravel Sail Way
 
-#### Pre-requisites
-Before starting, you need to setup and install your docker environment first. Please follow the instructions provided in the Docker Documentation.
-
-If you're on windows, you need to follow [this instructions](https://nickjanetakis.com/blog/setting-up-docker-for-windows-and-wsl-to-work-flawlessly) or [this one](https://nickjanetakis.com/blog/setting-up-docker-for-windows-and-wsl-to-work-flawlessly) to setup your WSL environment.
-
-#### Setting up the project
-
-###### Install Laravel Dependencies
-
-If you have composer installed
-```bash
-composer install
-```
-If you want to do it full docker way, you can use the composer docker image.
-```bash
-docker run --rm --interactive --tty --volume $PWD:/app --user $(id -u):$(id -g) composer install
-```
-
-Then before you start sail, add sail to your path first, please see the Laravel Sail [Documentation](https://laravel.com/docs/8.x/sail) for more information.
-
-Then start [Laravel Sail](https://laravel.com/docs/8.x/sail)
-```bash
-sail up # to start 
-```
-Then run migrations and other setup scripts
-```bash
-sail artisan migrate
-sail artisan db:seed
-sail artisan passport:install
-sail artisan passport:client --personal
-```
+For Docker / Laravel Sail based setup, please refer to [this documentation](resources/docs/docker-setup.md).
 
 ### Kubernetes with DevSpace
-In my kubernetes environment, I relied on DevSpace to simplify everything.
 
-##### Pre-Requisites
-- install docker (please checkout the instruction from the [Docker Way](#the-docker-and-laravel-sail-way) Above for instructions)
-- install [minikube](#) by following [this instructions](https://minikube.sigs.k8s.io/docs/start/).
-- install [DevSpace](https://github.com/loft-sh/devspace)
-
-##### Deploying Local Development Environment
-
-Start minikube
-
-```bash
-minikube start
-```
-
-Create devspace namespace
-```bash
-devspace use namespace laravel-restful-api-local
-```
-
-Start local environment
-
-```bash
-devspace dev
-```
-
-#### Services
-After the setup, your services should be available at the following URLs.
-- Laravel Restful API: [http://localhost/](http://localhost)
-- PHPMyAdmin: [http://localhost:8080/](http://localhost:8080)
-- MySQL should be at port 3306 (the default port)
+For Kubernetes / DevSpace setup, please refer to [this documentation](resource/docs/kubernetes-setup.md).
 
 
 
