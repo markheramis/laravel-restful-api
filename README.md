@@ -51,7 +51,7 @@ To run the local unit test, use the command below
 php artisan test
 ```
 
-### The Laravel Sail Way
+### The Docker and Laravel Sail Way
 
 #### Pre-requisites
 Before starting, you need to setup and install your docker environment first. Please follow the instructions provided in the Docker Documentation.
@@ -85,14 +85,40 @@ sail artisan passport:install
 sail artisan passport:client --personal
 ```
 
+### Kubernetes with DevSpace
+In my kubernetes environment, I relied on DevSpace to simplify everything.
 
+##### Pre-Requisites
+- install docker (please checkout the instruction from the [Docker Way](#the-docker-and-laravel-sail-way) Above for instructions)
+- install [minikube](#) by following [this instructions](https://minikube.sigs.k8s.io/docs/start/).
+- install [DevSpace](https://github.com/loft-sh/devspace)
 
+##### Deploying Local Development Environment
+
+Start minikube
+
+```bash
+minikube start
+```
+
+Create devspace namespace
+```bash
+devspace use namespace laravel-restful-api-local
+```
+
+Start local environment
+
+```bash
+devspace dev
+```
 
 #### Services
 After the setup, your services should be available at the following URLs.
 - Laravel Restful API: [http://localhost/](http://localhost)
 - PHPMyAdmin: [http://localhost:8080/](http://localhost:8080)
 - MySQL should be at port 3306 (the default port)
+
+
 
 
 #### Testing
@@ -128,10 +154,8 @@ The documentation will then be available depending on your setup on the list bel
 - sail/docker (http://localhost/docs/)
 
 ## TODO
-- Explore Auto-Deploy solutions
-- Explore Kubernetes
-- Explore Github Actions (will require migrating to [Github](www.github.com))
-- Configure Sail && Docker to use Google's Container Optimize OS instead of Ubuntu 20.04 for better security
+- Explore Kubernetes Deploy to Production. (Kubernetes/DevSpace)
+- Run `composer install` after `laravel-restful-api` pod setup and running.  (Kubernetes/DevSpace)
 
 ## Learning Laravel
 

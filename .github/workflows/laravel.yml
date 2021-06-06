@@ -22,8 +22,6 @@ jobs:
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
     steps:
     - uses: actions/checkout@v2
-    - name: Copy xdebug configuration
-      run: cp ./resources/docker/sail/xdebug.ini /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
     - name: Copy .env
       run: php -r "file_exists('.env') || copy('.env.testing.example', '.env');"
     - name: Copy .env.testing
