@@ -79,7 +79,6 @@ artisan-test:
     - staging
     - production
   artifacts:
-    when: on_failure
     paths:
       - storage/logs/
   dependencies:
