@@ -30,8 +30,6 @@ jobs:
       run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
     - name: cache config
       run: php artisan config:cache
-    - name: show config
-      run: cat bootstrap/cache/config.php
     - name: Generate key
       run: php artisan key:generate
     - name: Create Database and run migration

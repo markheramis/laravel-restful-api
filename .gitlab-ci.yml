@@ -61,10 +61,10 @@ build-composer:
 artisan-test:
   image: lorisleiva/laravel-docker
   stage: test
+  parallel: 3
   services:
     - mysql:8.0
   script:
-    - cp .env.testing.example .env.testing
     - php artisan key:generate
     - php artisan migrate
     - php artisan db:seed
@@ -78,8 +78,8 @@ artisan-test:
     - master
     - staging
     - production
+  coverage: '/Code coverage: \d+\.\d+/'
   artifacts:
-    when: on_failure
     paths:
       - storage/logs/
   dependencies:

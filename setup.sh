@@ -1,0 +1,2 @@
+composer update
+npm install
