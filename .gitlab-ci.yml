@@ -42,6 +42,7 @@ build-docker:
 build-composer:
   image:
     name: wendyourway/laravel-docker:latest
+    user: 1000:1000
   stage: build
   script:
     - ls -la
