@@ -43,6 +43,7 @@ build-composer:
   image: wendyourway/laravel-docker
   stage: build
   script:
+    - ls -la
     - cp .env.testing.example .env
     - composer install
   only:
