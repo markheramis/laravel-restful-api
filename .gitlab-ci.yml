@@ -40,7 +40,8 @@ build-docker:
     - master
 
 build-composer:
-  image: wendyourway/laravel-docker
+  image:
+    name: wendyourway/laravel-docker:latest
   stage: build
   script:
     - ls -la
