@@ -61,6 +61,7 @@ build-composer:
 artisan-test:
   image: lorisleiva/laravel-docker
   stage: test
+  parallel: 3
   services:
     - mysql:8.0
   script:
