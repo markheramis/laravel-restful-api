@@ -47,8 +47,8 @@ build-composer:
     - cp .env.testing.example .env
     - composer install
   environment:
-    PGID:100
-    PUID:1031
+    - PGID:100
+    - PUID:1031
   only:
     - pull_request
     - push
