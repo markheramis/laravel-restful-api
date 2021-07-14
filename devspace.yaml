@@ -1,7 +1,7 @@
 version: v1beta9
 images:
   app:
-    image: chumheramis/laravel-restful-api
+    image: gitlab.com/wend//localforge
     tags:
     - latest
     injectRestartHelper: true
@@ -50,7 +50,7 @@ deployments:
     componentChart: true
     values:
       containers:
-      - image: chumheramis/laravel-restful-api
+      - image: gitlab.com/wend//fareharbor-api
         volumeMounts:
         - containerPath: /var/www/html
           volume:
