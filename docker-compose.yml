@@ -8,11 +8,7 @@ services:
       dockerfile: Dockerfile
       args:
         WWWGROUP: "${WWWGROUP:-1000}"
-    image: sail-8.0/laravel
-    environment:
-      ARTISAN_MIGRATE: "${ARTISAN_MIGRATE:-1}"
-      ARTISAN_SEED: "${ARTISAN_SEED:-1}"
-      ARTISAN_SERVE: "${ARTISAN_SERVE:-1}"
+    image: laravel/restful
     ports:
       - "${APP_HTTP_PORT:-8000}:8000"
     volumes:

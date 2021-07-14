@@ -64,7 +64,6 @@ artisan-test:
   services:
     - mysql:8.0
   script:
-    - cp .env.testing.example .env.testing
     - php artisan key:generate
     - php artisan migrate
     - php artisan db:seed
