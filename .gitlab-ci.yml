@@ -40,12 +40,9 @@ build-docker:
     - master
 
 build-composer:
-  image:
-    name: composer:latest
-    user: $(id -u):$(id -g)
+  image: composer:latest
   stage: build
   script:
-    - ls -la
     - cp .env.testing.example .env
     - composer install
   only:
