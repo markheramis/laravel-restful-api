@@ -32,7 +32,6 @@ build-docker:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
     - docker build -t $IMAGE .
     - docker push $IMAGE
-
   services:
     - docker:19.03.12-dind
   variables:
@@ -41,8 +40,9 @@ build-docker:
     - master
 
 build-composer:
-  image: lorisleiva/laravel-docker
+  image: wendyourway/laravel-docker
   stage: build
+  user: "1000:1001" 
   script:
     - cp .env.testing.example .env
     - composer install
@@ -59,7 +59,7 @@ build-composer:
       - storage/logs
 
 artisan-test:
-  image: lorisleiva/laravel-docker
+  image: wendyourway/laravel-docker
   stage: test
   parallel: 3
   services:
@@ -86,7 +86,7 @@ artisan-test:
     - build-composer
 
 deploy_staging:
-  image: lorisleiva/laravel-docker
+  image: wendyourway/laravel-docker
   stage: deploy
   script:
     - php vendor/bin/envoy run deploy --branch=staging --refresh=true --host=${{PROJECT_STAGING_HOST}}
@@ -96,7 +96,7 @@ deploy_staging:
     - artisan-test
 
 deploy_production:
-  image: lorisleiva/laravel-docker
+  image: wendyourway/laravel-docker
   stage: deploy
   script:
     - php vendor/bin/envoy run deploy --branch=production --host=${{PROJECT_PRODUCTION_HOST}}
