@@ -64,7 +64,6 @@ artisan-test:
   services:
     - mysql:8.0
   script:
-    - rm setup
     - php artisan key:generate
     - php artisan migrate
     - php artisan db:seed
