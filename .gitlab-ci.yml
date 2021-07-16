@@ -36,8 +36,6 @@ build-docker:
     - docker:19.03.12-dind
   variables:
     IMAGE: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA
-  only:
-    - master
 
 build-composer:
   image: composer:latest
