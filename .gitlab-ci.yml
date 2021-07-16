@@ -8,6 +8,7 @@ variables:
   GIT_DEPTH: "100" # Tells git to fetch all the branches of the project, required by the analysis task
   DOCKER_DRIVER: overlay2
   CLAIR_OUTPUT: High
+  DOCKER_IMAGE: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA
 
 include:
   - template: Jobs/Code-Quality.gitlab-ci.yml # https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Code-Quality.gitlab-ci.yml
@@ -30,18 +31,13 @@ build-docker:
   script:
     - docker info
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-    - docker build -t $IMAGE .
-    - docker push $IMAGE
-
+    - docker build -t $DOCKER_IMAGE .
+    - docker push $DOCKER_IMAGE
   services:
     - docker:19.03.12-dind
-  variables:
-    IMAGE: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA
-  only:
-    - master
 
 build-composer:
-  image: lorisleiva/laravel-docker
+  image: composer:latest
   stage: build
   script:
     - cp .env.testing.example .env
@@ -59,9 +55,13 @@ build-composer:
       - storage/logs
 
 artisan-test:
-  image: lorisleiva/laravel-docker
+  image:
+    # name: registry.gitlab.com/mark-heramis/laravel-restful-api/ci-cd:latest
+    # name: wendyourway/laravel-docker:latest
+    name: $DOCKER_IMAGE
+    entrypoint: [""]
   stage: test
-  parallel: 3
+  # parallel: 3
   services:
     - mysql:8.0
   script:
@@ -78,15 +78,19 @@ artisan-test:
     - master
     - staging
     - production
-  coverage: '/Code coverage: \d+\.\d+/'
   artifacts:
     paths:
       - storage/logs/
   dependencies:
+    - build-docker
     - build-composer
 
 deploy_staging:
-  image: lorisleiva/laravel-docker
+  image:
+    # name: registry.gitlab.com/mark-heramis/laravel-restful-api/ci-cd:latest
+    # name: wendyourway/laravel-docker:latest
+    name: $DOCKER_IMAGE
+    entrypoint: [""]
   stage: deploy
   script:
     - php vendor/bin/envoy run deploy --branch=staging --refresh=true --host=${{PROJECT_STAGING_HOST}}
@@ -96,7 +100,11 @@ deploy_staging:
     - artisan-test
 
 deploy_production:
-  image: lorisleiva/laravel-docker
+  image:
+    # name: registry.gitlab.com/mark-heramis/laravel-restful-api/ci-cd:latest
+    #name: wendyourway/laravel-docker:latest
+    name: $DOCKER_IMAGE
+    entrypoint: [""]
   stage: deploy
   script:
     - php vendor/bin/envoy run deploy --branch=production --host=${{PROJECT_PRODUCTION_HOST}}
