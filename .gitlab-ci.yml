@@ -56,7 +56,7 @@ build-composer:
       - storage/logs
 
 artisan-test:
-  image: "registry.gitlab.com/mark-heramis/laravel-restful-api:latest"
+  image: wendyourway/laravel-docker
   stage: test
   # parallel: 3
   services:
@@ -84,7 +84,7 @@ artisan-test:
     - build-composer
 
 deploy_staging:
-  image: "registry.gitlab.com/mark-heramis/laravel-restful-api:latest"
+  image: wendyourway/laravel-docker
   stage: deploy
   script:
     - php vendor/bin/envoy run deploy --branch=staging --refresh=true --host=${{PROJECT_STAGING_HOST}}
@@ -94,7 +94,7 @@ deploy_staging:
     - artisan-test
 
 deploy_production:
-  image: "registry.gitlab.com/mark-heramis/laravel-restful-api:latest"
+  image: wendyourway/laravel-docker
   stage: deploy
   script:
     - php vendor/bin/envoy run deploy --branch=production --host=${{PROJECT_PRODUCTION_HOST}}
