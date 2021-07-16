@@ -1,10 +1,5 @@
 #!/usr/bin/env bash
 
-whoami
-
-composer install
-npm install
-
 if [ ! -z "$WWWUSER" ]; then
     usermod -u $WWWUSER sail
 fi
@@ -15,11 +10,17 @@ fi
 
 chmod -R ugo+rw /.composer
 
-FILE=setup.sh
+
+composer update
+npm install
+
+FILE=setup
 if test -f "$FILE"; then
     echo "Running setup"
     ./setup
+else
+    echo "Setup does not exists"
 fi
 
-service cron start
-service supervisor start
+service cron start &
+service supervisor start &

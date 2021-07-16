@@ -1,3 +1,5 @@
 #!/usr/bin/env bash
-composer update
-npm install
+service cron start &
+service supervisor start &
+
+php artisan serve
