@@ -60,7 +60,7 @@ build-composer:
 artisan-test:
   image: wendyourway/laravel-docker:latest
   stage: test
-  parallel: 3
+  # parallel: 3
   services:
     - mysql:8.0
   script:
@@ -77,7 +77,6 @@ artisan-test:
     - master
     - staging
     - production
-  coverage: '/Code coverage: \d+\.\d+/'
   artifacts:
     paths:
       - storage/logs/
