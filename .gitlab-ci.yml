@@ -58,7 +58,7 @@ build-composer:
       - storage/logs
 
 artisan-test:
-  image: wendyourway/laravel-docker
+  image: wendyourway/laravel-docker:latest
   stage: test
   parallel: 3
   services:
@@ -85,7 +85,7 @@ artisan-test:
     - build-composer
 
 deploy_staging:
-  image: wendyourway/laravel-docker
+  image: wendyourway/laravel-docker:latest
   stage: deploy
   script:
     - php vendor/bin/envoy run deploy --branch=staging --refresh=true --host=${{PROJECT_STAGING_HOST}}
@@ -95,7 +95,7 @@ deploy_staging:
     - artisan-test
 
 deploy_production:
-  image: wendyourway/laravel-docker
+  image: wendyourway/laravel-docker:latest
   stage: deploy
   script:
     - php vendor/bin/envoy run deploy --branch=production --host=${{PROJECT_PRODUCTION_HOST}}
