@@ -102,8 +102,6 @@ deploy_staging:
 
 deploy_production:
   image:
-    # name: registry.gitlab.com/mark-heramis/laravel-restful-api/ci-cd:latest
-    #name: wendyourway/laravel-docker:latest
     name: $DOCKER_IMAGE
     entrypoint: [""]
   stage: deploy
