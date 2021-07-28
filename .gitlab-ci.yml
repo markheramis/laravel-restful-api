@@ -29,6 +29,7 @@ build-docker:
   stage: build
   image: docker:stable
   script:
+    - rm setup
     - docker info
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
     - docker build -t $DOCKER_IMAGE .
