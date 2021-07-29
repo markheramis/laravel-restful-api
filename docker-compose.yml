@@ -17,7 +17,7 @@ services:
     volumes:
       - .:/var/www/html
     networks:
-      - laravel_network
+      - laravel_restful_api_network
     healthcheck:
       test: "curl --fail -s http://127.0.0.1:80/ || exit 1"
       interval: 1m30s
@@ -38,7 +38,7 @@ services:
     volumes:
       - .:/var/www/html
     networks:
-      - laravel_network
+      - laravel_restful_api_network
   mysql:
     container_name: 'laravel-restful-api-mysql'
     image: mysql
@@ -54,7 +54,7 @@ services:
     volumes:
       - laravel_restful_api_mysql:/var/lib/mysql
     networks:
-      - laravel_network
+      - laravel_restful_api_network
     healthcheck:
       test: [CMD, mysqladmin, ping, -h, localhost]
       timeout: 45s
@@ -77,7 +77,7 @@ services:
     depends_on:
       - mysql
     networks:
-      - laravel_network
+      - laravel_restful_api_network
   redis:
     container_name: 'laravel-restful-api-redis'
     image: redis:alpine
@@ -87,14 +87,14 @@ services:
     volumes:
       - laravel_restful_api_redis:/data
     networks:
-      - laravel_network
+      - laravel_restful_api_network
     healthcheck:
       test: [CMD, redis-cli, ping]
       timeout: 45s
       interval: 10s
       retries: 10
 networks:
-  laravel_network:
+  laravel_restful_api_network:
     driver: bridge
     
 volumes:
