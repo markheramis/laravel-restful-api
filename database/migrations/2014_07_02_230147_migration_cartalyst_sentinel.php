@@ -24,12 +24,8 @@ use Illuminate\Database\Migrations\Migration;
 
 class MigrationCartalystSentinel extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up()
+
+    private function __create_activations_table(): void
     {
         Schema::create('activations', function (Blueprint $table) {
             $table->bigIncrements('id');
@@ -38,20 +34,24 @@ class MigrationCartalystSentinel extends Migration
             $table->boolean('completed')->default(0);
             $table->timestamp('completed_at')->nullable();
             $table->timestamps();
-
             $table->engine = 'InnoDB';
         });
+    }
 
+    private function __create_persistences_table(): void
+    {
         Schema::create('persistences', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('user_id')->unsigned();
             $table->string('code');
             $table->timestamps();
-
             $table->engine = 'InnoDB';
             $table->unique('code');
         });
+    }
 
+    private function __create_reminders_table(): void
+    {
         Schema::create('reminders', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('user_id')->unsigned();
@@ -59,41 +59,49 @@ class MigrationCartalystSentinel extends Migration
             $table->boolean('completed')->default(0);
             $table->timestamp('completed_at')->nullable();
             $table->timestamps();
-
             $table->engine = 'InnoDB';
         });
+    }
 
+    private function __create_roles_table(): void
+    {
         Schema::create('roles', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('slug');
             $table->string('name');
             $table->text('permissions')->nullable();
             $table->timestamps();
-
             $table->engine = 'InnoDB';
             $table->unique('slug');
         });
+    }
 
+    private function __create_role_users_table(): void
+    {
         Schema::create('role_users', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('user_id')->unsigned();
             $table->bigInteger('role_id')->unsigned();
             $table->nullableTimestamps();
-
             $table->engine = 'InnoDB';
         });
+    }
 
+    private function __create_throttle_table(): void
+    {
         Schema::create('throttle', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('user_id')->unsigned()->nullable();
             $table->string('type');
             $table->string('ip')->nullable();
             $table->timestamps();
-
             $table->engine = 'InnoDB';
             $table->index('user_id');
         });
+    }
 
+    private function __create_users_table(): void
+    {
         Schema::create('users', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('email');
@@ -103,10 +111,25 @@ class MigrationCartalystSentinel extends Migration
             $table->string('firstName')->nullable();
             $table->string('lastName')->nullable();
             $table->timestamps();
-
             $table->engine = 'InnoDB';
             $table->unique('email');
         });
+    }
+
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        $this->__create_activations_table();
+        $this->__create_persistences_table();
+        $this->__create_reminders_table();
+        $this->__create_roles_table();
+        $this->__create_role_users_table();
+        $this->__create_throttle_table();
+        $this->__create_users_table();
     }
 
     /**

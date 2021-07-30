@@ -80,20 +80,20 @@ artisan-test:
     - master
     - staging
     - production
-  coverage: /^\s*Lines:\s*\d+.\d+\%/
   artifacts:
     paths:
       - storage/logs/
     expire_in: 1 week
     when: always
+    reports:
+      junit: storage/logs/tests-report.xml
+  coverage: '/^\s*Lines:\s*\d+.\d+\%/'
   dependencies:
     - build-docker
     - build-composer
-
+      
 deploy_staging:
   image:
-    # name: registry.gitlab.com/mark-heramis/laravel-restful-api/ci-cd:latest
-    # name: wendyourway/laravel-docker:latest
     name: $DOCKER_IMAGE
     entrypoint: [""]
   stage: deploy
