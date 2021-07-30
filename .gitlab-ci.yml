@@ -80,7 +80,7 @@ artisan-test:
     - master
     - staging
     - production
-  coverage: '/^\s*Lines:\s*\d+.\d+\%/'
+  coverage: /^\s*Lines:\s*\d+.\d+\%/
   artifacts:
     paths:
       - storage/logs/
