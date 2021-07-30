@@ -26,19 +26,9 @@ services:
     depends_on:
       - mysql
       - redis
-      - composer
     links:
       - mysql
       - redis
-  composer: 
-    container_name: 'laravel-restful-api-composer'
-    image: composer
-    command: sh -c 'composer install'
-    working_dir: /var/www/html
-    volumes:
-      - .:/var/www/html
-    networks:
-      - laravel_restful_api_network
   mysql:
     container_name: 'laravel-restful-api-mysql'
     image: mysql
