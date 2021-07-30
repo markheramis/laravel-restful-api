@@ -80,6 +80,7 @@ artisan-test:
     - master
     - staging
     - production
+  coverage: '/^\s*Lines:\s*\d+.\d+\%/'
   artifacts:
     paths:
       - storage/logs/
@@ -137,48 +138,64 @@ code_quality:
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"' # Run code_quality in pipelines on the master branch (but not in other branch pipelines)
     - if: "$CI_COMMIT_TAG" # Run code_quality in pipelines for tags
+  dependencies:
+    - artisan-test
 
 code_intelligence_go:
   stage: analyse
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"' # Run code_intelligence_go in pipelines on the master branch (but not in other branch pipelines)
     - if: "$CI_COMMIT_TAG" # Run code_intelligence_go in pipelines for tags
+  dependencies:
+    - artisan-test
 
 gemnasium-dependency_scanning:
   stage: analyse
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"' # Run gemnasium-dependency_scanning in pipelines on the master branch (but not in other branch pipelines)
     - if: "$CI_COMMIT_TAG" # Run gemnasium-dependency_scanning in pipelines for tags
+  dependencies:
+    - artisan-test
 
 retire-js-dependency_scanning:
   stage: analyse
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"' # Run retire-js-dependency_scanning in pipelines on the master branch (but not in other branch pipelines)
     - if: "$CI_COMMIT_TAG" # Run retire-js-dependency_scanning in pipelines for tags
+  dependencies:
+    - artisan-test
 
 container_scanning:
   stage: analyse
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"' # Run container_scanning in pipelines on the master branch (but not in other branch pipelines)
     - if: "$CI_COMMIT_TAG" # Run container_scanning in pipelines for tags
+  dependencies:
+    - artisan-test
 
 phpcs-security-audit-sast:
   stage: analyse
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"' # Run phpcs-security-audit-sast in pipelines on the master branch (but not in other branch pipelines)
     - if: "$CI_COMMIT_TAG" # Run phpcs-security-audit-sast in pipelines for tags
+  dependencies:
+    - artisan-test
 
 nodejs-scan-sast:
   stage: analyse
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"' # Run nodejs-scan-sast in pipelines on the master branch (but not in other branch pipelines)
     - if: "$CI_COMMIT_TAG" # Run nodejs-scan-sast in pipelines for tags
+  dependencies:
+    - artisan-test
 
 eslint-sast:
   stage: analyse
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"' # Run eslint-sast in pipelines on the master branch (but not in other branch pipelines)
     - if: "$CI_COMMIT_TAG" # Run eslint-sast in pipelines for tags
+  dependencies:
+    - artisan-test
 
 secret_detection:
   variables:
@@ -187,9 +204,13 @@ secret_detection:
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"' # Run secret_detection in pipelines on the master branch (but not in other branch pipelines)
     - if: "$CI_COMMIT_TAG" # Run secret_detection in pipelines for tags
+  dependencies:
+    - artisan-test
 
 license_scanning:
   stage: analyse
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"' # Run license_scanning in pipelines on the master branch (but not in other branch pipelines)
     - if: "$CI_COMMIT_TAG" # Run license_scanning in pipelines for tags
+  dependencies:
+    - artisan-test
