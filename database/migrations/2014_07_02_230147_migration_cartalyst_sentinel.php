@@ -115,7 +115,7 @@ class MigrationCartalystSentinel extends Migration
             $table->unique('email');
         });
     }
-    
+
     /**
      * Run the migrations.
      *
@@ -127,6 +127,7 @@ class MigrationCartalystSentinel extends Migration
         $this->__create_persistences_table();
         $this->__create_reminders_table();
         $this->__create_roles_table();
+        $this->__create_role_users_table();
         $this->__create_throttle_table();
         $this->__create_users_table();
     }
