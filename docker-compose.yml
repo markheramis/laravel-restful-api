@@ -26,7 +26,6 @@ services:
     depends_on:
       - mysql
       - redis
-      - composer
     links:
       - mysql
       - redis
