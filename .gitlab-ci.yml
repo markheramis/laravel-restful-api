@@ -198,6 +198,7 @@ eslint-sast:
     - artisan-test
 
 secret_detection:
+  stage: analyse
   variables:
     SECRET_DETECTION_HISTORIC_SCAN: "true"
     GIT_DEPTH: 100
