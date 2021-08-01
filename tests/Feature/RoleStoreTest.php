@@ -6,11 +6,11 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Tests\Traits\userTraits;
 
-class RoleCreateTest extends TestCase
+class RoleStoreTest extends TestCase
 {
     use WithFaker, userTraits;
 
-    public function testCreateRoleWithNoUserShouldBeUnauthorized()
+    public function testDestroyRoleWithNoUserShouldBeUnauthorized()
     {
         $response = $this->json("POST", "/api/role/", [
             "name" => "TestRole",
@@ -26,7 +26,7 @@ class RoleCreateTest extends TestCase
         $response->assertStatus(401);
     }
 
-    public function testCreateRoleAsSubscriberShouldBeForbidden()
+    public function testDestroyRoleAsSubscriberShouldBeForbidden()
     {
         $token = $this->getTokenByRole("subscriber");
         $body = [
@@ -47,7 +47,7 @@ class RoleCreateTest extends TestCase
         $response->assertStatus(403);
     }
 
-    public function testCreateRoleAsModeratorShouldBeForbidden()
+    public function testDestroyRoleAsModeratorShouldBeForbidden()
     {
         $token = $this->getTokenByRole("moderator");
         $body = [
@@ -68,7 +68,7 @@ class RoleCreateTest extends TestCase
         $response->assertStatus(403);
     }
 
-    public function testCreateRoleAsAdminShouldBeAllowed()
+    public function testDestroyRoleAsAdminShouldBeAllowed()
     {
         $token = $this->getTokenByRole("administrator");
         $body = [

@@ -6,7 +6,7 @@ use App\Http\Requests\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 
-class UserRoleDeleteRequest extends FormRequest
+class UserRoleDestroyRequest extends FormRequest
 {
   /**
    * Determine if the user is authorized to make this request.
