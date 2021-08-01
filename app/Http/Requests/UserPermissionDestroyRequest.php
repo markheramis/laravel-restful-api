@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Auth;
 use App\Http\Requests\FormRequest;
 
-class UserDeleteRequest extends FormRequest
+class UserPermissionDestroyRequest extends FormRequest
 {
   /**
    * Determine if the user is authorized to make this request.
@@ -16,7 +16,7 @@ class UserDeleteRequest extends FormRequest
   {
     if (Auth::check()) {
       $user = Auth::user();
-      return $user->hasAccess("user.delete");
+      return $user->hasAccess("user.permission.delete");
     } else {
       return false;
     }

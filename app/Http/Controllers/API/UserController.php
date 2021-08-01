@@ -16,8 +16,7 @@ use App\Http\Requests\UserIndexRequest;
 use App\Http\Requests\UserShowRequest;
 use App\Http\Requests\UserActivateRequest;
 use App\Http\Requests\UserUpdateRequest;
-use App\Http\Requests\UserDeleteRequest;
-use Illuminate\Http\Request;
+use App\Http\Requests\UserDestroyRequest;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Serializer\JsonApiSerializer;
 
@@ -121,17 +120,17 @@ class UserController extends Controller
     }
 
     /**
-     * Delete a User
+     * Destroy a User
      * 
      * This endpoint lets you update a User.
      *
      * @authenticated
      * @todo 2nd parameter $slug should auto resolve to a User model instance
-     * @param UserDeleteRequest $request
+     * @param UserDestroyRequest $request
      * @param App\Models\User $user
      * @return JsonResponse
      */
-    public function delete(UserDeleteRequest $request, User $user): JsonResponse
+    public function destroy(UserDestroyRequest $request, User $user): JsonResponse
     {
         $deleteUserTokens = $user->tokens()->delete();
         if ($user->update()) {

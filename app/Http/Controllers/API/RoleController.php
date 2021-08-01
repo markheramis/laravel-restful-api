@@ -124,7 +124,6 @@ class RoleController extends Controller
      * This endpoint lets you delete a single Role
      *
      * @authenticated
-     * @todo 2nd parameter should autoresolve to the Role model instance.
      * @todo add body parameter `force` that allows force delete when user is an admin.
      * @param RoleDeleteRequest $request
      * @param App\Models\Role $role auto resolved instance of Eloquent Role

@@ -6,10 +6,10 @@ use Tests\TestCase;
 use Tests\Traits\userTraits;
 use Illuminate\Foundation\Testing\WithFaker;
 
-class OptionCreateTest extends TestCase
+class OptionStoreTest extends TestCase
 {
     use WithFaker, userTraits;
-    public function testCreateOptionWithoutASessionShouldBeUnauthorized()
+    public function testDestroyOptionWithoutASessionShouldBeUnauthorized()
     {
 
         $response = $this->json("POST", "/api/option", [
@@ -20,7 +20,7 @@ class OptionCreateTest extends TestCase
         $response->assertStatus(401);
     }
 
-    public function testCreateOptionAsAnAdministratorShouldBeAllowed()
+    public function testDestroyOptionAsAnAdministratorShouldBeAllowed()
     {
         $token = $this->getTokenByRole("administrator");
         $header = [
@@ -34,7 +34,7 @@ class OptionCreateTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function testCreateOptionAsModeratorShouldBeForbidden()
+    public function testDestroyOptionAsModeratorShouldBeForbidden()
     {
         $token = $this->getTokenByRole("moderator");
         $header = [
@@ -47,7 +47,7 @@ class OptionCreateTest extends TestCase
         $response->assertStatus(403);
     }
 
-    public function testCreateOptionAsSubscriberShouldBeForbidden()
+    public function testDestroyOptionAsSubscriberShouldBeForbidden()
     {
         $token = $this->getTokenByRole("subscriber");
         $header = [

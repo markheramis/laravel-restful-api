@@ -7,9 +7,9 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Role;
 use App\Transformers\RoleTransformer;
-use App\Http\Requests\UserRoleAddRequest;
+use App\Http\Requests\UserRoleStoreRequest;
 use App\Http\Requests\UserRoleShowRequest;
-use App\Http\Requests\UserRoleDeleteRequest;
+use App\Http\Requests\UserRoleDestroyRequest;
 use App\Http\Requests\UserRoleUpdateRequest;
 use Illuminate\Http\JsonResponse;
 
@@ -27,7 +27,6 @@ class UserRoleController extends Controller
      * This endpoint lets you get a User's Roles
      *
      * @authenticated
-     * @todo 2nd paramter should auto resolve into a User model instance.
      * @param UserRoleGetRequest $request
      * @param App\Models\User $user auto reolved instance of User
      * @return JsonResponse
@@ -45,12 +44,11 @@ class UserRoleController extends Controller
      * This endpoint lets you add a Role to a User.
      *
      * @authenticated
-     * @todo 2nd paramter should auto resolve into a User model instance.
-     * @param UserRoleAddRequest $request
+     * @param UserRoleStoreRequest $request
      * @param App\Models\User $user auto reolved instance of User
      * @return JsonResponse
      */
-    public function add(UserRoleAddRequest $request, User $user): JsonResponse
+    public function store(UserRoleStoreRequest $request, User $user): JsonResponse
     {
         if ($role = Role::where('slug', $request->slug)->first()) {
             $role->users()->attach($user);
@@ -61,26 +59,15 @@ class UserRoleController extends Controller
     }
 
     /**
-     * Delete a User's Role
+     * Update Role to User
      * 
-     * This endpoint lets you delete a User's Role
+     * The endpoint lets you update a Role to a User
      *
      * @authenticated
-     * @todo 2nd parameter should auto resolve to a User model instance.
-     * @param UserRoleDeleteRequest $request
-     * @param App\Models\User $user auto reolved instance of User
+     * @param UserRoleUpdateRequest $request
+     * @param User $user
      * @return JsonResponse
      */
-    public function delete(UserRoleDeleteRequest $request, User $user): JsonResponse
-    {
-        if ($role = Role::where('slug', $request->slug)->first()) {
-            $role->users()->detach($user);
-            return response()->success('Detached Successfully');
-        } else {
-            return response()->error('Not Found', 404);
-        }
-    }
-
     public function update(UserRoleUpdateRequest $request, User $user): JsonResponse
     {
         $role = Role::where('slug', $request->slug)->first();
@@ -92,4 +79,23 @@ class UserRoleController extends Controller
         }
     }
 
+    /**
+     * Delete a User's Role
+     * 
+     * This endpoint lets you delete a User's Role
+     *
+     * @authenticated
+     * @param UserRoleDestroyRequest $request
+     * @param App\Models\User $user auto reolved instance of User
+     * @return JsonResponse
+     */
+    public function destroy(UserRoleDestroyRequest $request, User $user): JsonResponse
+    {
+        if ($role = Role::where('slug', $request->slug)->first()) {
+            $role->users()->detach($user);
+            return response()->success('Detached Successfully');
+        } else {
+            return response()->error('Not Found', 404);
+        }
+    }
 }
