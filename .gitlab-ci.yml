@@ -58,15 +58,14 @@ build-composer:
 
 artisan-test:
   image:
-    # name: registry.gitlab.com/mark-heramis/laravel-restful-api/ci-cd:latest
-    # name: wendyourway/laravel-docker:latest
     name: $DOCKER_IMAGE
     entrypoint: [""]
   stage: test
-  # parallel: 3
+  parallel: 3
   services:
     - mysql:8.0
   script:
+    - php artisan storage:link
     - php artisan key:generate
     - php artisan migrate
     - php artisan db:seed
