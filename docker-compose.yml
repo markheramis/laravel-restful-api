@@ -2,7 +2,7 @@
 version: "3.5"
 services:
   laravel.test:
-    container_name: 'laravel-restful-api-app'
+    container_name: '${PROJECT_NAME}-app'
     build:
       context: ./
       dockerfile: Dockerfile
@@ -30,7 +30,7 @@ services:
       - mysql
       - redis
   mysql:
-    container_name: 'laravel-restful-api-mysql'
+    container_name: '${PROJECT_NAME}-mysql'
     image: mysql
     privileged: false
     security_opt:
@@ -51,7 +51,7 @@ services:
       interval: 10s
       retries: 10
   phpmyadmin:
-    container_name: 'laravel-restful-api-phpmyadmin'
+    container_name: '${PROJECT_NAME}-phpmyadmin'
     image: phpmyadmin
     privileged: false
     security_opt:
@@ -69,7 +69,7 @@ services:
     networks:
       - laravel_restful_api_network
   redis:
-    container_name: 'laravel-restful-api-redis'
+    container_name: '${PROJECT_NAME}-redis'
     image: redis:alpine
     privileged: false
     security_opt:
