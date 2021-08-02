@@ -1,14 +1,13 @@
-# For more information: https://laravel.com/docs/sail
 version: "3.5"
 services:
   laravel.test:
-    container_name: '${PROJECT_NAME}-app'
+    container_name: "${PROJECT_NAME}-app"
     build:
       context: ./
       dockerfile: Dockerfile
       args:
         WWWGROUP: "${WWWGROUP}"
-    image: laravel/restful
+    image: "laravel-restful-api/${PROJECT_NAME}"
     ports:
       - ${APP_HTTP_PORT:-80}:80
     environment:
@@ -17,7 +16,7 @@ services:
     volumes:
       - .:/var/www/html
     networks:
-      - laravel_restful_api_network
+      - "${PROJECT_NAME}-network"
     healthcheck:
       test: "curl --fail -s http://127.0.0.1:80/ || exit 1"
       interval: 1m30s
@@ -30,7 +29,7 @@ services:
       - mysql
       - redis
   mysql:
-    container_name: '${PROJECT_NAME}-mysql'
+    container_name: "${PROJECT_NAME}-mysql"
     image: mysql
     privileged: false
     security_opt:
@@ -42,16 +41,16 @@ services:
       MYSQL_PASSWORD: "${DB_PASSWORD}"
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
     volumes:
-      - laravel_restful_api_mysql:/var/lib/mysql
+      - "${PROJECT_NAME}-mysql:/var/lib/mysql"
     networks:
-      - laravel_restful_api_network
+      - "${PROJECT_NAME}-network"
     healthcheck:
       test: [CMD, mysqladmin, ping, -h, localhost]
       timeout: 45s
       interval: 10s
       retries: 10
   phpmyadmin:
-    container_name: '${PROJECT_NAME}-phpmyadmin'
+    container_name: "${PROJECT_NAME}-phpmyadmin"
     image: phpmyadmin
     privileged: false
     security_opt:
@@ -67,28 +66,28 @@ services:
     depends_on:
       - mysql
     networks:
-      - laravel_restful_api_network
+      - "${PROJECT_NAME}-network"
   redis:
-    container_name: '${PROJECT_NAME}-redis'
+    container_name: "${PROJECT_NAME}-redis"
     image: redis:alpine
     privileged: false
     security_opt:
       - no-new-privileges:true
     volumes:
-      - laravel_restful_api_redis:/data
+      - "${PROJECT_NAME}-redis:/data"
     networks:
-      - laravel_restful_api_network
+      - "${PROJECT_NAME}-network"
     healthcheck:
       test: [CMD, redis-cli, ping]
       timeout: 45s
       interval: 10s
       retries: 10
 networks:
-  laravel_restful_api_network:
+  "${PROJECT_NAME}-network":
     driver: bridge
     
 volumes:
-  laravel_restful_api_mysql:
+  "${PROJECT_NAME}-mysql":
     driver: local
-  laravel_restful_api_redis:
+  "${PROJECT_NAME}-redis":
     driver: local
