@@ -16,3 +16,4 @@ yarn-error.log
 # Ignore DevSpace cache and log folder
 .devspace/
 database/seeders/UserSeeder.php
+.package-lock.json
