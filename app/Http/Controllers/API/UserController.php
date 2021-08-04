@@ -42,7 +42,20 @@ class UserController extends Controller
      */
     public function index(UserIndexRequest $request): JsonResponse
     {
-        $rolePaginator = User::paginate();
+        $rolePaginator = User::when($request->search, function($query) use ($request)
+        {
+            $search = $request->search;
+            return $query->whereColumn([
+                ["email", "LIKE", "%$search%"],
+                ["username", "LIKE", "%$search%"],
+                ["first_name", "LIKE", "%$search%"],
+                ["last_name", "LIKE", "%$search%"],
+            ]);
+        })
+        # @todo add role based search.
+        ->paginate();
+
+
         $users = $rolePaginator->getCollection();
         $response = fractal()
             ->collection($users)
