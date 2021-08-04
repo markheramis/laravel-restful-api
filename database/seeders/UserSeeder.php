@@ -20,10 +20,14 @@ class UserSeeder extends Seeder
     {
         $users = User::factory()->count(2)->create();
         $this->__attach_users_to_role($users, 'administrator');
-        $users = User::factory()->count(3)->create();
+        $users = User::factory()->count(10)->create();
         $this->__attach_users_to_role($users, 'moderator');
-        $users = User::factory()->count(5)->create();
+        $users = User::factory()->count(10)->create();
         $this->__attach_users_to_role($users, 'subscriber');
+
+        $admin = User::first();
+        $admin->username = 'admin';
+        $admin->update();
     }
 
     private function __attach_users_to_role(Collection $users, string $role_slug)

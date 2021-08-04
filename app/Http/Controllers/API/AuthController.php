@@ -72,7 +72,7 @@ class AuthController extends Controller
             "username" => $request->username,
             "email" => $request->email,
             "password" => $request->password,
-            "firsName" => $request->firstName,
+            "firstName" => $request->firstName,
             "lastName" => $request->lastName,
         ];
         $role = $request->role;
