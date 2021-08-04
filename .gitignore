@@ -1,5 +1,4 @@
 /node_modules
-
 /storage/*.key
 /public/storage
 /vendor
@@ -16,3 +15,4 @@ yarn-error.log
 
 # Ignore DevSpace cache and log folder
 .devspace/
+database/seeders/UserSeeder.php
