@@ -37,7 +37,18 @@ class RoleController extends Controller
      */
     public function index(RoleIndexRequest $request): JsonResponse
     {
-        $paginator = Role::paginate();
+        $paginator = Role::when($request->search, function($query) use ($request)
+        {
+            $search = $request->search;
+            return $query->whereColumn([
+                ["email", "LIKE", "%$search%"],
+                ["username", "LIKE", "%$search%"],
+                ["first_name", "LIKE", "%$search%"],
+                ["last_name", "LIKE", "%$search%"],
+            ]);
+        })
+        # @todo add role based search.
+        ->paginate();
         $roles = $paginator->getCollection();
 
         $response = fractal()
