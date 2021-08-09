@@ -8,6 +8,10 @@ variables:
   GIT_DEPTH: "100" # Tells git to fetch all the branches of the project, required by the analysis task
   DOCKER_DRIVER: overlay2
   CLAIR_OUTPUT: High
+  
+  DOCKER_HOST: tcp://localhost:2375/
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: ""
   DOCKER_IMAGE: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA
 
 include:
