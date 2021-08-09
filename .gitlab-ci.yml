@@ -1,15 +1,22 @@
 variables:
+  SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar" # Defines the location of the analysis task cache
+  GIT_DEPTH: "100" # Tells git to fetch all the branches of the project, required by the analysis task
+  DOCKER_DRIVER: overlay2
+  CLAIR_OUTPUT: High
+  # Tell docker CLI how to talk to Docker daemon; see
+  # https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#use-docker-in-docker-executor
+  DOCKER_HOST: tcp://thedockerhost:2375/
+  # Use the overlayfs driver for improved performance:
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: ""
+  DOCKER_IMAGE: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA
+  # MySQL test credentials
   DB_HOST: mysql
   MYSQL_DATABASE: homestead
   MYSQL_USER: homestead
   MYSQL_PASSWORD: secret
   MYSQL_ROOT_PASSWORD: secret
-  SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar" # Defines the location of the analysis task cache
-  GIT_DEPTH: "100" # Tells git to fetch all the branches of the project, required by the analysis task
-  DOCKER_DRIVER: overlay2
-  CLAIR_OUTPUT: High
-  DOCKER_IMAGE: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA
-
+  
 include:
   - template: Jobs/Code-Quality.gitlab-ci.yml # https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Code-Quality.gitlab-ci.yml
   - template: Jobs/Code-Intelligence.gitlab-ci.yml # https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Code-Intelligence.gitlab-ci.yml
@@ -27,15 +34,28 @@ stages:
 
 build-docker:
   stage: build
-  image: docker:stable
+  image:
+    # An alpine-based image with the `docker` CLI installed.
+    name: docker:stable
+  # This will run a Docker daemon in a container (Docker-In-Docker), which will
+  # be available at thedockerhost:2375. If you make e.g. port 5000 public in Docker
+  # (`docker run -p 5000:5000 yourimage`) it will be exposed at thedockerhost:5000.
+  services:
+    - name: docker:dind
+      alias: thedockerhost
   script:
+    # Download bash:
+    - apk add --no-cache bash python3
+    # Delete setup
     - rm setup
+    # GitLab has a built-in Docker image registry, whose parameters are set automatically.
+    # See https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#using-the-gitlab-contai
+    # CHANGEME: You can use some other Docker registry though by changing the
+    # login and image name.
     - docker info
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
     - docker build -t $DOCKER_IMAGE .
     - docker push $DOCKER_IMAGE
-  services:
-    - docker:19.03.12-dind
 
 build-composer:
   image: composer:latest
@@ -63,7 +83,7 @@ artisan-test:
   stage: test
   parallel: 3
   services:
-    - mysql:8.0
+    - name: mysql:8.0
   script:
     - php artisan storage:link
     - php artisan key:generate
@@ -135,64 +155,80 @@ sonarcloud-check:
 code_quality:
   stage: analyse
   rules:
-    - if: '$CI_COMMIT_BRANCH == "master"' # Run code_quality in pipelines on the master branch (but not in other branch pipelines)
-    - if: "$CI_COMMIT_TAG" # Run code_quality in pipelines for tags
+    # Run code_quality in pipelines on the master branch (but not in other branch pipelines)
+    - if: '$CI_COMMIT_BRANCH == "master"'
+    # Run code_quality in pipelines for tags
+    - if: "$CI_COMMIT_TAG"
   dependencies:
     - artisan-test
 
 code_intelligence_go:
   stage: analyse
   rules:
-    - if: '$CI_COMMIT_BRANCH == "master"' # Run code_intelligence_go in pipelines on the master branch (but not in other branch pipelines)
-    - if: "$CI_COMMIT_TAG" # Run code_intelligence_go in pipelines for tags
+    # Run code_intelligence_go in pipelines on the master branch (but not in other branch pipelines)
+    - if: '$CI_COMMIT_BRANCH == "master"'
+    # Run code_intelligence_go in pipelines for tags
+    - if: "$CI_COMMIT_TAG"
   dependencies:
     - artisan-test
 
 gemnasium-dependency_scanning:
   stage: analyse
   rules:
-    - if: '$CI_COMMIT_BRANCH == "master"' # Run gemnasium-dependency_scanning in pipelines on the master branch (but not in other branch pipelines)
-    - if: "$CI_COMMIT_TAG" # Run gemnasium-dependency_scanning in pipelines for tags
+    # Run gemnasium-dependency_scanning in pipelines on the master branch (but not in other branch pipelines)
+    - if: '$CI_COMMIT_BRANCH == "master"'
+    # Run gemnasium-dependency_scanning in pipelines for tags
+    - if: "$CI_COMMIT_TAG"
   dependencies:
     - artisan-test
 
 retire-js-dependency_scanning:
   stage: analyse
   rules:
-    - if: '$CI_COMMIT_BRANCH == "master"' # Run retire-js-dependency_scanning in pipelines on the master branch (but not in other branch pipelines)
-    - if: "$CI_COMMIT_TAG" # Run retire-js-dependency_scanning in pipelines for tags
+    # Run retire-js-dependency_scanning in pipelines on the master branch (but not in other branch pipelines)
+    - if: '$CI_COMMIT_BRANCH == "master"'
+    # Run retire-js-dependency_scanning in pipelines for tags
+    - if: "$CI_COMMIT_TAG"
   dependencies:
     - artisan-test
 
 container_scanning:
   stage: analyse
   rules:
-    - if: '$CI_COMMIT_BRANCH == "master"' # Run container_scanning in pipelines on the master branch (but not in other branch pipelines)
-    - if: "$CI_COMMIT_TAG" # Run container_scanning in pipelines for tags
+    # Run container_scanning in pipelines on the master branch (but not in other branch pipelines)
+    - if: '$CI_COMMIT_BRANCH == "master"'
+    # Run container_scanning in pipelines for tags
+    - if: "$CI_COMMIT_TAG"
   dependencies:
     - artisan-test
 
 phpcs-security-audit-sast:
   stage: analyse
   rules:
-    - if: '$CI_COMMIT_BRANCH == "master"' # Run phpcs-security-audit-sast in pipelines on the master branch (but not in other branch pipelines)
-    - if: "$CI_COMMIT_TAG" # Run phpcs-security-audit-sast in pipelines for tags
+    # Run phpcs-security-audit-sast in pipelines on the master branch (but not in other branch pipelines)
+    - if: '$CI_COMMIT_BRANCH == "master"'
+    # Run phpcs-security-audit-sast in pipelines for tags
+    - if: "$CI_COMMIT_TAG"
   dependencies:
     - artisan-test
 
 nodejs-scan-sast:
   stage: analyse
   rules:
-    - if: '$CI_COMMIT_BRANCH == "master"' # Run nodejs-scan-sast in pipelines on the master branch (but not in other branch pipelines)
-    - if: "$CI_COMMIT_TAG" # Run nodejs-scan-sast in pipelines for tags
+    # Run nodejs-scan-sast in pipelines on the master branch (but not in other branch pipelines)
+    - if: '$CI_COMMIT_BRANCH == "master"'
+    # Run nodejs-scan-sast in pipelines for tags
+    - if: "$CI_COMMIT_TAG"
   dependencies:
     - artisan-test
 
 eslint-sast:
   stage: analyse
   rules:
-    - if: '$CI_COMMIT_BRANCH == "master"' # Run eslint-sast in pipelines on the master branch (but not in other branch pipelines)
-    - if: "$CI_COMMIT_TAG" # Run eslint-sast in pipelines for tags
+    # Run eslint-sast in pipelines on the master branch (but not in other branch pipelines)
+    - if: '$CI_COMMIT_BRANCH == "master"'
+    # Run eslint-sast in pipelines for tags
+    - if: "$CI_COMMIT_TAG"
   dependencies:
     - artisan-test
 
@@ -202,15 +238,19 @@ secret_detection:
     SECRET_DETECTION_HISTORIC_SCAN: "true"
     GIT_DEPTH: 100
   rules:
-    - if: '$CI_COMMIT_BRANCH == "master"' # Run secret_detection in pipelines on the master branch (but not in other branch pipelines)
-    - if: "$CI_COMMIT_TAG" # Run secret_detection in pipelines for tags
+    # Run secret_detection in pipelines on the master branch (but not in other branch pipelines)
+    - if: '$CI_COMMIT_BRANCH == "master"'
+    # Run secret_detection in pipelines for tags
+    - if: "$CI_COMMIT_TAG"
   dependencies:
     - artisan-test
 
 license_scanning:
   stage: analyse
   rules:
-    - if: '$CI_COMMIT_BRANCH == "master"' # Run license_scanning in pipelines on the master branch (but not in other branch pipelines)
-    - if: "$CI_COMMIT_TAG" # Run license_scanning in pipelines for tags
+    # Run license_scanning in pipelines on the master branch (but not in other branch pipelines)
+    - if: '$CI_COMMIT_BRANCH == "master"'
+    # Run license_scanning in pipelines for tags
+    - if: "$CI_COMMIT_TAG"
   dependencies:
     - artisan-test
