@@ -122,6 +122,8 @@ deploy_staging:
     - staging
   dependencies:
     - artisan-test
+  needs:
+    - artisan-test
 
 deploy_production:
   image:
@@ -133,6 +135,8 @@ deploy_production:
   only:
     - production
   dependencies:
+    - artisan-test
+  needs:
     - artisan-test
 
 sonarcloud-check:
@@ -151,6 +155,8 @@ sonarcloud-check:
     - master
   dependencies:
     - artisan-test
+  needs:
+    - artisan-test
 
 code_quality:
   stage: analyse
@@ -160,6 +166,8 @@ code_quality:
     # Run code_quality in pipelines for tags
     - if: "$CI_COMMIT_TAG"
   dependencies:
+    - artisan-test
+  needs:
     - artisan-test
 
 code_intelligence_go:
@@ -171,6 +179,8 @@ code_intelligence_go:
     - if: "$CI_COMMIT_TAG"
   dependencies:
     - artisan-test
+  needs:
+    - artisan-test
 
 gemnasium-dependency_scanning:
   stage: analyse
@@ -180,6 +190,8 @@ gemnasium-dependency_scanning:
     # Run gemnasium-dependency_scanning in pipelines for tags
     - if: "$CI_COMMIT_TAG"
   dependencies:
+    - artisan-test
+  needs:
     - artisan-test
 
 retire-js-dependency_scanning:
@@ -191,6 +203,8 @@ retire-js-dependency_scanning:
     - if: "$CI_COMMIT_TAG"
   dependencies:
     - artisan-test
+  needs:
+    - artisan-test
 
 container_scanning:
   stage: analyse
@@ -200,6 +214,8 @@ container_scanning:
     # Run container_scanning in pipelines for tags
     - if: "$CI_COMMIT_TAG"
   dependencies:
+    - artisan-test
+  needs:
     - artisan-test
 
 phpcs-security-audit-sast:
@@ -211,6 +227,8 @@ phpcs-security-audit-sast:
     - if: "$CI_COMMIT_TAG"
   dependencies:
     - artisan-test
+  needs:
+    - artisan-test
 
 nodejs-scan-sast:
   stage: analyse
@@ -221,6 +239,8 @@ nodejs-scan-sast:
     - if: "$CI_COMMIT_TAG"
   dependencies:
     - artisan-test
+  needs:
+    - artisan-test
 
 eslint-sast:
   stage: analyse
@@ -230,6 +250,8 @@ eslint-sast:
     # Run eslint-sast in pipelines for tags
     - if: "$CI_COMMIT_TAG"
   dependencies:
+    - artisan-test
+  needs:
     - artisan-test
 
 secret_detection:
@@ -244,6 +266,8 @@ secret_detection:
     - if: "$CI_COMMIT_TAG"
   dependencies:
     - artisan-test
+  needs:
+    - artisan-test
 
 license_scanning:
   stage: analyse
@@ -253,4 +277,6 @@ license_scanning:
     # Run license_scanning in pipelines for tags
     - if: "$CI_COMMIT_TAG"
   dependencies:
+    - artisan-test
+  needs:
     - artisan-test
