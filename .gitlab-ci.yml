@@ -81,7 +81,7 @@ artisan-test:
     name: $DOCKER_IMAGE
     entrypoint: [""]
   stage: test
-  parallel: 3
+  parallel: 2
   services:
     - name: mysql:8.0
   script:
