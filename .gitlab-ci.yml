@@ -1,12 +1,22 @@
 variables:
-  
   SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar" # Defines the location of the analysis task cache
   GIT_DEPTH: "100" # Tells git to fetch all the branches of the project, required by the analysis task
   DOCKER_DRIVER: overlay2
   CLAIR_OUTPUT: High
+  # Tell docker CLI how to talk to Docker daemon; see
+  # https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#use-docker-in-docker-executor
+  DOCKER_HOST: tcp://thedockerhost:2375/
+  # Use the overlayfs driver for improved performance:
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: ""
+  DOCKER_IMAGE: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA
+  # MySQL test credentials
+  DB_HOST: mysql
+  MYSQL_DATABASE: homestead
+  MYSQL_USER: homestead
+  MYSQL_PASSWORD: secret
+  MYSQL_ROOT_PASSWORD: secret
   
-  
-
 include:
   - template: Jobs/Code-Quality.gitlab-ci.yml # https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Code-Quality.gitlab-ci.yml
   - template: Jobs/Code-Intelligence.gitlab-ci.yml # https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Code-Intelligence.gitlab-ci.yml
@@ -33,14 +43,6 @@ build-docker:
   services:
     - name: docker:dind
       alias: thedockerhost
-  variables:
-    # Tell docker CLI how to talk to Docker daemon; see
-    # https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#use-docker-in-docker-executor
-    DOCKER_HOST: tcp://thedockerhost:2375/
-    # Use the overlayfs driver for improved performance:
-    DOCKER_DRIVER: overlay2
-    DOCKER_TLS_CERTDIR: ""
-    DOCKER_IMAGE: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA
   script:
     # Download bash:
     - apk add --no-cache bash python3
@@ -54,7 +56,6 @@ build-docker:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
     - docker build -t $DOCKER_IMAGE .
     - docker push $DOCKER_IMAGE
-  
 
 build-composer:
   image: composer:latest
@@ -81,12 +82,6 @@ artisan-test:
     entrypoint: [""]
   stage: test
   parallel: 3
-  variables:
-    DB_HOST: mysql
-    MYSQL_DATABASE: homestead
-    MYSQL_USER: homestead
-    MYSQL_PASSWORD: secret
-    MYSQL_ROOT_PASSWORD: secret
   services:
     - name: mysql:8.0
   script:
