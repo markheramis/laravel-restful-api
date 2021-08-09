@@ -1,9 +1,5 @@
 variables:
-  DB_HOST: mysql
-  MYSQL_DATABASE: homestead
-  MYSQL_USER: homestead
-  MYSQL_PASSWORD: secret
-  MYSQL_ROOT_PASSWORD: secret
+  
   SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar" # Defines the location of the analysis task cache
   GIT_DEPTH: "100" # Tells git to fetch all the branches of the project, required by the analysis task
   DOCKER_DRIVER: overlay2
@@ -85,8 +81,14 @@ artisan-test:
     entrypoint: [""]
   stage: test
   parallel: 3
+  variables:
+    DB_HOST: mysql
+    MYSQL_DATABASE: homestead
+    MYSQL_USER: homestead
+    MYSQL_PASSWORD: secret
+    MYSQL_ROOT_PASSWORD: secret
   services:
-    - mysql:8.0
+    - name: mysql:8.0
   script:
     - php artisan storage:link
     - php artisan key:generate
