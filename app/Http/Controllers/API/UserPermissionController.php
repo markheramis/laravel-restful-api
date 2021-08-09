@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers\API;
 
-use Exception;
 use App\Models\User;
 use App\Transformers\PermissionTransformer;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserPermissionShowRequest;
-use App\Http\Requests\UserPermissionAddRequest;
+use App\Http\Requests\UserPermissionStoreRequest;
 use App\Http\Requests\UserPermissionUpdateRequest;
 use App\Http\Requests\UserPermissionDeleteRequest;
 use \Illuminate\Http\JsonResponse;
@@ -39,7 +38,7 @@ class UserPermissionController extends Controller
     }
 
     /**
-     * Add User Permission
+     * Store User Permission
      *
      * This endpoint lets you add a Permission to a User
      * 
@@ -49,7 +48,7 @@ class UserPermissionController extends Controller
      * @param App\Models\User $$user auto resolved User eloquent instance.
      * @return JsonResponse
      */
-    public function add(UserPermissionAddRequest $request, User $user): JsonResponse
+    public function store(UserPermissionStoreRequest $request, User $user): JsonResponse
     {
         $user->addPermission($request->slug, $request->value);
         if ($user->save()) {
@@ -81,7 +80,7 @@ class UserPermissionController extends Controller
     }
 
     /**
-     * Delete User Permission
+     * Destroy User Permission
      * 
      * This endpoint lets you delete a Permission from a User
      *
@@ -91,7 +90,7 @@ class UserPermissionController extends Controller
      * @param App\Models\User $$user auto resolved User eloquent instance.
      * @return JsonResponse
      */
-    public function delete(UserPermissionDeleteRequest $request, User $user): JsonResponse
+    public function destroy(UserPermissionDestroyRequest $request, User $user): JsonResponse
     {
         $user->removePermission($request->slug);
         if ($user->save()) {

@@ -5,9 +5,9 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Transformers\CategoryTransformer;
-use App\Http\Requests\CategoryDeleteRequest;
-use App\Http\Requests\CategoryAllRequest;
-use App\Http\Requests\CategoryGetRequest;
+use App\Http\Requests\CategoryDestroyRequest;
+use App\Http\Requests\CategoryIndexRequest;
+use App\Http\Requests\CategoryShowRequest;
 use App\Http\Requests\CategoryStoreRequest;
 use App\Http\Requests\CategoryUpdateRequest;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
@@ -34,7 +34,7 @@ class CategoryController extends Controller
      * @uses League\Fractal\Pagination\IlluminatePaginatorAdapter IlluminatePaginatorAdapter
      * @return JsonResponse
      */
-    public function index(CategoryAllRequest $request): JsonResponse
+    public function index(CategoryIndexRequest $request): JsonResponse
     {
         $paginator = Category::paginate();
         $category = $paginator->collection();
@@ -79,13 +79,12 @@ class CategoryController extends Controller
      * This endpoint lets you get a Category
      *
      * @authenticated
-     * @todo 2nd parameter should auto resolve to the Role model instance
      * @param CategoryGetRequest $request
      * @param App\Models\Category $category auto resolved instance of Eloquent Category
      * @uses App\Transformers\CategoryTransformer CategoryTransformer
      * @return JsonResponse
      */
-    public function get(CategoryGetRequest $request, Category $category): JsonResponse
+    public function show(CategoryShowRequest $request, Category $category): JsonResponse
     {
         $response = fractal($category, new CategoryTransformer())->toArray();
         return response()->success($response);
@@ -98,10 +97,8 @@ class CategoryController extends Controller
      * This endpoint lets you update a single Category
      *
      * @authenticated
-     * @todo 2nd parameter should autoresolve to Role model instance.
      * @param RoleUpdateReqeust $request
      * @param App\Models\Role $role auto resolved instance of Eloquent Role
-     * @uses App\Models\Role $role
      * @return JsonResponse
      */
     public function update(CategoryUpdateRequest $request, Category $category): JsonResponse
@@ -122,14 +119,11 @@ class CategoryController extends Controller
      * This endpoint lets you delete a single Category
      *
      * @authenticated
-     * @todo 2nd parameter should autoresolve to the Category model instance.
-     * @todo add body parameter `force` that allows force delete when user is an admin.
      * @param CategoryDeleteRequest $request
      * @param App\Models\Category $category auto resolved instance of Eloquent Role
-     * @uses App\Models\Category $category
      * @return JsonResponse
      */
-    public function destroy(CategoryDeleteRequest $request, Category $category): JsonResponse
+    public function destroy(CategoryDestroyRequest $request, Category $category): JsonResponse
     {
         if ($category->delete()) {
             return response()->success('Category deleted successfully');

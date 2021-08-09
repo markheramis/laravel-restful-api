@@ -6,35 +6,35 @@ use Tests\TestCase;
 use Tests\Traits\userTraits;
 use Illuminate\Foundation\Testing\WithFaker;
 
-class UserDeleteTest extends TestCase
+class UserDestryTest extends TestCase
 {
     use WithFaker, userTraits;
 
-
-    public function testDeleteSubscriberWithNoSessionShouldBeUnauthorized()
+    public function testDestroySubscriberWithNoSessionShouldBeUnauthorized()
     {
         $user1 = $this->createUser("subscriber");
         $response = $this->json("DELETE", "/api/user/{$user1->id}");
         $response->assertStatus(401);
     }
 
-    public function testDeleteModeratorWithNoSessionShouldBeUnauthorized()
+    public function testDestroyModeratorWithNoSessionShouldBeUnauthorized()
     {
         $user1 = $this->createUser("moderator");
         $response = $this->json("DELETE", "/api/user/{$user1->id}");
         $response->assertStatus(401);
     }
 
-    public function testDeleteAdministratorWithNoSessionShouldBeUnauthorized()
+    public function testDestroyAdministratorWithNoSessionShouldBeUnauthorized()
     {
         $user1 = $this->createUser("administrator");
         $response = $this->json("DELETE", "/api/user/{$user1->id}");
         $response->assertStatus(401);
     }
+
     #########################################
     ############# AS SUBSCRIBER #############
     #########################################
-    public function testDeleteSubscriberAsSubscriberShouldBeForbidden()
+    public function testDestroySubscriberAsSubscriberShouldBeForbidden()
     {
         $user1 = $this->createUser("subscriber");
         $user2 = $this->createUser("subscriber");
@@ -45,7 +45,7 @@ class UserDeleteTest extends TestCase
         $response->assertStatus(403);
     }
 
-    public function testDeleteModeratorAsSubscriberShouldBeForbidden()
+    public function testDestroyModeratorAsSubscriberShouldBeForbidden()
     {
         $user1 = $this->createUser("subscriber");
         $user2 = $this->createUser("moderator");
@@ -56,7 +56,7 @@ class UserDeleteTest extends TestCase
         $response->assertStatus(403);
     }
 
-    public function testDeleteAdministratorAsSubscrbierShouldBeForbidden()
+    public function testDestroyAdministratorAsSubscrbierShouldBeForbidden()
     {
         $user1 = $this->createUser("subscriber");
         $user2 = $this->createUser("administrator");
@@ -66,10 +66,11 @@ class UserDeleteTest extends TestCase
         ]);
         $response->assertStatus(403);
     }
+
     ########################################
     ############# AS MODERATOR #############
     ########################################
-    public function testDeleteSubscriberAsModeratorShouldBeForbidden()
+    public function testDestroySubscriberAsModeratorShouldBeForbidden()
     {
         $user1 = $this->createUser("moderator");
         $user2 = $this->createUser("subscriber");
@@ -79,7 +80,8 @@ class UserDeleteTest extends TestCase
         ]);
         $response->assertStatus(403);
     }
-    public function testDeleteModeratorAsModeratorShouldBeForbidden()
+    
+    public function testDestroyModeratorAsModeratorShouldBeForbidden()
     {
         $user1 = $this->createUser("moderator");
         $user2 = $this->createUser("moderator");
@@ -89,7 +91,8 @@ class UserDeleteTest extends TestCase
         ]);
         $response->assertStatus(403);
     }
-    public function testDeleteAdministratorAsModeratorShouldBeForbidden()
+
+    public function testDestroyAdministratorAsModeratorShouldBeForbidden()
     {
         $user1 = $this->createUser("moderator");
         $user2 = $this->createUser("administrator");
@@ -99,13 +102,11 @@ class UserDeleteTest extends TestCase
         ]);
         $response->assertStatus(403);
     }
-
-
 
     ############################################
     ############# AS ADMINISTRATOR #############
     ############################################
-    public function testDeleteSubscriberAsAdministratorShouldBeAllowed()
+    public function testDestroySubscriberAsAdministratorShouldBeAllowed()
     {
         $user1 = $this->createUser("administrator");
         $user2 = $this->createUser("subscriber");
@@ -117,7 +118,7 @@ class UserDeleteTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function testDeleteModeratorAsAdministratorShouldBeAllowed()
+    public function testDestroyModeratorAsAdministratorShouldBeAllowed()
     {
         $user1 = $this->createUser("administrator");
         $user2 = $this->createUser("moderator");
@@ -129,7 +130,7 @@ class UserDeleteTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function testDeleteAdministratorAsAdministratorShouldBeAllowed()
+    public function testDestroyAdministratorAsAdministratorShouldBeAllowed()
     {
         $user1 = $this->createUser("administrator");
         $user2 = $this->createUser("administrator");

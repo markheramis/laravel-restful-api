@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+php artisan storage:link
+php artisan key:generate
+php artisan migrate:fresh
+php artisan db:seed
+php artisan passport:install
+service supervisor start

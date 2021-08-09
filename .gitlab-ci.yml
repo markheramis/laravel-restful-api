@@ -8,6 +8,7 @@ variables:
   GIT_DEPTH: "100" # Tells git to fetch all the branches of the project, required by the analysis task
   DOCKER_DRIVER: overlay2
   CLAIR_OUTPUT: High
+  DOCKER_IMAGE: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA
 
 include:
   - template: Jobs/Code-Quality.gitlab-ci.yml # https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Code-Quality.gitlab-ci.yml
@@ -28,20 +29,16 @@ build-docker:
   stage: build
   image: docker:stable
   script:
+    - rm setup
     - docker info
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-    - docker build -t $IMAGE .
-    - docker push $IMAGE
-
+    - docker build -t $DOCKER_IMAGE .
+    - docker push $DOCKER_IMAGE
   services:
     - docker:19.03.12-dind
-  variables:
-    IMAGE: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA
-  only:
-    - master
 
 build-composer:
-  image: lorisleiva/laravel-docker
+  image: composer:latest
   stage: build
   script:
     - cp .env.testing.example .env
@@ -57,14 +54,18 @@ build-composer:
       - .env
       - vendor/
       - storage/logs
+    expire_in: 1 week
 
 artisan-test:
-  image: lorisleiva/laravel-docker
+  image:
+    name: $DOCKER_IMAGE
+    entrypoint: [""]
   stage: test
+  parallel: 3
   services:
     - mysql:8.0
   script:
-    - cp .env.testing.example .env.testing
+    - php artisan storage:link
     - php artisan key:generate
     - php artisan migrate
     - php artisan db:seed
@@ -79,14 +80,21 @@ artisan-test:
     - staging
     - production
   artifacts:
-    when: on_failure
     paths:
       - storage/logs/
+    expire_in: 1 week
+    when: always
+    reports:
+      junit: storage/logs/tests-report.xml
+  coverage: '/^\s*Lines:\s*\d+.\d+\%/'
   dependencies:
+    - build-docker
     - build-composer
-
+      
 deploy_staging:
-  image: lorisleiva/laravel-docker
+  image:
+    name: $DOCKER_IMAGE
+    entrypoint: [""]
   stage: deploy
   script:
     - php vendor/bin/envoy run deploy --branch=staging --refresh=true --host=${{PROJECT_STAGING_HOST}}
@@ -96,7 +104,9 @@ deploy_staging:
     - artisan-test
 
 deploy_production:
-  image: lorisleiva/laravel-docker
+  image:
+    name: $DOCKER_IMAGE
+    entrypoint: [""]
   stage: deploy
   script:
     - php vendor/bin/envoy run deploy --branch=production --host=${{PROJECT_PRODUCTION_HOST}}
@@ -127,59 +137,80 @@ code_quality:
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"' # Run code_quality in pipelines on the master branch (but not in other branch pipelines)
     - if: "$CI_COMMIT_TAG" # Run code_quality in pipelines for tags
+  dependencies:
+    - artisan-test
 
 code_intelligence_go:
   stage: analyse
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"' # Run code_intelligence_go in pipelines on the master branch (but not in other branch pipelines)
     - if: "$CI_COMMIT_TAG" # Run code_intelligence_go in pipelines for tags
+  dependencies:
+    - artisan-test
 
 gemnasium-dependency_scanning:
   stage: analyse
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"' # Run gemnasium-dependency_scanning in pipelines on the master branch (but not in other branch pipelines)
     - if: "$CI_COMMIT_TAG" # Run gemnasium-dependency_scanning in pipelines for tags
+  dependencies:
+    - artisan-test
 
 retire-js-dependency_scanning:
   stage: analyse
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"' # Run retire-js-dependency_scanning in pipelines on the master branch (but not in other branch pipelines)
     - if: "$CI_COMMIT_TAG" # Run retire-js-dependency_scanning in pipelines for tags
+  dependencies:
+    - artisan-test
 
 container_scanning:
   stage: analyse
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"' # Run container_scanning in pipelines on the master branch (but not in other branch pipelines)
     - if: "$CI_COMMIT_TAG" # Run container_scanning in pipelines for tags
+  dependencies:
+    - artisan-test
 
 phpcs-security-audit-sast:
   stage: analyse
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"' # Run phpcs-security-audit-sast in pipelines on the master branch (but not in other branch pipelines)
     - if: "$CI_COMMIT_TAG" # Run phpcs-security-audit-sast in pipelines for tags
+  dependencies:
+    - artisan-test
 
 nodejs-scan-sast:
   stage: analyse
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"' # Run nodejs-scan-sast in pipelines on the master branch (but not in other branch pipelines)
     - if: "$CI_COMMIT_TAG" # Run nodejs-scan-sast in pipelines for tags
+  dependencies:
+    - artisan-test
 
 eslint-sast:
   stage: analyse
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"' # Run eslint-sast in pipelines on the master branch (but not in other branch pipelines)
     - if: "$CI_COMMIT_TAG" # Run eslint-sast in pipelines for tags
+  dependencies:
+    - artisan-test
 
 secret_detection:
+  stage: analyse
   variables:
     SECRET_DETECTION_HISTORIC_SCAN: "true"
     GIT_DEPTH: 100
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"' # Run secret_detection in pipelines on the master branch (but not in other branch pipelines)
     - if: "$CI_COMMIT_TAG" # Run secret_detection in pipelines for tags
+  dependencies:
+    - artisan-test
 
 license_scanning:
   stage: analyse
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"' # Run license_scanning in pipelines on the master branch (but not in other branch pipelines)
     - if: "$CI_COMMIT_TAG" # Run license_scanning in pipelines for tags
+  dependencies:
+    - artisan-test

@@ -59,6 +59,7 @@ class RoleStoreRequest extends FormRequest
                     "test.delete" => false,
                 ]
             ]
-            */];
+            */
+        ];
     }
 }

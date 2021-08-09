@@ -16,11 +16,11 @@ class UserGetAllTest extends TestCase
      * @todo Assert expected result array
      * @return void
      */
-    public function testGetAllUserAsAdminsShouldBeAllowed()
+    public function testIndexAllUserAsAdminsShouldBeAllowed()
     {
         $user = $this->createUser('administrator');
         $token = $this->getTokenByRole("administrator", $user->id);
-        $expected_result = User::paginate()->toArray();
+        # $expected_result = User::paginate()->toArray();
         $response = $this->json("GET", "/api/user", [], [
             "Authorization" => "Bearer $token"
         ]);
@@ -33,11 +33,11 @@ class UserGetAllTest extends TestCase
      * @todo Assert expected result array
      * @return void
      */
-    public function testGetAllUserAsModeratorShouldBeAllowed()
+    public function testIndexAllUserAsModeratorShouldBeAllowed()
     {
         $user = $this->createUser('moderator');
         $token = $this->getTokenByRole("moderator", $user->id);
-        $expected_result = User::paginate()->toArray();
+        # $expected_result = User::paginate()->toArray();
         $response = $this->json("GET", "/api/user", [], [
             "Authorization" => "Bearer $token"
         ]);
@@ -50,11 +50,11 @@ class UserGetAllTest extends TestCase
      * @todo Assert expected result array
      * @return void
      */
-    public function testGetAllUserAsSubscriberShouldBeAllowed()
+    public function testIndexAllUserAsSubscriberShouldBeAllowed()
     {
         $user = $this->createUser('subscriber');
         $token = $this->getTokenByRole("subscriber", $user->id);
-        $expected_result = User::paginate()->toArray();
+        # $expected_result = User::paginate()->toArray();
         $response = $this->json("GET", "/api/user", [], [
             "Authorization" => "Bearer $token"
         ]);

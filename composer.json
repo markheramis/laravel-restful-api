@@ -34,7 +34,7 @@
         "nunomaduro/collision": "^5.0",
         "phpbench/phpbench": "1.0.0-beta1",
         "phpunit/php-code-coverage": "^9.2",
-        "phpunit/phpunit": "^9.3.3"
+        "phpunit/phpunit": "^9.4"
     },
     "config": {
         "optimize-autoloader": true,

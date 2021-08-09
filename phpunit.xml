@@ -35,7 +35,9 @@
     </coverage>
 
     <logging>
-        <log type="coverage-clover" target="storage/logs/coverage-report.xml"/>
+        <log type="coverage-clover" target="storage/logs/coverage-clover-report.xml"/>
+        <log type="coverage-html" target="storage/logs/coverage-html-report.html"/>
+        <log type="coverage-text" target="storage/logs/coverage-text-report.txt"/>
         <log type="junit" target="storage/logs/tests-report.xml"/>
     </logging>
 </phpunit>

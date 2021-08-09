@@ -24,23 +24,24 @@ Route::get('me', [AuthController::class, 'me'])->middleware(['auth:api'])->name(
 Route::post('login', [AuthController::class, 'login'])->name('api.login');
 Route::post('register', [AuthController::class, 'register'])->name('api.register');
 Route::post('activate', [UserController::class, 'activate'])->name('api.user.activate');
+
 Route::prefix('user')->middleware(['auth:api'])->group(function () {
     Route::get('/', [UserController::class, 'index']);
     Route::prefix('{user}')->group(function () {
         Route::get('/', [UserController::class, 'show']);
         Route::put('/', [UserController::class, 'update']);
-        Route::delete('/', [UserController::class, 'delete']);
+        Route::delete('/', [UserController::class, 'destroy']);
         Route::prefix('role')->group(function () {
             Route::get('/', [UserRoleController::class, 'show']);
-            Route::post('/', [UserRoleController::class, 'add']);
+            Route::post('/', [UserRoleController::class, 'store']);
             Route::put('/', [UserRoleController::class, 'update']);
-            Route::delete('/', [UserRoleController::class, 'delete']);
+            Route::delete('/', [UserRoleController::class, 'destroy']);
         });
         Route::prefix('permission')->group(function () {
             Route::get('/', [UserPermissionController::class, 'show']);
             Route::put('/', [UserPermissionController::class, 'update']);
-            Route::post('/', [UserPermissionController::class, 'add']);
-            Route::delete('/', [UserPermissionController::class, 'delete']);
+            Route::post('/', [UserPermissionController::class, 'store']);
+            Route::delete('/', [UserPermissionController::class, 'destroy']);
         });
     });
 });
@@ -50,7 +51,7 @@ Route::prefix('role')->middleware(['auth:api'])->group(function () {
     Route::prefix('{role}')->group(function () {
         Route::get('/', [RoleController::class, 'show']);
         Route::put('/', [RoleController::class, 'update']);
-        Route::delete('/', [RoleController::class, 'delete']);
+        Route::delete('/', [RoleController::class, 'destroy']);
     });
 });
 Route::prefix('media')->middleware(['auth:api'])->group(function () {
@@ -59,7 +60,7 @@ Route::prefix('media')->middleware(['auth:api'])->group(function () {
     Route::prefix('{media}', function () {
         Route::get('/', [MediaController::class, 'show'])->name('media.show');
         Route::put('/', [MediaController::class, 'update'])->name('media.update');
-        Route::delete('/', [MediaController::class, 'delete'])->name('media.delete');
+        Route::delete('/', [MediaController::class, 'destroy'])->name('media.destroy');
     });
 });
 Route::prefix('option')->middleware(['auth:api'])->group(function () {

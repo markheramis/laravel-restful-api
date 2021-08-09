@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+if [ ! -z "$WWWUSER" ]; then
+    usermod -u $WWWUSER sail
+fi
+
+if [ ! -d /.composer ]; then
+    mkdir /.composer
+fi
+
+chmod -R ugo+rw /.composer
+
+FILE=setup
+if test -f "$FILE"; then
+    echo "Running setup"
+    chmod 755 setup
+    ./setup
+else
+    echo "Setup does not exists"
+fi

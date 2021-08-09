@@ -6,11 +6,11 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Tests\Traits\userTraits;
 
-class RoleDeleteTest extends TestCase
+class RoleDestroyTest extends TestCase
 {
     use WithFaker, userTraits;
 
-    public function testDeleteRoleWithNoUserShouldBeUnauthorized()
+    public function testDestroyRoleWithNoUserShouldBeUnauthorized()
     {
         $data = [
             "name" => "TestRoleDelete",
@@ -28,7 +28,7 @@ class RoleDeleteTest extends TestCase
         $response->assertStatus(401);
     }
 
-    public function testDeleteRoleAsSubscriberShouldBeForbidden()
+    public function testDestroyRoleAsSubscriberShouldBeForbidden()
     {
         $data = [
             "name" => "TestRoleDeleteAsSubscriber",
@@ -50,7 +50,7 @@ class RoleDeleteTest extends TestCase
         $response->assertStatus(403);
     }
 
-    public function testDeleteRoleAsModeratorShouldBeForbidden()
+    public function testDestroyRoleAsModeratorShouldBeForbidden()
     {
         $data = [
             "name" => "TestRoleDeleteAsModerator",
@@ -72,7 +72,7 @@ class RoleDeleteTest extends TestCase
         $response->assertStatus(403);
     }
 
-    public function testDeleteRoleAsAdministratorShouldBeAllowed()
+    public function testDestroyRoleAsAdministratorShouldBeAllowed()
     {
         $data = [
             "name" => "TestRoleDeleteAsAdministrator",
