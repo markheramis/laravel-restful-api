@@ -20,7 +20,7 @@ composer install
 else you can insntall composer dependencies without installing composer and just use the one provided in the Docker hub repository as follows:
 
 ```bash
-docker run --rm --interactive --tty --volume $PWD:/app --user $(id -u):$(id -g) composer install
+docker run --rm --interactive --tty --volume $PWD:/app --user $(id -u):$(id -g) composer update
 ```
 
 Then before you start sail, add sail to your path first, please see the Laravel Sail [Documentation](https://laravel.com/docs/8.x/sail#configuring-a-bash-alias) for configurating a bash alias to have `sail` available as an aliased command.
