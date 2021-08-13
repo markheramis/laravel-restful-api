@@ -27,7 +27,8 @@ class RoleUpdateTest extends TestCase
         $role = $this->createRole($data);
         $data["name"] = $data["name"] . "Updated";
         $data["slug"] = $data["name"] . "updated";
-        $response = $this->json("PUT", "/api/role/" . $role->slug, $data);
+        $url = route("role.update", [$role->slug]);
+        $response = $this->json("PUT", $url, $data);
         $response->assertStatus(401);
     }
 
@@ -51,7 +52,8 @@ class RoleUpdateTest extends TestCase
         $header = [
             "Authorization" => "Bearer $token"
         ];
-        $response = $this->json("PUT", "/api/role/" . $role->slug, $data, $header);
+        $url = route("role.update", [$role->slug]);
+        $response = $this->json("PUT", $url, $data, $header);
         $response->assertStatus(403);
     }
 
@@ -75,7 +77,8 @@ class RoleUpdateTest extends TestCase
         $header = [
             "Authorization" => "Bearer $token"
         ];
-        $response = $this->json("PUT", "/api/role/" . $role->slug, $data, $header);
+        $url = route("role.update", [$role->slug]);
+        $response = $this->json("PUT", $url, $data, $header);
         $response->assertStatus(403);
     }
 
@@ -99,7 +102,8 @@ class RoleUpdateTest extends TestCase
         $header = [
             "Authorization" => "Bearer $token"
         ];
-        $response = $this->json("PUT", "/api/role/" . $role->slug, $data, $header);
+        $url = route("role.update", [$role->slug]);
+        $response = $this->json("PUT", $url, $data, $header);
         $response->assertStatus(200);
     }
 }

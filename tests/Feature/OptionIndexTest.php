@@ -13,7 +13,7 @@ class OptionIndexTest extends TestCase
 
     public function testGetOptionIndexWithNoSessionShouldBeUnauthorized()
     {
-        $response = $this->json("GET", "/api/option");
+        $response = $this->json("GET", route("option.index"));
         $response->assertStatus(401);
     }
 
@@ -25,9 +25,9 @@ class OptionIndexTest extends TestCase
         $header = [
             "Authorization" => "Bearer $token",
         ];
-        $response = $this->json("GET", "/api/option", [], $header);
-        $response->assertStatus(200)
-        ->assertJson($expected_response);
+        $response = $this->json("GET", route("option.index"), [], $header);
+        $response->assertStatus(200);
+        $response->assertJson($expected_response);
     }
     
     public function testGetOptionIndexAsModeratorShouldBeAllowed()
@@ -38,9 +38,9 @@ class OptionIndexTest extends TestCase
         $header = [
             "Authorization" => "Bearer $token",
         ];
-        $response = $this->json("GET", "/api/option", [], $header);
-        $response->assertStatus(200)
-        ->assertJson($expected_response);
+        $response = $this->json("GET", route("option.index"), [], $header);
+        $response->assertStatus(200);
+        $response->assertJson($expected_response);
     }
 
     public function testGetOptionIndexAsSubscriberShouldBeAllowed()
@@ -51,9 +51,9 @@ class OptionIndexTest extends TestCase
         $header = [
             "Authorization" => "Bearer $token",
         ];
-        $response = $this->json("GET", "/api/option", [], $header);
-        $response->assertStatus(200)
-        ->assertJson($expected_response);
+        $response = $this->json("GET", route("option.index"), [], $header);
+        $response->assertStatus(200);
+        $response->assertJson($expected_response);
     }
     
 }

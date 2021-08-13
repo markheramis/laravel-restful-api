@@ -47,13 +47,14 @@ class UserPermissionStoreTest extends TestCase
         $user2 = $this->createUser("administrator");
         $token = $this->getTokenByRole("administrator", $user1->id);
         $url = "/api/user/{$user2->id}/permission";
-        $response = $this->json("POST", $url, [
+        $header = [
+            "Authorization" => "Bearer $token"
+        ];
+        $data = [
             "slug" => "test_permission",
             "value" => true
-        ], [
-            "Authorization" => "Bearer $token"
-        ]);
-        \Log::info(json_encode($response, JSON_PRETTY_PRINT));
+        ];
+        $response = $this->json("POST", $url, $data, $header);
         $response->assertStatus(200);
     }
 
@@ -63,13 +64,14 @@ class UserPermissionStoreTest extends TestCase
         $user2 = $this->createUser("moderator");
         $token = $this->getTokenByRole("administrator", $user1->id);
         $url = "/api/user/{$user2->id}/permission";
-        $response = $this->json("POST", $url, [
+        $header = [
+            "Authorization" => "Bearer $token"
+        ];
+        $data = [
             "slug" => "test_permission",
             "value" => true
-        ], [
-            "Authorization" => "Bearer $token"
-        ]);
-        \Log::info(json_encode($response, JSON_PRETTY_PRINT));
+        ];
+        $response = $this->json("POST", $url, $data, $header);
         $response->assertStatus(200);
     }
 
@@ -79,13 +81,14 @@ class UserPermissionStoreTest extends TestCase
         $user2 = $this->createUser("subscriber");
         $token = $this->getTokenByRole("administrator", $user1->id);
         $url = "/api/user/{$user2->id}/permission";
-        $response = $this->json("POST", $url, [
+        $header = [
+            "Authorization" => "Bearer $token"
+        ];
+        $data = [
             "slug" => "test_permission",
             "value" => true
-        ], [
-            "Authorization" => "Bearer $token"
-        ]);
-        \Log::info(json_encode($response, JSON_PRETTY_PRINT));
+        ];
+        $response = $this->json("POST", $url, $data, $header);
         $response->assertStatus(200);
     }
 
@@ -95,13 +98,14 @@ class UserPermissionStoreTest extends TestCase
         $user2 = $this->createUser("administrator");
         $token = $this->getTokenByRole("moderator", $user1->id);
         $url = "/api/user/{$user2->id}/permission";
-        $response = $this->json("POST", $url, [
+        $header = [
+            "Authorization" => "Bearer $token"
+        ];
+        $data = [
             "slug" => "test_permission",
             "value" => true
-        ], [
-            "Authorization" => "Bearer $token"
-        ]);
-        \Log::info(json_encode($response, JSON_PRETTY_PRINT));
+        ];
+        $response = $this->json("POST", $url, $data, $header);
         $response->assertStatus(200);
     }
 
@@ -111,13 +115,14 @@ class UserPermissionStoreTest extends TestCase
         $user2 = $this->createUser("moderator");
         $token = $this->getTokenByRole("moderator", $user1->id);
         $url = "/api/user/{$user2->id}/permission";
-        $response = $this->json("POST", $url, [
+        $header = [
+            "Authorization" => "Bearer $token"
+        ];
+        $data = [
             "slug" => "test_permission",
             "value" => true
-        ], [
-            "Authorization" => "Bearer $token"
-        ]);
-        \Log::info(json_encode($response, JSON_PRETTY_PRINT));
+        ];
+        $response = $this->json("POST", $url, $data, $header);
         $response->assertStatus(200);
     }
 
@@ -127,13 +132,14 @@ class UserPermissionStoreTest extends TestCase
         $user2 = $this->createUser("subscriber");
         $token = $this->getTokenByRole("moderator", $user1->id);
         $url = "/api/user/{$user2->id}/permission";
-        $response = $this->json("POST", $url, [
+        $header = [
+            "Authorization" => "Bearer $token"
+        ];
+        $data = [
             "slug" => "test_permission",
             "value" => true
-        ], [
-            "Authorization" => "Bearer $token"
-        ]);
-        \Log::info(json_encode($response, JSON_PRETTY_PRINT));
+        ];
+        $response = $this->json("POST", $url, $data, $header);
         $response->assertStatus(200);
     }
 
@@ -143,13 +149,14 @@ class UserPermissionStoreTest extends TestCase
         $user2 = $this->createUser("administrator");
         $token = $this->getTokenByRole("subscriber", $user1->id);
         $url = "/api/user/{$user2->id}/permission";
-        $response = $this->json("POST", $url, [
+        $header = [
+            "Authorization" => "Bearer $token"
+        ];
+        $data = [
             "slug" => "test_permission",
             "value" => true
-        ], [
-            "Authorization" => "Bearer $token"
-        ]);
-        \Log::info(json_encode($response, JSON_PRETTY_PRINT));
+        ];
+        $response = $this->json("POST", $url, $data, $header);
         $response->assertStatus(403);
     }
 
@@ -159,13 +166,14 @@ class UserPermissionStoreTest extends TestCase
         $user2 = $this->createUser("moderator");
         $token = $this->getTokenByRole("subscriber", $user1->id);
         $url = "/api/user/{$user2->id}/permission";
-        $response = $this->json("POST", $url, [
+        $header = [
+            "Authorization" => "Bearer $token"
+        ];
+        $data = [
             "slug" => "test_permission",
             "value" => true
-        ], [
-            "Authorization" => "Bearer $token"
-        ]);
-        \Log::info(json_encode($response, JSON_PRETTY_PRINT));
+        ];
+        $response = $this->json("POST", $url, $data, $header);
         $response->assertStatus(403);
     }
 
@@ -174,14 +182,15 @@ class UserPermissionStoreTest extends TestCase
         $user1 = $this->createUser("subscriber");
         $user2 = $this->createUser("subscriber");
         $token = $this->getTokenByRole("subscriber", $user1->id);
+        $header = [
+            "Authorization" => "Bearer $token"
+        ];
         $url = "/api/user/{$user2->id}/permission";
-        $response = $this->json("POST", $url, [
+        $data = [
             "slug" => "test_permission",
             "value" => true
-        ], [
-            "Authorization" => "Bearer $token"
-        ]);
-        \Log::info(json_encode($response, JSON_PRETTY_PRINT));
+        ];
+        $response = $this->json("POST", $url, $data, $header);
         $response->assertStatus(403);
     }
 }

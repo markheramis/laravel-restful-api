@@ -6,14 +6,14 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\Traits\userTraits;
 use Tests\TestCase;
 
-class UserPermissionGetTest extends TestCase
+class UserPermissionShowTest extends TestCase
 {
     use WithFaker, userTraits;
 
     /**
      * TEST AS ADMINISTRATOR
      */
-    public function testGetPermissionAsAdministratorToAdministratorShouldBeAllowed()
+    public function testShowPermissionAsAdministratorToAdministratorShouldBeAllowed()
     {
         $user1 = $this->createUser("administrator");
         $user2 = $this->createUser("administrator");
@@ -24,7 +24,7 @@ class UserPermissionGetTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function testGetPermissionAsAdministratorToModeratorShouldBeAllowed()
+    public function testShowPermissionAsAdministratorToModeratorShouldBeAllowed()
     {
         $user1 = $this->createUser("administrator");
         $user2 = $this->createUser("moderator");
@@ -35,7 +35,7 @@ class UserPermissionGetTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function testGetPermissionAsAdministratorToSubscriberShouldBeAllowed()
+    public function testShowPermissionAsAdministratorToSubscriberShouldBeAllowed()
     {
         $user1 = $this->createUser("administrator");
         $user2 = $this->createUser("subscriber");
@@ -49,7 +49,7 @@ class UserPermissionGetTest extends TestCase
     /**
      * TEST AS MODERATOR
      */
-    public function testGetPermissionAsModeratorToAdministratorShouldBeAllowed()
+    public function testShowPermissionAsModeratorToAdministratorShouldBeAllowed()
     {
         $user1 = $this->createUser("moderator");
         $user2 = $this->createUser("administrator");
@@ -60,7 +60,7 @@ class UserPermissionGetTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function testGetPermissionAsModeratorToModeratorShouldBeAllowed()
+    public function testShowPermissionAsModeratorToModeratorShouldBeAllowed()
     {
         $user1 = $this->createUser("moderator");
         $user2 = $this->createUser("moderator");
@@ -71,7 +71,7 @@ class UserPermissionGetTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function testGetPermissionAsModeratorToSubscriberShouldBeAllowed()
+    public function testShowPermissionAsModeratorToSubscriberShouldBeAllowed()
     {
         $user1 = $this->createUser("moderator");
         $user2 = $this->createUser("subscriber");
@@ -85,7 +85,7 @@ class UserPermissionGetTest extends TestCase
     /**
      * TEST AS SUBSCRIBER
      */
-    public function testGetPermissionAsSubscriberToAdministratorShouldBeForbidden()
+    public function testShowPermissionAsSubscriberToAdministratorShouldBeForbidden()
     {
         $user1 = $this->createUser("subscriber");
         $user2 = $this->createUser("administrator");
@@ -96,7 +96,7 @@ class UserPermissionGetTest extends TestCase
         $response->assertStatus(403);
     }
 
-    public function testGetPermissionAsSubscriberToModeratorShouldBeForbidden()
+    public function testShowPermissionAsSubscriberToModeratorShouldBeForbidden()
     {
         $user1 = $this->createUser("subscriber");
         $user2  = $this->createUser("moderator");
@@ -107,7 +107,7 @@ class UserPermissionGetTest extends TestCase
         $response->assertStatus(403);
     }
 
-    public function testGetPermissionAsSubscriberToSubscriberShouldBeForbidden()
+    public function testShowPermissionAsSubscriberToSubscriberShouldBeForbidden()
     {
         $user1 = $this->createUser("subscriber");
         $user2 = $this->createUser("subscriber");

@@ -7,52 +7,53 @@ use Tests\TestCase;
 use Tests\Traits\userTraits;
 use App\Models\Option;
 
-class OptionDestroyTest extends TestCase
+class OptionShowTest extends TestCase
 {
+
     use WithFaker, userTraits;
 
-    public function testDestroyOptionWithNoSessionShouldBeUnauthorized()
+    public function testShowOptionWithNoSessionShouldBeUnauthorized()
     {
         $option = Option::factory()->create();
-        $url = route("option.destroy", [$option->name]);
-        $response  = $this->json("DELETE", $url);
+        $url = route("option.show", [$option->name]);
+        $response = $this->json("GET", $url);
         $response->assertStatus(401);
+        $option->delete();
     }
 
-
-    public function testDestoryOptionAsAdministratorShouldBeAllowed()
+    public function testShowOptionAsAdministratorShouldBeAllowed()
     {
         $option = Option::factory()->create();
         $token = $this->getTokenByRole("administrator");
         $header = [
             "Authorization" => "Bearer $token",
         ];
-        $url = route("option.destroy", [$option->name]);
-        $response = $this->json("DELETE", $url, [], $header);
+        $url = route("option.show", [$option->name]);
+        $response = $this->json("GET", $url, [], $header);
         $response->assertStatus(200);
     }
 
-    public function testDestoryOptionAsModeratorShouldBeForbidden()
+    public function testShowOptionAsModeratorShouldBeAllowed()
     {
         $option = Option::factory()->create();
         $token = $this->getTokenByRole("moderator");
         $header = [
             "Authorization" => "Bearer $token",
         ];
-        $url = route("option.destroy", [$option->name]);
-        $response = $this->json("DELETE", $url, [], $header);
-        $response->assertStatus(403);
+        $url = route("option.show", [$option->name]);
+        $response = $this->json("GET", $url, [], $header);
+        $response->assertStatus(200);
     }
 
-    public function testDestoryOptionAsSubscriberShouldBeForbidden()
+    public function testShowOptionAsSubscriberShouldBeAllowed()
     {
         $option = Option::factory()->create();
         $token = $this->getTokenByRole("subscriber");
         $header = [
             "Authorization" => "Bearer $token",
         ];
-        $url = route("option.destroy", [$option->name]);
-        $response = $this->json("DELETE", $url, [], $header);
-        $response->assertStatus(403);
+        $url = route("option.show", [$option->name]);
+        $response = $this->json("GET", $url, [], $header);
+        $response->assertStatus(200);
     }
 }

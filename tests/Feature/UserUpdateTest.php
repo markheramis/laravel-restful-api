@@ -18,20 +18,24 @@ class UserUpdateTest extends TestCase
     public function testUpdateSubscriberWithNoSessionShouldBeUnauthorized()
     {
         $user = $this->createUser("subscriber");
-        $response = $this->json("PUT", "/api/user/" . $user->id, [
+        $url = route("user.update", [$user->id]);
+        $data = [
             "username" => $this->faker->regexify("^[a-z0-9_-]{8,15}$"),
             "email" => $this->faker->email(),
-        ]);
+        ];
+        $response = $this->json("PUT", $url, $data);
         $response->assertStatus(401);
     }
 
     public function testUpdateModeratorWithNoSessionShouldBeUnauthorized()
     {
         $user = $this->createUser("moderator");
-        $response = $this->json("PUT", "/api/user/" . $user->id, [
+        $url = route("user.update", [$user->id]);
+        $data = [
             "username" => $this->faker->regexify("^[a-z0-9_-]{8,15}$"),
             "email" => $this->faker->email(),
-        ]);
+        ];
+        $response = $this->json("PUT", $url, $data);
         $response->assertStatus(401);
     }
 
@@ -39,10 +43,12 @@ class UserUpdateTest extends TestCase
     {
 
         $user = $this->createUser("administrator");
-        $response = $this->json("PUT", "/api/user/" . $user->id, [
+        $url = route("user.update", [$user->id]);
+        $data = [
             "username" => $this->faker->regexify("^[a-z0-9_-]{8,15}$"),
             "email" => $this->faker->email(),
-        ]);
+        ];
+        $response = $this->json("PUT", $url, $data);
         $response->assertStatus(401);
     }
     
@@ -53,12 +59,15 @@ class UserUpdateTest extends TestCase
     {
         $user = $this->createUser("administrator");
         $token = $this->getTokenByRole("administrator", $user->id);
-        $response = $this->json("PUT", "/api/user/" . $user->id, [
+        $header = [
+            "Authorization" => "Bearer $token",
+        ];
+        $url = route("user.update", [$user->id]);
+        $data = [
             "username" => $this->faker->regexify("^[a-z0-9_-]{8,15}$"),
             "email" => $this->faker->email(),
-        ], [
-            "Authorization" => "Bearer $token",
-        ]);
+        ];
+        $response = $this->json("PUT", $url, $data, $header);
         $response->assertStatus(200);
     }
     public function testUpdateAnotherSubscriberAsAdministratorShouldBeAllowed()
@@ -66,12 +75,15 @@ class UserUpdateTest extends TestCase
         $user = $this->createUser("administrator");
         $token = $this->getTokenByRole("administrator", $user->id);
         $user_to_update = $this->createUser("subscriber");
-        $response = $this->json("PUT", "/api/user/" . $user_to_update->id, [
+        $header = [
+            "Authorization" => "Bearer $token",
+        ];
+        $url = route("user.update", [$user_to_update->id]);
+        $data = [
             "username" => $this->faker->regexify("^[a-z0-9_-]{8,15}$"),
             "email" => $this->faker->email(),
-        ], [
-            "Authorization" => "Bearer $token",
-        ]);
+        ];
+        $response = $this->json("PUT", $url, $data, $header);
         $response->assertStatus(200);
     }
     public function testUpdateAnotherModeratorAsAdministratorShouldBeAllowed()
@@ -79,12 +91,15 @@ class UserUpdateTest extends TestCase
         $user = $this->createUser("administrator");
         $token = $this->getTokenByRole("administrator", $user->id);
         $user_to_update = $this->createUser("moderator");
-        $response = $this->json("PUT", "/api/user/" . $user_to_update->id, [
+        $header = [
+            "Authorization" => "Bearer $token",
+        ];
+        $url = route("user.update", [$user_to_update->id]);
+        $data = [
             "username" => $this->faker->regexify("^[a-z0-9_-]{8,15}$"),
             "email" => $this->faker->email(),
-        ], [
-            "Authorization" => "Bearer $token",
-        ]);
+        ];
+        $response = $this->json("PUT", $url, $data, $header);
         $response->assertStatus(200);
     }
     public function testUpdateAnotherAdministratorAsAdministratorShouldBeAllowed()
@@ -92,13 +107,15 @@ class UserUpdateTest extends TestCase
         $user = $this->createUser("administrator");
         $token = $this->getTokenByRole("administrator", $user->id);
         $user_to_update = $this->createUser("moderator");
-        $response = $this->json("PUT", "/api/user/" . $user_to_update->id, [
+        $header = [
+            "Authorization" => "Bearer $token",
+        ];
+        $url = route("user.update", [$user_to_update->id]);
+        $data = [
             "username" => $this->faker->regexify("^[a-z0-9_-]{8,15}$"),
             "email" => $this->faker->email(),
-        ], [
-            "Authorization" => "Bearer $token",
-        ]);
-        
+        ];
+        $response = $this->json("PUT", $url, $data, $header);
         $response->assertStatus(200);
     }
 }

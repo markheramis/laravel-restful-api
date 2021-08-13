@@ -12,7 +12,7 @@ class RoleStoreTest extends TestCase
 
     public function testDestroyRoleWithNoUserShouldBeUnauthorized()
     {
-        $response = $this->json("POST", "/api/role/", [
+        $response = $this->json("POST", route("role.store"), [
             "name" => "TestRole",
             "slug" => "testrole",
             "permissions" => [
@@ -43,7 +43,7 @@ class RoleStoreTest extends TestCase
         $header = [
             "Authorization" => "Bearer $token"
         ];
-        $response = $this->json("POST", "/api/role/", $body, $header);
+        $response = $this->json("POST", route("role.store"), $body, $header);
         $response->assertStatus(403);
     }
 
@@ -64,7 +64,7 @@ class RoleStoreTest extends TestCase
         $header = [
             "Authorization" => "Bearer $token"
         ];
-        $response = $this->json("POST", "/api/role/", $body, $header);
+        $response = $this->json("POST", route("role.store"), $body, $header);
         $response->assertStatus(403);
     }
 
@@ -85,7 +85,7 @@ class RoleStoreTest extends TestCase
         $header = [
             "Authorization" => "Bearer $token"
         ];
-        $response = $this->json("POST", "/api/role/", $body, $header);
+        $response = $this->json("POST", route("role.store"), $body, $header);
         $response->assertStatus(200);
     }
 }

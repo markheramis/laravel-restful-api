@@ -7,13 +7,13 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Tests\Traits\userTraits;
 
-class RoleGetAllTest extends TestCase
+class RoleIndexTest extends TestCase
 {
     use WithFaker, userTraits;
 
     public function testGetAllRolesWithNoUserShouldBeBeUnauthorized()
     {
-        $response = $this->json("GET", "/api/role/");
+        $response = $this->json("GET", route("role.index"));
         $response->assertStatus(401);
     }
 
@@ -23,7 +23,7 @@ class RoleGetAllTest extends TestCase
         $header = [
             "Authorization" => "Bearer $token"
         ];
-        $response = $this->json("GET", "/api/role/", [], $header);
+        $response = $this->json("GET", route("role.index"), [], $header);
         $response->assertStatus(403);
     }
 
@@ -33,7 +33,7 @@ class RoleGetAllTest extends TestCase
         $header = [
             "Authorization" => "Bearer $token"
         ];
-        $response = $this->json("GET", "/api/role/", [], $header);
+        $response = $this->json("GET", route("role.index"), [], $header);
         $response->assertStatus(200);
     }
 
@@ -44,7 +44,7 @@ class RoleGetAllTest extends TestCase
         $header = [
             "Authorization" => "Bearer $token"
         ];
-        $response = $this->json("GET", "/api/role/", [], $header);
+        $response = $this->json("GET", route("role.index"), [], $header);
         $response->assertStatus(200);
     }
 }
