@@ -24,7 +24,8 @@ class RoleDestroyTest extends TestCase
             ]
         ];
         $role = $this->createRole($data);
-        $response = $this->json("DELETE", "/api/role/" . $role->slug, $data);
+        $url = route("role.update", [$role->slug]);
+        $response = $this->json("DELETE", $url, $data);
         $response->assertStatus(401);
     }
 
@@ -46,7 +47,8 @@ class RoleDestroyTest extends TestCase
         $header = [
             "Authorization" => "Bearer $token"
         ];
-        $response = $this->json("PUT", "/api/role/" . $role->slug, $data, $header);
+        $url = route("role.update", [$role->slug]);
+        $response = $this->json("PUT", $url, $data, $header);
         $response->assertStatus(403);
     }
 
@@ -68,7 +70,8 @@ class RoleDestroyTest extends TestCase
         $header = [
             "Authorization" => "Bearer $token"
         ];
-        $response = $this->json("PUT", "/api/role/" . $role->slug, $data, $header);
+        $url = route("role.update", [$role->slug]);
+        $response = $this->json("PUT", $url, $data, $header);
         $response->assertStatus(403);
     }
 
@@ -90,7 +93,8 @@ class RoleDestroyTest extends TestCase
         $header = [
             "Authorization" => "Bearer $token"
         ];
-        $response = $this->json("PUT", "/api/role/" . $role->slug, $data, $header);
+        $url = route("role.update", [$role->slug]);
+        $response = $this->json("PUT", $url, $data, $header);
         $response->assertStatus(200);
     }
 }

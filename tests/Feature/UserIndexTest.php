@@ -6,7 +6,7 @@ use App\Models\User;
 use Tests\TestCase;
 use Tests\Traits\userTraits;
 
-class UserGetAllTest extends TestCase
+class UserIndexTest extends TestCase
 {
     use userTraits;
 
@@ -21,7 +21,7 @@ class UserGetAllTest extends TestCase
         $user = $this->createUser('administrator');
         $token = $this->getTokenByRole("administrator", $user->id);
         # $expected_result = User::paginate()->toArray();
-        $response = $this->json("GET", "/api/user", [], [
+        $response = $this->json("GET", route("user.index"), [], [
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
@@ -38,7 +38,7 @@ class UserGetAllTest extends TestCase
         $user = $this->createUser('moderator');
         $token = $this->getTokenByRole("moderator", $user->id);
         # $expected_result = User::paginate()->toArray();
-        $response = $this->json("GET", "/api/user", [], [
+        $response = $this->json("GET", route("user.index"), [], [
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
@@ -55,7 +55,7 @@ class UserGetAllTest extends TestCase
         $user = $this->createUser('subscriber');
         $token = $this->getTokenByRole("subscriber", $user->id);
         # $expected_result = User::paginate()->toArray();
-        $response = $this->json("GET", "/api/user", [], [
+        $response = $this->json("GET", route("user.index"), [], [
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);

@@ -6,28 +6,31 @@ use Tests\TestCase;
 use Tests\Traits\userTraits;
 use Illuminate\Foundation\Testing\WithFaker;
 
-class UserDestryTest extends TestCase
+class UserDestroyTest extends TestCase
 {
     use WithFaker, userTraits;
 
     public function testDestroySubscriberWithNoSessionShouldBeUnauthorized()
     {
-        $user1 = $this->createUser("subscriber");
-        $response = $this->json("DELETE", "/api/user/{$user1->id}");
+        $user = $this->createUser("subscriber");
+        $url = route("user.destroy", [$user->id]);
+        $response = $this->json("DELETE", $url);
         $response->assertStatus(401);
     }
 
     public function testDestroyModeratorWithNoSessionShouldBeUnauthorized()
     {
-        $user1 = $this->createUser("moderator");
-        $response = $this->json("DELETE", "/api/user/{$user1->id}");
+        $user = $this->createUser("moderator");
+        $url = route("user.destroy", [$user->id]);
+        $response = $this->json("DELETE", $url);
         $response->assertStatus(401);
     }
 
     public function testDestroyAdministratorWithNoSessionShouldBeUnauthorized()
     {
-        $user1 = $this->createUser("administrator");
-        $response = $this->json("DELETE", "/api/user/{$user1->id}");
+        $user = $this->createUser("administrator");
+        $url = route("user.destroy", [$user->id]);
+        $response = $this->json("DELETE", $url);
         $response->assertStatus(401);
     }
 
@@ -39,7 +42,8 @@ class UserDestryTest extends TestCase
         $user1 = $this->createUser("subscriber");
         $user2 = $this->createUser("subscriber");
         $token = $this->getTokenByRole("subscriber", $user1->id);
-        $response = $this->json("DELETE", "/api/user/{$user2->id}", [], [
+        $url = route("user.destroy", [$user2->id]);
+        $response = $this->json("DELETE", $url, [], [
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(403);
@@ -50,7 +54,8 @@ class UserDestryTest extends TestCase
         $user1 = $this->createUser("subscriber");
         $user2 = $this->createUser("moderator");
         $token = $this->getTokenByRole("subscriber", $user1->id);
-        $response = $this->json("DELETE", "/api/user/{$user2->id}", [], [
+        $url = route("user.destroy", [$user2->id]);
+        $response = $this->json("DELETE", $url, [], [
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(403);
@@ -61,7 +66,8 @@ class UserDestryTest extends TestCase
         $user1 = $this->createUser("subscriber");
         $user2 = $this->createUser("administrator");
         $token = $this->getTokenByRole("subscriber", $user1->id);
-        $response = $this->json("DELETE", "/api/user/{$user2->id}", [], [
+        $url = route("user.destroy", [$user2->id]);
+        $response = $this->json("DELETE", $url, [], [
             "Authorization" => "Bearer $token",
         ]);
         $response->assertStatus(403);
@@ -75,7 +81,8 @@ class UserDestryTest extends TestCase
         $user1 = $this->createUser("moderator");
         $user2 = $this->createUser("subscriber");
         $token = $this->getTokenByRole("moderator", $user1->id);
-        $response = $this->json("DELETE", "/api/user/{$user2->id}", [], [
+        $url = route("user.destroy", [$user2->id]);
+        $response = $this->json("DELETE", $url, [], [
             "Authorization" => "Bearer $token",
         ]);
         $response->assertStatus(403);
@@ -86,7 +93,8 @@ class UserDestryTest extends TestCase
         $user1 = $this->createUser("moderator");
         $user2 = $this->createUser("moderator");
         $token = $this->getTokenByRole("moderator", $user1->id);
-        $response = $this->json("DELETE", "/api/user/{$user2->id}", [], [
+        $url = route("user.destroy", [$user2->id]);
+        $response = $this->json("DELETE", $url, [], [
             "Authorization" => "Bearer $token",
         ]);
         $response->assertStatus(403);
@@ -97,7 +105,8 @@ class UserDestryTest extends TestCase
         $user1 = $this->createUser("moderator");
         $user2 = $this->createUser("administrator");
         $token = $this->getTokenByRole("moderator", $user1->id);
-        $response = $this->json("DELETE", "/api/user/{$user2->id}", [], [
+        $url = route("user.destroy", [$user2->id]);
+        $response = $this->json("DELETE", $url, [], [
             "Authorization" => "Bearer $token",
         ]);
         $response->assertStatus(403);
@@ -111,7 +120,7 @@ class UserDestryTest extends TestCase
         $user1 = $this->createUser("administrator");
         $user2 = $this->createUser("subscriber");
         $token = $this->getTokenByRole("administrator", $user1->id);
-        $url = "/api/user/{$user2->id}";
+        $url = route("user.destroy", [$user2->id]);
         $response = $this->json("DELETE", $url, [], [
             "Authorization" => "Bearer $token",
         ]);
@@ -123,7 +132,7 @@ class UserDestryTest extends TestCase
         $user1 = $this->createUser("administrator");
         $user2 = $this->createUser("moderator");
         $token = $this->getTokenByRole("administrator", $user1->id);
-        $url = "/api/user/{$user2->id}";
+        $url = route("user.destroy", [$user2->id]);
         $response = $this->json("DELETE", $url, [], [
             "Authorization" => "Bearer $token",
         ]);
@@ -135,7 +144,7 @@ class UserDestryTest extends TestCase
         $user1 = $this->createUser("administrator");
         $user2 = $this->createUser("administrator");
         $token = $this->getTokenByRole("administrator", $user1->id);
-        $url = "/api/user/{$user2->id}";
+        $url = route("user.destroy", [$user2->id]);
         $response = $this->json("DELETE", $url, [], [
             "Authorization" => "Bearer $token",
         ]);

@@ -5,7 +5,7 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use Tests\Traits\userTraits;
 
-class UserGetSingleTest extends TestCase
+class UserShowTest extends TestCase
 {
     use userTraits;
 
@@ -17,8 +17,8 @@ class UserGetSingleTest extends TestCase
         $user1 = $this->createUser("administrator");
         $user2 = $this->createUser("administrator");
         $token = $this->getTokenByRole("administrator", $user1->id);
-        $id = $user2->id;
-        $response = $this->json("GET", "/api/user/$id", [], [
+        $url = route("user.show", [$user2->id]);
+        $response = $this->json("GET", $url, [], [
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
@@ -28,8 +28,8 @@ class UserGetSingleTest extends TestCase
         $user1 = $this->createUser("administrator");
         $user2 = $this->createUser("moderator");
         $token = $this->getTokenByRole("administrator", $user1->id);
-        $id = $user2->id;
-        $response = $this->json("GET", "/api/user/$id", [], [
+        $url = route("user.show", [$user2->id]);
+        $response = $this->json("GET", $url, [], [
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
@@ -39,8 +39,8 @@ class UserGetSingleTest extends TestCase
         $user1 = $this->createUser("administrator");
         $user2 = $this->createUser("subscriber");
         $token = $this->getTokenByRole("administrator", $user1->id);
-        $id = $user2->id;
-        $response = $this->json("GET", "/api/user/$id", [], [
+        $url = route("user.show", [$user2->id]);
+        $response = $this->json("GET", $url, [], [
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
@@ -53,8 +53,8 @@ class UserGetSingleTest extends TestCase
         $user1 = $this->createUser("moderator");
         $user2 = $this->createUser("administrator");
         $token = $this->getTokenByRole("moderator", $user1->id);
-        $id = $user2->id;
-        $response = $this->json("GET", "/api/user/$id", [], [
+        $url = route("user.show", [$user2->id]);
+        $response = $this->json("GET", $url, [], [
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
@@ -64,8 +64,8 @@ class UserGetSingleTest extends TestCase
         $user1 = $this->createUser("moderator");
         $user2 = $this->createUser("moderator");
         $token = $this->getTokenByRole("moderator", $user1->id);
-        $id = $user2->id;
-        $response = $this->json("GET", "/api/user/$id", [], [
+        $url = route("user.show", [$user2->id]);
+        $response = $this->json("GET", $url, [], [
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
@@ -75,8 +75,8 @@ class UserGetSingleTest extends TestCase
         $user1 = $this->createUser("moderator");
         $user2 = $this->createUser("subscriber");
         $token = $this->getTokenByRole("moderator", $user1->id);
-        $id = $user2->id;
-        $response = $this->json("GET", "/api/user/$id", [], [
+        $url = route("user.show", [$user2->id]);
+        $response = $this->json("GET", $url, [], [
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
@@ -89,8 +89,8 @@ class UserGetSingleTest extends TestCase
         $user1 = $this->createUser("subscriber");
         $user2 = $this->createUser("administrator");
         $token = $this->getTokenByRole("subscriber", $user1->id);
-        $id = $user2->id;
-        $response = $this->json("GET", "/api/user/$id", [], [
+        $url = route("user.show", [$user2->id]);
+        $response = $this->json("GET", $url, [], [
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
@@ -100,8 +100,8 @@ class UserGetSingleTest extends TestCase
         $user1 = $this->createUser("subscriber");
         $user2 = $this->createUser("moderator");
         $token = $this->getTokenByRole("subscriber", $user1->id);
-        $id = $user2->id;
-        $response = $this->json("GET", "/api/user/$id", [], [
+        $url = route("user.show", [$user2->id]);
+        $response = $this->json("GET", $url, [], [
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
@@ -111,8 +111,8 @@ class UserGetSingleTest extends TestCase
         $user1 = $this->createUser("subscriber");
         $user2 = $this->createUser("subscriber");
         $token = $this->getTokenByRole("subscriber", $user1->id);
-        $id = $user2->id;
-        $response = $this->json("GET", "/api/user/$id", [], [
+        $url = route("user.show", [$user2->id]);
+        $response = $this->json("GET", $url, [], [
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
