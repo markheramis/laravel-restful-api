@@ -11,12 +11,10 @@ class OptionStoreTest extends TestCase
     use WithFaker, userTraits;
     public function testDestroyOptionWithoutASessionShouldBeUnauthorized()
     {
-
-        $response = $this->json("POST", "/api/option", [
+        $response = $this->json("POST", route("option.store"), [
             "name" => "option1",
             "value" => "Some Option Value",
         ]);
-
         $response->assertStatus(401);
     }
 
@@ -26,11 +24,10 @@ class OptionStoreTest extends TestCase
         $header = [
             "Authorization" => "Bearer $token",
         ];
-        $response = $this->json("POST", "/api/option", [
+        $response = $this->json("POST", route("option.store"), [
             "name" => "Option2",
             "value" => "Some Option",
         ], $header);
-
         $response->assertStatus(200);
     }
 
@@ -40,7 +37,7 @@ class OptionStoreTest extends TestCase
         $header = [
             "Authorization" => "Bearer $token",
         ];
-        $response = $this->json("POST", "/api/option", [
+        $response = $this->json("POST", route("option.store"), [
             "name" => "Option3",
             "value" => "Some Option",
         ], $header);
@@ -53,8 +50,7 @@ class OptionStoreTest extends TestCase
         $header = [
             "Authorization" => "Bearer $token",
         ];
-
-        $response = $this->json("POST", "/api/option", [
+        $response = $this->json("POST", route("option.store"), [
             "name" => "Option4",
             "value" => "Some Option",
         ], $header);

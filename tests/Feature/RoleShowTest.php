@@ -7,7 +7,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Tests\Traits\userTraits;
 
-class RoleGetSingleTest extends TestCase
+class RoleShowTest extends TestCase
 {
     use WithFaker, userTraits;
 
@@ -25,7 +25,8 @@ class RoleGetSingleTest extends TestCase
             ]
         ];
         $role = $this->createRole($data);
-        $response = $this->json("GET", "/api/role/" . $role->slug, $data);
+        $url = route("role.show" , [$role->slug]);
+        $response = $this->json("GET", $url, $data);
         $response->assertStatus(401);
     }
 
@@ -47,7 +48,8 @@ class RoleGetSingleTest extends TestCase
         $header = [
             "Authorization" => "Bearer $token"
         ];
-        $response = $this->json("GET", "/api/role/" . $role->slug, $data, $header);
+        $url = route("role.show" , [$role->slug]);
+        $response = $this->json("GET", $url, $data, $header);
         $response->assertStatus(403);
     }
 
@@ -69,7 +71,8 @@ class RoleGetSingleTest extends TestCase
         $header = [
             "Authorization" => "Bearer $token"
         ];
-        $response = $this->json("GET", "/api/role/" . $role->slug, $data, $header);
+        $url = route("role.show" , [$role->slug]);
+        $response = $this->json("GET", $url, $data, $header);
         $response->assertStatus(200);
     }
 
@@ -91,7 +94,8 @@ class RoleGetSingleTest extends TestCase
         $header = [
             "Authorization" => "Bearer $token"
         ];
-        $response = $this->json("GET", "/api/role/" . $role->slug, $data, $header);
+        $url = route("role.show" , [$role->slug]);
+        $response = $this->json("GET", $url, $data, $header);
         $response->assertStatus(200);
     }
 }

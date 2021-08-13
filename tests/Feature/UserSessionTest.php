@@ -26,18 +26,17 @@ class UserSessionTest extends TestCase
         $response = $this->json("GET", "/api/me", [], [
             "Authorization" => "Bearer $token"
         ]);
-        $response
-            ->assertStatus(200)
-            ->assertJson([
-                "data" => [
-                    "id" => $user->id,
-                    "username" => $user->username,
-                    "email" => $user->email,
-                    "firstName" => $user->firstName,
-                    "lastName" => $user->lastName,
-                    "roles" => $user->roles->toArray(),
-                ]
-            ]);
+        $response->assertStatus(200)
+        $response->assertJson([
+            "data" => [
+                "id" => $user->id,
+                "username" => $user->username,
+                "email" => $user->email,
+                "firstName" => $user->firstName,
+                "lastName" => $user->lastName,
+                "roles" => $user->roles->toArray(),
+            ]
+        ]);
     }
 
     public function testGetCurrentUserAsModerator()
@@ -48,18 +47,17 @@ class UserSessionTest extends TestCase
         $response = $this->json("GET", "/api/me", [], [
             "Authorization" => "Bearer $token",
         ]);
-        $response
-            ->assertStatus(200)
-            ->assertJson([
-                "data" => [
-                    "id" => $user->id,
-                    "username" => $user->username,
-                    "email" => $user->email,
-                    "firstName" => $user->firstName,
-                    "lastName" => $user->lastName,
-                    "roles" => $user->roles->toArray(),
-                ]
-            ]);
+        $response->assertStatus(200)
+        $response->assertJson([
+            "data" => [
+                "id" => $user->id,
+                "username" => $user->username,
+                "email" => $user->email,
+                "firstName" => $user->firstName,
+                "lastName" => $user->lastName,
+                "roles" => $user->roles->toArray(),
+            ]
+        ]);
     }
 
     public function testGetCurrentUserAsAdministrator()
@@ -70,17 +68,16 @@ class UserSessionTest extends TestCase
         $response = $this->json("GET", "/api/me", [], [
             "Authorization" => "Bearer $token"
         ]);
-        $response
-            ->assertStatus(200)
-            ->assertJson([
-                "data" => [
-                    "id" => $user->id,
-                    "username" => $user->username,
-                    "email" => $user->email,
-                    "firstName" => $user->firstName,
-                    "lastName" => $user->lastName,
-                    "roles" => $user->roles->toArray(),
-                ]
-            ]);
+        $response->assertStatus(200)
+        $response->assertJson([
+            "data" => [
+                "id" => $user->id,
+                "username" => $user->username,
+                "email" => $user->email,
+                "firstName" => $user->firstName,
+                "lastName" => $user->lastName,
+                "roles" => $user->roles->toArray(),
+            ]
+        ]);
     }
 }

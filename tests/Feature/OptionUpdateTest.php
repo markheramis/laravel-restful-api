@@ -14,7 +14,8 @@ class OptionUpdateTest extends TestCase
     public function testUpdateOptionWithNoSessionShouldBeUnauthorized()
     {
         $option = Option::factory()->create();
-        $response = $this->json("PUT", "/api/option/{$option->name}", [
+        $url = route("option.update", [$option->name]);
+        $response = $this->json("PUT", $url, [
             "value" => "New Update",
         ]);
         $response->assertStatus(401);
@@ -27,7 +28,8 @@ class OptionUpdateTest extends TestCase
         $header = [
             "Authorization" => "Bearer $token",
         ];
-        $response = $this->json("PUT", "/api/option/{$option->name}", [
+        $url = route("option.update", [$option->name]);
+        $response = $this->json("PUT", $url, [
             "value" => "New Update",
         ], $header);
 
@@ -41,7 +43,8 @@ class OptionUpdateTest extends TestCase
         $header = [
             "Authorization" => "Bearer $token",
         ];
-        $response = $this->json("PUT", "/api/option/{$option->name}", [
+        $url = route("option.update", [$option->name]);
+        $response = $this->json("PUT", $url, [
             "value" => "New Update",
         ], $header);
         $response->assertStatus(200);
@@ -54,7 +57,8 @@ class OptionUpdateTest extends TestCase
         $header = [
             "Authorization" => "Bearer $token",
         ];
-        $response = $this->json("PUT", "/api/option/{$option->name}", [
+        $url = route("option.update", [$option->name]);
+        $response = $this->json("PUT", $url, [
             "value" => "New Update",
         ], $header);
         $response->assertStatus(403);

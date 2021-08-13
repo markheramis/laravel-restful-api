@@ -60,7 +60,7 @@ class OptionController extends Controller
     }
 
     /**
-     * Get Option
+     * Show Option
      * 
      * This endpoint lets you get a single option that matches the name.
      * 
@@ -70,7 +70,7 @@ class OptionController extends Controller
      * @param Option $option
      * @return JsonResponse
      */
-    public function get(OptionGetRequest $request, Option $option): JsonResponse
+    public function show(OptionGetRequest $request, Option $option): JsonResponse
     {
         return response()->json([
             'name' => $option->name,

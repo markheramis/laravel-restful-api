@@ -26,32 +26,32 @@ Route::post('register', [AuthController::class, 'register'])->name('api.register
 Route::post('activate', [UserController::class, 'activate'])->name('api.user.activate');
 
 Route::prefix('user')->middleware(['auth:api'])->group(function () {
-    Route::get('/', [UserController::class, 'index']);
+    Route::get('/', [UserController::class, 'index'])->name('user.index');
     Route::prefix('{user}')->group(function () {
-        Route::get('/', [UserController::class, 'show']);
-        Route::put('/', [UserController::class, 'update']);
-        Route::delete('/', [UserController::class, 'destroy']);
+        Route::get('/', [UserController::class, 'show'])->name('user.show');
+        Route::put('/', [UserController::class, 'update'])->name('user.update');
+        Route::delete('/', [UserController::class, 'destroy'])->name('user.destroy');
         Route::prefix('role')->group(function () {
-            Route::get('/', [UserRoleController::class, 'show']);
-            Route::post('/', [UserRoleController::class, 'store']);
-            Route::put('/', [UserRoleController::class, 'update']);
-            Route::delete('/', [UserRoleController::class, 'destroy']);
+            Route::get('/', [UserRoleController::class, 'show'])->name('user.role.show');
+            Route::post('/', [UserRoleController::class, 'store'])->name('user.role.store');
+            Route::put('/', [UserRoleController::class, 'update'])->name('user.role.update');
+            Route::delete('/', [UserRoleController::class, 'destroy'])->name('user.role.destroy');
         });
         Route::prefix('permission')->group(function () {
-            Route::get('/', [UserPermissionController::class, 'show']);
-            Route::put('/', [UserPermissionController::class, 'update']);
-            Route::post('/', [UserPermissionController::class, 'store']);
-            Route::delete('/', [UserPermissionController::class, 'destroy']);
+            Route::get('/', [UserPermissionController::class, 'show'])->name('user.permission.show');
+            Route::put('/', [UserPermissionController::class, 'update'])->name('user.permission.update');
+            Route::post('/', [UserPermissionController::class, 'store'])->name('user.permission.store');
+            Route::delete('/', [UserPermissionController::class, 'destroy'])->name('user.permission.destroy');
         });
     });
 });
 Route::prefix('role')->middleware(['auth:api'])->group(function () {
-    Route::get('/', [RoleController::class, 'index']);
-    Route::post('/', [RoleController::class, 'store']);
+    Route::get('/', [RoleController::class, 'index'])->name('role.index');
+    Route::post('/', [RoleController::class, 'store'])->name('role.store');
     Route::prefix('{role}')->group(function () {
-        Route::get('/', [RoleController::class, 'show']);
-        Route::put('/', [RoleController::class, 'update']);
-        Route::delete('/', [RoleController::class, 'destroy']);
+        Route::get('/', [RoleController::class, 'show'])->name('role.show');
+        Route::put('/', [RoleController::class, 'update'])->name('role.update');
+        Route::delete('/', [RoleController::class, 'destroy'])->name('role.destroy');
     });
 });
 Route::prefix('media')->middleware(['auth:api'])->group(function () {
@@ -64,11 +64,11 @@ Route::prefix('media')->middleware(['auth:api'])->group(function () {
     });
 });
 Route::prefix('option')->middleware(['auth:api'])->group(function () {
-    Route::get('/', [OptionController::class, 'index']);
-    Route::post('/', [OptionController::class, 'store']);
+    Route::get('/', [OptionController::class, 'index'])->name('option.index');
+    Route::post('/', [OptionController::class, 'store'])->name('option.store');
     Route::prefix('{option}')->group(function () {
-        Route::get('/', [OptionController::class,  'get']);
-        Route::put('/', [OptionController::class, 'update']);
-        Route::delete('/', [OptionController::class, 'destory']);
+        Route::get('/', [OptionController::class,  'show'])->name('option.show');
+        Route::put('/', [OptionController::class, 'update'])->name('option.update');
+        Route::delete('/', [OptionController::class, 'destory'])->name('option.destroy');
     });
 });

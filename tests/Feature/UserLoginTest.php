@@ -13,13 +13,13 @@ class UserLoginTest extends TestCase
 
     public function testLoginWithNoParameterShouldBeUnprocessableEntity()
     {
-        $response = $this->json("POST", "/api/login", []);
+        $response = $this->json("POST", route("api.login"), []);
         $response->assertStatus(422);
     }
 
     public function testLoginWithNoPasswordShouldBeUnprocessableEntity()
     {
-        $response = $this->json("POST", "/api/login", [
+        $response = $this->json("POST", route("api.login"), [
             "username" => $this->faker->userName(),
         ]);
         $response->assertStatus(422);
@@ -28,7 +28,7 @@ class UserLoginTest extends TestCase
     public function testLoginWithWrongPasswordShouldBeUnauthorized()
     {
         $user = $this->createUser();
-        $response = $this->json("POST", "/api/login", [
+        $response = $this->json("POST", route("api.login"), [
             "username" => $user->username,
             "password" => "p@s5W0rD12347"
         ]);
@@ -39,7 +39,7 @@ class UserLoginTest extends TestCase
     public function testLoginWithInvalidEmailShouldBeUnprocessableEntity()
     {
         $user = $this->createUser();
-        $response = $this->json("POST", "/api/login", [
+        $response = $this->json("POST", route("api.login"), [
             "email" => "notvalidemail",
             "password" => "password12345",
         ]);
@@ -59,7 +59,7 @@ class UserLoginTest extends TestCase
     public function testLoginWithEmailCredentialsShouldLoginSuccessfully()
     {
         $user = $this->createUser();
-        $response = $this->json("POST", "/api/login", [
+        $response = $this->json("POST", route("api.login"), [
             "email" => $user->email,
             "password" => "password12345"
         ]);
@@ -69,7 +69,7 @@ class UserLoginTest extends TestCase
     public function testLoginWithCorrectCredentialsShouldLoginSuccessfully()
     {
         $user = $this->createUser();
-        $response = $this->json("POST", "/api/login", [
+        $response = $this->json("POST", route("api.login"), [
             "username" => $user->username,
             "password" => "password12345"
         ]);
@@ -79,7 +79,7 @@ class UserLoginTest extends TestCase
     public function testLoginWithCorrectCredentialsAndWithEmailAndUsernameShouldLoginSuccessfully()
     {
         $user = $this->createUser();
-        $response = $this->json("POST", "/api/login", [
+        $response = $this->json("POST", route("api.login"), [
             "email" => $user->email,
             "username" => $user->username,
             "password" => "password12345"
