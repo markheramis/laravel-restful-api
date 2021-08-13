@@ -32,8 +32,7 @@ class UserLoginTest extends TestCase
             "username" => $user->username,
             "password" => "p@s5W0rD12347"
         ]);
-        $response
-            ->assertStatus(401);
+        $response->assertStatus(401);
     }
 
     public function testLoginWithInvalidEmailShouldBeUnprocessableEntity()
@@ -43,17 +42,16 @@ class UserLoginTest extends TestCase
             "email" => "notvalidemail",
             "password" => "password12345",
         ]);
-        $response
-            ->assertStatus(422)
-            ->assertJson([
-                "status" => "error",
-                "data" => [
-                    "email" => [
-                        "The email must be a valid email address."
-                    ]
-                ],
-                "message" => "Data validation failed"
-            ]);
+        $response->assertStatus(422)
+        $response->assertJson([
+            "status" => "error",
+            "data" => [
+                "email" => [
+                    "The email must be a valid email address."
+                ]
+            ],
+            "message" => "Data validation failed"
+        ]);
     }
 
     public function testLoginWithEmailCredentialsShouldLoginSuccessfully()

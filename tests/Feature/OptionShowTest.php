@@ -16,7 +16,7 @@ class OptionShowTest extends TestCase
     {
         $option = Option::factory()->create();
         $url = route("option.show", [$option->name]);
-        $response = $this->json("GET", $url)
+        $response = $this->json("GET", $url);
         $response->assertStatus(401);
         $option->delete();
     }
@@ -29,7 +29,7 @@ class OptionShowTest extends TestCase
             "Authorization" => "Bearer $token",
         ];
         $url = route("option.show", [$option->name]);
-        $response = $this->json("GET", $url, [], $header)
+        $response = $this->json("GET", $url, [], $header);
         $response->assertStatus(200);
     }
 
@@ -41,7 +41,7 @@ class OptionShowTest extends TestCase
             "Authorization" => "Bearer $token",
         ];
         $url = route("option.show", [$option->name]);
-        $response = $this->json("GET", $url, [], $header)
+        $response = $this->json("GET", $url, [], $header);
         $response->assertStatus(200);
     }
 
@@ -53,7 +53,7 @@ class OptionShowTest extends TestCase
             "Authorization" => "Bearer $token",
         ];
         $url = route("option.show", [$option->name]);
-        $response = $this->json("GET", $url, [], $header)
+        $response = $this->json("GET", $url, [], $header);
         $response->assertStatus(200);
     }
 }
