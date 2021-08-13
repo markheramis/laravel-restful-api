@@ -6,13 +6,13 @@ use Tests\TestCase;
 use Tests\Traits\userTraits;
 use Illuminate\Foundation\Testing\WithFaker;
 
-class UserDestryTest extends TestCase
+class UserDestroyTest extends TestCase
 {
     use WithFaker, userTraits;
 
     public function testDestroySubscriberWithNoSessionShouldBeUnauthorized()
     {
-        $user1 = $this->createUser("subscriber");
+        $user = $this->createUser("subscriber");
         $url = route("user.destroy", [$user->id]);
         $response = $this->json("DELETE", $url);
         $response->assertStatus(401);
@@ -20,7 +20,7 @@ class UserDestryTest extends TestCase
 
     public function testDestroyModeratorWithNoSessionShouldBeUnauthorized()
     {
-        $user1 = $this->createUser("moderator");
+        $user = $this->createUser("moderator");
         $url = route("user.destroy", [$user->id]);
         $response = $this->json("DELETE", $url);
         $response->assertStatus(401);
@@ -28,7 +28,7 @@ class UserDestryTest extends TestCase
 
     public function testDestroyAdministratorWithNoSessionShouldBeUnauthorized()
     {
-        $user1 = $this->createUser("administrator");
+        $user = $this->createUser("administrator");
         $url = route("user.destroy", [$user->id]);
         $response = $this->json("DELETE", $url);
         $response->assertStatus(401);
