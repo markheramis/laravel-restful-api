@@ -26,7 +26,7 @@ class UserSessionTest extends TestCase
         $response = $this->json("GET", "/api/me", [], [
             "Authorization" => "Bearer $token"
         ]);
-        $response->assertStatus(200)
+        $response->assertStatus(200);
         $response->assertJson([
             "data" => [
                 "id" => $user->id,
@@ -47,7 +47,7 @@ class UserSessionTest extends TestCase
         $response = $this->json("GET", "/api/me", [], [
             "Authorization" => "Bearer $token",
         ]);
-        $response->assertStatus(200)
+        $response->assertStatus(200);
         $response->assertJson([
             "data" => [
                 "id" => $user->id,
@@ -68,7 +68,7 @@ class UserSessionTest extends TestCase
         $response = $this->json("GET", "/api/me", [], [
             "Authorization" => "Bearer $token"
         ]);
-        $response->assertStatus(200)
+        $response->assertStatus(200);
         $response->assertJson([
             "data" => [
                 "id" => $user->id,
