@@ -42,7 +42,7 @@ class UserLoginTest extends TestCase
             "email" => "notvalidemail",
             "password" => "password12345",
         ]);
-        $response->assertStatus(422)
+        $response->assertStatus(422);
         $response->assertJson([
             "status" => "error",
             "data" => [
