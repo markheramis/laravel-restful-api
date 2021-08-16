@@ -5,11 +5,15 @@
 name: Docker Compose Test
 on: [push, pull_request]
 jobs:
-    test_compose:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v2
-            - name: Set Environment
-              run: cp .env.example .env && cp .env.testing.example .env.testing
-            - name: Build the stack
-              run: docker-compose up -d
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Copy Environment File
+        shell: bash
+        run: cp .env.example .env && cp .env.example .env.testing
+      - uses: c-py/action-dotenv-to-setenv@v2
+        with:
+          env-file: .env
+      - name: Build the stack
+        run: docker-compose -p "laravel_restful_api" up -d
