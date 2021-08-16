@@ -110,6 +110,25 @@ artisan-test:
   dependencies:
     - build-docker
     - build-composer
+  needs:
+    - build-docker
+    - build-composer
+
+code_quality:
+  stage: test
+  rules:
+    # Run code_quality in pipelines on the master branch (but not in other branch pipelines)
+    - if: '$CI_COMMIT_BRANCH == "master"'
+    # Run code_quality in pipelines for tags
+    - if: "$CI_COMMIT_TAG"
+  artifacts:
+    paths: [gl-code-quality-report.json]
+  dependencies:
+    - build-docker
+    - build-composer
+  needs:
+    - build-docker
+    - build-composer
       
 deploy_staging:
   image:
@@ -153,20 +172,6 @@ sonarcloud-check:
     - sonar-scanner
   only:
     - master
-  dependencies:
-    - artisan-test
-  needs:
-    - artisan-test
-
-code_quality:
-  stage: test
-  rules:
-    # Run code_quality in pipelines on the master branch (but not in other branch pipelines)
-    - if: '$CI_COMMIT_BRANCH == "master"'
-    # Run code_quality in pipelines for tags
-    - if: "$CI_COMMIT_TAG"
-  artifacts:
-    paths: [gl-code-quality-report.json]
   dependencies:
     - artisan-test
   needs:
