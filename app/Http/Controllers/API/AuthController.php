@@ -40,21 +40,17 @@ class AuthController extends Controller
      */
     public function login(UserLoginRequest $request)
     {
-        try {
-            $credentials = ["password" => $request->password];
-            if ($request->has("email"))
-                $credentials["email"] = $request->email;
-            if ($request->has("username"))
-                $credentials["username"] = $request->username;
-            # attempt to login
-            if ($user = Sentinel::stateless($credentials)) {
-                $token = $user->createToken('MyApp')->accessToken;
-                return response()->success($token);
-            } else {
-                return response()->error('Invalid User', 401);
-            }
-        } catch (Exception $e) {
-            return response()->error($e->getMessage(), $e->getCode());
+        $credentials = ["password" => $request->password];
+        if ($request->has("email"))
+            $credentials["email"] = $request->email;
+        if ($request->has("username"))
+            $credentials["username"] = $request->username;
+        # attempt to login
+        if ($user = Sentinel::stateless($credentials)) {
+            $token = $user->createToken('MyApp')->accessToken;
+            return response()->success($token);
+        } else {
+            return response()->error('Invalid User', 401);
         }
     }
 
@@ -78,17 +74,13 @@ class AuthController extends Controller
         $role = $request->role;
         $activate = $request->activate === "true" ? true : false;
 
-        try {
-            if (Sentinel::validForCreation($credentials)) {
-                if ($user = Sentinel::register($credentials, $activate)) {
-                    $this->attachRole($user, $role);
-                    return response()->success('User Registered Successfully');
-                }
-            } else {
-                return response()->error('Could not create user');
+        if (Sentinel::validForCreation($credentials)) {
+            if ($user = Sentinel::register($credentials, $activate)) {
+                $this->attachRole($user, $role);
+                return response()->success('User Registered Successfully');
             }
-        } catch (Exception $e) {
-            return response()->error($e->getMessage(), $e->getCode());
+        } else {
+            return response()->error('Could not create user');
         }
     }
 
