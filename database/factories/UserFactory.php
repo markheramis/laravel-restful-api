@@ -33,8 +33,8 @@ class UserFactory extends Factory
             'username' => $first_name . $last_name,
             'email' => $email,
             'password' => bcrypt('password12345'),
-            'firstName' => $first_name,
-            'lastName' => $last_name,
+            'first_name' => $first_name,
+            'last_name' => $last_name,
         ];
     }
 

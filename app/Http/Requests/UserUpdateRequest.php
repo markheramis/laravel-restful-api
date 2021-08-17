@@ -38,8 +38,8 @@ class UserUpdateRequest extends FormRequest
         return [
             "username" => ["required", "min:8", "max:255", $handle_unique],
             "email" => ["required", "email", "max:255", $handle_unique],
-            "firstName" => ["min:2", "max:100"],
-            "lastName" => ["min:2", "max:100"],
+            "first_name" => ["min:2", "max:100"],
+            "last_name" => ["min:2", "max:100"],
         ];
     }
 }

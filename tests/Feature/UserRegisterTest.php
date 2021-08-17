@@ -69,8 +69,8 @@ class UserRegisterTest extends TestCase
             "email" => $this->faker->email(),
             "password" => "p@s5W0rD1234",
             "v_password" => "p@s5W0rD1234",
-            "firstName" => $this->faker->firstName(),
-            "lastName" => $this->faker->lastName(),
+            "first_name" => $this->faker->firstName(),
+            "last_name" => $this->faker->lastName(),
         ]);
 
         $response->assertStatus(422);
@@ -83,14 +83,13 @@ class UserRegisterTest extends TestCase
             "email" => $this->faker->email(),
             "password" => "p@s5W0rD1234",
             "v_password" => "p@s5W0rD1234",
-            "firstName" => $this->faker->firstName(),
-            "lastName" => $this->faker->lastName(),
+            "first_name" => $this->faker->firstName(),
+            "last_name" => $this->faker->lastName(),
             "role" => "subscriber",
             "activate" => true,
         ]);
 
         $response->assertStatus(200);
-       
     }
 
     public function testRegisterWithCorrectParametersAndPermissionShouldRegisterSuccessfully()
@@ -100,8 +99,8 @@ class UserRegisterTest extends TestCase
             "email" => $this->faker->email(),
             "password" => "p@s5W0rD1234",
             "v_password" => "p@s5W0rD1234",
-            "firstName" => $this->faker->firstName(),
-            "lastName" => $this->faker->lastName(),
+            "first_name" => $this->faker->firstName(),
+            "last_name" => $this->faker->lastName(),
             "role" => "subscriber",
             "activate" => true,
             "permissions" => [
@@ -111,5 +110,4 @@ class UserRegisterTest extends TestCase
         ]);
         $response->assertStatus(200);
     }
-
 }
