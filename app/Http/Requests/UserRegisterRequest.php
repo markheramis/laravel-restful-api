@@ -29,8 +29,8 @@ class UserRegisterRequest extends FormRequest
             "email" => "required|email|unique:users,email",
             "password" => "required",
             /* "v_password" => "required|same:password", */
-            "firstName" => "required",
-            "lastName" => "required",
+            "first_name" => "required",
+            "last_name" => "required",
             "role" => "required",
             "activate" => "required"
         ];

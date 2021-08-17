@@ -68,8 +68,8 @@ class AuthController extends Controller
             "username" => $request->username,
             "email" => $request->email,
             "password" => $request->password,
-            "firstName" => $request->firstName,
-            "lastName" => $request->lastName,
+            "first_name" => $request->first_name,
+            "last_name" => $request->last_name,
         ];
         $role = $request->role;
         $activate = $request->activate === "true" ? true : false;

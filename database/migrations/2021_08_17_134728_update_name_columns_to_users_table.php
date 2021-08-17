@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddIndexToUsersTable extends Migration
+class UpdateNameColumnsToUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,9 @@ class AddIndexToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->index(['uuid'], 'uuid_index', 'btree');
+            $table->dropColumn(['firstName', 'lastName']);
+            $table->string('first_name')->nullable();
+            $table->string('last_name')->nullable();
         });
     }
 
@@ -26,7 +28,9 @@ class AddIndexToUsersTable extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropIndex('uuid_index');
+            $table->dropColumn(['first_name', 'last_name']);
+            $table->string('firstName')->nullable();
+            $table->string('lastName')->nullable();
         });
     }
 }
