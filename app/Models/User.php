@@ -29,8 +29,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'username',
         'email',
         'password',
-        'lastName',
-        'firstName',
+        'first_name',
+        'last_name',
         'permissions',
     ];
 
@@ -92,7 +92,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         return $this->hasOne(Activation::class);
     }
 
-    public function media() {
+    public function media()
+    {
         return $this->hasMany(Media::class);
     }
 }

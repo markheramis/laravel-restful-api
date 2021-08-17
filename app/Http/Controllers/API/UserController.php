@@ -33,6 +33,7 @@ class UserController extends Controller
      * This endpoint lets you get all Users.
      * 
      * @authenticated
+     * @todo add role based search.
      * @param UserAllRequest $request
      * @uses App\Models\User $rolePaginator
      * @uses App\Transformers\UserTransformer UserTransformer
@@ -42,18 +43,13 @@ class UserController extends Controller
      */
     public function index(UserIndexRequest $request): JsonResponse
     {
-        $rolePaginator = User::when($request->search, function($query) use ($request)
-        {
+        $rolePaginator = User::when($request->search, function ($query) use ($request) {
             $search = $request->search;
-            return $query->whereColumn([
-                ["email", "LIKE", "%$search%"],
-                ["username", "LIKE", "%$search%"],
-                ["first_name", "LIKE", "%$search%"],
-                ["last_name", "LIKE", "%$search%"],
-            ]);
-        })
-        # @todo add role based search.
-        ->paginate();
+            $query->where("email", "LIKE", "%$search%")
+                ->orWhere("username", "LIKE", "%$search%")
+                ->orWhere("first_name", "LIKE", "%$search%")
+                ->orWhere("last_name", "LIKE", "%$search%");
+        })->paginate();
 
 
         $users = $rolePaginator->getCollection();
@@ -123,8 +119,8 @@ class UserController extends Controller
     {
         $user->username = $request->username;
         $user->email = $request->email;
-        $user->firstName = $request->firstName;
-        $user->lastName = $request->lastName;
+        $user->first_name = $request->first_name;
+        $user->last_name = $request->last_name;
         if ($user->update()) {
             return response()->success('User updated', 201);
         } else {

@@ -11,6 +11,8 @@ class UserIndexTest extends TestCase
 {
     use userTraits;
 
+    private $users = [];
+
     /**
      * test get all users as administraotr
      *
@@ -69,43 +71,30 @@ class UserIndexTest extends TestCase
 
         $user = $this->createUser('subscriber');
         $search = $user->email;
+
         $header = ["Authorization" => "Bearer $token"];
+        $param = ["search" => $search];
+        $response = $this->json("GET", route("user.index"), $param, $header);
 
-        $data = ["search" => $search];
-
-        $expectedResult = User::whereColumn([
-            ["email", "LIKE", "%$search%"],
-            ["username", "LIKE", "%$search%"],
-            ["first_name", "LIKE", "%$search%"],
-            ["last_name", "LIKE", "%$search%"]
-        ])->get();
-
-        $data = [];
-
-        foreach ($expectedResult as $item) {
-            array_push($data, [
-                "type" => null,
-                "id" => $item->id,
-                "attributes" => [
-                    "uuid" => $item->uuid,
-                    "slug" => $item->slug,
-                    "email" => $item->email,
-                    "role" => $item->roles()->pluck('slug'),
-                    "username" => $item->username,
-                    "permissions" => $item->permission,
-                    "first_name" => $user->firstName,
-                    "last_name" => $user->lastName,
-                    "created_at" => Carbon::parse($item->created_at)->toFormattedDateString(),
-                    "updated_at" => Carbon::parse($item->updated_at)->toFormattedDateString(),
-                ]
-            ]);
-        }
-
-        $response = $this->json("GET", route("user.index"), $data, $header);
         $response->assertStatus(200);
 
-        $response->assertJson([
-            "data" => $data
+        $data = [];
+        array_push($data, [
+            "type" => null,
+            "id" => "{$user->id}",
+            "attributes" => [
+                "uuid" => $user->uuid->toString(),
+                "slug" => $user->slug,
+                "email" => $user->email,
+                "role" => $user->roles()->pluck('slug')->toArray(),
+                "username" => $user->username,
+                "permissions" => $user->permission,
+                "first_name" => $user->first_name,
+                "last_name" => $user->last_name,
+                "created_at" => Carbon::parse($user->created_at)->toFormattedDateString(),
+                "updated_at" => Carbon::parse($user->updated_at)->toFormattedDateString(),
+            ]
         ]);
+        $response->assertJsonPath("data", $data);
     }
 }
