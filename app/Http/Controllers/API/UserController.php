@@ -34,6 +34,7 @@ class UserController extends Controller
      * 
      * @authenticated
      * @todo add role based search.
+     * @queryParam search string used to search from email, username, first_name, and last_name
      * @param UserAllRequest $request
      * @uses App\Models\User $rolePaginator
      * @uses App\Transformers\UserTransformer UserTransformer
