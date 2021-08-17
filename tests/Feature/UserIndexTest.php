@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use Carbon\Carbon;
 use App\Models\User;
 use Tests\TestCase;
 use Tests\Traits\userTraits;
@@ -59,5 +60,52 @@ class UserIndexTest extends TestCase
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
+    }
+
+    public function testIndexSearchAsAdministratorShouldBeAllowed()
+    {
+        $administrator = $this->createUser('administrator');
+        $token = $administrator->createToken('MyApp')->accessToken;
+
+        $user = $this->createUser('subscriber');
+        $search = $user->email;
+        $header = ["Authorization" => "Bearer $token"];
+
+        $data = ["search" => $search];
+
+        $expectedResult = User::whereColumn([
+            ["email", "LIKE", "%$search%"],
+            ["username", "LIKE", "%$search%"],
+            ["first_name", "LIKE", "%$search%"],
+            ["last_name", "LIKE", "%$search%"]
+        ])->get();
+
+        $data = [];
+
+        foreach ($expectedResult as $item) {
+            array_push($data, [
+                "type" => null,
+                "id" => $item->id,
+                "attributes" => [
+                    "uuid" => $item->uuid,
+                    "slug" => $item->slug,
+                    "email" => $item->email,
+                    "role" => $item->roles()->pluck('slug'),
+                    "username" => $item->username,
+                    "permissions" => $item->permission,
+                    "first_name" => $user->firstName,
+                    "last_name" => $user->lastName,
+                    "created_at" => Carbon::parse($item->created_at)->toFormattedDateString(),
+                    "updated_at" => Carbon::parse($item->updated_at)->toFormattedDateString(),
+                ]
+            ]);
+        }
+
+        $response = $this->json("GET", route("user.index"), $data, $header);
+        $response->assertStatus(200);
+
+        $response->assertJson([
+            "data" => $data
+        ]);
     }
 }
