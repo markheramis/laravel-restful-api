@@ -61,18 +61,12 @@ class RoleController extends Controller
      */
     public function store(RoleStoreRequest $request): JsonResponse
     {
-        $data = [
-            'name' => $request->name,
-            'slug' => $request->slug,
-            /* 'permissions' => $request->permissions, */
-        ];
-        $role = Role::create($data);
-        if ($role) {
-            $response = fractal($role, new RoleTransformer())->toArray();
-            return response()->success($response);
-        } else {
-            return response()->error('Failed to create role');
-        }
+
+        $role = new Role;
+        $role->name = $request->name;
+        $role->slug = $request->slug;
+        $role->save();
+        return response()->success(fractal($role, new RoleTransformer())->toArray());
     }
 
     /**
@@ -110,12 +104,9 @@ class RoleController extends Controller
         $role->name = $request->name;
         $role->slug = $request->slug;
         $role->permissions = $request->permissions;
-        if ($role->update()) {
-            $response = fractal($role, new RoleTransformer())->toArray();
-            return response()->success($response);
-        } else {
-            return response()->error('Failed to update role', 400);
-        }
+        $role->update();
+        $response = fractal($role, new RoleTransformer())->toArray();
+        return response()->success($response);
     }
 
     /**
@@ -132,10 +123,7 @@ class RoleController extends Controller
      */
     public function destroy(RoleDeleteRequest $request, Role $role): JsonResponse
     {
-        if ($role->delete()) {
-            return response()->success('Role deleted successfully');
-        } else {
-            return response()->error('Failed to delete role', 500);
-        }
+        $role->delete();
+        return response()->success('Role deleted successfully');
     }
 }
