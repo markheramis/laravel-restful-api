@@ -60,17 +60,12 @@ class CategoryController extends Controller
      */
     public function store(CategoryStoreRequest $request): JsonResponse
     {
-        $data = [
-            'name' => $request->name,
-            'slug'=> $request->slug 
-        ];
-        $category = Category::create($data);
-        if($category) {
-            $response = fractal($category, new CategoryTransformer())->toArray();
-            return response()->success($response);
-        } else {
-            return response()->error('Failed to create new category');
-        }
+        $category = new Category;
+        $category->name = $request->name;
+        $category->slug = $request->slug;
+        $category->save();
+        $response = fractal($category, new CategoryTransformer())->toArray();
+        return response()->success($response);
     }
 
     /**
@@ -90,7 +85,7 @@ class CategoryController extends Controller
         return response()->success($response);
     }
 
-    
+
     /**
      * Update a Category
      * 
@@ -105,12 +100,9 @@ class CategoryController extends Controller
     {
         $category->name = $request->name;
         $category->slug = $request->slug;
-        if($category->update()) {
-            $response = fractal($category, new CategoryTransformer())->toArray();
-            return response()->success($response);
-        } else {
-            return response()->error('Failed to update category', 400);
-        }
+        $category->update();
+        $response = fractal($category, new CategoryTransformer())->toArray();
+        return response()->success($response);
     }
 
     /**
@@ -125,10 +117,7 @@ class CategoryController extends Controller
      */
     public function destroy(CategoryDestroyRequest $request, Category $category): JsonResponse
     {
-        if ($category->delete()) {
-            return response()->success('Category deleted successfully');
-        } else {
-            return response()->error('Failed to delete category', 500);
-        }
+        $category->delete();
+        return response()->success('Category deleted successfully');
     }
 }

@@ -70,11 +70,11 @@ class MediaController extends Controller
         $authUser = Auth::user();
         $user = Sentinel::findById($authUser->id);
 
-        $path = $file->store('/dicom', 'public');
+        $path = $file->store('/media', 'public');
 
         $save = $user->media()->create([
-          'path' => $path,
-          'description' => $file->getClientOriginalName(),
+            'path' => $path,
+            'description' => $file->getClientOriginalName(),
         ]);
 
         if ($save) {
@@ -107,7 +107,7 @@ class MediaController extends Controller
         $media->path = $request->path;
         $media->description = $request->description;
         $media->status = $request->status;
-        if($media->update()) {
+        if ($media->update()) {
             $response = fractal($media, new MediaTransformer())->toArray();
             return response()->succes($response);
         } else {
