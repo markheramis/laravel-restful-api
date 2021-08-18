@@ -51,11 +51,8 @@ class UserPermissionController extends Controller
     public function store(UserPermissionStoreRequest $request, User $user): JsonResponse
     {
         $user->addPermission($request->slug, $request->value);
-        if ($user->save()) {
-            return response()->success('Permission added successfully');
-        } else {
-            return response()->error('Failed to add permission', 400);
-        }
+        $user->save();
+        return response()->success('Permission added successfully');
     }
 
     /**
@@ -72,11 +69,8 @@ class UserPermissionController extends Controller
     public function update(UserPermissionUpdateRequest $request, User $user): JsonResponse
     {
         $user->updatePermission($request->slug, $request->value, true);
-        if ($user->save()) {
-            return response()->success('Permission updated successfully');
-        } else {
-            return response()->error('Failed to update permission', 400);
-        }
+        $user->save();
+        return response()->success('Permission updated successfully');
     }
 
     /**
@@ -93,10 +87,7 @@ class UserPermissionController extends Controller
     public function destroy(UserPermissionDestroyRequest $request, User $user): JsonResponse
     {
         $user->removePermission($request->slug);
-        if ($user->save()) {
-            return response()->success('Permission deleted successfully');
-        } else {
-            return response()->error('Failed to delete permission', 400);
-        }
+        $user->save();
+        return response()->success('Permission deleted successfully');
     }
 }
