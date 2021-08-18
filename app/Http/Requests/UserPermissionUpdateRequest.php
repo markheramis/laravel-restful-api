@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests;
 
-use Auth;
 use App\Http\Requests\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class UserPermissionUpdateRequest extends FormRequest
 {
@@ -14,12 +14,8 @@ class UserPermissionUpdateRequest extends FormRequest
    */
   public function authorize()
   {
-    if (Auth::check()) {
-      $user = Auth::user();
-      return $user->hasAccess("user.permission.update");
-    } else {
-      return false;
-    }
+    if (!Auth::check()) return;
+    return Auth::user()->hasAccess("user.permission.update");
   }
 
   /**

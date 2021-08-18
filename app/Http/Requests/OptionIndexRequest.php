@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests;
 
-use Auth;
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class OptionIndexRequest extends FormRequest
 {
@@ -14,10 +14,8 @@ class OptionIndexRequest extends FormRequest
      */
     public function authorize()
     {
-        if (Auth::check()) {
-            $user = Auth::user();
-            return $user->hasAccess('option.index');
-        }
+        if (!Auth::check()) return;
+        return Auth::user()->hasAccess("option.index");
     }
 
     /**

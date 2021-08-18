@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class RoleDeleteRequest extends FormRequest
 {
@@ -14,12 +14,8 @@ class RoleDeleteRequest extends FormRequest
    */
   public function authorize()
   {
-    if (Auth::check()) {
-      $user = Auth::user();
-      return $user->hasAccess("role.delete");
-    } else {
-      return false;
-    }
+    if (!Auth::check()) return;
+    return Auth::user()->hasAccess("role.delete");
   }
 
   /**

@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class RoleStoreRequest extends FormRequest
 {
@@ -15,12 +15,8 @@ class RoleStoreRequest extends FormRequest
      */
     public function authorize()
     {
-        if (Auth::check()) {
-            $user = Auth::user();
-            return $user->hasAccess("role.store");
-        } else {
-            return false;
-        }
+        if (!Auth::check()) return;
+        return Auth::user()->hasAccess("role.store");
     }
 
     /**
@@ -31,35 +27,9 @@ class RoleStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            #"name" => "required",
-            #"slug" => "required",
-            #"permissions" => "array|required"
-        ];
-    }
-
-    public function bodyParameters()
-    {
-        return [
-            /*
-            "name" => [
-                "description" => "The name of the new Role",
-                "example" => "Admin",
-            ],
-            "slug" => [
-                "description" => "The slug of the new Role",
-                "example" => "admin",
-            ],
-            "permissions" => [
-                "description" => "The permission for this Role",
-                "example" =>  [
-                    "test.all" => true,
-                    "test.get" => true,
-                    "test.add" => false,
-                    "test.update" => false,
-                    "test.delete" => false,
-                ]
-            ]
-            */
+            "name" => "required",
+            "slug" => "required",
+            "permissions" => "array|required"
         ];
     }
 }

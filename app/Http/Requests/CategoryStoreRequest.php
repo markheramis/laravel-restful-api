@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Requests\FormRequest;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Foundation\Http\FormRequest;
 
 class CategoryStoreRequest extends FormRequest
 {
@@ -14,12 +14,8 @@ class CategoryStoreRequest extends FormRequest
      */
     public function authorize()
     {
-        if (Auth::check()) {
-            $user = Auth::user();
-            return $user->hasAccess("category.store");
-          } else {
-            return false;
-          }
+        if (!Auth::check()) return;
+        return Auth::user()->hasAccess("category.store");
     }
 
     /**
