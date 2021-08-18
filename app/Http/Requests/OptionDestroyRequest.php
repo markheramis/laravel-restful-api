@@ -14,10 +14,9 @@ class OptionDestroyRequest extends FormRequest
      */
     public function authorize()
     {
-        if (Auth::check()) {
-            $user = Auth::user();
-            return $user->hasAccess('option.destroy');
-        }
+
+        if (!Auth::check()) return;
+        return Auth::user()->hasAccess('option.destroy');
     }
 
     /**
