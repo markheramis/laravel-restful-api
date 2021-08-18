@@ -73,10 +73,9 @@ class AuthController extends Controller
         ];
         $role = $request->role;
         $activate = $request->activate === "true" ? true : false;
-        if ($user = Sentinel::register($credentials, $activate)) {
-            $this->attachRole($user, $role);
-            return response()->success('User Registered Successfully');
-        }
+        $user = Sentinel::register($credentials, $activate);
+        $this->attachRole($user, $role);
+        return response()->success('User Registered Successfully');
     }
 
     private function attachRole($user, $role)
