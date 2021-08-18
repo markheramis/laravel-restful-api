@@ -15,9 +15,9 @@ class UserShowRequest extends FormRequest
    */
   public function authorize()
   {
-      $authUser = Auth::user();
-      $user = Sentinel::findById($authUser->id);
-      return $user->hasAccess("user.show");
+    $authUser = Auth::user();
+    $user = Sentinel::findById($authUser->id);
+    return $user->hasAccess("user.show");
   }
 
   /**
@@ -28,7 +28,10 @@ class UserShowRequest extends FormRequest
   public function rules()
   {
     return [
-      //
+      "username" => "string|regex:/^[A-Za-z]{1}[A-Za-z0-9]{5-31}$/|required|unique:users,username",
+      "email" => "email|required|unique:users,email",
+      "first_name" => "string|limit:100",
+      "last_name" => "string|limit:100"
     ];
   }
 }
