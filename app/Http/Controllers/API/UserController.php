@@ -122,11 +122,8 @@ class UserController extends Controller
         $user->email = $request->email;
         $user->first_name = $request->first_name;
         $user->last_name = $request->last_name;
-        if ($user->update()) {
-            return response()->success('User updated', 201);
-        } else {
-            return response()->error('Failed to update user');
-        }
+        $user->update();
+        return response()->success($user, 201);
     }
 
     /**
@@ -142,12 +139,9 @@ class UserController extends Controller
      */
     public function destroy(UserDestroyRequest $request, User $user): JsonResponse
     {
-        $deleteUserTokens = $user->tokens()->delete();
-        if ($user->update()) {
-            $user->delete();
-            return response()->success('User deleted successfully');
-        } else {
-            return response()->error('Failed to delete user');
-        }
+        $user->tokens()->delete();
+        $user->update();
+        $user->delete();
+        return response()->success('User deleted successfully');
     }
 }
