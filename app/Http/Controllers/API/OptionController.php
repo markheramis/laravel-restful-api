@@ -54,8 +54,8 @@ class OptionController extends Controller
         $option->value = $request->value;
         $option->autoload = $request->autoload;
 
-        if ($option->save())
-            return response()->json($option);
+        $option->save();
+        return response()->json($option);
     }
 
     /**
@@ -92,8 +92,8 @@ class OptionController extends Controller
     {
         $option->value = $request->value;
         $option->autoload = $request->autoload;
-        if ($option->save())
-            return response()->json($option);
+        $option->save();
+        return response()->json($option);
     }
 
     /**
@@ -109,7 +109,7 @@ class OptionController extends Controller
      */
     public function destory(OptionDestroyRequest $request, Option $option): JsonResponse
     {
-        if ($option->delete())
-            return response()->json('success', 200);
+        $option->delete();
+        return response()->json('success', 200);
     }
 }
