@@ -15,9 +15,9 @@ class UserShowRequest extends FormRequest
    */
   public function authorize()
   {
-      $authUser = Auth::user();
-      $user = Sentinel::findById($authUser->id);
-      return $user->hasAccess("user.show");
+    $authUser = Auth::user();
+    $user = Sentinel::findById($authUser->id);
+    return $user->hasAccess("user.show");
   }
 
   /**
@@ -27,8 +27,6 @@ class UserShowRequest extends FormRequest
    */
   public function rules()
   {
-    return [
-      //
-    ];
+    return [];
   }
 }

@@ -21,6 +21,11 @@ class UserUpdateRequest extends FormRequest
         return $can_update || $this->isUpdatingSelf();
     }
 
+    /**
+     * Returns true if the current user session is equal to the user we're updating, else false.
+     *
+     * @return boolean
+     */
     private function isUpdatingSelf()
     {
         $user = Auth::user();
@@ -34,10 +39,9 @@ class UserUpdateRequest extends FormRequest
      */
     public function rules()
     {
-        $handle_unique = Rule::unique('users')->ignore($this->user);
         return [
-            "username" => ["required", "min:8", "max:255", $handle_unique],
-            "email" => ["required", "email", "max:255", $handle_unique],
+            "username" => ["required", "min:8", "max:255", "unique:users,username"],
+            "email" => ["required", "email", "max:255", "unique:users,email"],
             "first_name" => ["min:2", "max:100"],
             "last_name" => ["min:2", "max:100"],
         ];
