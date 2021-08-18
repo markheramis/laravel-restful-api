@@ -2,8 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Requests\FormRequest;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Foundation\Http\FormRequest;
+
 
 class CategoryUpdateRequest extends FormRequest
 {
@@ -14,12 +15,8 @@ class CategoryUpdateRequest extends FormRequest
      */
     public function authorize()
     {
-        if (Auth::check()) {
-            $user = Auth::user();
-            return $user->hasAccess("category.update");
-          } else {
-            return false;
-          }
+        if (!Auth::check()) return;
+        return Auth::user()->hasAccess("category.update");
     }
 
     /**

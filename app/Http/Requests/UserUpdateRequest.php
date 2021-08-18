@@ -2,10 +2,8 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rule;
 use App\Http\Requests\FormRequest;
-use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
+use Illuminate\Support\Facades\Auth;
 
 class UserUpdateRequest extends FormRequest
 {
@@ -16,9 +14,8 @@ class UserUpdateRequest extends FormRequest
      */
     public function authorize()
     {
-        $user = Auth::user();
-        $can_update = Sentinel::findById($user->id)->hasAccess("user.update");
-        return $can_update || $this->isUpdatingSelf();
+        if (!Auth::check()) return;
+        return Auth::user()->hasAccess("user.update") || $this->isUpdatingSelf();
     }
 
     /**

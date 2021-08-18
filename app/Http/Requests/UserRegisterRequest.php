@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use Auth;
 use App\Http\Requests\FormRequest;
 
 class UserRegisterRequest extends FormRequest
@@ -28,7 +27,6 @@ class UserRegisterRequest extends FormRequest
             "username" => "required",
             "email" => "required|email|unique:users,email",
             "password" => "required",
-            /* "v_password" => "required|same:password", */
             "first_name" => "required",
             "last_name" => "required",
             "role" => "required",

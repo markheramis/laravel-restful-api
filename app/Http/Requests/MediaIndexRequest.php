@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\FormRequest;
 
 class MediaIndexRequest extends FormRequest
 {
@@ -13,7 +13,7 @@ class MediaIndexRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**

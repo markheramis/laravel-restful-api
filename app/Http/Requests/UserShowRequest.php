@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use App\Http\Requests\FormRequest;
-use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use Illuminate\Support\Facades\Auth;
 
 class UserShowRequest extends FormRequest
@@ -15,9 +14,8 @@ class UserShowRequest extends FormRequest
    */
   public function authorize()
   {
-    $authUser = Auth::user();
-    $user = Sentinel::findById($authUser->id);
-    return $user->hasAccess("user.show");
+    if (!Auth::check()) return;
+    return Auth::user()->hasAccess("user.show");
   }
 
   /**

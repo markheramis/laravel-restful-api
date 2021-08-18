@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests;
 
-use Auth;
 use App\Http\Requests\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class UserDestroyRequest extends FormRequest
 {
@@ -14,12 +14,8 @@ class UserDestroyRequest extends FormRequest
    */
   public function authorize()
   {
-    if (Auth::check()) {
-      $user = Auth::user();
-      return $user->hasAccess("user.delete");
-    } else {
-      return false;
-    }
+    if (!Auth::check()) return;
+    return Auth::user()->hasAccess("user.delete");
   }
 
   /**

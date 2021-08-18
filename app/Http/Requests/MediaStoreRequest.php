@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\FormRequest;
 
 class MediaStoreRequest extends FormRequest
 {
@@ -24,7 +24,7 @@ class MediaStoreRequest extends FormRequest
     public function rules()
     {
         return [
-          'file' => ['file', 'mimes:zip'],
+            'file' => ['file', 'mimes:zip'],
         ];
     }
 }
