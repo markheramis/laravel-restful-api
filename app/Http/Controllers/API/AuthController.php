@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\API;
 
 use Auth;
-use Exception;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserLoginRequest;
 use App\Http\Requests\UserRegisterRequest;
