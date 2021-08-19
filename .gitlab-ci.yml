@@ -196,10 +196,6 @@ code_intelligence_go:
     - if: '$CI_COMMIT_BRANCH == "master"'
     # Run code_intelligence_go in pipelines for tags
     - if: "$CI_COMMIT_TAG"
-  dependencies:
-    - artisan-test
-  needs:
-    - artisan-test
 
 gemnasium-dependency_scanning:
   stage: analyse
@@ -208,10 +204,6 @@ gemnasium-dependency_scanning:
     - if: '$CI_COMMIT_BRANCH == "master"'
     # Run gemnasium-dependency_scanning in pipelines for tags
     - if: "$CI_COMMIT_TAG"
-  dependencies:
-    - artisan-test
-  needs:
-    - artisan-test
 
 retire-js-dependency_scanning:
   stage: analyse
@@ -220,10 +212,6 @@ retire-js-dependency_scanning:
     - if: '$CI_COMMIT_BRANCH == "master"'
     # Run retire-js-dependency_scanning in pipelines for tags
     - if: "$CI_COMMIT_TAG"
-  dependencies:
-    - artisan-test
-  needs:
-    - artisan-test
 
 container_scanning:
   stage: analyse
@@ -232,10 +220,6 @@ container_scanning:
     - if: '$CI_COMMIT_BRANCH == "master"'
     # Run container_scanning in pipelines for tags
     - if: "$CI_COMMIT_TAG"
-  dependencies:
-    - artisan-test
-  needs:
-    - artisan-test
 
 phpcs-security-audit-sast:
   stage: analyse
@@ -244,10 +228,6 @@ phpcs-security-audit-sast:
     - if: '$CI_COMMIT_BRANCH == "master"'
     # Run phpcs-security-audit-sast in pipelines for tags
     - if: "$CI_COMMIT_TAG"
-  dependencies:
-    - artisan-test
-  needs:
-    - artisan-test
 
 nodejs-scan-sast:
   stage: analyse
@@ -256,10 +236,6 @@ nodejs-scan-sast:
     - if: '$CI_COMMIT_BRANCH == "master"'
     # Run nodejs-scan-sast in pipelines for tags
     - if: "$CI_COMMIT_TAG"
-  dependencies:
-    - artisan-test
-  needs:
-    - artisan-test
 
 eslint-sast:
   stage: analyse
@@ -268,20 +244,12 @@ eslint-sast:
     - if: '$CI_COMMIT_BRANCH == "master"'
     # Run eslint-sast in pipelines for tags
     - if: "$CI_COMMIT_TAG"
-  dependencies:
-    - artisan-test
-  needs:
-    - artisan-test
 
 semgrep-sast:
   stage: analyse
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"' # Run eslint-sast in pipelines on the master branch (but not in other branch pipelines)
     - if: "$CI_COMMIT_TAG" # Run eslint-sast in pipelines for tags
-  dependencies:
-    - artisan-test
-  needs:
-    - artisan-test
 
 secret_detection:
   stage: analyse
@@ -305,7 +273,3 @@ license_scanning:
     - if: '$CI_COMMIT_BRANCH == "master"'
     # Run license_scanning in pipelines for tags
     - if: "$CI_COMMIT_TAG"
-  dependencies:
-    - artisan-test
-  needs:
-    - artisan-test
