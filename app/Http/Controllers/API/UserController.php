@@ -79,7 +79,7 @@ class UserController extends Controller
     public function show(UserShowRequest $request, User $user): JsonResponse
     {
         $response = fractal($user, new UserTransformer())->toArray();
-        return response()->success($response, 200);
+        return response()->success($response);
     }
 
     /**
@@ -123,7 +123,7 @@ class UserController extends Controller
         $user->first_name = $request->first_name;
         $user->last_name = $request->last_name;
         $user->update();
-        return response()->success($user, 201);
+        return response()->success($user);
     }
 
     /**
