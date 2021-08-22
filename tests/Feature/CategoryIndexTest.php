@@ -40,13 +40,13 @@ class CategoryIndexTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function testCategoryIndexAsSubscriberShouldBeForbidden()
+    public function testCategoryIndexAsSubscriberShouldBeAllowed()
     {
         $token = $this->getTokenByRole("subscriber");
         $header = [
             "Authorization" => "Bearer $token",
         ];
         $response = $this->json("GET", route("category.index"), [], $header);
-        $response->assertStatus(403);
+        $response->assertStatus(200);
     }
 }
