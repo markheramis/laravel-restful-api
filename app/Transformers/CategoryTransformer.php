@@ -4,7 +4,7 @@ namespace App\Transformers;
 
 use Carbon\Carbon;
 use League\Fractal\TransformerAbstract;
-use App\Models\Categories;
+use App\Models\Category;
 
 class CategoryTransformer extends TransformerAbstract
 {
@@ -16,7 +16,7 @@ class CategoryTransformer extends TransformerAbstract
     protected $defaultIncludes = [
         //
     ];
-    
+
     /**
      * List of resources possible to include
      *
@@ -25,13 +25,13 @@ class CategoryTransformer extends TransformerAbstract
     protected $availableIncludes = [
         //
     ];
-    
+
     /**
      * A Fractal transformer.
      *
      * @return array
      */
-    public function transform(Categories $category)
+    public function transform(Category $category)
     {
         $created_at = Carbon::parse($category->created_at)->toFormattedDateString();
         $updated_at = Carbon::parse($category->updated_at)->toFormattedDateString();
