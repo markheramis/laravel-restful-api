@@ -12,6 +12,7 @@
         "cartalyst/sentinel": "^5.0",
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
+        "gamegos/php-code-sniffer": "^0.6.1",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.12",
         "laravel/passport": "^10.1",
@@ -32,6 +33,7 @@
         "laravel/telescope": "^4.4.0",
         "mockery/mockery": "^1.4.2",
         "nunomaduro/collision": "^5.0",
+        "overtrue/phplint": "^3.0",
         "phpbench/phpbench": "1.0.0-beta1",
         "phpunit/php-code-coverage": "^9.2",
         "phpunit/phpunit": "^9.4"
@@ -82,6 +84,9 @@
         ],
         "doc": [
             "@php artisan scribe:generate --force"
+        ],
+        "lint": [
+            "./vendor/bin/phplint"
         ],
         "bench": [
             "@php vendor/bin/phpbench run"
