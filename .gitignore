@@ -17,3 +17,7 @@ yarn-error.log
 .devspace/
 database/seeders/UserSeeder.php
 .package-lock.json
+
+# ignore phplint
+build/
+.phplint-cache

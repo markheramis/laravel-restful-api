@@ -120,6 +120,20 @@ artisan-test:
     - build-docker
     - build-composer
 
+php-lint:
+  image:
+    name: $DOCKER_IMAGE
+    entrypoint: [""]
+  stage: test
+  script:
+    - ./vendor/bin/phplint
+  dependencies:
+    - build-docker
+    - build-composer
+  needs:
+    - build-docker
+    - build-composer
+
 #code_quality:
 #  stage: test
 #  rules:
