@@ -18,6 +18,7 @@ use App\Http\Controllers\API\UserPermissionController;
 use App\Http\Controllers\API\UserRoleController;
 use App\Http\Controllers\API\RoleController;
 use App\Http\Controllers\API\OptionController;
+use App\Http\Controllers\API\CategoryController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('me', [AuthController::class, 'me'])->middleware(['auth:api'])->name('api.me');
@@ -70,5 +71,15 @@ Route::prefix('option')->middleware(['auth:api'])->group(function () {
         Route::get('/', [OptionController::class,  'show'])->name('option.show');
         Route::put('/', [OptionController::class, 'update'])->name('option.update');
         Route::delete('/', [OptionController::class, 'destory'])->name('option.destroy');
+    });
+});
+
+Route::prefix('category')->middleware(['auth:api'])->group(function () {
+    Route::get('/', [CategoryController::class, 'index'])->name('category.index');
+    Route::post('/', [CategoryController::class, 'store'])->name('category.store');
+    Route::prefix('{category}')->group(function () {
+        Route::get('/', [CategoryController::class, 'show'])->name('category.show');
+        Route::put('/', [CategoryController::class, 'update'])->name('category.update');
+        Route::delete('/', [CategoryController::class, 'destory'])->name('category.destroy');
     });
 });
