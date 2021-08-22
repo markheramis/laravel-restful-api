@@ -22,7 +22,7 @@ class CategoryFactory extends Factory
     public function definition()
     {
         $parent = Category::inRandomOrder()->first();
-        $parent_id = (rand(0, 1)) ? $parent->id : null;
+        $parent_id = (rand(0, 1)) ? ($parent->id) ?? null : null;
         return [
             'name' => $this->faker->text(50),
             'parent_id' => $parent_id,
