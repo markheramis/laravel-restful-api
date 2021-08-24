@@ -15,7 +15,7 @@ class CategoryDeleteTest extends TestCase
     public function testDestroyCategoryWithNoSessionShouldBeUnauthorized()
     {
         $category = Category::factory()->create();
-        $url = route("category.destroy", [$category->id]);
+        $url = route("category.destroy", [$category->slug]);
         $response = $this->json("DELETE", $url);
         $response->assertStatus(401);
         $category->delete();
@@ -23,7 +23,7 @@ class CategoryDeleteTest extends TestCase
     public function testDestroyCategoryAsAdministratorShouldBeAllowed()
     {
         $category = Category::factory()->create();
-        $url = route("category.destory", [$category->id]);
+        $url = route("category.destory", [$category->slug]);
         $token = $this->getTokenByRole("administrator");
         $header = [
             "Authorization" => "Bearer $token",
@@ -36,7 +36,7 @@ class CategoryDeleteTest extends TestCase
     public function testDestroyCategoryAsModeratorShouldBeAllowed()
     {
         $category = Category::factory()->create();
-        $url = route("category.destroy", [$category->id]);
+        $url = route("category.destroy", [$category->slug]);
         $token = $this->getTokenByRole("moderator");
         $header = [
             "Authorization" => "Bearer $token",
@@ -49,7 +49,7 @@ class CategoryDeleteTest extends TestCase
     public function testDestroyCategoryAsSubscriberShouldBeForbidden()
     {
         $category = Category::factory()->create();
-        $url = route("category.destroy", [$category->id]);
+        $url = route("category.destroy", [$category->slug]);
         $token = $this->getTokenByRole("subscriber");
         $header = [
             "Authorization" => "Bearer $token",
