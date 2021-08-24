@@ -85,6 +85,7 @@ services:
 networks:
   laravel-network:
     name: ${PROJECT_NAME}-network
+    driver: bridge
 volumes:
   vmysql:
     driver: local
