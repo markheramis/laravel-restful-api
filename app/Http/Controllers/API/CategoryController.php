@@ -37,7 +37,7 @@ class CategoryController extends Controller
     public function index(CategoryIndexRequest $request): JsonResponse
     {
         $paginator = Category::paginate();
-        $category = $paginator->collection();
+        $category = $paginator->getCollection();
 
         $response = fractal()
             ->collection($category)
