@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Role;
 use App\Models\Media;
 use App\Models\Option;
+use App\Models\Category;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -34,11 +35,11 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
         Route::model('user', User::class);
         Route::model('role', Role::class);
         Route::model('media', Media::class);
         Route::model('option', Option::class);
+        Route::model("category", Category::class);
 
         parent::boot();
     }

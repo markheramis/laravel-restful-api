@@ -41,7 +41,7 @@ class RoleSeeder extends Seeder
                 "user.permission.delete" => true,
 
                 "category.index" => true,
-                "category/store" => true,
+                "category.store" => true,
                 "category.get" => true,
                 "category.update" => true,
                 "category.destroy" => true,

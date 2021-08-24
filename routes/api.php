@@ -80,6 +80,6 @@ Route::prefix('category')->middleware(['auth:api'])->group(function () {
     Route::prefix('{category}')->group(function () {
         Route::get('/', [CategoryController::class, 'show'])->name('category.show');
         Route::put('/', [CategoryController::class, 'update'])->name('category.update');
-        Route::delete('/', [CategoryController::class, 'destory'])->name('category.destroy');
+        Route::delete('/', [CategoryController::class, 'destroy'])->name('category.destroy');
     });
 });

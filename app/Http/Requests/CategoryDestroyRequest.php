@@ -15,7 +15,7 @@ class CategoryDestroyRequest extends FormRequest
     public function authorize()
     {
         if (!Auth::check()) return;
-        return Auth::user()->hasAccess("category.delete");
+        return Auth::user()->hasAccess("category.destroy");
     }
 
     /**
