@@ -33,7 +33,7 @@ class CategoryDeleteTest extends TestCase
         $category->delete();
     }
 
-    public function testDestroyCategoryAsModeratorShouldBeAllowed()
+    public function testDestroyCategoryAsModeratorShouldBeForbidden()
     {
         $category = Category::factory()->create();
         $url = route("category.destroy", [$category->slug]);
@@ -42,7 +42,7 @@ class CategoryDeleteTest extends TestCase
             "Authorization" => "Bearer $token",
         ];
         $response = $this->json("DELETE", $url, [], $header);
-        $response->assertStatus(200);
+        $response->assertStatus(403);
         $category->delete();
     }
 
