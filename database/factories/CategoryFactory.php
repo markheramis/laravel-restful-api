@@ -21,8 +21,11 @@ class CategoryFactory extends Factory
      */
     public function definition()
     {
-        $parent = Category::inRandomOrder()->first();
-        $parent_id = (rand(0, 1)) ? ($parent->id) ?? null : null;
+        $parent_id = null;
+        if (rand(0, 1)) {
+            $parent = Category::inRandomOrder()->first();
+            $parent_id = ($parent) ? $parent->id : null;
+        }
         return [
             'name' => $this->faker->text(50),
             'parent_id' => $parent_id,
