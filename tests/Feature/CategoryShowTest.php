@@ -22,7 +22,7 @@ class CategoryShowTest extends TestCase
     public function testShowCategoryAsAdministratorShouldBeAllowed()
     {
         $category = Category::factory()->create();
-        $url = route("cateogry.show", [$category->slug]);
+        $url = route("category.show", [$category->slug]);
         $token = $this->getTokenByRole("administrator");
         $header = [
             "Authorization" => "Bearer $token",
