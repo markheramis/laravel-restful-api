@@ -23,7 +23,7 @@ class CategoryDeleteTest extends TestCase
     public function testDestroyCategoryAsAdministratorShouldBeAllowed()
     {
         $category = Category::factory()->create();
-        $url = route("category.destory", [$category->slug]);
+        $url = route("category.destroy", [$category->slug]);
         $token = $this->getTokenByRole("administrator");
         $header = [
             "Authorization" => "Bearer $token",
