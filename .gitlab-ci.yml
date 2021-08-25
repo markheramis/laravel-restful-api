@@ -95,6 +95,7 @@ artisan-test:
     - php artisan migrate
     - php artisan db:seed
     - php artisan passport:install
+    - php artisan scribe:generate --force
   script:
     - php artisan queue:work &
     - php artisan serve &
