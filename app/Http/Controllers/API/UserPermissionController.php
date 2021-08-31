@@ -8,7 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UserPermissionShowRequest;
 use App\Http\Requests\UserPermissionStoreRequest;
 use App\Http\Requests\UserPermissionUpdateRequest;
-use App\Http\Requests\UserPermissionDeleteRequest;
+use App\Http\Requests\UserPermissionDestroyRequest;
 use \Illuminate\Http\JsonResponse;
 
 /**
@@ -80,7 +80,7 @@ class UserPermissionController extends Controller
      *
      * @authenticated
      * @todo 2nd parameter should auto resolve into a User model instance
-     * @param UserPermissionDeleteRequest $request
+     * @param UserPermissionDestroyRequest $request
      * @param App\Models\User $$user auto resolved User eloquent instance.
      * @return JsonResponse
      */
