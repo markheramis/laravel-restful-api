@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
 use App\Models\Role;
+use App\Http\Controllers\Controller;
 use App\Transformers\RoleTransformer;
 use App\Http\Requests\RoleAllRequest;
 use App\Http\Requests\RoleShowRequest;
 use App\Http\Requests\RoleStoreRequest;
 use App\Http\Requests\RoleUpdateReqeust;
-use App\Http\Requests\RoleDeleteRequest;
+use App\Http\Requests\RoleDestroyRequest;
 use App\Http\Requests\RoleIndexRequest;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Serializer\JsonApiSerializer;
@@ -116,12 +116,12 @@ class RoleController extends Controller
      *
      * @authenticated
      * @todo add body parameter `force` that allows force delete when user is an admin.
-     * @param RoleDeleteRequest $request
+     * @param RoleDestroyRequest $request
      * @param App\Models\Role $role auto resolved instance of Eloquent Role
      * @uses App\Models\Role $role
      * @return JsonResponse
      */
-    public function destroy(RoleDeleteRequest $request, Role $role): JsonResponse
+    public function destroy(RoleDestroyRequest $request, Role $role): JsonResponse
     {
         $role->delete();
         return response()->success('Role deleted successfully');

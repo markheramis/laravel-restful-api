@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Http\Controllers\Controller;
 use App\Transformers\CategoryTransformer;
-use App\Http\Requests\CategoryDestroyRequest;
 use App\Http\Requests\CategoryIndexRequest;
-use App\Http\Requests\CategoryShowRequest;
 use App\Http\Requests\CategoryStoreRequest;
+use App\Http\Requests\CategoryShowRequest;
 use App\Http\Requests\CategoryUpdateRequest;
+use App\Http\Requests\CategoryDestroyRequest;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Serializer\JsonApiSerializer;
 use Illuminate\Http\JsonResponse;

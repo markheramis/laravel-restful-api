@@ -2,15 +2,10 @@
 
 namespace App\Http\Controllers\API;
 
-use Log;
-use Sentinel;
 use Activation;
-
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\JsonResponse;
-
 use App\Models\User;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 use App\Transformers\UserTransformer;
 use App\Http\Requests\UserIndexRequest;
 use App\Http\Requests\UserShowRequest;
