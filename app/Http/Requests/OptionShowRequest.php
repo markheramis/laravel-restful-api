@@ -3,8 +3,9 @@
 namespace App\Http\Requests;
 
 use App\Http\Requests\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
-class MediaGetRequest extends FormRequest
+class OptionShowRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +14,8 @@ class MediaGetRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        if (!Auth::check()) return;
+        return Auth::user()->hasAccess("option.show");
     }
 
     /**
@@ -23,8 +25,6 @@ class MediaGetRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            //
-        ];
+        return [];
     }
 }

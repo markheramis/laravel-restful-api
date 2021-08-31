@@ -15,7 +15,7 @@ class CategoryShowRequest extends FormRequest
     public function authorize()
     {
         if (!Auth::check()) return;
-        return Auth::user()->hasAccess("category.get");
+        return Auth::user()->hasAccess("category.show");
     }
 
     /**

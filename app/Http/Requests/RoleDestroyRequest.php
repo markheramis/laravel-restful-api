@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use App\Http\Requests\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class RoleAllRequest extends FormRequest
+class RoleDestroyRequest extends FormRequest
 {
   /**
    * Determine if the user is authorized to make this request.
@@ -15,7 +15,7 @@ class RoleAllRequest extends FormRequest
   public function authorize()
   {
     if (!Auth::check()) return;
-    return Auth::user()->hasAccess("role.index");
+    return Auth::user()->hasAccess("role.destroy");
   }
 
   /**

@@ -15,7 +15,7 @@ class UserRoleStoreRequest extends FormRequest
   public function authorize()
   {
     if (!Auth::check()) return;
-    return Auth::user()->hasAccess("user.role.add");
+    return Auth::user()->hasAccess("user.role.store");
   }
 
   /**
