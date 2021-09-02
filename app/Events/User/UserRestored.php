@@ -2,20 +2,17 @@
 
 namespace App\Events\User;
 
-use App\Models\User;
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class UserRestored
+class UserRestored implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    private User $user;
+    private int $id;
     /**
      * Create a new event instance.
      *
@@ -23,7 +20,7 @@ class UserRestored
      */
     public function __construct(int $id)
     {
-        $this->user = User::find($id);
+        $this->id = $id;
     }
 
     /**
@@ -33,7 +30,17 @@ class UserRestored
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('user.restored.' . $this->id);
+        return new PrivateChannel('user');
+    }
+
+    /**
+     * The event's broadcast name.
+     *
+     * @return string
+     */
+    public function broadcastAs()
+    {
+        return 'user.restored';
     }
 
     /**
@@ -44,7 +51,17 @@ class UserRestored
     public function broadcastWith()
     {
         return [
-            'user' => $this->user
+            'id' => $this->id
         ];
+    }
+
+    /**
+     * Determine if this event should broadcast.
+     *
+     * @return bool
+     */
+    public function broadcastWhen()
+    {
+        return true;
     }
 }

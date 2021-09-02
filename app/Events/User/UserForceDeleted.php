@@ -32,7 +32,17 @@ class UserForceDeleted
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('user.force-deleted.' . $this->id);
+        return new PrivateChannel('user');
+    }
+
+    /**
+     * The event's broadcast name.
+     *
+     * @return string
+     */
+    public function broadcastAs()
+    {
+        return 'user.force-deleted';
     }
 
     /**
@@ -45,5 +55,15 @@ class UserForceDeleted
         return [
             'id' => $this->id,
         ];
+    }
+
+    /**
+     * Determine if this event should broadcast.
+     *
+     * @return bool
+     */
+    public function broadcastWhen()
+    {
+        return true;
     }
 }

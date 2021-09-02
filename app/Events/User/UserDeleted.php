@@ -2,15 +2,13 @@
 
 namespace App\Events\User;
 
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class UserDeleted
+class UserDeleted implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -32,13 +30,33 @@ class UserDeleted
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('user.deleted.' . $this->id);
+        return new PrivateChannel('user');
+    }
+
+    /**
+     * The event's broadcast name.
+     *
+     * @return string
+     */
+    public function broadcastAs()
+    {
+        return 'user.deleted';
     }
 
     public function broadcastWith()
     {
         return [
-            'id' => $this->id,
+            'id' => $this->id
         ];
+    }
+
+    /**
+     * Determine if this event should broadcast.
+     *
+     * @return bool
+     */
+    public function broadcastWhen()
+    {
+        return true;
     }
 }

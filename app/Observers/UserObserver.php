@@ -2,8 +2,9 @@
 
 namespace App\Observers;
 
+use Activation;
 use App\Models\User;
-use App\Models\Activation;
+
 
 use App\Events\User\UserCreated;
 use App\Events\User\UserUpdated;
@@ -24,7 +25,6 @@ class UserObserver
         /**
          * Create and send Activation link
          */
-
         Activation::create($user);
         if (config("broadcasting.default") == "pusher") {
             broadcast(new UserCreated($user->id));

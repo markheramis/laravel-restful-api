@@ -11,7 +11,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class UserUpdated
+class UserUpdated implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -33,7 +33,7 @@ class UserUpdated
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('user.updated.' . $this->id);
+        return new PrivateChannel('user');
     }
 
     /**
