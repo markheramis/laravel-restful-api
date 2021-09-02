@@ -11,7 +11,6 @@ use App\Models\Role;
 use App\Models\Category;
 use App\Models\Option;
 use App\Models\Media;
-use App\Models\Permission;
 use App\Models\Throttle;
 use App\Models\Activation;
 
@@ -20,7 +19,6 @@ use App\Observers\RoleObserver;
 use App\Observers\CategoryObserver;
 use App\Observers\OptionObserver;
 use App\Observers\MediaObserver;
-use App\Observers\PermissionObserver;
 use App\Observers\ThrottleObserver;
 use App\Observers\ActivationObserver;
 
@@ -71,7 +69,6 @@ class AppServiceProvider extends ServiceProvider
         Category::observe(CategoryObserver::class);
         Option::observe(OptionObserver::class);
         Media::observe(MediaObserver::class);
-        Permission::observe(PermissionObserver::class);
         Throttle::observe(ThrottleObserver::class);
         Activation::observe(ActivationObserver::class);
     }
