@@ -61,7 +61,8 @@ build-composer:
   image: composer:latest
   stage: build
   script:
-    - cp .env.testing.example .env
+    - cp .env.gitlab .env
+    - cp .env.gitlab .env.testing
     - composer install
   only:
     - pull_request
@@ -89,6 +90,7 @@ artisan-test:
   parallel: 2
   services:
     - name: mysql:8.0
+    - name: redis:latest
   before_script:
     - php artisan storage:link
     - php artisan key:generate
