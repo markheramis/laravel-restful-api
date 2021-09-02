@@ -4,6 +4,12 @@ namespace App\Observers;
 
 use App\Models\Role;
 
+use App\Events\Role\RoleCreated;
+use App\Events\Role\RoleUpdated;
+use App\Events\Role\RoleDeleted;
+use App\Events\Role\RoleRestored;
+use App\Events\Role\RoleForceDeleted;
+
 class RoleObserver
 {
     /**
@@ -14,7 +20,9 @@ class RoleObserver
      */
     public function created(Role $role)
     {
-        //
+        if (config("broadcast.default") == "pusher") {
+            broadcast(new RoleCreated($role->id));
+        }
     }
 
     /**
@@ -25,7 +33,9 @@ class RoleObserver
      */
     public function updated(Role $role)
     {
-        //
+        if (config("broadcast.default") == "pusher") {
+            broadcast(new RoleUpdated($role->id));
+        }
     }
 
     /**
@@ -36,7 +46,9 @@ class RoleObserver
      */
     public function deleted(Role $role)
     {
-        //
+        if (config("broadcast.default") == "pusher") {
+            broadcast(new RoleDeleted($role->id));
+        }
     }
 
     /**
@@ -47,7 +59,9 @@ class RoleObserver
      */
     public function restored(Role $role)
     {
-        //
+        if (config("broadcast.default") == "pusher") {
+            broadcast(new RoleRestored($role->id));
+        }
     }
 
     /**
@@ -58,6 +72,8 @@ class RoleObserver
      */
     public function forceDeleted(Role $role)
     {
-        //
+        if (config("broadcast.default") == "pusher") {
+            broadcast(new RoleForceDeleted($role->id));
+        }
     }
 }
