@@ -2,9 +2,14 @@
 
 namespace App\Observers;
 
-use Sentinel;
-use Activation;
 use App\Models\User;
+use App\Models\Activation;
+
+use App\Events\User\UserCreated;
+use App\Events\User\UserUpdated;
+use App\Events\User\UserRestored;
+use App\Events\User\UserDeleted;
+use App\Events\User\UserForceDeleted;
 
 class UserObserver
 {
@@ -19,7 +24,9 @@ class UserObserver
         /**
          * Create and send Activation link
          */
-        $activation = Activation::create($user);
+        
+         Activation::create($user);
+        broadcast(new UserCreated($user->id));
     }
 
     /**
@@ -30,7 +37,7 @@ class UserObserver
      */
     public function updated(User $user)
     {
-        //
+        broadcast(new UserUpdated($user->id));
     }
 
     /**
@@ -41,7 +48,7 @@ class UserObserver
      */
     public function deleted(User $user)
     {
-        //
+        broadcast(new UserDeleted($user->id));
     }
 
     /**
@@ -52,7 +59,7 @@ class UserObserver
      */
     public function restored(User $user)
     {
-        //
+        broadcast(new UserRestored($user->id));
     }
 
     /**
@@ -63,6 +70,6 @@ class UserObserver
      */
     public function forceDeleted(User $user)
     {
-        //
+        broadcast(new UserForceDeleted($user->id));
     }
 }
