@@ -73,6 +73,7 @@ build-composer:
   artifacts:
     paths:
       - .env
+      - .env.testing
       - vendor
       - storage/logs
     expire_in: 1 week
