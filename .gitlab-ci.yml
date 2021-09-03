@@ -92,6 +92,8 @@ artisan-test:
     - name: mysql:8.0
     - name: redis:latest
   before_script:
+    - php artisan config:cache
+    - cat bootstrap/cache/config.php
     - php artisan storage:link
     - php artisan key:generate
     - php artisan migrate
