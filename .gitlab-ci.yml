@@ -114,6 +114,7 @@ artisan-test:
     paths:
       - .env
       - .env.testing
+      - bootstrap/cache/
       - storage/logs/
     expire_in: 1 day
     when: always
