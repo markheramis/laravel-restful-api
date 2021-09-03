@@ -98,7 +98,7 @@ artisan-test:
     - php artisan passport:install
     - php artisan scribe:generate --force
   script:
-    - php artisan queue:work &
+    - php artisan queue:work >> storage/logs/queue.log &
     - php artisan serve &
     - php artisan test --env=testing
   only:
