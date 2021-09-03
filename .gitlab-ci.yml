@@ -16,6 +16,7 @@ variables:
   MYSQL_USER: homestead
   MYSQL_PASSWORD: secret
   MYSQL_ROOT_PASSWORD: secret
+  REDIS_PORT: 6379
   
 include:
   - template: Jobs/Code-Quality.gitlab-ci.yml # https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Code-Quality.gitlab-ci.yml
@@ -61,7 +62,6 @@ build-composer:
   image: composer:latest
   stage: build
   script:
-    - cp .env.testing.example .env
     - composer install
   only:
     - pull_request
@@ -71,9 +71,7 @@ build-composer:
     - production
   artifacts:
     paths:
-      - .env
       - vendor
-      - storage/logs
     expire_in: 1 week
   cache:
     key: "${CI_JOB_NAME}-composer"
@@ -89,7 +87,10 @@ artisan-test:
   parallel: 2
   services:
     - name: mysql:8.0
+    - name: redis:latest
   before_script:
+    - cp .env.gitlab .env
+    - cp .env.gitlab .env.testing
     - php artisan storage:link
     - php artisan key:generate
     - php artisan migrate
@@ -97,7 +98,7 @@ artisan-test:
     - php artisan passport:install
     - php artisan scribe:generate --force
   script:
-    - php artisan queue:work &
+    - php artisan queue:work >> storage/logs/queue.log &
     - php artisan serve &
     - php artisan test --env=testing
   only:
@@ -108,6 +109,9 @@ artisan-test:
     - production
   artifacts:
     paths:
+      - .env
+      - .env.testing
+      - bootstrap/cache/
       - storage/logs/
     expire_in: 1 day
     when: always
@@ -120,7 +124,6 @@ artisan-test:
   needs:
     - build-docker
     - build-composer
-
 php-lint:
   image:
     name: $DOCKER_IMAGE

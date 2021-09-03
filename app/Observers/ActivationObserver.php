@@ -5,6 +5,8 @@ namespace App\Observers;
 use App\Models\Activation;
 use App\Mail\UserActivation;
 use Illuminate\Support\Facades\Mail;
+use App\Events\Activation\ActivationCreated;
+use App\Events\Activation\ActivationUpdated;
 
 class ActivationObserver
 {
@@ -26,6 +28,10 @@ class ActivationObserver
              */
             Mail::to($email)->queue(new UserActivation($activation));
         }
+
+        if (config("broadcasting.default") == "pusher") {
+            broadcast(new ActivationCreated($activation->id));
+        }
     }
 
     /**
@@ -36,39 +42,8 @@ class ActivationObserver
      */
     public function updated(Activation $activation)
     {
-        //
-    }
-
-    /**
-     * Handle the activation "deleted" event.
-     *
-     * @param  \App\Models\Activation  $activation
-     * @return void
-     */
-    public function deleted(Activation $activation)
-    {
-        //
-    }
-
-    /**
-     * Handle the activation "restored" event.
-     *
-     * @param  \App\Models\Activation  $activation
-     * @return void
-     */
-    public function restored(Activation $activation)
-    {
-        //
-    }
-
-    /**
-     * Handle the activation "force deleted" event.
-     *
-     * @param  \App\Models\Activation  $activation
-     * @return void
-     */
-    public function forceDeleted(Activation $activation)
-    {
-        //
+        if (config("broadcasting.default") == "pusher") {
+            broadcast(new ActivationUpdated($activation->id));
+        }
     }
 }
