@@ -94,7 +94,6 @@ artisan-test:
     - name: redis:latest
   before_script:
     - php artisan config:cache
-    - cat bootstrap/cache/config.php
     - php artisan storage:link
     - php artisan key:generate
     - php artisan migrate
@@ -113,6 +112,8 @@ artisan-test:
     - production
   artifacts:
     paths:
+      - .env
+      - .env.testing
       - storage/logs/
     expire_in: 1 day
     when: always
