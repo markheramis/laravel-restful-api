@@ -11,6 +11,21 @@ use Illuminate\Queue\SerializesModels;
 class UserCreated implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
+
+    /**
+     * The name of the queue connection to use when broadcasting the event.
+     *
+     * @var string
+     */
+    public $connection = 'redis';
+
+    /**
+     * The name of the queue on which to place the broadcasting job.
+     *
+     * @var string
+     */
+    public $queue = 'default';
+
     private int $id;
     public bool $afterCommit = true;
     /**
