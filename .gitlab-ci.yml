@@ -16,6 +16,7 @@ variables:
   MYSQL_USER: homestead
   MYSQL_PASSWORD: secret
   MYSQL_ROOT_PASSWORD: secret
+  REDIS_PORT: 6379
   
 include:
   - template: Jobs/Code-Quality.gitlab-ci.yml # https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Code-Quality.gitlab-ci.yml
@@ -123,7 +124,6 @@ artisan-test:
   needs:
     - build-docker
     - build-composer
-
 php-lint:
   image:
     name: $DOCKER_IMAGE
