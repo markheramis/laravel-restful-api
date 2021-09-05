@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UserLoginRequest;
 use App\Http\Requests\UserRegisterRequest;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
+use Google2FA;
 
 /**
  * @group Auth Management
@@ -69,6 +70,7 @@ class AuthController extends Controller
             "password" => $request->password,
             "first_name" => $request->first_name,
             "last_name" => $request->last_name,
+            "google2fa_secret" => Google2FA::generateSecretKey(),
         ];
         $role = $request->role;
         $activate = $request->activate === "true" ? true : false;

@@ -30,3 +30,4 @@ class AddMfaSecretColumnToUsersTable extends Migration
         });
     }
 }
+    

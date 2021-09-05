@@ -5,19 +5,19 @@ return [
     /*
      * Enable / disable Google2FA.
      */
-    'enabled' => env('OTP_ENABLED', true),
+    'enabled' => env('OTP_ENABLED', env('OTP_ENABLED', true)),
 
     /*
      * Lifetime in minutes.
      *
      * In case you need your users to be asked for a new one time passwords from time to time.
      */
-    'lifetime' => env('OTP_LIFETIME', 0), // 0 = eternal
+    'lifetime' => env('OTP_LIFETIME', env('OTP_LIFETIME', 0)), // 0 = eternal
 
     /*
      * Renew lifetime at every new request.
      */
-    'keep_alive' => env('OTP_KEEP_ALIVE', true),
+    'keep_alive' => env('OTP_KEEP_ALIVE', env('OTP_KEEP_ALIVE', true)),
 
     /*
      * Auth container binding.
@@ -57,7 +57,7 @@ return [
     /*
      * One Time Password View.
      */
-    'view' => 'google2fa.index',
+    'view' => '',
 
     /*
      * One Time Password error message.

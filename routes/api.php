@@ -12,6 +12,7 @@
  */
 
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\AuthMultiFactorController;
 use App\Http\Controllers\API\MediaController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\UserPermissionController;
@@ -32,6 +33,9 @@ Route::prefix('user')->middleware(['auth:api'])->group(function () {
         Route::get('/', [UserController::class, 'show'])->name('user.show');
         Route::put('/', [UserController::class, 'update'])->name('user.update');
         Route::delete('/', [UserController::class, 'destroy'])->name('user.destroy');
+        Route::prefix('mfa')->group(function () {
+            Route::get('/', [AuthMultiFactorController::class, 'getQRCode'])->name('user.mfa.qr');
+        });
         Route::prefix('role')->group(function () {
             Route::get('/', [UserRoleController::class, 'show'])->name('user.role.show');
             Route::post('/', [UserRoleController::class, 'store'])->name('user.role.store');

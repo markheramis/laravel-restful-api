@@ -2,11 +2,8 @@
 
 namespace Database\Factories;
 
-use Activation;
-
+use Google2FA;
 use App\Models\User;
-use App\Models\Role;
-
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class UserFactory extends Factory
@@ -35,6 +32,7 @@ class UserFactory extends Factory
             'password' => bcrypt('password12345'),
             'first_name' => $first_name,
             'last_name' => $last_name,
+            "google2fa_secret" => Google2FA::generateSecretKey(),
         ];
     }
 
