@@ -13,7 +13,7 @@ class AuthMultiFactorVerifyCodeRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,7 @@ class AuthMultiFactorVerifyCodeRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'code' => ['string', 'required']
         ];
     }
 }
