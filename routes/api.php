@@ -35,6 +35,7 @@ Route::prefix('user')->middleware(['auth:api'])->group(function () {
         Route::delete('/', [UserController::class, 'destroy'])->name('user.destroy');
         Route::prefix('mfa')->group(function () {
             Route::get('/', [AuthMultiFactorController::class, 'getQRCode'])->name('user.mfa.qr');
+            Route::post('/', [AuthMultiFactorController::class, 'verifyCode'])->name('user.mfa.verify');
         });
         Route::prefix('role')->group(function () {
             Route::get('/', [UserRoleController::class, 'show'])->name('user.role.show');
