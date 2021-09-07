@@ -22,11 +22,16 @@ use App\Http\Controllers\API\OptionController;
 use App\Http\Controllers\API\CategoryController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('me', [AuthController::class, 'me'])->middleware(['auth:api'])->name('api.me');
-Route::post('login', [AuthController::class, 'login'])->name('api.login');
-Route::post('register', [AuthController::class, 'register'])->name('api.register');
-Route::post('activate', [UserController::class, 'activate'])->name('api.user.activate');
-Route::post('mfa', [AuthMultiFactorController::class, 'verifyCode'])->middleware(['auth:api']);
+
+Route::prefix('auth')->group(function () {
+    Route::post('login', [AuthController::class, 'login'])->name('api.login');
+    Route::post('register', [AuthController::class, 'register'])->name('api.register');
+    Route::post('activate', [UserController::class, 'activate'])->name('api.user.activate');
+    Route::middleware(['auth:api'])->group(function () {
+        Route::get('me', [AuthController::class, 'me'])->name('api.me');
+        Route::post('mfa', [AuthMultiFactorController::class, 'verifyCode'])->name('api.mfa.verfiy');
+    });
+});
 
 Route::prefix('user')->middleware(['auth:api'])->group(function () {
     Route::get('/', [UserController::class, 'index'])->name('user.index');
@@ -36,7 +41,6 @@ Route::prefix('user')->middleware(['auth:api'])->group(function () {
         Route::delete('/', [UserController::class, 'destroy'])->name('user.destroy');
         Route::prefix('mfa')->group(function () {
             Route::get('/', [AuthMultiFactorController::class, 'getQRCode'])->name('user.mfa.qr');
-            Route::post('/', [AuthMultiFactorController::class, 'verifyCode'])->name('user.mfa.verify');
         });
         Route::prefix('role')->group(function () {
             Route::get('/', [UserRoleController::class, 'show'])->name('user.role.show');

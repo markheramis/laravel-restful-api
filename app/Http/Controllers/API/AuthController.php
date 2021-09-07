@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UserLoginRequest;
 use App\Http\Requests\UserRegisterRequest;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
-use Google2FA;
 
 /**
  * @group Auth Management
