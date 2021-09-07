@@ -46,8 +46,6 @@ class UserController extends Controller
                 ->orWhere("first_name", "LIKE", "%$search%")
                 ->orWhere("last_name", "LIKE", "%$search%");
         })->paginate();
-
-
         $users = $rolePaginator->getCollection();
         $response = fractal()
             ->collection($users)
