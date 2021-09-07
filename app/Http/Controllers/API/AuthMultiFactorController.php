@@ -47,6 +47,15 @@ class AuthMultiFactorController extends Controller
      */
     public function verifyCode(AuthMultiFactorVerifyCodeRequest $request, User $user)
     {
-        return Google2FA::verifyKey($user->google2fa_secret, $request->code);
+        // Get all 2FAs
+        $google2fas = $user->google2fa;
+        // Loop through all
+        foreach ($google2fas as $g2fa) {
+            // Check if one of them is valid
+            $result = Google2FA::verifyKey($g2fa->secret_key, $request->code);
+            if ($result) {
+                return $result;
+            }
+        }
     }
 }

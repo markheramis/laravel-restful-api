@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use Google2FA;
+
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
