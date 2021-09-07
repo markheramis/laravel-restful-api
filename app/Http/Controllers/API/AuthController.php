@@ -70,7 +70,6 @@ class AuthController extends Controller
             "password" => $request->password,
             "first_name" => $request->first_name,
             "last_name" => $request->last_name,
-            "google2fa_secret" => Google2FA::generateSecretKey(),
         ];
         $role = $request->role;
         $activate = $request->activate === "true" ? true : false;

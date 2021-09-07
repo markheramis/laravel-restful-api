@@ -32,7 +32,6 @@ class UserFactory extends Factory
             'password' => bcrypt('password12345'),
             'first_name' => $first_name,
             'last_name' => $last_name,
-            "google2fa_secret" => Google2FA::generateSecretKey(),
         ];
     }
 
