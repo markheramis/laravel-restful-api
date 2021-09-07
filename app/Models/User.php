@@ -70,6 +70,15 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         });
     }
 
+    public function permissions()
+    {
+        return $this->roles->pluck('permissions')->map(function ($item) {
+            return array_filter($item, function ($value) {
+                return $value;
+            });
+        })->toArray();
+    }
+
     /**
      * Get the route key for the model.
      *
