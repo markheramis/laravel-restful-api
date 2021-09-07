@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests\AuthMultiFactoryGetQRCodeRequest;
 use App\Http\Requests\AuthMultiFactorVerifyCodeRequest;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * @group Multi Factor Management
@@ -45,8 +46,9 @@ class AuthMultiFactorController extends Controller
      * @param User $user
      * @return void
      */
-    public function verifyCode(AuthMultiFactorVerifyCodeRequest $request, User $user)
+    public function verifyCode(AuthMultiFactorVerifyCodeRequest $request)
     {
+        $user = Auth::user();
         // Get all 2FAs
         $google2fas = $user->google2fa;
         // Loop through all

@@ -26,6 +26,7 @@ Route::get('me', [AuthController::class, 'me'])->middleware(['auth:api'])->name(
 Route::post('login', [AuthController::class, 'login'])->name('api.login');
 Route::post('register', [AuthController::class, 'register'])->name('api.register');
 Route::post('activate', [UserController::class, 'activate'])->name('api.user.activate');
+Route::post('mfa', [AuthMultiFactorController::class, 'verifyCode'])->middleware(['auth:api']);
 
 Route::prefix('user')->middleware(['auth:api'])->group(function () {
     Route::get('/', [UserController::class, 'index'])->name('user.index');
