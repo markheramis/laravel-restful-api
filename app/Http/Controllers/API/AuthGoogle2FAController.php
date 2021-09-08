@@ -51,9 +51,9 @@ class AuthGoogle2FAController extends Controller
         // Loop through all
         foreach ($google2fas as $g2fa) {
             // Check if one of them is valid
-            $result = Google2FA::verifyKey($g2fa->secret_key, $request->code);
-            if ($result) {
-                return $result;
+            if ($result = Google2FA::verifyKey($g2fa->secret_key, $request->code)) {
+                \session(['googleVerified' => true]);
+                return response()->success();
             }
         }
     }

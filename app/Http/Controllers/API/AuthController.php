@@ -5,10 +5,12 @@ namespace App\Http\Controllers\API;
 use Auth;
 use Authy\AuthyApi;
 use App\Models\User;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserLoginRequest;
 use App\Http\Requests\UserRegisterRequest;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
+
 
 /**
  * @group Auth Management
@@ -83,6 +85,22 @@ class AuthController extends Controller
      */
     public function register(UserRegisterRequest $request)
     {
+        $user = $this->createUser($request);
+        $this->create_authy_api($user);
+        $role = $request->role;
+        $this->attachRole($user, $role);
+        return response()->success('User Registered Successfully');
+    }
+
+    /**
+     * Create the User
+     *
+     * @link https://cartalyst.com/manual/sentinel/5.x#sentinel-register
+     * @param Request $request
+     * @return User
+     */
+    private function createUser(Request $request)
+    {
         $credentials = [
             "username" => $request->username,
             "email" => $request->email,
@@ -92,14 +110,9 @@ class AuthController extends Controller
             "phone_number" => $request->phone_number,
             "country_code" => $request->country_code,
         ];
-
-
-        $role = $request->role;
-        $activate = $request->activate === "true" ? true : false;
+        $activate = $request->activate;
         $user = Sentinel::register($credentials, $activate);
-        $this->create_authy_api($user);
-        $this->attachRole($user, $role);
-        return response()->success('User Registered Successfully');
+        return $user;
     }
 
     private function attachRole($user, $role)
