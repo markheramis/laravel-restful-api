@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use Google2FA;
+use App\Models\User;
 use App\Models\Google2FA as Google2FAModel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 

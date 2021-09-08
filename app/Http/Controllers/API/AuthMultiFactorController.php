@@ -13,16 +13,16 @@ use Illuminate\Support\Facades\Auth;
 
 /**
  * @group Multi Factor Management
- * 
+ *
  * APIs for managing Multi-Factor Authentication
  */
 class AuthMultiFactorController extends Controller
 {
     /**
      * Get QR Code
-     * 
+     *
      * This endpoint lets you get a QR code for a user.
-     * 
+     *
      * @authenticated
      * @param Request $request
      * @param User $user
@@ -39,7 +39,7 @@ class AuthMultiFactorController extends Controller
 
     /**
      * Verify Multi-Factor Authentication Code
-     * 
+     *
      * This endpoint lets you verify the Multi-Factor Authentication Code.
      *
      * @param AuthMultiFactorVerifyCodeRequest $request
