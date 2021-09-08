@@ -35,7 +35,7 @@ class AuthGoogle2FAController extends Controller
         );
     }
     /**
-     * Verify Multi-Factor Authentication Code for Google
+     * Verify OTP
      *
      * This endpoint lets you verify the OTP from Google
      *

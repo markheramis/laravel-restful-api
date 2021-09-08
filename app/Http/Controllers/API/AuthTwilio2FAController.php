@@ -14,7 +14,7 @@ use App\Http\Requests\AuthTwilio2FAVerifyCodeRequest;
 class AuthTwilio2FAController extends Controller
 {
     /**
-     * Verify Two-Factor Authentication Code for Twilio
+     * Verify OTP
      * 
      * This endpoint lets you verify the OTP from Twilio
      * @authenticated
