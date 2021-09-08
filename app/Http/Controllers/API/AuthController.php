@@ -40,23 +40,38 @@ class AuthController extends Controller
      */
     public function login(UserLoginRequest $request)
     {
-        $credentials = ["password" => $request->password];
-        if ($request->has("email"))
-            $credentials["email"] = $request->email;
-        if ($request->has("username"))
-            $credentials["username"] = $request->username;
+        $credentials = $this->processCredentials($request);
         # attempt to login
         if ($user = Sentinel::stateless($credentials)) {
+            // If has phone number
+
+            $isGoogleMultiFactor = $user->google2fa->count();
+            $isTwilioAuthyTwoFactor = (bool) user->phone_number;
             $token = $user->createToken('MyApp')->accessToken;
+            if ($isGoogleMultiFactor)
+                $redirect = 'auth/verify/otp';
+            else if ($isTwilioAuthyTwoFactor)
+                $redirect = 'auth/verify/sms';
+            else
+                $redirect = 'dashboard';
             return response()->success([
-                'token' => $token,
-                'g2fa' => (bool) $user->google2fa->count(),
+                'redirect' => $redirect,
+                'token' => $token
             ]);
         } else {
             return response()->error('Invalid User', 401);
         }
     }
 
+    private function processCredentials(UserLoginRequest $request): array
+    {
+        $credentials = ["password" => $request->password];
+        if ($request->has("email"))
+            $credentials["email"] = $request->email;
+        if ($request->has("username"))
+            $credentials["username"] = $request->username;
+        return $credentials;
+    }
     /**
      * Register API
      * 
