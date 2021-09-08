@@ -47,7 +47,10 @@ class AuthController extends Controller
         # attempt to login
         if ($user = Sentinel::stateless($credentials)) {
             $token = $user->createToken('MyApp')->accessToken;
-            return response()->success($token);
+            return response()->success([
+                'token' => $token,
+                'g2fa' => (bool) $user->google2fa->count(),
+            ]);
         } else {
             return response()->error('Invalid User', 401);
         }
