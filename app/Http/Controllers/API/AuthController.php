@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use Auth;
+use Authy\AuthyApi;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserLoginRequest;
 use App\Http\Requests\UserRegisterRequest;
@@ -72,7 +73,16 @@ class AuthController extends Controller
             "password" => $request->password,
             "first_name" => $request->first_name,
             "last_name" => $request->last_name,
+            "phone_number" => $request->phone_number,
+            "country_code" => $request->country_code,
         ];
+
+        $authy_api = new AuthyApi(getenv("AUTHY_SECRET"));
+        $authy_user = $authy_api->registerUser(
+            $credentials['email'],
+            $credentials['phone_number'],
+            $credentials['country_code']
+        );
         $role = $request->role;
         $activate = $request->activate === "true" ? true : false;
         $user = Sentinel::register($credentials, $activate);
