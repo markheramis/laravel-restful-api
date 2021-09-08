@@ -32,6 +32,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'first_name',
         'last_name',
         'permissions',
+        'phone_number',
+        'authy_id' // Temporary.
     ];
 
     /**
