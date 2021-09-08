@@ -24,7 +24,7 @@ class MFAShowTest extends TestCase
         $mfa = Google2FA::factory()->create([
             'user_id' => $user->id
         ]);
-        $url = route("user.mfa.qr", [$user->id]);
+        $url = route("user.qr.google", [$user->id]);
         $response = $this->json("GET", $url);
         $response->assertStatus(401);
         $mfa->delete();
@@ -36,7 +36,7 @@ class MFAShowTest extends TestCase
         $mfa = Google2FA::factory()->create([
             'user_id' => $user->id
         ]);
-        $url = route("user.mfa.qr", [$user->id]);
+        $url = route("user.qr.google", [$user->id]);
         $token = $this->getTokenByRole("administrator");
         $header = [
             "Authorization" => "Bearer $token",
@@ -52,7 +52,7 @@ class MFAShowTest extends TestCase
         $mfa = Google2FA::factory()->create([
             'user_id' => $user->id
         ]);
-        $url = route("user.mfa.qr", [$user->id]);
+        $url = route("user.qr.google", [$user->id]);
         $token = $this->getTokenByRole("moderator");
         $header = [
             "Authorization" => "Bearer $token",
@@ -68,7 +68,7 @@ class MFAShowTest extends TestCase
         $mfa = Google2FA::factory()->create([
             'user_id' => $user->id
         ]);
-        $url = route("user.mfa.qr", [$user->id]);
+        $url = route("user.qr.google", [$user->id]);
         $token = $this->getTokenByRole("subscriber");
         $header = [
             "Authorization" => "Bearer $token",

@@ -44,7 +44,7 @@ Route::prefix('user')->middleware(['auth:api'])->group(function () {
         Route::put('/', [UserController::class, 'update'])->name('user.update');
         Route::delete('/', [UserController::class, 'destroy'])->name('user.destroy');
         Route::prefix('mfa')->group(function () {
-            Route::get('g', [AuthGoogle2FAController::class, 'getQRCode'])->name('user.mfa.qr');
+            Route::get('g', [AuthGoogle2FAController::class, 'getQRCode'])->name('user.qr.google');
         });
         Route::prefix('role')->group(function () {
             Route::get('/', [UserRoleController::class, 'show'])->name('user.role.show');
