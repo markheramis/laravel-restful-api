@@ -10,7 +10,7 @@ use App\Http\Requests\AuthGoogle2FAGetQRCodeRequest;
 use App\Http\Requests\AuthGoogle2FAVerifyCodeRequest;
 
 /**
- * @group Google Two Factor Authentication
+ * @group Multi-Factor Google
  * 
  * APIs for doing two factor authentication with Google
  */

@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\AuthTwilio2FAVerifyCodeRequest;
 
 /**
- * @group Twilio Two Factor Authentication
+ * @group Multi-Factor Twilio
  * 
  * APIs for doing two factor authentication with Twilio
  */
