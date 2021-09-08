@@ -2,21 +2,15 @@
 
 namespace App\Http\Controllers\API;
 
+use Auth;
 use Google2FA;
 use App\Models\User;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\AuthGoogle2FAGetQRCodeRequest;
+use App\Http\Requests\AuthGoogle2FAVerifyCodeRequest;
 
-use App\Http\Requests\AuthMultiFactoryGetQRCodeRequest;
-use App\Http\Requests\AuthMultiFactorVerifyCodeRequest;
-use Illuminate\Support\Facades\Auth;
 
-/**
- * @group Multi Factor Management
- *
- * APIs for managing Multi-Factor Authentication
- */
-class AuthMultiFactorController extends Controller
+class AuthGoogle2FAController extends Controller
 {
     /**
      * Get QR Code
@@ -24,11 +18,11 @@ class AuthMultiFactorController extends Controller
      * This endpoint lets you get a QR code for a user.
      *
      * @authenticated
-     * @param Request $request
+     * @param AuthGoogle2FAGetQRCodeRequest $request
      * @param User $user
      * @return void
      */
-    public function getQRCode(AuthMultiFactoryGetQRCodeRequest $request, User $user)
+    public function getQRCode(AuthGoogle2FAGetQRCodeRequest $request, User $user)
     {
         return Google2FA::getQRCodeInline(
             $user->username,
@@ -36,17 +30,16 @@ class AuthMultiFactorController extends Controller
             $user->google2fa_secret
         );
     }
-
     /**
      * Verify Multi-Factor Authentication Code
      *
      * This endpoint lets you verify the Multi-Factor Authentication Code.
      *
-     * @param AuthMultiFactorVerifyCodeRequest $request
+     * @param AuthGoogle2FAVerifyCodeRequest $request
      * @param User $user
      * @return void
      */
-    public function verifyCode(AuthMultiFactorVerifyCodeRequest $request)
+    public function verifyCode(AuthGoogle2FAVerifyCodeRequest $request)
     {
         $user = Auth::user();
         // Get all 2FAs

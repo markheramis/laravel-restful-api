@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class AuthMultiFactoryGetQRCodeRequest extends FormRequest
+class AuthGoogle2FAVerifyCodeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,6 +23,8 @@ class AuthMultiFactoryGetQRCodeRequest extends FormRequest
      */
     public function rules()
     {
-        return [];
+        return [
+            'code' => ['string', 'required']
+        ];
     }
 }

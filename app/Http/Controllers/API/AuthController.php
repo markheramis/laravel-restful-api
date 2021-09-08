@@ -45,17 +45,17 @@ class AuthController extends Controller
         if ($user = Sentinel::stateless($credentials)) {
             // If has phone number
 
-            $isGoogleMultiFactor = $user->google2fa->count();
-            $isTwilioAuthyTwoFactor = (bool) user->phone_number;
+            $isGoogleMultiFactor = (bool) $user->google2fa->count();
+            $isTwilioAuthyTwoFactor = (bool) $user->phone_number;
             $token = $user->createToken('MyApp')->accessToken;
             if ($isGoogleMultiFactor)
-                $redirect = 'auth/verify/otp';
+                $verify = 'g';
             else if ($isTwilioAuthyTwoFactor)
-                $redirect = 'auth/verify/sms';
+                $verify = 't';
             else
-                $redirect = 'dashboard';
+                $verify = false;
             return response()->success([
-                'redirect' => $redirect,
+                'verify' => $verify,
                 'token' => $token
             ]);
         } else {
