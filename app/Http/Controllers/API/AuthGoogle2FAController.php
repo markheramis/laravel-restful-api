@@ -29,7 +29,7 @@ class AuthGoogle2FAController extends Controller
     public function getQRCode(AuthGoogle2FAGetQRCodeRequest $request, User $user)
     {
         return Google2FA::getQRCodeInline(
-            $user->username,
+            `${config('app.title')}: $user->username`,
             $user->email,
             $user->google2fa_secret
         );
