@@ -9,7 +9,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\AuthGoogle2FAGetQRCodeRequest;
 use App\Http\Requests\AuthGoogle2FAVerifyCodeRequest;
 
-
+/**
+ * @group Google Two Factor Authentication
+ * 
+ * APIs for doing two factor authentication with Google
+ */
 class AuthGoogle2FAController extends Controller
 {
     /**
@@ -31,9 +35,9 @@ class AuthGoogle2FAController extends Controller
         );
     }
     /**
-     * Verify Multi-Factor Authentication Code
+     * Verify Multi-Factor Authentication Code for Google
      *
-     * This endpoint lets you verify the Multi-Factor Authentication Code.
+     * This endpoint lets you verify the OTP from Google
      *
      * @param AuthGoogle2FAVerifyCodeRequest $request
      * @param User $user

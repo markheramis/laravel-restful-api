@@ -6,8 +6,21 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\AuthTwilio2FAVerifyCodeRequest;
 
+/**
+ * @group Twilio Two Factor Authentication
+ * 
+ * APIs for doing two factor authentication with Twilio
+ */
 class AuthTwilio2FAController extends Controller
 {
+    /**
+     * Verify Two-Factor Authentication Code for Twilio
+     * 
+     * This endpoint lets you verify the OTP from Twilio
+     * @authenticated
+     * @param AuthTwilio2FAVerifyCodeRequest $request
+     * @return void
+     */
     public function verifyCode(AuthTwilio2FAVerifyCodeRequest $request)
     {
         return 'verify twilio';
