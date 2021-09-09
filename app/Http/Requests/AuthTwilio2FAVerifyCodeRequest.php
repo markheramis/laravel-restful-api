@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests;
 
+use Auth;
 use App\Http\Requests\FormRequest;
-use Illuminate\Support\Facades\Auth;
 
-class RoleShowRequest extends FormRequest
+class AuthTwilio2FAVerifyCodeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -14,8 +14,7 @@ class RoleShowRequest extends FormRequest
      */
     public function authorize()
     {
-        if (!Auth::check()) return;
-        return Auth::user()->hasAccess('role.index');
+        return Auth::check();
     }
 
     /**
@@ -26,7 +25,7 @@ class RoleShowRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'code' => ['string', 'required']
         ];
     }
 }

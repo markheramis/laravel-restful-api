@@ -21,10 +21,17 @@ use App\Http\Controllers\API\OptionController;
 use App\Http\Controllers\API\CategoryController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('me', [AuthController::class, 'me'])->middleware(['auth:api'])->name('api.me');
-Route::post('login', [AuthController::class, 'login'])->name('api.login');
-Route::post('register', [AuthController::class, 'register'])->name('api.register');
-Route::post('activate', [UserController::class, 'activate'])->name('api.user.activate');
+
+Route::prefix('auth')->group(function () {
+    Route::post('login', [AuthController::class, 'login'])->name('api.login');
+    Route::post('register', [AuthController::class, 'register'])->name('api.register');
+    Route::post('activate', [UserController::class, 'activate'])->name('api.user.activate');
+    Route::middleware(['auth:api'])->group(function () {
+        Route::get('me', [AuthController::class, 'me'])->name('api.me');
+    });
+});
+
+include_once('api_groups/multi-factor.php');
 
 Route::prefix('user')->middleware(['auth:api'])->group(function () {
     Route::get('/', [UserController::class, 'index'])->name('user.index');
