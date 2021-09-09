@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Http\Requests\FormRequest
+use App\Http\Requests\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
 class RoleIndexRequest extends FormRequest

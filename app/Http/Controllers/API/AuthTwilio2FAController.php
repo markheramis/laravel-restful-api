@@ -35,12 +35,12 @@ class AuthTwilio2FAController extends Controller
         if ($response->ok()) {
             // record login activity
             $device = $response->bodyvar('device');
-            Session::put('twilio2fa', true);
+            $request->session()->put('twilio2faVerified', "yes");
             $this->recordLoginActivity($device);
             // correct token
             return response()->success('valid token');
         } else {
-            Session::put('twilio2fa', false);
+            $request->session()->put('twilio2faVerified', "no");
             return response()->error('invalid token');
         }
     }
@@ -60,10 +60,7 @@ class AuthTwilio2FAController extends Controller
      */
     public function isAuthenticated(AuthTwilio2FAIsAuthenticatedRequest $request): JsonResponse
     {
-        $status = Session::get('twilio2fa');
-        if ($status)
-            return response()->success($status);
-        else
-            return response()->error($status);
+        $status = $request->session()->get('twilio2faVerified', "no");
+        return response()->success($status);
     }
 }

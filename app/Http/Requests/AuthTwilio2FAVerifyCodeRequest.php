@@ -3,7 +3,7 @@
 namespace App\Http\Requests;
 
 use Auth;
-use App\Http\Requests\FormRequest
+use App\Http\Requests\FormRequest;
 
 class AuthTwilio2FAVerifyCodeRequest extends FormRequest
 {

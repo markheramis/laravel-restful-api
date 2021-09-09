@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AuthGoogle2FAGetQRCodeRequest;
 use App\Http\Requests\AuthGoogle2FAVerifyCodeRequest;
+use App\Http\Requests\AuthTwilio2FAIsAuthenticatedRequest;
 use Illuminate\Http\JsonResponse;
 
 /**
@@ -60,11 +61,26 @@ class AuthGoogle2FAController extends Controller
         // Get all 2FAs
         $google2fas = $user->google2fa->where('id', $id)->first();
         if (Google2FA::verifyKey($google2fas->secret_key, $request->code)) {
-            Session::put('googleVerified', true);
+            $request->session()->put('google2faVerified', "yes");
             return response()->success('code verified successfully');
         } else {
-            Session::put('googleVerified', false);
+            $request->session()->put('google2faVerified', "no");
             return response()->error('unable to verify code');
         }
+    }
+
+    /**
+     * is Authenticated
+     * 
+     * This endpoint lets you verify if two-factor authentication with Authy is authenticated
+     *
+     * @authenticated
+     * @param AuthTwilio2FAIsAuthenticatedRequest $request
+     * return JsonResponse
+     */
+    public function isAuthenticated(AuthTwilio2FAIsAuthenticatedRequest $request): JsonResponse
+    {
+        $status = $request->session()->get('google2faVerified', "no");
+        return response()->success($status);
     }
 }

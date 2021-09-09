@@ -30,12 +30,10 @@ Route::prefix('auth')->group(function () {
     Route::post('activate', [UserController::class, 'activate'])->name('api.user.activate');
     Route::middleware(['auth:api'])->group(function () {
         Route::get('me', [AuthController::class, 'me'])->name('api.me');
-        Route::prefix('verify')->group(function () {
-            Route::post('g/{id}', [AuthGoogle2FAController::class, 'verifyCode'])->name('api.verify.google');
-            Route::post('t', [AuthTwilio2FAController::class, 'verifyCode'])->name('api.verify.twilio');
-        });
     });
 });
+
+include_once('api_groups/multi-factor.php');
 
 Route::prefix('user')->middleware(['auth:api'])->group(function () {
     Route::get('/', [UserController::class, 'index'])->name('user.index');
