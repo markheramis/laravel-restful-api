@@ -14,6 +14,7 @@ class UpdateAuthyColumnsToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
+            $table->string('country_code')->after('password')->nullable();
             $table->string('phone_number')->after('password')->nullable();
             $table->string('authy_id')->after('password')->nullable();
         });
@@ -27,6 +28,7 @@ class UpdateAuthyColumnsToUsersTable extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('country_code');
             $table->dropColumn('phone_number');
             $table->dropColumn('authy_id');
         });

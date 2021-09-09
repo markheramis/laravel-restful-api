@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\API;
 
+use Auth;
 use Authy\AuthyApi;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Http\Requests\AuthTwilio2FAVerifyCodeRequest;
 
 /**
@@ -26,10 +26,12 @@ class AuthTwilio2FAController extends Controller
     public function verifyCode(AuthTwilio2FAVerifyCodeRequest $request)
     {
         $authy_api = new AuthyApi(config('authy.app_secret'));
-        $response = $authy_api->verifyToken(auth()->user()->authy_id, $request->code);
-        if ($response->bodyvar("success")) {
-            \session(['twilioVerified' => true]);
-            return response()->success();
+        $authy_id = Auth::user()->authy_id;
+        $code = $request->code;
+        $verification = $authy_api->verifyToken($authy_id, $code);
+        if ($verification->ok()) {
+            // correct token
+            dd($verification);
         }
     }
 }

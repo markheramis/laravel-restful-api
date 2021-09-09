@@ -51,12 +51,19 @@ class AuthController extends Controller
             $isGoogleMultiFactor = (bool) $user->google2fa->count();
             $isTwilioAuthyTwoFactor = (bool) $user->phone_number;
             $token = $user->createToken('MyApp')->accessToken;
-            if ($isGoogleMultiFactor)
+            if ($isGoogleMultiFactor) {
                 $verify = 'g';
-            else if ($isTwilioAuthyTwoFactor)
+            } else if ($isTwilioAuthyTwoFactor) {
                 $verify = 't';
-            else
+                $authy_api = new AuthyApi(config('authy.app_secret'));
+                $authy_api->requestSms($user->authy_id, [
+                    "action" => "login",
+                    "action_message" => "Login code",
+                ]);
+                \session(['twilioVerified' => false]);
+            } else {
                 $verify = false;
+            }
             return response()->success([
                 'verify' => $verify,
                 'token' => $token
@@ -85,8 +92,19 @@ class AuthController extends Controller
      */
     public function register(UserRegisterRequest $request)
     {
-        $user = $this->createUser($request);
-        $this->create_authy_api($user);
+        $authy_id = $this->create_authy_api($request);
+        $activate = $request->activate;
+        $credentials = [
+            "username" => $request->username,
+            "email" => $request->email,
+            "password" => $request->password,
+            "first_name" => $request->first_name,
+            "last_name" => $request->last_name,
+            "phone_number" => $request->phone_number,
+            "country_code" => $request->country_code,
+            "authy_id" => $authy_id
+        ];
+        $user = $this->createUser($credentials, $activate);
         $role = $request->role;
         $this->attachRole($user, $role);
         return response()->success('User Registered Successfully');
@@ -96,23 +114,13 @@ class AuthController extends Controller
      * Create the User
      *
      * @link https://cartalyst.com/manual/sentinel/5.x#sentinel-register
-     * @param Request $request
+     * @param array $credentials
+     * @param bool $activate
      * @return User
      */
-    private function createUser(Request $request)
+    private function createUser(array $credentials, bool $activate)
     {
-        $credentials = [
-            "username" => $request->username,
-            "email" => $request->email,
-            "password" => $request->password,
-            "first_name" => $request->first_name,
-            "last_name" => $request->last_name,
-            "phone_number" => $request->phone_number,
-            "country_code" => $request->country_code,
-        ];
-        $activate = $request->activate;
-        $user = Sentinel::register($credentials, $activate);
-        return $user;
+        return Sentinel::register($credentials, $activate);
     }
 
     private function attachRole($user, $role)
@@ -121,14 +129,14 @@ class AuthController extends Controller
         $selectedRole->users()->attach($user);
     }
 
-    private function create_authy_api(User $user)
+    private function create_authy_api(Request $request)
     {
         $authy_api = new AuthyApi(config('authy.app_secret'));
         $user = $authy_api->registerUser(
-            $user->email,
-            $user->phone_number,
-            $user->country_code
+            $request->email,
+            $request->phone_number,
+            $request->country_code
         );
-        return $user;
+        return $user->id();
     }
 }
