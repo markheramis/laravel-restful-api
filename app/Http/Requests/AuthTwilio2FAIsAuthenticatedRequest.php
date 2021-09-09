@@ -2,9 +2,10 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
+use Auth;
+use App\Http\Requests\FormRequest;
 
-class AuthGoogle2FAGetQRCodeRequest extends FormRequest
+class AuthTwilio2FAIsAuthenticatedRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +14,7 @@ class AuthGoogle2FAGetQRCodeRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return Auth::check();
     }
 
     /**

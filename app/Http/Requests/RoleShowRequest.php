@@ -2,8 +2,7 @@
 
 namespace App\Http\Requests;
 
-use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
 class RoleShowRequest extends FormRequest
