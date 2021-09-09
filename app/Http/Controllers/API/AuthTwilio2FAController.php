@@ -6,6 +6,7 @@ use Auth;
 use Authy\AuthyApi;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AuthTwilio2FAVerifyCodeRequest;
+use Illuminate\Http\JsonResponse;
 
 /**
  * @group Multi-Factor Twilio
@@ -21,9 +22,9 @@ class AuthTwilio2FAController extends Controller
      * @authenticated
      * 
      * @param AuthTwilio2FAVerifyCodeRequest $request
-     * @return void
+     * @return JsonResponse
      */
-    public function verifyCode(AuthTwilio2FAVerifyCodeRequest $request)
+    public function verifyCode(AuthTwilio2FAVerifyCodeRequest $request): JsonResponse
     {
         $authy_api = new AuthyApi(config('authy.app_secret'));
         $authy_id = Auth::user()->authy_id;
@@ -34,7 +35,6 @@ class AuthTwilio2FAController extends Controller
             $device = $response->bodyvar('device');
             $this->recordLoginActivity($device);
             // correct token
-
             return response()->success('success');
         }
     }
