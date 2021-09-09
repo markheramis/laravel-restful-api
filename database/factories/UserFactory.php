@@ -2,11 +2,8 @@
 
 namespace Database\Factories;
 
-use Activation;
 
 use App\Models\User;
-use App\Models\Role;
-
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class UserFactory extends Factory
@@ -63,7 +60,7 @@ class UserFactory extends Factory
      * Configure the model factory.
      *
      * @return $this
-     
+
     public function configure()
     {
         return $this
