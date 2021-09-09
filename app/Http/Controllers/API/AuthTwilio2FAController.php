@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\API;
 
 use Auth;
+use Session;
 use Authy\AuthyApi;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AuthTwilio2FAVerifyCodeRequest;
+use App\Http\Requests\AuthTwilio2FAIsAuthenticatedRequest;
 use Illuminate\Http\JsonResponse;
 
 /**
@@ -33,13 +35,35 @@ class AuthTwilio2FAController extends Controller
         if ($response->ok()) {
             // record login activity
             $device = $response->bodyvar('device');
+            Session::put('twilio2fa', true);
             $this->recordLoginActivity($device);
             // correct token
-            return response()->success('success');
+            return response()->success('valid token');
+        } else {
+            Session::put('twilio2fa', false);
+            return response()->error('invalid token');
         }
     }
 
     private function recordLoginActivity($device)
     {
+    }
+
+    /**
+     * is Authenticated
+     * 
+     * This endpoint lets you verify if two-factor authentication with Authy is authenticated
+     *
+     * @authenticated
+     * @param AuthTwilio2FAIsAuthenticatedRequest $request
+     * @return JsonResponse
+     */
+    public function isAuthenticated(AuthTwilio2FAIsAuthenticatedRequest $request): JsonResponse
+    {
+        $status = Session::get('twilio2fa');
+        if ($status)
+            return response()->success($status);
+        else
+            return response()->error($status);
     }
 }
