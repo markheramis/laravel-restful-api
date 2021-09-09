@@ -31,7 +31,7 @@ Route::prefix('auth')->group(function () {
     Route::middleware(['auth:api'])->group(function () {
         Route::get('me', [AuthController::class, 'me'])->name('api.me');
         Route::prefix('verify')->group(function () {
-            Route::post('g', [AuthGoogle2FAController::class, 'verifyCode'])->name('api.verify.google');
+            Route::post('g/{id}', [AuthGoogle2FAController::class, 'verifyCode'])->name('api.verify.google');
             Route::post('t', [AuthTwilio2FAController::class, 'verifyCode'])->name('api.verify.twilio');
         });
     });
