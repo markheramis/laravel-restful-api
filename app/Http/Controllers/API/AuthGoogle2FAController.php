@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use Auth;
+use Session;
 use Google2FA;
 use App\Models\User;
 use App\Http\Controllers\Controller;
@@ -37,7 +38,9 @@ class AuthGoogle2FAController extends Controller
             $user->google2fa_secret
         );
         if ($qr) {
-            return response()->success(['qr' => $qr]);
+            return response()->success([
+                'qr' => $qr
+            ]);
         } else {
             return response()->error('Unable to generate QR');
         }
@@ -57,9 +60,10 @@ class AuthGoogle2FAController extends Controller
         // Get all 2FAs
         $google2fas = $user->google2fa->where('id', $id)->first();
         if (Google2FA::verifyKey($google2fas->secret_key, $request->code)) {
-            \session(['googleVerified' => true]);
+            Session::put('googleVerified', true);
             return response()->success('code verified successfully');
         } else {
+            Session::put('googleVerified', false);
             return response()->error('unable to verify code');
         }
     }
