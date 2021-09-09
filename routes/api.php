@@ -19,8 +19,6 @@ use App\Http\Controllers\API\UserRoleController;
 use App\Http\Controllers\API\RoleController;
 use App\Http\Controllers\API\OptionController;
 use App\Http\Controllers\API\CategoryController;
-use App\Http\Controllers\API\AuthGoogle2FAController;
-use App\Http\Controllers\API\AuthTwilio2FAController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -41,9 +39,6 @@ Route::prefix('user')->middleware(['auth:api'])->group(function () {
         Route::get('/', [UserController::class, 'show'])->name('user.show');
         Route::put('/', [UserController::class, 'update'])->name('user.update');
         Route::delete('/', [UserController::class, 'destroy'])->name('user.destroy');
-        Route::prefix('mfa')->group(function () {
-            Route::get('g', [AuthGoogle2FAController::class, 'getQRCode'])->name('user.qr.google');
-        });
         Route::prefix('role')->group(function () {
             Route::get('/', [UserRoleController::class, 'show'])->name('user.role.show');
             Route::post('/', [UserRoleController::class, 'store'])->name('user.role.store');
