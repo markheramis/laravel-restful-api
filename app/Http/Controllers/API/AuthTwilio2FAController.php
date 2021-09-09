@@ -40,6 +40,9 @@ class AuthTwilio2FAController extends Controller
             $request->session()->put('twilio2faVerified', "no");
             return response()->error('invalid token');
         }
+        return response()->error('invalid token');
+
+        
     }
     private function recordLoginActivity($device)
     {
