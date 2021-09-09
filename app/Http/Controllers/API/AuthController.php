@@ -50,7 +50,7 @@ class AuthController extends Controller
 
             $isGoogleMultiFactor = (bool) $user->google2fa->count();
             $isTwilioAuthyTwoFactor = (bool) $user->phone_number;
-            $token = $user->createToken('MyApp')->accessToken;
+            $token = $user->createToken(config('app.name') . ': ' . $user->username)->accessToken;
             if ($isGoogleMultiFactor) {
                 $verify = 'g';
             } else if ($isTwilioAuthyTwoFactor) {
