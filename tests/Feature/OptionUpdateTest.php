@@ -19,6 +19,7 @@ class OptionUpdateTest extends TestCase
             "value" => "New Update",
         ]);
         $response->assertStatus(401);
+        $option->delete();
     }
 
     public function testUpdateOptionAsAdministratorShouldBeAllowed()
@@ -34,6 +35,7 @@ class OptionUpdateTest extends TestCase
         ], $header);
 
         $response->assertStatus(200);
+        $option->delete();
     }
 
     public function testUpdateOptionAsModeratorShouldBeAllowed()
@@ -48,6 +50,7 @@ class OptionUpdateTest extends TestCase
             "value" => "New Update",
         ], $header);
         $response->assertStatus(200);
+        $option->delete();
     }
 
     public function testUpdateOptionAsSubscriberShouldBeForbidden()
@@ -62,5 +65,6 @@ class OptionUpdateTest extends TestCase
             "value" => "New Update",
         ], $header);
         $response->assertStatus(403);
+        $option->delete();
     }
 }

@@ -20,7 +20,7 @@ class OptionIndexTest extends TestCase
 
     public function testGetOptionIndexAsAdministratorShouldBeAllowed()
     {
-        Option::factory()->count(2)->create();
+        $option = Option::factory()->count(2)->create();
         $expected_response = Option::select(['name', 'value'])->where('autoload', true)->get()->toArray();
         $token = $this->getTokenByRole("administrator");
         $header = [
@@ -29,11 +29,12 @@ class OptionIndexTest extends TestCase
         $response = $this->json("GET", route("option.index"), [], $header);
         $response->assertStatus(200);
         $response->assertJson($expected_response);
+        $option->delete();
     }
 
     public function testGetOptionIndexAsModeratorShouldBeAllowed()
     {
-        Option::factory()->count(2)->create();
+        $option = Option::factory()->count(2)->create();
         $expected_response = Option::select(['name', 'value'])->where('autoload', true)->get()->toArray();
         $token = $this->getTokenByRole("moderator");
         $header = [
@@ -42,11 +43,12 @@ class OptionIndexTest extends TestCase
         $response = $this->json("GET", route("option.index"), [], $header);
         $response->assertStatus(200);
         $response->assertJson($expected_response);
+        $option->delete();
     }
 
     public function testGetOptionIndexAsSubscriberShouldBeAllowed()
     {
-        Option::factory()->count(2)->create();
+        $option = Option::factory()->count(2)->create();
         $expected_response = Option::select(['name', 'value'])->where('autoload', true)->get()->toArray();
         $token = $this->getTokenByRole("subscriber");
         $header = [
@@ -55,5 +57,6 @@ class OptionIndexTest extends TestCase
         $response = $this->json("GET", route("option.index"), [], $header);
         $response->assertStatus(200);
         $response->assertJson($expected_response);
+        $option->delete();
     }
 }
