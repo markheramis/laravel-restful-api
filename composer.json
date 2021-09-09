@@ -9,7 +9,8 @@
     "license": "MIT",
     "require": {
         "php": "^7.3|^8.0",
-        "bacon/bacon-qr-code": "^2.0",
+        "authy/php": "^4.0.0-rc2",
+        "bacon/bacon-qr-code": "^2.0",  
         "cartalyst/sentinel": "^5.0",
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
