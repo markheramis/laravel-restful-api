@@ -33,11 +33,11 @@ class UserLoginTest extends TestCase
             "password" => "p@s5W0rD12347"
         ]);
         $response->assertStatus(401);
+        $user->delete();
     }
 
     public function testLoginWithInvalidEmailShouldBeUnprocessableEntity()
     {
-        $user = $this->createUser();
         $response = $this->json("POST", route("api.login"), [
             "email" => "notvalidemail",
             "password" => "password12345",
@@ -62,6 +62,7 @@ class UserLoginTest extends TestCase
             "password" => "password12345"
         ]);
         $response->assertStatus(200);
+        $user->delete();
     }
 
     public function testLoginWithCorrectCredentialsShouldLoginSuccessfully()
@@ -72,6 +73,7 @@ class UserLoginTest extends TestCase
             "password" => "password12345"
         ]);
         $response->assertStatus(200);
+        $user->delete();
     }
 
     public function testLoginWithCorrectCredentialsAndWithEmailAndUsernameShouldLoginSuccessfully()
@@ -83,5 +85,6 @@ class UserLoginTest extends TestCase
             "password" => "password12345"
         ]);
         $response->assertStatus(200);
+        $user->delete();
     }
 }

@@ -22,6 +22,8 @@ class UserShowTest extends TestCase
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
+        $user1->delete();
+        $user2->delete();
     }
     public function testGetSingleUserAsAdministratorToModeratorShouldBeAllowed()
     {
@@ -33,6 +35,8 @@ class UserShowTest extends TestCase
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
+        $user1->delete();
+        $user2->delete();
     }
     public function testGetSingleUserAsAdministratorToSubscriberShouldBeAllowed()
     {
@@ -44,6 +48,8 @@ class UserShowTest extends TestCase
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
+        $user1->delete();
+        $user2->delete();
     }
     #############################################
     ############# TEST AS MODERATOR #############
@@ -58,6 +64,8 @@ class UserShowTest extends TestCase
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
+        $user1->delete();
+        $user2->delete();
     }
     public function testGetSingleUserAsModeratorToModeratorShouldBeAllowed()
     {
@@ -80,6 +88,8 @@ class UserShowTest extends TestCase
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
+        $user1->delete();
+        $user2->delete();
     }
     ##############################################
     ############# TEST AS SUBSCRIBER #############
@@ -94,6 +104,8 @@ class UserShowTest extends TestCase
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
+        $user1->delete();
+        $user2->delete();
     }
     public function testGetSingleUserAsSubscriberToModeratorShouldBeAllowed()
     {
@@ -105,6 +117,8 @@ class UserShowTest extends TestCase
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
+        $user1->delete();
+        $user2->delete();
     }
     public function testGetSingleUserSubscriberToSubscriberShouldBeAllowed()
     {
@@ -116,5 +130,7 @@ class UserShowTest extends TestCase
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
+        $user1->delete();
+        $user2->delete();
     }
 }

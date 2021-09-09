@@ -25,6 +25,7 @@ class UserUpdateTest extends TestCase
         ];
         $response = $this->json("PUT", $url, $data);
         $response->assertStatus(401);
+        $user->delete();
     }
 
     public function testUpdateModeratorWithNoSessionShouldBeUnauthorized()
@@ -37,6 +38,7 @@ class UserUpdateTest extends TestCase
         ];
         $response = $this->json("PUT", $url, $data);
         $response->assertStatus(401);
+        $user->delete();
     }
 
     public function testUpdateAdministratorWithNoSessionShouldBeUnauthorized()
@@ -50,8 +52,9 @@ class UserUpdateTest extends TestCase
         ];
         $response = $this->json("PUT", $url, $data);
         $response->assertStatus(401);
+        $user->delete();
     }
-    
+
     ############################################
     ############# AS ADMINISTRATOR #############
     ############################################
@@ -69,6 +72,7 @@ class UserUpdateTest extends TestCase
         ];
         $response = $this->json("PUT", $url, $data, $header);
         $response->assertStatus(200);
+        $user->delete();
     }
     public function testUpdateAnotherSubscriberAsAdministratorShouldBeAllowed()
     {
@@ -85,6 +89,7 @@ class UserUpdateTest extends TestCase
         ];
         $response = $this->json("PUT", $url, $data, $header);
         $response->assertStatus(200);
+        $user->delete();
     }
     public function testUpdateAnotherModeratorAsAdministratorShouldBeAllowed()
     {
@@ -101,6 +106,7 @@ class UserUpdateTest extends TestCase
         ];
         $response = $this->json("PUT", $url, $data, $header);
         $response->assertStatus(200);
+        $user->delete();
     }
     public function testUpdateAnotherAdministratorAsAdministratorShouldBeAllowed()
     {
@@ -117,5 +123,6 @@ class UserUpdateTest extends TestCase
         ];
         $response = $this->json("PUT", $url, $data, $header);
         $response->assertStatus(200);
+        $user->delete();
     }
 }

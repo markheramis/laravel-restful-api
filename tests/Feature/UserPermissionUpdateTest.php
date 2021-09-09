@@ -18,6 +18,7 @@ class UserPermissionUpdateTest extends TestCase
             'test.permission' => false
         ]);
         $response->assertStatus(401);
+        $user->delete();
     }
 
     public function testUpdateModeratorWithNoSessionShouldBeUnauthorized()
@@ -28,6 +29,7 @@ class UserPermissionUpdateTest extends TestCase
             'test.permission' => false
         ]);
         $response->assertStatus(401);
+        $user->delete();
     }
 
     public function testUpdateAdministratorWithNoSessionShouldBeUnauthorized()
@@ -38,5 +40,6 @@ class UserPermissionUpdateTest extends TestCase
             'test.permission' => false,
         ]);
         $response->assertStatus(401);
+        $user->delete();
     }
 }

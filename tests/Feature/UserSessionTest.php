@@ -37,6 +37,7 @@ class UserSessionTest extends TestCase
                 "roles" => $user->roles->toArray(),
             ]
         ]);
+        $user->delete();
     }
 
     public function testGetCurrentUserAsModeratorShouldBeAllowed()
@@ -58,6 +59,7 @@ class UserSessionTest extends TestCase
                 "roles" => $user->roles->toArray(),
             ]
         ]);
+        $user->delete();
     }
 
     public function testGetCurrentUserAsAdministratorShouldBeAllowed()
@@ -79,5 +81,6 @@ class UserSessionTest extends TestCase
                 "roles" => $user->roles->toArray(),
             ]
         ]);
+        $user->delete();
     }
 }
