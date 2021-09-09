@@ -19,8 +19,6 @@ use App\Http\Controllers\API\UserRoleController;
 use App\Http\Controllers\API\RoleController;
 use App\Http\Controllers\API\OptionController;
 use App\Http\Controllers\API\CategoryController;
-use App\Http\Controllers\API\AuthGoogle2FAController;
-use App\Http\Controllers\API\AuthTwilio2FAController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -30,12 +28,10 @@ Route::prefix('auth')->group(function () {
     Route::post('activate', [UserController::class, 'activate'])->name('api.user.activate');
     Route::middleware(['auth:api'])->group(function () {
         Route::get('me', [AuthController::class, 'me'])->name('api.me');
-        Route::prefix('verify')->group(function () {
-            Route::post('g/{id}', [AuthGoogle2FAController::class, 'verifyCode'])->name('api.verify.google');
-            Route::post('t', [AuthTwilio2FAController::class, 'verifyCode'])->name('api.verify.twilio');
-        });
     });
 });
+
+include_once('api_groups/multi-factor.php');
 
 Route::prefix('user')->middleware(['auth:api'])->group(function () {
     Route::get('/', [UserController::class, 'index'])->name('user.index');
@@ -43,9 +39,6 @@ Route::prefix('user')->middleware(['auth:api'])->group(function () {
         Route::get('/', [UserController::class, 'show'])->name('user.show');
         Route::put('/', [UserController::class, 'update'])->name('user.update');
         Route::delete('/', [UserController::class, 'destroy'])->name('user.destroy');
-        Route::prefix('mfa')->group(function () {
-            Route::get('g', [AuthGoogle2FAController::class, 'getQRCode'])->name('user.qr.google');
-        });
         Route::prefix('role')->group(function () {
             Route::get('/', [UserRoleController::class, 'show'])->name('user.role.show');
             Route::post('/', [UserRoleController::class, 'store'])->name('user.role.store');
