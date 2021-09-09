@@ -28,10 +28,18 @@ class AuthTwilio2FAController extends Controller
         $authy_api = new AuthyApi(config('authy.app_secret'));
         $authy_id = Auth::user()->authy_id;
         $code = $request->code;
-        $verification = $authy_api->verifyToken($authy_id, $code);
-        if ($verification->ok()) {
+        $response = $authy_api->verifyToken($authy_id, $code);
+        if ($response->ok()) {
+            // record login activity
+            $device = $response->bodyvar('device');
+            $this->recordLoginActivity($device);
             // correct token
-            dd($verification);
+
+            return response()->success('success');
         }
+    }
+
+    private function recordLoginActivity($device)
+    {
     }
 }

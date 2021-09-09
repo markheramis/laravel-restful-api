@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AuthGoogle2FAGetQRCodeRequest;
 use App\Http\Requests\AuthGoogle2FAVerifyCodeRequest;
+use Illuminate\Http\JsonResponse;
 
 /**
  * @group Multi-Factor Google
@@ -26,13 +27,20 @@ class AuthGoogle2FAController extends Controller
      * @param User $user
      * @return void
      */
-    public function getQRCode(AuthGoogle2FAGetQRCodeRequest $request, User $user)
+    public function getQRCode(AuthGoogle2FAGetQRCodeRequest $request, User $user): JsonResponse
     {
-        return Google2FA::getQRCodeInline(
-            `${config('app.title')}: $user->username`,
+        $app_name = config('app.name');
+        $username = $user->username;
+        $qr =  Google2FA::getQRCodeInline(
+            "$app_name:$username",
             $user->email,
             $user->google2fa_secret
         );
+        if ($qr) {
+            return response()->success(['qr' => $qr]);
+        } else {
+            return response()->error('Unable to generate QR');
+        }
     }
     /**
      * Verify OTP
@@ -41,20 +49,18 @@ class AuthGoogle2FAController extends Controller
      *
      * @param AuthGoogle2FAVerifyCodeRequest $request
      * @param User $user
-     * @return void
+     * @return JsonResponse
      */
-    public function verifyCode(AuthGoogle2FAVerifyCodeRequest $request)
+    public function verifyCode(AuthGoogle2FAVerifyCodeRequest $request, int $id): JsonResponse
     {
         $user = Auth::user();
         // Get all 2FAs
-        $google2fas = $user->google2fa;
-        // Loop through all
-        foreach ($google2fas as $g2fa) {
-            // Check if one of them is valid
-            if ($result = Google2FA::verifyKey($g2fa->secret_key, $request->code)) {
-                \session(['googleVerified' => true]);
-                return response()->success();
-            }
+        $google2fas = $user->google2fa->where('id', $id)->first();
+        if (Google2FA::verifyKey($google2fas->secret_key, $request->code)) {
+            \session(['googleVerified' => true]);
+            return response()->success('code verified successfully');
+        } else {
+            return response()->error('unable to verify code');
         }
     }
 }
