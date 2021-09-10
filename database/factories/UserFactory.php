@@ -32,6 +32,9 @@ class UserFactory extends Factory
             'password' => bcrypt('password12345'),
             'first_name' => $first_name,
             'last_name' => $last_name,
+            'phone_number' => '1234567890',
+            'country_code' => '+1',
+
         ];
     }
 

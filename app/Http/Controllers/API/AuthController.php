@@ -48,11 +48,13 @@ class AuthController extends Controller
         if ($user = Sentinel::stateless($credentials)) {
             // If has phone number
             $token = $user->createToken(config('app.name') . ': ' . $user->username)->accessToken;
-            $authy_api = new AuthyApi(config('authy.app_secret'));
-            $authy_api->requestSms($user->authy_id, [
-                "action" => "login",
-                "action_message" => "Login code",
-            ]);
+            if (config('app.env') == 'production' || config('app.env') == 'staging') {
+                $authy_api = new AuthyApi(config('authy.app_secret'));
+                $authy_api->requestSms($user->authy_id, [
+                    "action" => "login",
+                    "action_message" => "Login code",
+                ]);
+            }
             return response()->success([
                 'token' => $token
             ]);
@@ -80,7 +82,7 @@ class AuthController extends Controller
      */
     public function register(UserRegisterRequest $request)
     {
-        $authy_id = $this->create_authy_api($request);
+        $authy_id = ((config('app.env') == 'production' || config('app.env') == 'staging')) ? $this->create_authy_api($request) : null;
         $activate = $request->activate;
         $credentials = [
             "activate" => $request->activate,

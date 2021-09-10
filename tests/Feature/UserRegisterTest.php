@@ -87,6 +87,7 @@ class UserRegisterTest extends TestCase
             "last_name" => $this->faker->lastName(),
             "role" => "subscriber",
             "activate" => true,
+            'phone_number' => $this->faker->phoneNumber(),
         ]);
 
         $response->assertStatus(200);

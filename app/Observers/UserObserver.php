@@ -3,9 +3,8 @@
 namespace App\Observers;
 
 use Activation;
+use Authy\AuthyApi;
 use App\Models\User;
-
-
 use App\Events\User\UserCreated;
 use App\Events\User\UserUpdated;
 use App\Events\User\UserRestored;
