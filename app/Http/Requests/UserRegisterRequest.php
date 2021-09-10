@@ -26,13 +26,14 @@ class UserRegisterRequest extends FormRequest
         return [
             "username" => "required",
             "email" => "required|email|unique:users,email",
-            "password" => "required",
-            "firstName" => "required",
-            "lastName" => "required",
-            "roles" => "required",
-            "activate" => "required|bool",
-            "phone_number" => "nullable|string|unique:users,phone_number",
-            "country_code" => "nullable|string",
+            "password" => "required|string",
+            "first_name" => "required|string",
+            "last_name" => "required|string",
+            "role" => "nullable|string",
+            "permissions" => "nullable|array",
+            "activate" => "nullable|bool",
+            "phone_number" => "nullable|numeric|unique:users,phone_number",
+            "country_code" => "nullable|numeric",
         ];
     }
 }
