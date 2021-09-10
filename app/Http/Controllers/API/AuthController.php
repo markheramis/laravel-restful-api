@@ -43,19 +43,21 @@ class AuthController extends Controller
      */
     public function login(UserLoginRequest $request)
     {
+        $response = [];
         $credentials = $this->processCredentials($request);
         # attempt to login
         if ($user = Sentinel::stateless($credentials)) {
             // If has phone number
-            $token = $user->createToken(config('app.name') . ': ' . $user->username)->accessToken;
-            $authy_api = new AuthyApi(config('authy.app_secret'));
-            $authy_api->requestSms($user->authy_id, [
-                "action" => "login",
-                "action_message" => "Login code",
-            ]);
-            return response()->success([
-                'token' => $token
-            ]);
+            $response['token'] = $user->createToken(config('app.name') . ': ' . $user->username)->accessToken;
+            if (config('app.env') !== "local" && $user->authy_id) {
+                $authy_api = new AuthyApi(config('authy.app_secret'));
+                $authy_api->requestSms($user->authy_id, [
+                    "action" => "login",
+                    "action_message" => "Login code",
+                ]);
+                $response['verify'] = true;
+            }
+            return response()->success($response);
         } else {
             return response()->error('Invalid User', 401);
         }
@@ -83,20 +85,23 @@ class AuthController extends Controller
         $authy_id = $this->create_authy_api($request);
         $activate = $request->activate;
         $credentials = [
+            "activate" => $request->activate,
             "username" => $request->username,
             "email" => $request->email,
             "password" => $request->password,
             "first_name" => $request->first_name,
             "last_name" => $request->last_name,
+            "permissions" => $request->permissions,
             "phone_number" => $request->phone_number,
             "country_code" => $request->country_code,
             "authy_id" => $authy_id
         ];
         $user = $this->createUser($credentials, $activate);
-        $role = $request->role;
+        $role = ($request->has('role')) ? $request->role : 'subscriber';
         $this->attachRole($user, $role);
         return response()->success([
             'id' => $user->id,
+            'credentials' => $credentials,
         ]);
     }
 
@@ -121,12 +126,17 @@ class AuthController extends Controller
 
     private function create_authy_api(Request $request)
     {
-        $authy_api = new AuthyApi(config('authy.app_secret'));
-        $user = $authy_api->registerUser(
-            $request->email,
-            $request->phone_number,
-            $request->country_code
-        );
-        return $user->id();
+        if (config('app.env') !== "local") {
+            $authy_api = new AuthyApi(config('authy.app_secret'));
+            // register the user to the authy users database
+            $response = $authy_api->registerUser(
+                $request->email,
+                $request->phone_number,
+                $request->country_code
+            );
+            return $response->id();
+        } else {
+            return null;
+        }
     }
 }
