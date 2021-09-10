@@ -21,6 +21,7 @@
         "laravel/tinker": "^2.5",
         "pragmarx/google2fa-laravel": "^2.0",
         "pusher/pusher-php-server": "~5.0",
+        "predis/predis": "^1.0",
         "ramsey/uuid": "^4.1",
         "sentry/sentry-laravel": "^2.3",
         "spatie/laravel-backup": "^6.14",
