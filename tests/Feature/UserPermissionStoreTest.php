@@ -19,6 +19,7 @@ class UserPermissionStoreTest extends TestCase
             "value" => true,
         ]);
         $response->assertStatus(401);
+        $user->delete();
     }
 
     public function testStorePermissionToModeratorWithNoSession()
@@ -29,6 +30,7 @@ class UserPermissionStoreTest extends TestCase
             "value" => true,
         ]);
         $response->assertStatus(401);
+        $user->delete();
     }
 
     public function testStorePermissionToAdministratorWithNoSession()
@@ -39,6 +41,7 @@ class UserPermissionStoreTest extends TestCase
             "value" => true
         ]);
         $response->assertStatus(401);
+        $user->delete();
     }
 
     public function testStorePermissionAsAdministratorToAdministratorShouldBeAllowed()
@@ -56,6 +59,8 @@ class UserPermissionStoreTest extends TestCase
         ];
         $response = $this->json("POST", $url, $data, $header);
         $response->assertStatus(200);
+        $user1->delete();
+        $user2->delete();
     }
 
     public function testStorePermissionAsAdministratorToModeratorShouldBeAllowed()
@@ -73,6 +78,8 @@ class UserPermissionStoreTest extends TestCase
         ];
         $response = $this->json("POST", $url, $data, $header);
         $response->assertStatus(200);
+        $user1->delete();
+        $user2->delete();
     }
 
     public function testStorePermissionAsAdministratorToSubscriberShouldBeAllowed()
@@ -90,6 +97,8 @@ class UserPermissionStoreTest extends TestCase
         ];
         $response = $this->json("POST", $url, $data, $header);
         $response->assertStatus(200);
+        $user1->delete();
+        $user2->delete();
     }
 
     public function testStorePermissionsModeratorToAdministratorShouldBeAllowed()
@@ -107,6 +116,8 @@ class UserPermissionStoreTest extends TestCase
         ];
         $response = $this->json("POST", $url, $data, $header);
         $response->assertStatus(200);
+        $user1->delete();
+        $user2->delete();
     }
 
     public function testStorePermissionAsModeratorToModeratorShouldShouldBeAllowed()
@@ -124,6 +135,8 @@ class UserPermissionStoreTest extends TestCase
         ];
         $response = $this->json("POST", $url, $data, $header);
         $response->assertStatus(200);
+        $user1->delete();
+        $user2->delete();
     }
 
     public function testStorePermissionAsModeratorToSubscriberShouldBeAllowed()
@@ -141,6 +154,8 @@ class UserPermissionStoreTest extends TestCase
         ];
         $response = $this->json("POST", $url, $data, $header);
         $response->assertStatus(200);
+        $user1->delete();
+        $user2->delete();
     }
 
     public function testStorePermissionAsSubscriberToAdministratorShouldBeForbidden()
@@ -158,6 +173,8 @@ class UserPermissionStoreTest extends TestCase
         ];
         $response = $this->json("POST", $url, $data, $header);
         $response->assertStatus(403);
+        $user1->delete();
+        $user2->delete();
     }
 
     public function testStorePermissionAsSubscriberToModeratorShouldBeForbidden()
@@ -175,6 +192,8 @@ class UserPermissionStoreTest extends TestCase
         ];
         $response = $this->json("POST", $url, $data, $header);
         $response->assertStatus(403);
+        $user1->delete();
+        $user2->delete();
     }
 
     public function testStorePermissionAsSubscriberToSubscriberShouldBeForbidden()
@@ -192,5 +211,7 @@ class UserPermissionStoreTest extends TestCase
         ];
         $response = $this->json("POST", $url, $data, $header);
         $response->assertStatus(403);
+        $user1->delete();
+        $user2->delete();
     }
 }

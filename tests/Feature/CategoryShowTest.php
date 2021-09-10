@@ -17,6 +17,7 @@ class CategoryShowTest extends TestCase
         $url = route("category.show", [$category->slug]);
         $response  = $this->json("GET", $url);
         $response->assertStatus(401);
+        $category->delete();
     }
 
     public function testShowCategoryAsAdministratorShouldBeAllowed()

@@ -25,9 +25,10 @@ class RoleShowTest extends TestCase
             ]
         ];
         $role = $this->createRole($data);
-        $url = route("role.show" , [$role->slug]);
+        $url = route("role.show", [$role->slug]);
         $response = $this->json("GET", $url, $data);
         $response->assertStatus(401);
+        $role->delete();
     }
 
     public function testGetSingleRoleAsSubscriberShouldBeForbidden()
@@ -48,9 +49,10 @@ class RoleShowTest extends TestCase
         $header = [
             "Authorization" => "Bearer $token"
         ];
-        $url = route("role.show" , [$role->slug]);
+        $url = route("role.show", [$role->slug]);
         $response = $this->json("GET", $url, $data, $header);
         $response->assertStatus(403);
+        $role->delete();
     }
 
     public function testGetSingleRoleAsModeratorShouldBeAllowed()
@@ -71,9 +73,10 @@ class RoleShowTest extends TestCase
         $header = [
             "Authorization" => "Bearer $token"
         ];
-        $url = route("role.show" , [$role->slug]);
+        $url = route("role.show", [$role->slug]);
         $response = $this->json("GET", $url, $data, $header);
         $response->assertStatus(200);
+        $role->delete();
     }
 
     public function testGetSingleRoleAsAdministratorShouldBeAllowed()
@@ -94,8 +97,9 @@ class RoleShowTest extends TestCase
         $header = [
             "Authorization" => "Bearer $token"
         ];
-        $url = route("role.show" , [$role->slug]);
+        $url = route("role.show", [$role->slug]);
         $response = $this->json("GET", $url, $data, $header);
         $response->assertStatus(200);
+        $role->delete();
     }
 }

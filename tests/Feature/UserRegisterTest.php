@@ -90,6 +90,7 @@ class UserRegisterTest extends TestCase
         ]);
 
         $response->assertStatus(200);
+        User::find($response['data']['id'])->delete();
     }
 
     public function testRegisterWithCorrectParametersAndPermissionShouldRegisterSuccessfully()
@@ -109,5 +110,6 @@ class UserRegisterTest extends TestCase
             ]
         ]);
         $response->assertStatus(200);
+        User::find($response['data']['id'])->delete();
     }
 }

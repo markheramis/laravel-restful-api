@@ -28,6 +28,7 @@ class UserIndexTest extends TestCase
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
+        $user->delete();
     }
 
     /**
@@ -45,6 +46,7 @@ class UserIndexTest extends TestCase
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
+        $user->delete();
     }
 
     /**
@@ -62,6 +64,7 @@ class UserIndexTest extends TestCase
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
+        $user->delete();
     }
 
     public function testIndexSearchAsAdministratorShouldBeAllowed()
@@ -96,5 +99,7 @@ class UserIndexTest extends TestCase
             ]
         ]);
         $response->assertJsonPath("data", $data);
+
+        $user->delete();
     }
 }
