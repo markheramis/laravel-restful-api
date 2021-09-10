@@ -95,17 +95,19 @@ class AuthController extends Controller
         $authy_id = $this->create_authy_api($request);
         $activate = $request->activate;
         $credentials = [
+            "activate" => $request->activate,
             "username" => $request->username,
             "email" => $request->email,
             "password" => $request->password,
-            "first_name" => $request->first_name,
-            "last_name" => $request->last_name,
-            "phone_number" => $request->phone_number,
-            "country_code" => $request->country_code,
+            "first_name" => $request->firstName,
+            "last_name" => $request->lastName,
+            "roles" => $request->roles,
+            "phone_number" => $request->phone,
+            "country_code" => $request->countryCode,
             "authy_id" => $authy_id
         ];
         $user = $this->createUser($credentials, $activate);
-        $role = $request->role;
+        $role = $request->roles[0];
         $this->attachRole($user, $role);
         return response()->success('User Registered Successfully');
     }
