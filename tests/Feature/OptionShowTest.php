@@ -31,6 +31,7 @@ class OptionShowTest extends TestCase
         $url = route("option.show", [$option->name]);
         $response = $this->json("GET", $url, [], $header);
         $response->assertStatus(200);
+        $option->delete();
     }
 
     public function testShowOptionAsModeratorShouldBeAllowed()
@@ -43,6 +44,7 @@ class OptionShowTest extends TestCase
         $url = route("option.show", [$option->name]);
         $response = $this->json("GET", $url, [], $header);
         $response->assertStatus(200);
+        $option->delete();
     }
 
     public function testShowOptionAsSubscriberShouldBeAllowed()
@@ -55,5 +57,6 @@ class OptionShowTest extends TestCase
         $url = route("option.show", [$option->name]);
         $response = $this->json("GET", $url, [], $header);
         $response->assertStatus(200);
+        $option->delete();
     }
 }

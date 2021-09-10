@@ -95,7 +95,9 @@ class AuthController extends Controller
         $user = $this->createUser($credentials, $activate);
         $role = $request->role;
         $this->attachRole($user, $role);
-        return response()->success('User Registered Successfully');
+        return response()->success([
+            'id' => $user->id,
+        ]);
     }
 
     /**

@@ -20,7 +20,7 @@ class OptionIndexTest extends TestCase
 
     public function testGetOptionIndexAsAdministratorShouldBeAllowed()
     {
-        Option::factory()->count(2)->create();
+        $option = Option::factory()->count(2)->create();
         $expected_response = Option::select(['name', 'value'])->where('autoload', true)->get()->toArray();
         $token = $this->getTokenByRole("administrator");
         $header = [
@@ -33,7 +33,7 @@ class OptionIndexTest extends TestCase
 
     public function testGetOptionIndexAsModeratorShouldBeAllowed()
     {
-        Option::factory()->count(2)->create();
+        $option = Option::factory()->count(2)->create();
         $expected_response = Option::select(['name', 'value'])->where('autoload', true)->get()->toArray();
         $token = $this->getTokenByRole("moderator");
         $header = [
@@ -46,7 +46,7 @@ class OptionIndexTest extends TestCase
 
     public function testGetOptionIndexAsSubscriberShouldBeAllowed()
     {
-        Option::factory()->count(2)->create();
+        $option = Option::factory()->count(2)->create();
         $expected_response = Option::select(['name', 'value'])->where('autoload', true)->get()->toArray();
         $token = $this->getTokenByRole("subscriber");
         $header = [
