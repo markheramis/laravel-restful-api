@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 
 use Tests\TestCase;
+use App\Models\Role;
 use Tests\Traits\userTraits;
 use Illuminate\Foundation\Testing\WithFaker;
 
@@ -30,6 +31,7 @@ class RoleUpdateTest extends TestCase
         $url = route("role.update", [$role->slug]);
         $response = $this->json("PUT", $url, $data);
         $response->assertStatus(401);
+        $role->delete();
     }
 
     public function testUpdateRoleAsSubscriberShouldBeForbidden()
@@ -55,6 +57,7 @@ class RoleUpdateTest extends TestCase
         $url = route("role.update", [$role->slug]);
         $response = $this->json("PUT", $url, $data, $header);
         $response->assertStatus(403);
+        $role->delete();
     }
 
     public function testUpdateRoleAsModeratorShouldBeForbidden()
@@ -80,6 +83,7 @@ class RoleUpdateTest extends TestCase
         $url = route("role.update", [$role->slug]);
         $response = $this->json("PUT", $url, $data, $header);
         $response->assertStatus(403);
+        $role->delete();
     }
 
     public function testUpdateRoleAsAdministratorShouldBeAllowed()
@@ -105,5 +109,7 @@ class RoleUpdateTest extends TestCase
         $url = route("role.update", [$role->slug]);
         $response = $this->json("PUT", $url, $data, $header);
         $response->assertStatus(200);
+
+        $role->delete();
     }
 }

@@ -22,6 +22,8 @@ class UserPermissionShowTest extends TestCase
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
+        $user1->delete();
+        $user2->delete();
     }
 
     public function testShowPermissionAsAdministratorToModeratorShouldBeAllowed()
@@ -44,6 +46,8 @@ class UserPermissionShowTest extends TestCase
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
+        $user1->delete();
+        $user2->delete();
     }
 
     /**
@@ -58,6 +62,8 @@ class UserPermissionShowTest extends TestCase
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
+        $user1->delete();
+        $user2->delete();
     }
 
     public function testShowPermissionAsModeratorToModeratorShouldBeAllowed()
@@ -69,6 +75,8 @@ class UserPermissionShowTest extends TestCase
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
+        $user1->delete();
+        $user2->delete();
     }
 
     public function testShowPermissionAsModeratorToSubscriberShouldBeAllowed()
@@ -80,6 +88,8 @@ class UserPermissionShowTest extends TestCase
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
+        $user1->delete();
+        $user2->delete();
     }
 
     /**
@@ -94,6 +104,8 @@ class UserPermissionShowTest extends TestCase
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(403);
+        $user1->delete();
+        $user2->delete();
     }
 
     public function testShowPermissionAsSubscriberToModeratorShouldBeForbidden()
@@ -105,6 +117,8 @@ class UserPermissionShowTest extends TestCase
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(403);
+        $user1->delete();
+        $user2->delete();
     }
 
     public function testShowPermissionAsSubscriberToSubscriberShouldBeForbidden()
@@ -116,5 +130,7 @@ class UserPermissionShowTest extends TestCase
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(403);
+        $user1->delete();
+        $user2->delete();
     }
 }

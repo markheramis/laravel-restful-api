@@ -47,25 +47,13 @@ class AuthController extends Controller
         # attempt to login
         if ($user = Sentinel::stateless($credentials)) {
             // If has phone number
-
-            $isGoogleMultiFactor = (bool) $user->google2fa->count();
-            $isTwilioAuthyTwoFactor = (bool) $user->phone_number;
             $token = $user->createToken(config('app.name') . ': ' . $user->username)->accessToken;
-            if ($isGoogleMultiFactor) {
-                $verify = 'g';
-            } else if ($isTwilioAuthyTwoFactor) {
-                $verify = 't';
-                $authy_api = new AuthyApi(config('authy.app_secret'));
-                $authy_api->requestSms($user->authy_id, [
-                    "action" => "login",
-                    "action_message" => "Login code",
-                ]);
-                \session(['twilioVerified' => false]);
-            } else {
-                $verify = false;
-            }
+            $authy_api = new AuthyApi(config('authy.app_secret'));
+            $authy_api->requestSms($user->authy_id, [
+                "action" => "login",
+                "action_message" => "Login code",
+            ]);
             return response()->success([
-                'verify' => $verify,
                 'token' => $token
             ]);
         } else {
@@ -107,7 +95,9 @@ class AuthController extends Controller
         $user = $this->createUser($credentials, $activate);
         $role = $request->role;
         $this->attachRole($user, $role);
-        return response()->success('User Registered Successfully');
+        return response()->success([
+            'id' => $user->id,
+        ]);
     }
 
     /**

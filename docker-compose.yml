@@ -30,7 +30,7 @@ services:
       - redis
   mysql:
     container_name: ${PROJECT_NAME}-mysql
-    image: mysql
+    image: mysql:8.0
     privileged: false
     security_opt:
       - no-new-privileges:true
@@ -44,6 +44,8 @@ services:
       - vmysql:/var/lib/mysql
     networks:
       - "laravel-network"
+    ports:
+      - 3306:3306
     healthcheck:
       test: [CMD, mysqladmin, ping, -h, localhost]
       timeout: 45s
