@@ -91,13 +91,13 @@ class AuthController extends Controller
             "password" => $request->password,
             "first_name" => $request->firstName,
             "last_name" => $request->lastName,
-            "roles" => $request->roles,
+            "permissions" => $request->permissions,
             "phone_number" => $request->phone,
             "country_code" => $request->countryCode,
             "authy_id" => $authy_id
         ];
         $user = $this->createUser($credentials, $activate);
-        $role = $request->roles[0];
+        $role = ($request->has('role')) ? $request->role : 'subscriber';
         $this->attachRole($user, $role);
         return response()->success([
             'id' => $user->id,
