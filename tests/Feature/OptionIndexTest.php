@@ -29,7 +29,6 @@ class OptionIndexTest extends TestCase
         $response = $this->json("GET", route("option.index"), [], $header);
         $response->assertStatus(200);
         $response->assertJson($expected_response);
-        $option->delete();
     }
 
     public function testGetOptionIndexAsModeratorShouldBeAllowed()
@@ -43,7 +42,6 @@ class OptionIndexTest extends TestCase
         $response = $this->json("GET", route("option.index"), [], $header);
         $response->assertStatus(200);
         $response->assertJson($expected_response);
-        $option->delete();
     }
 
     public function testGetOptionIndexAsSubscriberShouldBeAllowed()
@@ -57,6 +55,5 @@ class OptionIndexTest extends TestCase
         $response = $this->json("GET", route("option.index"), [], $header);
         $response->assertStatus(200);
         $response->assertJson($expected_response);
-        $option->delete();
     }
 }

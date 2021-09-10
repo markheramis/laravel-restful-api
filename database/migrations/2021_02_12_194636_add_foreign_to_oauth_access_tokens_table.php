@@ -14,7 +14,7 @@ class AddForeignToOauthAccessTokensTable extends Migration
     public function up()
     {
         Schema::table('oauth_access_tokens', function (Blueprint $table) {
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('CASCADE');
             $table->foreign('client_id')->references('id')->on('oauth_clients');
         });
     }
