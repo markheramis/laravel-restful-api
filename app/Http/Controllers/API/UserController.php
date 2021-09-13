@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use Auth;
 use Activation;
 use App\Models\User;
 use App\Http\Controllers\Controller;
@@ -136,5 +137,20 @@ class UserController extends Controller
     {
         $user->delete();
         return response()->success('User deleted successfully');
+    }
+
+    /**
+     * Me API
+     * 
+     * This endpoint will return the currently logged-in user.
+     * 
+     * @authenticated
+     * @return JsonResponse
+     */
+    public function me(): JsonResponse
+    {
+        $user = Auth::user();
+        $user->roles = $user->roles()->select('slug', 'name', 'permissions')->get();
+        return response()->success($user);
     }
 }
