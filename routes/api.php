@@ -11,7 +11,9 @@
   |
  */
 
-use App\Http\Controllers\API\AuthController;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\API\Auth\LoginController;
+use App\Http\Controllers\API\Auth\RegisterController;
 use App\Http\Controllers\API\MediaController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\UserPermissionController;
@@ -19,15 +21,13 @@ use App\Http\Controllers\API\UserRoleController;
 use App\Http\Controllers\API\RoleController;
 use App\Http\Controllers\API\OptionController;
 use App\Http\Controllers\API\CategoryController;
-use Illuminate\Support\Facades\Route;
-
 
 Route::prefix('auth')->group(function () {
-    Route::post('login', [AuthController::class, 'login'])->name('api.login');
-    Route::post('register', [AuthController::class, 'register'])->name('api.register');
+    Route::post('login', [LoginController::class, 'login'])->name('api.login');
+    Route::post('register', [RegisterController::class, 'register'])->name('api.register');
     Route::post('activate', [UserController::class, 'activate'])->name('api.user.activate');
     Route::middleware(['auth:api'])->group(function () {
-        Route::get('me', [AuthController::class, 'me'])->name('api.me');
+        Route::get('me', [UserController::class, 'me'])->name('api.me');
     });
 });
 
