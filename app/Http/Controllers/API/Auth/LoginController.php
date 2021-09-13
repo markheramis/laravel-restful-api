@@ -67,6 +67,8 @@ class LoginController extends Controller
                 "action_message" => "Login code",
             ]);
             return true;
+        } else {
+            return false;
         }
     }
 }
