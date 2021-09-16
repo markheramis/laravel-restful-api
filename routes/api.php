@@ -14,6 +14,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\Auth\LoginController;
 use App\Http\Controllers\API\Auth\RegisterController;
+use App\Http\Controllers\API\AuthTwilio2FAController;
 use App\Http\Controllers\API\MediaController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\UserPermissionController;
@@ -30,9 +31,21 @@ Route::prefix('auth')->group(function () {
         Route::get('me', [UserController::class, 'me'])->name('api.me');
     });
 });
-
-include_once('api_groups/multi-factor.php');
-
+Route::prefix('auth')->group(function () {
+    Route::post('/mfa/verify', [AuthTwilio2FAController::class, 'verifyCode'])->name('api.mfa.twilio.verify');
+    Route::middleware(['auth:api'])->group(function () {
+        Route::prefix('mfa')->group(function () {
+            // Google MFA Route Group
+            /* Route::prefix('g')->group(function () {
+                Route::get('isAuthenticated', [AuthGoogle2FAController::class, 'isAuthenticated'])->name('api.mfa.google.auth');
+                Route::prefix('{user}')->group(function () {
+                    Route::post('verify', [AuthGoogle2FAController::class, 'verifyCode'])->name('api.mfa.google.verify');
+                });
+            }); */
+            Route::get('isAuthenticated', [AuthTwilio2FAController::class, 'isAuthenticated'])->name('api.mfa.twilio.auth');
+        });
+    });
+});
 Route::prefix('user')->middleware(['auth:api'])->group(function () {
     Route::get('/', [UserController::class, 'index'])->name('user.index');
     Route::prefix('{user}')->group(function () {
