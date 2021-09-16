@@ -2,10 +2,8 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rule;
 use App\Http\Requests\FormRequest;
-use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
+use Illuminate\Support\Facades\Auth;
 
 class UserUpdateRequest extends FormRequest
 {
@@ -16,11 +14,15 @@ class UserUpdateRequest extends FormRequest
      */
     public function authorize()
     {
-        $user = Auth::user();
-        $can_update = Sentinel::findById($user->id)->hasAccess("user.update");
-        return $can_update || $this->isUpdatingSelf();
+        if (!Auth::check()) return;
+        return Auth::user()->hasAccess("user.update") || $this->isUpdatingSelf();
     }
 
+    /**
+     * Returns true if the current user session is equal to the user we're updating, else false.
+     *
+     * @return boolean
+     */
     private function isUpdatingSelf()
     {
         $user = Auth::user();
@@ -34,12 +36,11 @@ class UserUpdateRequest extends FormRequest
      */
     public function rules()
     {
-        $handle_unique = Rule::unique('users')->ignore($this->user);
         return [
-            "username" => ["required", "min:8", "max:255", $handle_unique],
-            "email" => ["required", "email", "max:255", $handle_unique],
-            "firstName" => ["min:2", "max:100"],
-            "lastName" => ["min:2", "max:100"],
+            "username" => ["required", "min:8", "max:255"],
+            "email" => ["required", "email", "max:255"],
+            "first_name" => ["min:2", "max:100"],
+            "last_name" => ["min:2", "max:100"],
         ];
     }
 }

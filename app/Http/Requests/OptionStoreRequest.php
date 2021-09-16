@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests;
 
-use Auth;
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class OptionStoreRequest extends FormRequest
 {
@@ -14,10 +14,8 @@ class OptionStoreRequest extends FormRequest
      */
     public function authorize()
     {
-        if (Auth::check()) {
-            $user = Auth::user();
-            return $user->hasAccess('option.store');
-        }
+        if (!Auth::check()) return;
+        return Auth::user()->hasAccess("option.store");
     }
 
     /**

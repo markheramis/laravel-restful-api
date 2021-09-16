@@ -2,10 +2,11 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\WithFaker;
+
 use Tests\TestCase;
-use Tests\Traits\userTraits;
 use App\Models\Option;
+use Tests\Traits\userTraits;
+use Illuminate\Foundation\Testing\WithFaker;
 
 class OptionIndexTest extends TestCase
 {
@@ -19,7 +20,7 @@ class OptionIndexTest extends TestCase
 
     public function testGetOptionIndexAsAdministratorShouldBeAllowed()
     {
-        Option::factory()->count(2)->create();
+        $option = Option::factory()->count(2)->create();
         $expected_response = Option::select(['name', 'value'])->where('autoload', true)->get()->toArray();
         $token = $this->getTokenByRole("administrator");
         $header = [
@@ -29,10 +30,10 @@ class OptionIndexTest extends TestCase
         $response->assertStatus(200);
         $response->assertJson($expected_response);
     }
-    
+
     public function testGetOptionIndexAsModeratorShouldBeAllowed()
     {
-        Option::factory()->count(2)->create();
+        $option = Option::factory()->count(2)->create();
         $expected_response = Option::select(['name', 'value'])->where('autoload', true)->get()->toArray();
         $token = $this->getTokenByRole("moderator");
         $header = [
@@ -45,7 +46,7 @@ class OptionIndexTest extends TestCase
 
     public function testGetOptionIndexAsSubscriberShouldBeAllowed()
     {
-        Option::factory()->count(2)->create();
+        $option = Option::factory()->count(2)->create();
         $expected_response = Option::select(['name', 'value'])->where('autoload', true)->get()->toArray();
         $token = $this->getTokenByRole("subscriber");
         $header = [
@@ -55,5 +56,4 @@ class OptionIndexTest extends TestCase
         $response->assertStatus(200);
         $response->assertJson($expected_response);
     }
-    
 }

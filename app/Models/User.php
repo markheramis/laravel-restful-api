@@ -29,9 +29,12 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'username',
         'email',
         'password',
-        'lastName',
-        'firstName',
+        'first_name',
+        'last_name',
         'permissions',
+        'country_code',
+        'phone_number',
+        'authy_id' // Temporary.
     ];
 
     /**
@@ -86,13 +89,18 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         return $this->where('email', $username)->first();
     }
 
-
     public function activation()
     {
         return $this->hasOne(Activation::class);
     }
 
-    public function media() {
+    public function media()
+    {
         return $this->hasMany(Media::class);
+    }
+
+    public function google2fa()
+    {
+        return $this->hasMany(Google2FA::class);
     }
 }

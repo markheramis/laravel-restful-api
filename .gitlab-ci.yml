@@ -16,6 +16,7 @@ variables:
   MYSQL_USER: homestead
   MYSQL_PASSWORD: secret
   MYSQL_ROOT_PASSWORD: secret
+  REDIS_PORT: 6379
   
 include:
   - template: Jobs/Code-Quality.gitlab-ci.yml # https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Code-Quality.gitlab-ci.yml
@@ -61,7 +62,6 @@ build-composer:
   image: composer:latest
   stage: build
   script:
-    - cp .env.testing.example .env
     - composer install
   only:
     - pull_request
@@ -71,10 +71,13 @@ build-composer:
     - production
   artifacts:
     paths:
-      - .env
-      - vendor/
-      - storage/logs
+      - vendor
     expire_in: 1 week
+  cache:
+    key: "${CI_JOB_NAME}-composer"
+    paths:
+      - .env
+      - vendor
 
 artisan-test:
   image:
@@ -84,13 +87,18 @@ artisan-test:
   parallel: 2
   services:
     - name: mysql:8.0
-  script:
+    - name: redis:latest
+  before_script:
+    - cp .env.gitlab .env
+    - cp .env.gitlab .env.testing
     - php artisan storage:link
     - php artisan key:generate
     - php artisan migrate
     - php artisan db:seed
     - php artisan passport:install
-    - php artisan queue:work &
+    - php artisan scribe:generate --force
+  script:
+    - php artisan queue:work >> storage/logs/queue.log &
     - php artisan serve &
     - php artisan test --env=testing
   only:
@@ -101,8 +109,11 @@ artisan-test:
     - production
   artifacts:
     paths:
+      - .env
+      - .env.testing
+      - bootstrap/cache/
       - storage/logs/
-    expire_in: 1 week
+    expire_in: 1 day
     when: always
     reports:
       junit: storage/logs/tests-report.xml
@@ -110,6 +121,44 @@ artisan-test:
   dependencies:
     - build-docker
     - build-composer
+  needs:
+    - build-docker
+    - build-composer
+php-lint:
+  image:
+    name: $DOCKER_IMAGE
+    entrypoint: [""]
+  stage: test
+  script:
+    - ./vendor/bin/phplint
+  dependencies:
+    - build-docker
+    - build-composer
+  needs:
+    - build-docker
+    - build-composer
+
+#code_quality:
+#  stage: test
+#  rules:
+#    # Run code_quality in pipelines on the master branch (but not in other branch pipelines)
+#    - if: '$CI_COMMIT_BRANCH == "master"'
+#    # Run code_quality in pipelines for tags
+#    - if: "$CI_COMMIT_TAG"
+#  artifacts:
+#    paths: [gl-code-quality-report.json]
+#  dependencies:
+#    - build-docker
+#    - build-composer
+#  needs:
+#    - build-docker
+#    - build-composer
+
+code_quality:
+  artifacts:
+    paths: [gl-code-quality-report.json]
+
+
       
 deploy_staging:
   image:
@@ -158,18 +207,6 @@ sonarcloud-check:
   needs:
     - artisan-test
 
-code_quality:
-  stage: analyse
-  rules:
-    # Run code_quality in pipelines on the master branch (but not in other branch pipelines)
-    - if: '$CI_COMMIT_BRANCH == "master"'
-    # Run code_quality in pipelines for tags
-    - if: "$CI_COMMIT_TAG"
-  dependencies:
-    - artisan-test
-  needs:
-    - artisan-test
-
 code_intelligence_go:
   stage: analyse
   rules:
@@ -177,10 +214,6 @@ code_intelligence_go:
     - if: '$CI_COMMIT_BRANCH == "master"'
     # Run code_intelligence_go in pipelines for tags
     - if: "$CI_COMMIT_TAG"
-  dependencies:
-    - artisan-test
-  needs:
-    - artisan-test
 
 gemnasium-dependency_scanning:
   stage: analyse
@@ -189,10 +222,6 @@ gemnasium-dependency_scanning:
     - if: '$CI_COMMIT_BRANCH == "master"'
     # Run gemnasium-dependency_scanning in pipelines for tags
     - if: "$CI_COMMIT_TAG"
-  dependencies:
-    - artisan-test
-  needs:
-    - artisan-test
 
 retire-js-dependency_scanning:
   stage: analyse
@@ -201,10 +230,6 @@ retire-js-dependency_scanning:
     - if: '$CI_COMMIT_BRANCH == "master"'
     # Run retire-js-dependency_scanning in pipelines for tags
     - if: "$CI_COMMIT_TAG"
-  dependencies:
-    - artisan-test
-  needs:
-    - artisan-test
 
 container_scanning:
   stage: analyse
@@ -213,10 +238,6 @@ container_scanning:
     - if: '$CI_COMMIT_BRANCH == "master"'
     # Run container_scanning in pipelines for tags
     - if: "$CI_COMMIT_TAG"
-  dependencies:
-    - artisan-test
-  needs:
-    - artisan-test
 
 phpcs-security-audit-sast:
   stage: analyse
@@ -225,10 +246,6 @@ phpcs-security-audit-sast:
     - if: '$CI_COMMIT_BRANCH == "master"'
     # Run phpcs-security-audit-sast in pipelines for tags
     - if: "$CI_COMMIT_TAG"
-  dependencies:
-    - artisan-test
-  needs:
-    - artisan-test
 
 nodejs-scan-sast:
   stage: analyse
@@ -237,10 +254,6 @@ nodejs-scan-sast:
     - if: '$CI_COMMIT_BRANCH == "master"'
     # Run nodejs-scan-sast in pipelines for tags
     - if: "$CI_COMMIT_TAG"
-  dependencies:
-    - artisan-test
-  needs:
-    - artisan-test
 
 eslint-sast:
   stage: analyse
@@ -249,20 +262,12 @@ eslint-sast:
     - if: '$CI_COMMIT_BRANCH == "master"'
     # Run eslint-sast in pipelines for tags
     - if: "$CI_COMMIT_TAG"
-  dependencies:
-    - artisan-test
-  needs:
-    - artisan-test
 
 semgrep-sast:
   stage: analyse
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"' # Run eslint-sast in pipelines on the master branch (but not in other branch pipelines)
     - if: "$CI_COMMIT_TAG" # Run eslint-sast in pipelines for tags
-  dependencies:
-    - artisan-test
-  needs:
-    - artisan-test
 
 secret_detection:
   stage: analyse
@@ -286,7 +291,3 @@ license_scanning:
     - if: '$CI_COMMIT_BRANCH == "master"'
     # Run license_scanning in pipelines for tags
     - if: "$CI_COMMIT_TAG"
-  dependencies:
-    - artisan-test
-  needs:
-    - artisan-test

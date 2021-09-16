@@ -2,8 +2,7 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
+use App\Http\Requests\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
 class CategoryIndexRequest extends FormRequest
@@ -15,9 +14,8 @@ class CategoryIndexRequest extends FormRequest
      */
     public function authorize()
     {
-        $authUser = Auth::user();
-        $user = Sentinel::findByid($authUser->id);
-        return $user->hasAccess("category.index");
+        if (!Auth::check()) return;
+        return Auth::user()->hasAccess("category.index");
     }
 
     /**

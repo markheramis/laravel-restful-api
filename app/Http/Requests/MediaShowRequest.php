@@ -2,10 +2,9 @@
 
 namespace App\Http\Requests;
 
-use Auth;
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\FormRequest;
 
-class OptionGetRequest extends FormRequest
+class MediaShowRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -14,10 +13,7 @@ class OptionGetRequest extends FormRequest
      */
     public function authorize()
     {
-        if (Auth::check()) {
-            $user = Auth::user();
-            return $user->hasAccess('option.get');
-        }
+        return true;
     }
 
     /**
@@ -27,6 +23,8 @@ class OptionGetRequest extends FormRequest
      */
     public function rules()
     {
-        return [];
+        return [
+            //
+        ];
     }
 }

@@ -2,15 +2,11 @@
 
 namespace App\Http\Controllers\API;
 
-use Log;
-use Sentinel;
+use Auth;
 use Activation;
-
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\JsonResponse;
-
 use App\Models\User;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 use App\Transformers\UserTransformer;
 use App\Http\Requests\UserIndexRequest;
 use App\Http\Requests\UserShowRequest;
@@ -33,6 +29,8 @@ class UserController extends Controller
      * This endpoint lets you get all Users.
      * 
      * @authenticated
+     * @todo add role based search.
+     * @queryParam search string used to search from email, username, first_name, and last_name
      * @param UserAllRequest $request
      * @uses App\Models\User $rolePaginator
      * @uses App\Transformers\UserTransformer UserTransformer
@@ -42,18 +40,13 @@ class UserController extends Controller
      */
     public function index(UserIndexRequest $request): JsonResponse
     {
-        $rolePaginator = User::when($request->search, function($query) use ($request)
-        {
+        $rolePaginator = User::when($request->search, function ($query) use ($request) {
             $search = $request->search;
-            return $query->whereColumn([
-                ["email", "LIKE", "%$search%"],
-                ["username", "LIKE", "%$search%"],
-                ["first_name", "LIKE", "%$search%"],
-                ["last_name", "LIKE", "%$search%"],
-            ]);
-        })
-        # @todo add role based search.
-        ->paginate();
+            $query->where("email", "LIKE", "%$search%")
+                ->orWhere("username", "LIKE", "%$search%")
+                ->orWhere("first_name", "LIKE", "%$search%")
+                ->orWhere("last_name", "LIKE", "%$search%");
+        })->paginate();
 
 
         $users = $rolePaginator->getCollection();
@@ -82,7 +75,7 @@ class UserController extends Controller
     public function show(UserShowRequest $request, User $user): JsonResponse
     {
         $response = fractal($user, new UserTransformer())->toArray();
-        return response()->success($response, 200);
+        return response()->success($response);
     }
 
     /**
@@ -123,13 +116,10 @@ class UserController extends Controller
     {
         $user->username = $request->username;
         $user->email = $request->email;
-        $user->firstName = $request->firstName;
-        $user->lastName = $request->lastName;
-        if ($user->update()) {
-            return response()->success('User updated', 201);
-        } else {
-            return response()->error('Failed to update user');
-        }
+        $user->first_name = $request->firstName;
+        $user->last_name = $request->lastName;
+        $user->update();
+        return response()->success($user);
     }
 
     /**
@@ -145,12 +135,22 @@ class UserController extends Controller
      */
     public function destroy(UserDestroyRequest $request, User $user): JsonResponse
     {
-        $deleteUserTokens = $user->tokens()->delete();
-        if ($user->update()) {
-            $user->delete();
-            return response()->success('User deleted successfully');
-        } else {
-            return response()->error('Failed to delete user');
-        }
+        $user->delete();
+        return response()->success('User deleted successfully');
+    }
+
+    /**
+     * Me API
+     * 
+     * This endpoint will return the currently logged-in user.
+     * 
+     * @authenticated
+     * @return JsonResponse
+     */
+    public function me(): JsonResponse
+    {
+        $user = Auth::user();
+        $user->roles = $user->roles()->select('slug', 'name', 'permissions')->get();
+        return response()->success($user);
     }
 }

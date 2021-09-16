@@ -2,23 +2,18 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
 use App\Models\Media;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Controller;
 use App\Transformers\MediaTransformer;
-use App\Http\Requests\MediaDestroyRequest;
-use App\Http\Requests\MediaGetRequest;
 use App\Http\Requests\MediaIndexRequest;
 use App\Http\Requests\MediaStoreRequest;
+use App\Http\Requests\MediaShowRequest;
 use App\Http\Requests\MediaUpdateRequest;
-use App\Models\User;
-use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
-use League\Fractal\Pagination\IlluminatePaginatorAdapter;
-use League\Fractal\Serializer\JsonApiSerializer;
+use App\Http\Requests\MediaDestroyRequest;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
-
-
+use League\Fractal\Serializer\JsonApiSerializer;
+use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 
 /**
  * @group Media Management
@@ -67,14 +62,13 @@ class MediaController extends Controller
     public function store(MediaStoreRequest $request): JsonResponse
     {
         $file = $request->file;
-        $authUser = Auth::user();
-        $user = Sentinel::findById($authUser->id);
+        $user = Auth::user();
 
-        $path = $file->store('/dicom', 'public');
+        $path = $file->store('/media', 'public');
 
         $save = $user->media()->create([
-          'path' => $path,
-          'description' => $file->getClientOriginalName(),
+            'path' => $path,
+            'description' => $file->getClientOriginalName(),
         ]);
 
         if ($save) {
@@ -91,12 +85,12 @@ class MediaController extends Controller
      * 
      * @authenticated
      * @todo 2nd parameter should auto resolve to the Media model instance
-     * @param MediaGetRequest $request
+     * @param MediaShowRequest $request
      * @param int $id the id of the media to look for
      * @uses App\Transformers\MediaTransformer MediaTransformer
      * @return JsonResponse
      */
-    public function get(MediaGetRequest $request, Media $media)
+    public function get(MediaShowRequest $request, Media $media)
     {
         $response = fractal($media, new MediaTransformer())->toArray();
         return response()->success($response);
@@ -107,7 +101,7 @@ class MediaController extends Controller
         $media->path = $request->path;
         $media->description = $request->description;
         $media->status = $request->status;
-        if($media->update()) {
+        if ($media->update()) {
             $response = fractal($media, new MediaTransformer())->toArray();
             return response()->succes($response);
         } else {

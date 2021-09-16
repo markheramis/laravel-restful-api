@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
-use Response;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Response;
 
 class ResponseMacroServiceProvider extends ServiceProvider
 {
@@ -14,11 +14,15 @@ class ResponseMacroServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Response::macro('success', function ($data) {
-            return Response::json([
+        Response::macro('success', function ($data, array $notification = [], $status = 200) {
+            $data = [
                 'error' => false,
                 'data' => $data,
-            ]);
+            ];
+            if ($notification)
+                $data['notification'] = $notification;
+            $data['notification'] = (count($notification)) ?? $notification;
+            return Response::json($data, $status);
         });
 
         Response::macro('error', function ($message, $status = 400) {

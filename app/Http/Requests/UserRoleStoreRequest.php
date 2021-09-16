@@ -2,9 +2,8 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\FormRequest;
-use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
+use Illuminate\Support\Facades\Auth;
 
 class UserRoleStoreRequest extends FormRequest
 {
@@ -15,9 +14,8 @@ class UserRoleStoreRequest extends FormRequest
    */
   public function authorize()
   {
-      $user = Auth::user();
-      $can_add_role = Sentinel::findById($user->id)->hasAccess("user.role.add");
-      return $can_add_role;
+    if (!Auth::check()) return;
+    return Auth::user()->hasAccess("user.role.store");
   }
 
   /**

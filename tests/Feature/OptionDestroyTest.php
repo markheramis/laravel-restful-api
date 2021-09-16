@@ -17,6 +17,7 @@ class OptionDestroyTest extends TestCase
         $url = route("option.destroy", [$option->name]);
         $response  = $this->json("DELETE", $url);
         $response->assertStatus(401);
+        $option->delete();
     }
 
 
@@ -42,6 +43,7 @@ class OptionDestroyTest extends TestCase
         $url = route("option.destroy", [$option->name]);
         $response = $this->json("DELETE", $url, [], $header);
         $response->assertStatus(403);
+        $option->delete();
     }
 
     public function testDestoryOptionAsSubscriberShouldBeForbidden()
@@ -54,5 +56,6 @@ class OptionDestroyTest extends TestCase
         $url = route("option.destroy", [$option->name]);
         $response = $this->json("DELETE", $url, [], $header);
         $response->assertStatus(403);
+        $option->delete();
     }
 }

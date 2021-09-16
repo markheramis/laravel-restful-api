@@ -9,8 +9,8 @@ use App\Models\Role;
 use App\Transformers\RoleTransformer;
 use App\Http\Requests\UserRoleStoreRequest;
 use App\Http\Requests\UserRoleShowRequest;
-use App\Http\Requests\UserRoleDestroyRequest;
 use App\Http\Requests\UserRoleUpdateRequest;
+use App\Http\Requests\UserRoleDestroyRequest;
 use Illuminate\Http\JsonResponse;
 
 /**
@@ -20,23 +20,6 @@ use Illuminate\Http\JsonResponse;
  */
 class UserRoleController extends Controller
 {
-
-    /**
-     * Get User Roles
-     * 
-     * This endpoint lets you get a User's Roles
-     *
-     * @authenticated
-     * @param UserRoleGetRequest $request
-     * @param App\Models\User $user auto reolved instance of User
-     * @return JsonResponse
-     */
-    public function show(UserRoleShowRequest $request, User $user): JsonResponse
-    {
-        $roles = $user->roles;
-        $response = fractal($roles, new RoleTransformer())->toArray();
-        return response()->success($response);
-    }
 
     /**
      * Add Role to User
@@ -56,6 +39,23 @@ class UserRoleController extends Controller
         } else {
             return response()->error('Not Found', 404);
         }
+    }
+
+    /**
+     * Get User Roles
+     * 
+     * This endpoint lets you get a User's Roles
+     *
+     * @authenticated
+     * @param UserRoleGetRequest $request
+     * @param App\Models\User $user auto reolved instance of User
+     * @return JsonResponse
+     */
+    public function show(UserRoleShowRequest $request, User $user): JsonResponse
+    {
+        $roles = $user->roles;
+        $response = fractal($roles, new RoleTransformer())->toArray();
+        return response()->success($response);
     }
 
     /**

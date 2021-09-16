@@ -11,19 +11,27 @@
   |
  */
 
-use App\Http\Controllers\API\AuthController;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\API\Auth\LoginController;
+use App\Http\Controllers\API\Auth\RegisterController;
 use App\Http\Controllers\API\MediaController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\UserPermissionController;
 use App\Http\Controllers\API\UserRoleController;
 use App\Http\Controllers\API\RoleController;
 use App\Http\Controllers\API\OptionController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\API\CategoryController;
 
-Route::get('me', [AuthController::class, 'me'])->middleware(['auth:api'])->name('api.me');
-Route::post('login', [AuthController::class, 'login'])->name('api.login');
-Route::post('register', [AuthController::class, 'register'])->name('api.register');
-Route::post('activate', [UserController::class, 'activate'])->name('api.user.activate');
+Route::prefix('auth')->group(function () {
+    Route::post('login', [LoginController::class, 'login'])->name('api.login');
+    Route::post('register', [RegisterController::class, 'register'])->name('api.register');
+    Route::post('activate', [UserController::class, 'activate'])->name('api.user.activate');
+    Route::middleware(['auth:api'])->group(function () {
+        Route::get('me', [UserController::class, 'me'])->name('api.me');
+    });
+});
+
+include_once('api_groups/multi-factor.php');
 
 Route::prefix('user')->middleware(['auth:api'])->group(function () {
     Route::get('/', [UserController::class, 'index'])->name('user.index');
@@ -70,5 +78,14 @@ Route::prefix('option')->middleware(['auth:api'])->group(function () {
         Route::get('/', [OptionController::class,  'show'])->name('option.show');
         Route::put('/', [OptionController::class, 'update'])->name('option.update');
         Route::delete('/', [OptionController::class, 'destory'])->name('option.destroy');
+    });
+});
+Route::prefix('category')->middleware(['auth:api'])->group(function () {
+    Route::get('/', [CategoryController::class, 'index'])->name('category.index');
+    Route::post('/', [CategoryController::class, 'store'])->name('category.store');
+    Route::prefix('{category}')->group(function () {
+        Route::get('/', [CategoryController::class, 'show'])->name('category.show');
+        Route::put('/', [CategoryController::class, 'update'])->name('category.update');
+        Route::delete('/', [CategoryController::class, 'destroy'])->name('category.destroy');
     });
 });

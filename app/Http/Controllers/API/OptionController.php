@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-
 use App\Models\Option;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\OptionIndexRequest;
 use App\Http\Requests\OptionStoreRequest;
-use App\Http\Requests\OptionGetRequest;
+use App\Http\Requests\OptionShowRequest;
 use App\Http\Requests\OptionUpdateRequest;
 use App\Http\Requests\OptionDestroyRequest;
 use Illuminate\Http\JsonResponse;
@@ -54,9 +52,8 @@ class OptionController extends Controller
         $option->value = $request->value;
         $option->autoload = $request->autoload;
 
-        if ($option->save()) {
-            return response()->json($option);
-        }
+        $option->save();
+        return response()->json($option);
     }
 
     /**
@@ -66,11 +63,11 @@ class OptionController extends Controller
      * 
      * @authenticated
      *
-     * @param OptionGetRequest $request
+     * @param OptionShowRequest $request
      * @param Option $option
      * @return JsonResponse
      */
-    public function show(OptionGetRequest $request, Option $option): JsonResponse
+    public function show(OptionShowRequest $request, Option $option): JsonResponse
     {
         return response()->json([
             'name' => $option->name,
@@ -93,9 +90,8 @@ class OptionController extends Controller
     {
         $option->value = $request->value;
         $option->autoload = $request->autoload;
-        if ($option->save()) {
-            return response()->json($option);
-        }
+        $option->save();
+        return response()->json($option);
     }
 
     /**
@@ -111,8 +107,7 @@ class OptionController extends Controller
      */
     public function destory(OptionDestroyRequest $request, Option $option): JsonResponse
     {
-        if ($option->delete()) {
-            return response()->json('success', 200);
-        }
+        $option->delete();
+        return response()->json('success', 200);
     }
 }

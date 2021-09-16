@@ -2,9 +2,10 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
+use Auth;
+use App\Http\Requests\FormRequest;
 
-class MediaGetRequest extends FormRequest
+class AuthTwilio2FAVerifyCodeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +14,7 @@ class MediaGetRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return Auth::check();
     }
 
     /**
@@ -24,7 +25,7 @@ class MediaGetRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'code' => ['string', 'required']
         ];
     }
 }

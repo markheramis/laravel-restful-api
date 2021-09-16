@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset>
+    <rule ref="Gamegos" />
+    <arg name="bootstrap" value="vendor/autoload.php" />
+</ruleset>

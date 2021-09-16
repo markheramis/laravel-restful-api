@@ -9,17 +9,25 @@
     "license": "MIT",
     "require": {
         "php": "^7.3|^8.0",
+        "authy/php": "^4.0.0-rc2",
+        "bacon/bacon-qr-code": "^2.0",
         "cartalyst/sentinel": "^5.0",
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
+        "gamegos/php-code-sniffer": "^0.6.1",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.12",
         "laravel/passport": "^10.1",
         "laravel/tinker": "^2.5",
+        "pragmarx/google2fa-laravel": "^2.0",
+        "predis/predis": "^1.1",
+        "pusher/pusher-php-server": "~5.0",
         "ramsey/uuid": "^4.1",
         "sentry/sentry-laravel": "^2.3",
         "spatie/laravel-backup": "^6.14",
-        "spatie/laravel-fractal": "^5.8"
+        "spatie/laravel-fractal": "^5.8",
+        "spatie/laravel-sluggable": "^3.1",
+        "twilio/sdk": "^6.28"
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.7",
@@ -32,6 +40,7 @@
         "laravel/telescope": "^4.4.0",
         "mockery/mockery": "^1.4.2",
         "nunomaduro/collision": "^5.0",
+        "overtrue/phplint": "^3.0",
         "phpbench/phpbench": "1.0.0-beta1",
         "phpunit/php-code-coverage": "^9.2",
         "phpunit/phpunit": "^9.4"
@@ -70,7 +79,6 @@
     "scripts": {
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php artisan package:discover --ansi",
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
             "@php -r \"file_exists('.env.testing') || copy('.env.testing.example', '.env');\""
         ],
@@ -82,6 +90,9 @@
         ],
         "doc": [
             "@php artisan scribe:generate --force"
+        ],
+        "lint": [
+            "./vendor/bin/phplint"
         ],
         "bench": [
             "@php vendor/bin/phpbench run"

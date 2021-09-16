@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests;
 
-use Auth;
 use App\Http\Requests\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class UserPermissionStoreRequest extends FormRequest
 {
@@ -14,12 +14,8 @@ class UserPermissionStoreRequest extends FormRequest
    */
   public function authorize()
   {
-    if (Auth::check()) {
-      $user = Auth::user();
-      return $user->hasAccess("user.permission.add");
-    } else {
-      return false;
-    }
+    if (!Auth::check()) return;
+    return Auth::user()->hasAccess("user.permission.store");
   }
 
   /**

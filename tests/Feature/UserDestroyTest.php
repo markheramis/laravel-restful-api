@@ -16,6 +16,7 @@ class UserDestroyTest extends TestCase
         $url = route("user.destroy", [$user->id]);
         $response = $this->json("DELETE", $url);
         $response->assertStatus(401);
+        $user->delete();
     }
 
     public function testDestroyModeratorWithNoSessionShouldBeUnauthorized()
@@ -32,6 +33,7 @@ class UserDestroyTest extends TestCase
         $url = route("user.destroy", [$user->id]);
         $response = $this->json("DELETE", $url);
         $response->assertStatus(401);
+        $user->delete();
     }
 
     #########################################
@@ -47,6 +49,8 @@ class UserDestroyTest extends TestCase
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(403);
+        $user1->delete();
+        $user2->delete();
     }
 
     public function testDestroyModeratorAsSubscriberShouldBeForbidden()
@@ -59,6 +63,8 @@ class UserDestroyTest extends TestCase
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(403);
+        $user1->delete();
+        $user2->delete();
     }
 
     public function testDestroyAdministratorAsSubscrbierShouldBeForbidden()
@@ -71,6 +77,8 @@ class UserDestroyTest extends TestCase
             "Authorization" => "Bearer $token",
         ]);
         $response->assertStatus(403);
+        $user1->delete();
+        $user2->delete();
     }
 
     ########################################
@@ -86,8 +94,10 @@ class UserDestroyTest extends TestCase
             "Authorization" => "Bearer $token",
         ]);
         $response->assertStatus(403);
+        $user1->delete();
+        $user2->delete();
     }
-    
+
     public function testDestroyModeratorAsModeratorShouldBeForbidden()
     {
         $user1 = $this->createUser("moderator");
@@ -98,6 +108,8 @@ class UserDestroyTest extends TestCase
             "Authorization" => "Bearer $token",
         ]);
         $response->assertStatus(403);
+        $user1->delete();
+        $user2->delete();
     }
 
     public function testDestroyAdministratorAsModeratorShouldBeForbidden()
@@ -110,6 +122,8 @@ class UserDestroyTest extends TestCase
             "Authorization" => "Bearer $token",
         ]);
         $response->assertStatus(403);
+        $user1->delete();
+        $user2->delete();
     }
 
     ############################################
@@ -125,6 +139,8 @@ class UserDestroyTest extends TestCase
             "Authorization" => "Bearer $token",
         ]);
         $response->assertStatus(200);
+        $user1->delete();
+        $user2->delete();
     }
 
     public function testDestroyModeratorAsAdministratorShouldBeAllowed()
@@ -137,6 +153,8 @@ class UserDestroyTest extends TestCase
             "Authorization" => "Bearer $token",
         ]);
         $response->assertStatus(200);
+        $user1->delete();
+        $user2->delete();
     }
 
     public function testDestroyAdministratorAsAdministratorShouldBeAllowed()
@@ -149,5 +167,7 @@ class UserDestroyTest extends TestCase
             "Authorization" => "Bearer $token",
         ]);
         $response->assertStatus(200);
+        $user1->delete();
+        $user2->delete();
     }
 }
