@@ -30,20 +30,10 @@ Route::prefix('auth')->group(function () {
     Route::middleware(['auth:api'])->group(function () {
         Route::get('me', [UserController::class, 'me'])->name('api.me');
     });
-});
-Route::prefix('auth')->group(function () {
-    Route::post('/mfa/verify', [AuthTwilio2FAController::class, 'verifyCode'])->name('api.mfa.twilio.verify');
-    Route::middleware(['auth:api'])->group(function () {
-        Route::prefix('mfa')->group(function () {
-            // Google MFA Route Group
-            /* Route::prefix('g')->group(function () {
-                Route::get('isAuthenticated', [AuthGoogle2FAController::class, 'isAuthenticated'])->name('api.mfa.google.auth');
-                Route::prefix('{user}')->group(function () {
-                    Route::post('verify', [AuthGoogle2FAController::class, 'verifyCode'])->name('api.mfa.google.verify');
-                });
-            }); */
-            Route::get('isAuthenticated', [AuthTwilio2FAController::class, 'isAuthenticated'])->name('api.mfa.twilio.auth');
-        });
+    Route::prefix('mfa')->group(function () {
+        Route::get('qr', [AuthTwilio2FAController::class, 'getQRCode'])->middleware('auth:api')->name('api.mfa.twilio.qr');
+        Route::get('settings', [AuthTwilio2FAController::class, 'getSettings'])->middleware('auth:api')->name('api.mfa.twilio.settings');
+        Route::post('verify', [AuthTwilio2FAController::class, 'verifyCode'])->name('api.mfa.twilio.verify');
     });
 });
 Route::prefix('user')->middleware(['auth:api'])->group(function () {
