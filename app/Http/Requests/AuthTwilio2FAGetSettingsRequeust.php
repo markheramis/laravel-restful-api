@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Auth;
 use App\Http\Requests\FormRequest;
 
-class AuthTwilio2FAVerifyCodeRequest extends FormRequest
+class AuthTwilio2FAGetSettingsRequeust extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -14,7 +14,7 @@ class AuthTwilio2FAVerifyCodeRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return Auth::check();
     }
 
     /**
@@ -25,10 +25,7 @@ class AuthTwilio2FAVerifyCodeRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required_without:username|email',
-            'username' => 'required_without:email|string',
-            'password' => 'required|string',
-            'code' => ['string', 'required']
+            //
         ];
     }
 }
