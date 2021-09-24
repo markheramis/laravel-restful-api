@@ -77,7 +77,9 @@ class RegisterController extends Controller
      */
     private function create_authy_api(UserRegisterRequest $request)
     {
-        if (config('app.env') !== "local") {
+        $is_not_local = config('app.env') !== "local";
+        $has_authy = config('authy.app_id') && config('authy.app_secret');
+        if ($is_not_local && $has_authy) {
             $authy_api = new AuthyApi(config('authy.app_secret'));
             // register the user to the authy users database
             $response = $authy_api->registerUser(
