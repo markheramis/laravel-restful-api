@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use Carbon\Carbon;
 use App\Models\User;
 use Tests\TestCase;
 use Tests\Traits\userTraits;
@@ -10,8 +9,6 @@ use Tests\Traits\userTraits;
 class UserIndexTest extends TestCase
 {
     use userTraits;
-
-    private $users = [];
 
     /**
      * test get all users as administraotr
@@ -28,7 +25,6 @@ class UserIndexTest extends TestCase
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
-        $user->delete();
     }
 
     /**
@@ -46,7 +42,6 @@ class UserIndexTest extends TestCase
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
-        $user->delete();
     }
 
     /**
@@ -64,42 +59,5 @@ class UserIndexTest extends TestCase
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
-        $user->delete();
-    }
-
-    public function testIndexSearchAsAdministratorShouldBeAllowed()
-    {
-        $administrator = $this->createUser('administrator');
-        $token = $administrator->createToken('MyApp')->accessToken;
-
-        $user = $this->createUser('subscriber');
-        $search = $user->email;
-
-        $header = ["Authorization" => "Bearer $token"];
-        $param = ["search" => $search];
-        $response = $this->json("GET", route("user.index"), $param, $header);
-
-        $response->assertStatus(200);
-
-        $data = [];
-        array_push($data, [
-            "type" => null,
-            "id" => "{$user->id}",
-            "attributes" => [
-                "uuid" => $user->uuid->toString(),
-                "slug" => $user->slug,
-                "email" => $user->email,
-                "role" => $user->roles()->pluck('slug')->toArray(),
-                "username" => $user->username,
-                "permissions" => $user->permission,
-                "first_name" => $user->first_name,
-                "last_name" => $user->last_name,
-                "created_at" => Carbon::parse($user->created_at)->toFormattedDateString(),
-                "updated_at" => Carbon::parse($user->updated_at)->toFormattedDateString(),
-            ]
-        ]);
-        $response->assertJsonPath("data", $data);
-
-        $user->delete();
     }
 }

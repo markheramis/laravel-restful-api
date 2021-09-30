@@ -32,6 +32,9 @@ class UserFactory extends Factory
             'password' => bcrypt('password12345'),
             'first_name' => $first_name,
             'last_name' => $last_name,
+            'phone_number' => rand(1111111111, 9999999999),
+            'country_code' => '1',
+
         ];
     }
 

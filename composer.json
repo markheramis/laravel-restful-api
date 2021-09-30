@@ -10,7 +10,7 @@
     "require": {
         "php": "^7.3|^8.0",
         "authy/php": "^4.0.0-rc2",
-        "bacon/bacon-qr-code": "^2.0",  
+        "bacon/bacon-qr-code": "^2.0",
         "cartalyst/sentinel": "^5.0",
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
@@ -20,6 +20,8 @@
         "laravel/passport": "^10.1",
         "laravel/tinker": "^2.5",
         "pragmarx/google2fa-laravel": "^2.0",
+        "predis/predis": "^1.1",
+        "pragmarx/google2fa-qrcode": "^3.0",
         "pusher/pusher-php-server": "~5.0",
         "ramsey/uuid": "^4.1",
         "sentry/sentry-laravel": "^2.3",

@@ -110,6 +110,6 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
     public function google2fa()
     {
-        return $this->hasMany(Google2FA::class);
+        return $this->hasOne(Google2FA::class);
     }
 }

@@ -30,7 +30,7 @@ class MigrationCartalystSentinel extends Migration
         Schema::create('activations', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('user_id')->unsigned();
-            $table->string('code');
+            $table->string('code', 100);
             $table->boolean('completed')->default(0);
             $table->timestamp('completed_at')->nullable();
             $table->timestamps();
@@ -43,7 +43,7 @@ class MigrationCartalystSentinel extends Migration
         Schema::create('persistences', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('user_id')->unsigned();
-            $table->string('code');
+            $table->string('code', 100);
             $table->timestamps();
             $table->engine = 'InnoDB';
             $table->unique('code');
