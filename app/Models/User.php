@@ -73,15 +73,6 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         });
     }
 
-    public function permissions()
-    {
-        return $this->roles->pluck('permissions')->map(function ($item) {
-            return array_filter($item, function ($value) {
-                return $value;
-            });
-        })->toArray();
-    }
-
     /**
      * Get the route key for the model.
      *
@@ -111,5 +102,19 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function google2fa()
     {
         return $this->hasOne(Google2FA::class);
+    }
+
+    public function getPermissionsAttribute($value)
+    {
+        return ($value) ? $value : [];
+    }
+
+    public function allPermissions()
+    {
+        $role_permissions = $this->roles()->orderBy('id', 'desc')->get()->map(function ($role) {
+            return $role->permissions;
+        })->toArray();
+        $user_permissions = $this->permissions;
+        return array_merge($role_permissions, $user_permissions);
     }
 }
