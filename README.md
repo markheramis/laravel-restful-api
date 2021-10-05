@@ -27,6 +27,7 @@ _NOTE:_ Make sure the database you set deos exists in your local database system
 php artisan key:generate
 php artisan migrate
 php artisan db:seed
+php artisan telescope:install
 php artisan passport:install
 php artisan passport:client --personal
 ```
