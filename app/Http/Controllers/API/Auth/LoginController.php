@@ -32,7 +32,7 @@ class LoginController extends Controller
         $credentials = $this->processCredentials($request);
         # attempt to login
         if ($user = Sentinel::stateless($credentials)) {            
-            if ($user->hasMFA() && $this->notLocal() && $this->hasAuthyConfig()) {
+            if ($this->hasMFA($user) && $this->notLocal() && $this->hasAuthyConfig()) {
                 // If has phone number
                 $verify = $this->sendOTP($user);
                 switch ($verify) {
