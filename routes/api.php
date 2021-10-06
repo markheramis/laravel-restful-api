@@ -36,7 +36,7 @@ Route::prefix('auth')->group(function () {
         Route::post('verify', [AuthTwilio2FAController::class, 'verifyCode'])->name('api.mfa.twilio.verify');
     });
 });
-Route::prefix('user')->middleware(['auth:api'])->group(function () {
+Route::prefix('user')->middleware(['auth:api', 'mfa.claim'])->group(function () {
     Route::get('/', [UserController::class, 'index'])->name('user.index');
     Route::prefix('{user}')->group(function () {
         Route::get('/', [UserController::class, 'show'])->name('user.show');
@@ -56,7 +56,7 @@ Route::prefix('user')->middleware(['auth:api'])->group(function () {
         });
     });
 });
-Route::prefix('role')->middleware(['auth:api'])->group(function () {
+Route::prefix('role')->middleware(['auth:api', 'mfa.claim'])->group(function () {
     Route::get('/', [RoleController::class, 'index'])->name('role.index');
     Route::post('/', [RoleController::class, 'store'])->name('role.store');
     Route::prefix('{role}')->group(function () {
@@ -65,7 +65,7 @@ Route::prefix('role')->middleware(['auth:api'])->group(function () {
         Route::delete('/', [RoleController::class, 'destroy'])->name('role.destroy');
     });
 });
-Route::prefix('media')->middleware(['auth:api'])->group(function () {
+Route::prefix('media')->middleware(['auth:api', 'mfa.claim'])->group(function () {
     Route::get('/', [MediaController::class, 'index'])->name('media.index');
     Route::post('/', [MediaController::class, 'store'])->name('media.store');
     Route::prefix('{media}', function () {
@@ -74,7 +74,7 @@ Route::prefix('media')->middleware(['auth:api'])->group(function () {
         Route::delete('/', [MediaController::class, 'destroy'])->name('media.destroy');
     });
 });
-Route::prefix('option')->middleware(['auth:api'])->group(function () {
+Route::prefix('option')->middleware(['auth:api', 'mfa.claim'])->group(function () {
     Route::get('/', [OptionController::class, 'index'])->name('option.index');
     Route::post('/', [OptionController::class, 'store'])->name('option.store');
     Route::prefix('{option}')->group(function () {
@@ -83,7 +83,7 @@ Route::prefix('option')->middleware(['auth:api'])->group(function () {
         Route::delete('/', [OptionController::class, 'destory'])->name('option.destroy');
     });
 });
-Route::prefix('category')->middleware(['auth:api'])->group(function () {
+Route::prefix('category')->middleware(['auth:api', 'mfa.claim'])->group(function () {
     Route::get('/', [CategoryController::class, 'index'])->name('category.index');
     Route::post('/', [CategoryController::class, 'store'])->name('category.store');
     Route::prefix('{category}')->group(function () {
