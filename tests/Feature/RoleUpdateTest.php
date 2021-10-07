@@ -5,6 +5,7 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use App\Models\Role;
+use Illuminate\Support\Str;
 use Tests\Traits\userTraits;
 use Illuminate\Foundation\Testing\WithFaker;
 
@@ -14,102 +15,61 @@ class RoleUpdateTest extends TestCase
 
     public function testUpdateRoleWithNoUserShouldBeUnauthorized()
     {
-        $data = [
-            "name" => "TestRoleUpdateNoUser",
-            "slug" => "testroleupdatenouser",
-            "permissions" => [
-                "test.all" => true,
-                "test.get" => true,
-                "test.update" => true,
-                "test.store" => true,
-                "test.delete" => true,
-            ]
-        ];
-        $role = $this->createRole($data);
-        $data["name"] = $data["name"] . "Updated";
-        $data["slug"] = $data["name"] . "updated";
+        $role = Role::factory()->create();
         $url = route("role.update", [$role->slug]);
-        $response = $this->json("PUT", $url, $data);
+        $response = $this->json("PUT", $url, [
+            'name' => 'updated',
+            'slug' => Str::slug('RoleName'),
+        ]);
         $response->assertStatus(401);
         $role->delete();
     }
 
     public function testUpdateRoleAsSubscriberShouldBeForbidden()
     {
-        $data = [
-            "name" => "TestRoleUpdateAsSubscriber",
-            "slug" => "testroleupdateassubscriber",
-            "permissions" => [
-                "test.all" => true,
-                "test.get" => true,
-                "test.update" => true,
-                "test.store" => true,
-                "test.delete" => true,
-            ]
-        ];
-        $role = $this->createRole($data);
-        $data["name"] = $data["name"] . "Updated";
-        $data["slug"] = $data["slug"] . "updated";
+        $role = Role::factory()->create();
         $token = $this->getTokenByRole("subscriber");
         $header = [
             "Authorization" => "Bearer $token"
         ];
         $url = route("role.update", [$role->slug]);
-        $response = $this->json("PUT", $url, $data, $header);
+        $response = $this->json("PUT", $url, [
+            'name' => 'RoleName',
+            'slug' => Str::slug('RoleName'),
+        ], $header);
         $response->assertStatus(403);
         $role->delete();
     }
 
     public function testUpdateRoleAsModeratorShouldBeForbidden()
     {
-        $data = [
-            "name" => "TestRoleUpdateAsModerator",
-            "slug" => "testroleupdateasmoderator",
-            "permissions" => [
-                "test.all" => true,
-                "test.get" => true,
-                "test.update" => true,
-                "test.store" => true,
-                "test.delete" => true,
-            ]
-        ];
-        $role = $this->createRole($data);
-        $data["name"] = $data["name"] . "Updated";
-        $data["slug"] = $data["slug"] . "updated";
+        $role = Role::factory()->create();
         $token = $this->getTokenByRole("moderator");
         $header = [
             "Authorization" => "Bearer $token"
         ];
         $url = route("role.update", [$role->slug]);
-        $response = $this->json("PUT", $url, $data, $header);
+        $response = $this->json("PUT", $url, [
+            'name' => 'RoleName',
+            'slug' => Str::slug('RoleName'),
+        ], $header);
         $response->assertStatus(403);
         $role->delete();
     }
 
     public function testUpdateRoleAsAdministratorShouldBeAllowed()
     {
-        $data = [
-            "name" => "TestRoleUpdateAsAdministrator",
-            "slug" => "testroleupdateasadministrator",
-            "permissions" => [
-                "test.all" => true,
-                "test.get" => true,
-                "test.update" => true,
-                "test.store" => true,
-                "test.delete" => true,
-            ]
-        ];
-        $role = $this->createRole($data);
-        $data["name"] = $data["name"] . "Updated";
-        $data["slug"] = $data["slug"] . "updated";
+        $role = Role::factory()->create();
         $token = $this->getTokenByRole("administrator");
         $header = [
             "Authorization" => "Bearer $token"
         ];
         $url = route("role.update", [$role->slug]);
-        $response = $this->json("PUT", $url, $data, $header);
+        $response = $this->json("PUT", $url, [
+            'name' => 'RoleName',
+            'slug' => Str::slug('RoleName'),
+        ], $header);
         $response->assertStatus(200);
-
         $role->delete();
     }
 }
