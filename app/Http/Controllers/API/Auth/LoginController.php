@@ -41,9 +41,8 @@ class LoginController extends Controller
                         return response()->success(['verify' => true]);
                         break;
                     case self::AUTHY_SMS_CANCELLED:
-                        $scopes = ['*'];
                         return response()->success([
-                            'token' => $user->createToken(config('app.name') . ': ' . $user->username, $scopes)->accessToken,
+                            'token' => $user->createToken(config('app.name') . ': ' . $user->username, $this->pemissionScopes($user))->accessToken,
                             'mfa_verified' => false,
                         ]);
                         break;
@@ -52,9 +51,8 @@ class LoginController extends Controller
                         break;
                 }
             } else {
-                $scopes = ['*'];
                 return response()->success([
-                    'token' => $user->createToken(config('app.name') . ': ' . $user->username, $scopes)->accessToken,
+                    'token' => $user->createToken(config('app.name') . ': ' . $user->username, $this->pemissionScopes($user))->accessToken,
                     'mfa_verified' => false
                 ]);
             }
@@ -102,4 +100,10 @@ class LoginController extends Controller
             return self::AUTHY_SMS_CANCELLED;
         }
     }
+
+    private function pemissionScopes(User $user): array
+    {
+        return (array) array_keys(array_filter(array_merge(...$user->allPermissions())));
+    }
+
 }
