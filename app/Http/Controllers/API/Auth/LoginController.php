@@ -92,7 +92,6 @@ class LoginController extends Controller
                 Log::info(json_encode($sms->message(), JSON_PRETTY_PRINT));
                 return self::AUTHY_SMS_SUCCESS;
             } else {
-                Log::error('glenn');
                 Log::error(json_encode($sms->errors(), JSON_PRETTY_PRINT));
                 return self::AUTHY_SMS_FAILED;
             }
@@ -105,5 +104,4 @@ class LoginController extends Controller
     {
         return (array) array_keys(array_filter(array_merge(...$user->allPermissions())));
     }
-
 }
