@@ -9,7 +9,6 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserLoginRequest;
-use App\Http\Requests\LoginUserRequest;
 use App\Http\Requests\LoginPasswordRequest;
 
 
@@ -40,9 +39,10 @@ class LoginController extends Controller
                         return response()->success(['verify' => true]);
                         break;
                     case self::AUTHY_SMS_CANCELLED:
+                        $scopes = ['*'];
                         return response()->success([
-                            'token' => $user->createToken(config('app.name') . ': ' . $user->username)->accessToken,
-                            'mfa_verified' => false
+                            'token' => $user->createToken(config('app.name') . ': ' . $user->username, $scopes)->accessToken,
+                            'mfa_verified' => true,
                         ]);
                         break;
                     case self::AUTHY_SMS_FAILED:
@@ -50,8 +50,9 @@ class LoginController extends Controller
                         break;
                 }
             } else {
+                $scopes = ['*'];
                 return response()->success([
-                    'token' => $user->createToken(config('app.name') . ': ' . $user->username)->accessToken,
+                    'token' => $user->createToken(config('app.name') . ': ' . $user->username, $scopes)->accessToken,
                     'mfa_verified' => false
                 ]);
             }
