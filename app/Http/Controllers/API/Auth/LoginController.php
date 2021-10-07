@@ -42,7 +42,7 @@ class LoginController extends Controller
                         $scopes = ['*'];
                         return response()->success([
                             'token' => $user->createToken(config('app.name') . ': ' . $user->username, $scopes)->accessToken,
-                            'mfa_verified' => true,
+                            'mfa_verified' => false,
                         ]);
                         break;
                     case self::AUTHY_SMS_FAILED:
