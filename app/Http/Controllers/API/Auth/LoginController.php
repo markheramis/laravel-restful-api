@@ -11,7 +11,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UserLoginRequest;
 use App\Http\Requests\LoginPasswordRequest;
 
-
+/**
+ * @group User Login
+ */
 class LoginController extends Controller
 {
     const AUTHY_SMS_CANCELLED    = 0;
@@ -30,7 +32,7 @@ class LoginController extends Controller
         $response = [];
         $credentials = $this->processCredentials($request);
         # attempt to login
-        if ($user = Sentinel::stateless($credentials)) {            
+        if ($user = Sentinel::stateless($credentials)) {
             if ($user->hasMFA() && notLocal() && hasAuthyConfig()) {
                 // If has phone number
                 $verify = $this->sendOTP($user);
