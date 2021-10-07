@@ -12,22 +12,19 @@ class RoleStoreTest extends TestCase
 
     public function testDestroyRoleWithNoUserShouldBeUnauthorized()
     {
+
+        $role = Role::factory()->make();
         $response = $this->json("POST", route("role.store"), [
-            "name" => "TestRole",
-            "slug" => "testrole",
-            "permissions" => [
-                "test.all" => true,
-                "test.get" => true,
-                "test.update" => true,
-                "test.store" => true,
-                "test.delete" => true,
-            ]
+            "name" => $role->name,
+            "slug" => $role->slug,
+            "permissions" => $role->permissions,
         ]);
         $response->assertStatus(401);
     }
 
     public function testDestroyRoleAsSubscriberShouldBeForbidden()
     {
+        $role = Role::factory()->make();
         $token = $this->getTokenByRole("subscriber");
         $body = [
             "name" => "TestRoleSubscriber",
