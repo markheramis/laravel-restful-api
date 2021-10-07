@@ -31,21 +31,29 @@ class LoginController extends Controller
         $response = [];
         $credentials = $this->processCredentials($request);
         # attempt to login
-        if ($user = Sentinel::stateless($credentials)) {
-            // If has phone number
-            $verify = $this->sendOTP($user);
-            switch ($verify) {
-                case self::AUTHY_SMS_SUCCESS:
-                    return response()->success(['verify' => true]);
-                    break;
-                case self::AUTHY_SMS_CANCELLED:
-                    return response()->success([
-                        'token' => $user->createToken(config('app.name') . ': ' . $user->username)->accessToken,
-                    ]);
-                    break;
-                case self::AUTHY_SMS_FAILED:
-                    return response()->error('Critical Error', 500);
-                    break;
+        if ($user = Sentinel::stateless($credentials)) {            
+            if ($this->hasMFA($user) && $this->notLocal() && $this->hasAuthyConfig()) {
+                // If has phone number
+                $verify = $this->sendOTP($user);
+                switch ($verify) {
+                    case self::AUTHY_SMS_SUCCESS:
+                        return response()->success(['verify' => true]);
+                        break;
+                    case self::AUTHY_SMS_CANCELLED:
+                        return response()->success([
+                            'token' => $user->createToken(config('app.name') . ': ' . $user->username)->accessToken,
+                            'mfa_verified' => false
+                        ]);
+                        break;
+                    case self::AUTHY_SMS_FAILED:
+                        return response()->error('Critical Error', 500);
+                        break;
+                }
+            } else {
+                return response()->success([
+                    'token' => $user->createToken(config('app.name') . ': ' . $user->username)->accessToken,
+                    'mfa_verified' => false
+                ]);
             }
         } else {
             return response()->error('Invalid User', 401);
@@ -83,6 +91,7 @@ class LoginController extends Controller
                 Log::info(json_encode($sms->message(), JSON_PRETTY_PRINT));
                 return self::AUTHY_SMS_SUCCESS;
             } else {
+                Log::error('glenn');
                 Log::error(json_encode($sms->errors(), JSON_PRETTY_PRINT));
                 return self::AUTHY_SMS_FAILED;
             }
