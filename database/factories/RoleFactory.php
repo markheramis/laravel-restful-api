@@ -23,7 +23,7 @@ class RoleFactory extends Factory
     public function definition()
     {
         $name = $this->faker->jobTitle();
-        $slug = Str::of($name)->slug('-');
+        $slug =  Str::slug($name);
         $permissions = [
             "$slug.index" => (bool) rand(0, 1),
             "$slug.store" => (bool) rand(0, 1),
