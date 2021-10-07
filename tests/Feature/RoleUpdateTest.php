@@ -5,6 +5,7 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use App\Models\Role;
+use Illuminate\Support\Str;
 use Tests\Traits\userTraits;
 use Illuminate\Foundation\Testing\WithFaker;
 
@@ -17,7 +18,8 @@ class RoleUpdateTest extends TestCase
         $role = Role::factory()->create();
         $url = route("role.update", [$role->slug]);
         $response = $this->json("PUT", $url, [
-            'name' => 'updated'
+            'name' => 'updated',
+            'slug' => Str::slug('RoleName'),
         ]);
         $response->assertStatus(401);
         $role->delete();
@@ -32,7 +34,8 @@ class RoleUpdateTest extends TestCase
         ];
         $url = route("role.update", [$role->slug]);
         $response = $this->json("PUT", $url, [
-            'name' => 'RoleName'
+            'name' => 'RoleName',
+            'slug' => Str::slug('RoleName'),
         ], $header);
         $response->assertStatus(403);
         $role->delete();
@@ -47,7 +50,8 @@ class RoleUpdateTest extends TestCase
         ];
         $url = route("role.update", [$role->slug]);
         $response = $this->json("PUT", $url, [
-            'name' => 'RoleName'
+            'name' => 'RoleName',
+            'slug' => Str::slug('RoleName'),
         ], $header);
         $response->assertStatus(403);
         $role->delete();
@@ -62,10 +66,10 @@ class RoleUpdateTest extends TestCase
         ];
         $url = route("role.update", [$role->slug]);
         $response = $this->json("PUT", $url, [
-            'name' => 'RoleName'
+            'name' => 'RoleName',
+            'slug' => Str::slug('RoleName'),
         ], $header);
         $response->assertStatus(200);
-
         $role->delete();
     }
 }
