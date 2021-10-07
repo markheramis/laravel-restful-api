@@ -12,6 +12,6 @@ return [
     |
     */
     'claims' => [
-        App\Claims\MfaVerified::class
+        App\Claims\MfaVerifiedClaim::class
     ]
 ];

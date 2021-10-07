@@ -32,7 +32,7 @@ class LoginController extends Controller
         $credentials = $this->processCredentials($request);
         # attempt to login
         if ($user = Sentinel::stateless($credentials)) {            
-            if ($this->hasMFA($user) && $this->notLocal() && $this->hasAuthyConfig()) {
+            if ($user->hasMFA() && notLocal() && hasAuthyConfig()) {
                 // If has phone number
                 $verify = $this->sendOTP($user);
                 switch ($verify) {
@@ -84,7 +84,7 @@ class LoginController extends Controller
      */
     private function sendOTP(User $user): bool
     {
-        if ($this->notLocal() && $this->hasAuthyConfig()) {
+        if (notLocal() && hasAuthyConfig()) {
             $authy_api = new AuthyApi(config('authy.app_secret'));
             $sms = $authy_api->requestSms($user->authy_id);
             if ($sms->ok()) {
@@ -98,20 +98,5 @@ class LoginController extends Controller
         } else {
             return self::AUTHY_SMS_CANCELLED;
         }
-    }
-
-    private function hasMFA(User $user): bool
-    {
-        return (bool) ($user->authy_id && $user->phone_number);
-    }
-
-    private function notLocal(): bool
-    {
-        return (bool) config('app.env') !== "local";
-    }
-
-    private function hasAuthyConfig(): bool
-    {
-        return (bool) config('authy.app_id') && config('authy.app_secret');
     }
 }

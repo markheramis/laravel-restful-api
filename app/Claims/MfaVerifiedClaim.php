@@ -4,7 +4,7 @@ namespace App\Claims;
 
 use CorBosman\Passport\AccessToken;
 
-class MfaVerified
+class MfaVerifiedClaim
 {
     public function handle(AccessToken $token, $next)
     {

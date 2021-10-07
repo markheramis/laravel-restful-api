@@ -103,4 +103,9 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     {
         return $this->hasOne(Google2FA::class);
     }
+
+    public function hasMFA(): bool
+    {
+        return (bool) ($this->authy_id && $this->phone_number);
+    }
 }
