@@ -84,8 +84,7 @@
     "scripts": {
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
-            "@php -r \"file_exists('.env.testing') || copy('.env.testing.example', '.env');\""
+            "@php artisan package:discover --ansi"
         ],
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"

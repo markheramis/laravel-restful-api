@@ -36,10 +36,11 @@ class AuthTwilio2FAController extends Controller
         $response = $authy_api->verifyToken($user->authy_id, $request->code);
         if ($response->ok()) {
             session()->now('mfa_verified', true);
+            $scopes = ['*'];
             // correct token
             return response()->success([
                 'message' => 'valid token',
-                'token' => $user->createToken(config('app.name') . ': ' . $user->username)->accessToken,
+                'token' => $user->createToken(config('app.name') . ': ' . $user->username, $scopes)->accessToken,
                 'mfa_verified' => true
             ]);
         } else {
