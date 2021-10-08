@@ -11,7 +11,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UserLoginRequest;
 
 /**
- * @group User Login
+ * @group User Management
  */
 class LoginController extends Controller
 {
