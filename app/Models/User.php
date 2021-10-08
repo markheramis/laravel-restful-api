@@ -108,4 +108,18 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     {
         return (bool) ($this->authy_id && $this->phone_number);
     }
+
+    public function getPermissionsAttribute($value)
+    {
+        return ($value) ? $value : [];
+    }
+
+    public function allPermissions()
+    {
+        $role_permissions = $this->roles()->orderBy('id', 'desc')->get()->map(function ($role) {
+            return $role->permissions;
+        })->toArray();
+        $user_permissions = $this->permissions;
+        return array_merge($role_permissions, $user_permissions);
+    }
 }
