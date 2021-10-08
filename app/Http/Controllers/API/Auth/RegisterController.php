@@ -9,6 +9,9 @@ use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserRegisterRequest;
 
+/**
+ * @group User Management
+ */
 class RegisterController extends Controller
 {
     /**

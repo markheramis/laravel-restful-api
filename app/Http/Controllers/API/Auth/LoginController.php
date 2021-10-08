@@ -12,7 +12,7 @@ use App\Http\Requests\UserLoginRequest;
 use App\Http\Requests\LoginPasswordRequest;
 
 /**
- * @group User Login
+ * @group User Management
  */
 class LoginController extends Controller
 {
