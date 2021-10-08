@@ -9,7 +9,6 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserLoginRequest;
-use App\Http\Requests\LoginPasswordRequest;
 
 /**
  * @group User Login
