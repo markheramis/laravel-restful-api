@@ -26,6 +26,7 @@ use App\Http\Controllers\API\CategoryController;
 Route::prefix('auth')->group(function () {
     Route::post('login', [LoginController::class, 'login'])->name('api.login');
     Route::post('register', [RegisterController::class, 'register'])->name('api.register');
+    Route::post('forgot-password', [UserController::class, 'forgotPassword'])->name('api.user.forgotPassword');
     Route::post('activate', [UserController::class, 'activate'])->name('api.user.activate');
     Route::middleware(['auth:api'])->group(function () {
         Route::get('me', [UserController::class, 'me'])->name('api.me');

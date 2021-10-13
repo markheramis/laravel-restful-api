@@ -5,7 +5,9 @@ namespace App\Http\Controllers\API;
 use Auth;
 use Activation;
 use App\Models\User;
+use App\Mail\ForgotPasswordMail;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\JsonResponse;
 use App\Transformers\UserTransformer;
 use App\Http\Requests\UserIndexRequest;
@@ -13,6 +15,7 @@ use App\Http\Requests\UserShowRequest;
 use App\Http\Requests\UserActivateRequest;
 use App\Http\Requests\UserUpdateRequest;
 use App\Http\Requests\UserDestroyRequest;
+use App\Http\Requests\UserEmailRequest;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Serializer\JsonApiSerializer;
 
@@ -152,5 +155,18 @@ class UserController extends Controller
         $user = Auth::user();
         $user->roles = $user->roles()->select('slug', 'name', 'permissions')->get();
         return response()->success($user);
+    }
+
+    /**
+     * Forgot Password
+     *
+     * This end point lets you recieved an email containing reset password link
+     * 
+     * @return JsonResponse
+     */
+    public function forgotPassword(UserEmailRequest $request, User $user): JsonResponse
+    {
+        Mail::to('carlomarespinosa@gmail.com')->send(new ForgotPasswordMail());
+        return response()->success('Please check your email to reset your password.');
     }
 }
