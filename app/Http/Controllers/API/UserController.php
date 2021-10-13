@@ -164,9 +164,15 @@ class UserController extends Controller
      * 
      * @return JsonResponse
      */
-    public function forgotPassword(UserEmailRequest $request, User $user): JsonResponse
+    public function forgotPassword(UserEmailRequest $request): JsonResponse
     {
-        Mail::to('carlomarespinosa@gmail.com')->send(new ForgotPasswordMail());
-        return response()->success('Please check your email to reset your password.');
+        if ($user = user::whereEmail($request->email)->first()) {
+            // create token with expiration
+            $token = $user->createToken(config('app.name') . ': ' . $user->username)->accessToken;
+            echo $token;
+            return response()->success('Please check your email to reset your password.');
+        }
+        // Mail::to('carlomarespinosa@gmail.com')->send(new ForgotPasswordMail());
+        return Response::json(array('code' =>  403, 'message' =>  "Email Doesn't Exist!"), 403);
     }
 }
