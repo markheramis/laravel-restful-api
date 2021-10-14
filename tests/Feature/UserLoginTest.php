@@ -36,35 +36,6 @@ class UserLoginTest extends TestCase
         $user->delete();
     }
 
-    public function testLoginWithInvalidEmailShouldBeUnprocessableEntity()
-    {
-        $response = $this->json("POST", route("api.login"), [
-            "email" => "notvalidemail",
-            "password" => "password12345",
-        ]);
-        $response->assertStatus(422);
-        $response->assertJson([
-            "status" => "error",
-            "data" => [
-                "email" => [
-                    "The email must be a valid email address."
-                ]
-            ],
-            "message" => "Data validation failed"
-        ]);
-    }
-
-    public function testLoginWithEmailCredentialsShouldLoginSuccessfully()
-    {
-        $user = $this->createUser();
-        $response = $this->json("POST", route("api.login"), [
-            "email" => $user->email,
-            "password" => "password12345"
-        ]);
-        $response->assertStatus(200);
-        $user->delete();
-    }
-
     public function testLoginWithCorrectCredentialsShouldLoginSuccessfully()
     {
         $user = $this->createUser();
@@ -76,27 +47,13 @@ class UserLoginTest extends TestCase
         $user->delete();
     }
 
-    public function testLoginWithCorrectCredentialsAndWithEmailAndUsernameShouldLoginSuccessfully()
+    public function testLoginWithCorrectCredentialsButWithEmailShouldBeAllowed()
     {
         $user = $this->createUser();
         $response = $this->json("POST", route("api.login"), [
-            "email" => $user->email,
-            "username" => $user->username,
+            "username" => $user->email,
             "password" => "password12345"
         ]);
-        $response->assertStatus(200);
-        $user->delete();
-    }
-
-    public function testLoginWithCorrectCredentialsAndWithEmailAndUsernameShouldLoginSuccessfullyWithToken()
-    {
-        $user = $this->createUser();
-        $response = $this->json("POST", route("api.login"), [
-            "email" => $user->email,
-            "username" => $user->username,
-            "password" => "password12345"
-        ]);
-        $response->assertJsonStructure(['data' => ['token', 'mfa_verified']]);
         $response->assertStatus(200);
         $user->delete();
     }
@@ -112,6 +69,8 @@ class UserLoginTest extends TestCase
         $response->assertStatus(200);
         $user->delete();
     }
+
+
 
     public function testLoginTokenHasMfaVerifiedClaim()
     {
