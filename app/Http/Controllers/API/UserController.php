@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers\API;
 
+use DB;
 use Auth;
 use Activation;
 use App\Models\User;
 use App\Mail\ForgotPasswordMail;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Str;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Password;
 use App\Transformers\UserTransformer;
 use App\Http\Requests\UserIndexRequest;
 use App\Http\Requests\UserShowRequest;
@@ -167,12 +171,22 @@ class UserController extends Controller
     public function forgotPassword(UserEmailRequest $request): JsonResponse
     {
         if ($user = user::whereEmail($request->email)->first()) {
-            // create token with expiration
-            $token = $user->createToken(config('app.name') . ': ' . $user->username)->accessToken;
-            echo $token;
+            $password_reset = [
+                'email' => $request->email,
+                'token' => Str::random(60),
+                'created_at' => Carbon::now()
+            ];
+            $url = env('DENTALRAY_APP_URL').'/reset-password?token='.$password_reset['token'];
+
+            DB::table('password_resets')->insert($password_reset);
+            Mail::to($user->email)
+            ->send(new ForgotPasswordMail(array_merge($password_reset, [
+                'url' => $url
+            ])));
+
             return response()->success('Please check your email to reset your password.');
         }
-        // Mail::to('carlomarespinosa@gmail.com')->send(new ForgotPasswordMail());
+
         return Response::json(array('code' =>  403, 'message' =>  "Email Doesn't Exist!"), 403);
     }
 }
