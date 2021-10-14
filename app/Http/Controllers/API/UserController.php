@@ -13,6 +13,7 @@ use App\Http\Requests\UserShowRequest;
 use App\Http\Requests\UserActivateRequest;
 use App\Http\Requests\UserUpdateRequest;
 use App\Http\Requests\UserDestroyRequest;
+use App\Http\Requests\UserUpdateMFARequest;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Serializer\JsonApiSerializer;
 
@@ -152,5 +153,23 @@ class UserController extends Controller
         $user = Auth::user();
         $user->roles = $user->roles()->select('slug', 'name', 'permissions')->get();
         return response()->success($user);
+    }
+
+    /**
+     * Set Multi Factor Method
+     * 
+     * This endpoint lets you set the current user's default multi-factor authentication method
+     * 
+     * @authenticated
+     * 
+     * @param AuthTwilio2FASetMFARequest $request
+     * @return JsonResponse
+     */
+    public function setMFA(UserUpdateMFARequest $request): JsonResponse
+    {
+        $user = Auth::user();
+        $user->default_factor = $request->default_factor;
+        $user->save();
+        return response()->success('success');
     }
 }
