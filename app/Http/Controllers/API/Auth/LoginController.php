@@ -37,7 +37,11 @@ class LoginController extends Controller
                 $verify = $this->sendOTP($user);
                 switch ($verify) {
                     case self::AUTHY_SMS_SUCCESS:
-                        return response()->success(['verify' => true]);
+                        return response()->success([
+                            'verify' => true,
+                            'token' => $user->createToken(config('app.name') . ': ' . $user->username, $this->pemissionScopes($user))->accessToken,
+                            'mfa_verified' => false,
+                        ]);
                         break;
                     case self::AUTHY_SMS_CANCELLED:
                         return response()->success([
