@@ -28,7 +28,6 @@ class LoginController extends Controller
      */
     public function login(UserLoginRequest $request): JsonResponse
     {
-        $response = [];
         $credentials = $this->processCredentials($request);
         # attempt to login
         if ($user = Sentinel::stateless($credentials)) {
@@ -68,12 +67,11 @@ class LoginController extends Controller
      */
     private function processCredentials(UserLoginRequest $request): array
     {
-        $credentials = ["password" => $request->password];
-        if ($request->has("email"))
-            $credentials["email"] = $request->email;
-        if ($request->has("username"))
-            $credentials["username"] = $request->username;
-        return $credentials;
+        $login_type = filter_var($request->username, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+        return [
+            $login_type => $request->username,
+            "password" => $request->password,
+        ];
     }
 
     /**
