@@ -101,6 +101,7 @@ artisan-test:
     - php artisan queue:work >> storage/logs/queue.log &
     - php artisan serve &
     - php artisan test --env=testing
+    - XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-text --colors=never
   only:
     - pull_request
     - push
