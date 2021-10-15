@@ -26,7 +26,7 @@ class UserUpdateMFATest extends TestCase
     #                           SUBSCRIBER                          #
     #################################################################
     public function testUserUpdateMFAToSMSAsSubscriberShouldBeAllowed()
-    {
+    {   
         $user = $this->createUser('subscriber');
         $token = $user->createToken(config('app.name') . ': ' . $user->username, array_keys(array_filter(array_merge(...$user->allPermissions()))))->accessToken;
         $header = [

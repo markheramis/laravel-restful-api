@@ -14,19 +14,7 @@ class UserUpdateMFARequest extends FormRequest
      */
     public function authorize()
     {
-        if (!Auth::check()) return;
-        return $this->isUpdatingSelf();
-    }
-
-    /**
-     * Returns true if the current user session is equal to the user we're updating, else false.
-     *
-     * @return boolean
-     */
-    private function isUpdatingSelf()
-    {
-        $user = Auth::user();
-        return $user->id === $this->user->id;
+        return (Auth::check());
     }
 
     /**
