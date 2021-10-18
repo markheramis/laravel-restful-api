@@ -40,7 +40,7 @@
         "laravel/dusk": "^6.2",
         "laravel/envoy": "^2.6",
         "laravel/sail": "^1.3",
-        "laravel/telescope": "^4.4.0",
+        "laravel/telescope": "^4.6",
         "mockery/mockery": "^1.4.2",
         "nunomaduro/collision": "^5.0",
         "overtrue/phplint": "^3.0",
@@ -56,7 +56,7 @@
     "extra": {
         "laravel": {
             "dont-discover": [
-                "laravel/telescope"
+                
             ]
         }
     },
@@ -95,7 +95,7 @@
         ],
         "doc": [
             "@php artisan scribe:generate --force"
-        ],
+        ],  
         "lint": [
             "./vendor/bin/phplint"
         ],
