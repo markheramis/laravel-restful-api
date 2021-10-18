@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use DB;
 use Auth;
+use Sentinel;
 use Activation;
 use App\Models\User;
 use App\Mail\ForgotPasswordMail;
@@ -20,9 +21,9 @@ use App\Http\Requests\UserActivateRequest;
 use App\Http\Requests\UserUpdateRequest;
 use App\Http\Requests\UserDestroyRequest;
 use App\Http\Requests\UserEmailRequest;
+use App\Http\Requests\UserResetPasswordRequest;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Serializer\JsonApiSerializer;
-
 /**
  * @group  User Management
  * 
@@ -161,11 +162,11 @@ class UserController extends Controller
         return response()->success($user);
     }
 
+ 
     /**
      * Forgot Password
      *
-     * This end point lets you recieved an email containing reset password link
-     * 
+     * @param UserEmailRequest $request
      * @return JsonResponse
      */
     public function forgotPassword(UserEmailRequest $request): JsonResponse
@@ -186,7 +187,23 @@ class UserController extends Controller
 
             return response()->success('Please check your email to reset your password.');
         }
-
         return Response::json(array('code' =>  403, 'message' =>  "Email Doesn't Exist!"), 403);
+    }
+
+    /**
+     * Reset Password
+     *
+     * @param UserResetPasswordRequest $request
+     * @return JsonResponse
+     */
+    public function resetPassword(UserResetPasswordRequest $request): JsonResponse
+    {
+        if ($password_reset = DB::table('password_resets')->where('token', $request->token)->first()) {
+            $user = user::whereEmail($password_reset->email)->first();
+            Sentinel::update($user, array('password' => $request->password));
+            // $password_reset->delete();
+            return response()->success('Reset Password Successfully.');
+        }
+        return Response::json(array('code' =>  403, 'message' =>  'Something went wrong.'), 403);
     }
 }
