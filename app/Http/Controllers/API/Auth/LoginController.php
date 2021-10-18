@@ -33,6 +33,7 @@ class LoginController extends Controller
         if ($user = Sentinel::stateless($credentials)) {
             if ($user->hasMFA() && notLocal() && hasAuthyConfig()) {
                 // If has phone number
+                // @codeCoverageIgnoreStart
                 $verify = $this->sendOTP($user);
                 switch ($verify) {
                     case self::AUTHY_SMS_SUCCESS:
@@ -52,6 +53,7 @@ class LoginController extends Controller
                         return response()->error('Critical Error', 500);
                         break;
                 }
+                // @codeCoverageIgnoreEnd
             } else {
                 return response()->success([
                     'token' => $user->createToken(config('app.name') . ': ' . $user->username, $this->pemissionScopes($user))->accessToken,
@@ -81,6 +83,7 @@ class LoginController extends Controller
     /**
      * Send Authy OTP
      *
+     * @codeCoverageIgnore
      * @param User $user
      * @return bool
      */
