@@ -28,16 +28,20 @@ class LoginController extends Controller
      */
     public function login(UserLoginRequest $request): JsonResponse
     {
-        $response = [];
         $credentials = $this->processCredentials($request);
         # attempt to login
         if ($user = Sentinel::stateless($credentials)) {
             if ($user->hasMFA() && notLocal() && hasAuthyConfig()) {
                 // If has phone number
+                // @codeCoverageIgnoreStart
                 $verify = $this->sendOTP($user);
                 switch ($verify) {
                     case self::AUTHY_SMS_SUCCESS:
-                        return response()->success(['verify' => true]);
+                        return response()->success([
+                            'verify' => true,
+                            'token' => $user->createToken(config('app.name') . ': ' . $user->username, $this->pemissionScopes($user))->accessToken,
+                            'mfa_verified' => false,
+                        ]);
                         break;
                     case self::AUTHY_SMS_CANCELLED:
                         return response()->success([
@@ -49,6 +53,7 @@ class LoginController extends Controller
                         return response()->error('Critical Error', 500);
                         break;
                 }
+                // @codeCoverageIgnoreEnd
             } else {
                 return response()->success([
                     'token' => $user->createToken(config('app.name') . ': ' . $user->username, $this->pemissionScopes($user))->accessToken,
@@ -68,17 +73,17 @@ class LoginController extends Controller
      */
     private function processCredentials(UserLoginRequest $request): array
     {
-        $credentials = ["password" => $request->password];
-        if ($request->has("email"))
-            $credentials["email"] = $request->email;
-        if ($request->has("username"))
-            $credentials["username"] = $request->username;
-        return $credentials;
+        $login_type = filter_var($request->username, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+        return [
+            $login_type => $request->username,
+            "password" => $request->password,
+        ];
     }
 
     /**
      * Send Authy OTP
      *
+     * @codeCoverageIgnore
      * @param User $user
      * @return bool
      */
