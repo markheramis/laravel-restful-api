@@ -204,9 +204,11 @@ class UserController extends Controller
      */
     public function resetPassword(UserResetPasswordRequest $request): JsonResponse
     {
-        if ($password_reset = DB::table('password_resets')->where('token', $request->token)->first()) {
-            $user = user::whereEmail($password_reset->email)->first();
+        $password_reset = DB::table('password_resets')->where('token', $request->token);
+        if ($user_password_reset = $password_reset->first()) {
+            $user = user::whereEmail($user_password_reset->email)->first();
             Sentinel::update($user, array('password' => $request->password));
+            $password_reset->delete();
             return response()->success('Reset password successfully');
         }
         return response()->error('Forbidden reset password', 403);
