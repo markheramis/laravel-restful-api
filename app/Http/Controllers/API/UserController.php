@@ -166,6 +166,9 @@ class UserController extends Controller
     /**
      * Forgot Password
      *
+     * This endpoint will send an authorized email reset password 
+     * 
+     * @uses App\Models\User $user
      * @param UserEmailRequest $request
      * @return JsonResponse
      */
@@ -177,22 +180,25 @@ class UserController extends Controller
                 'token' => Str::random(60),
                 'created_at' => Carbon::now()
             ];
+            
+            DB::table('password_resets')->insert($password_reset);
             $url = env('DENTALRAY_APP_URL').'/reset-password?token='.$password_reset['token'];
 
-            DB::table('password_resets')->insert($password_reset);
             Mail::to($user->email)
             ->send(new ForgotPasswordMail(array_merge($password_reset, [
                 'url' => $url
             ])));
-
-            return response()->success('Please check your email to reset your password.');
+            return response()->success('Please check your email to reset your password');
         }
-        return Response::json(array('code' =>  403, 'message' =>  "Email Doesn't Exist!"), 403);
+        return response()->error("Email doesn't exist", 403);
     }
 
     /**
      * Reset Password
      *
+     * This endpoint lets you reset and update password
+     * 
+     * @uses App\Models\User $user
      * @param UserResetPasswordRequest $request
      * @return JsonResponse
      */
@@ -201,9 +207,8 @@ class UserController extends Controller
         if ($password_reset = DB::table('password_resets')->where('token', $request->token)->first()) {
             $user = user::whereEmail($password_reset->email)->first();
             Sentinel::update($user, array('password' => $request->password));
-            // $password_reset->delete();
-            return response()->success('Reset Password Successfully.');
+            return response()->success('Reset password successfully');
         }
-        return Response::json(array('code' =>  403, 'message' =>  'Something went wrong.'), 403);
+        return response()->error('Forbidden reset password', 403);
     }
 }
