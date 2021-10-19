@@ -190,7 +190,7 @@ class UserController extends Controller
             ])));
             return response()->success('Please check your email to reset your password');
         }
-        return response()->error("Email doesn't exist", 403);
+        return response()->error("Email doesn't exist", 404);
     }
 
     /**
