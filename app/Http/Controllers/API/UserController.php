@@ -2,20 +2,28 @@
 
 namespace App\Http\Controllers\API;
 
+use DB;
 use Auth;
+use Sentinel;
 use Activation;
 use App\Models\User;
+use App\Mail\ForgotPasswordMail;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Str;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Password;
 use App\Transformers\UserTransformer;
 use App\Http\Requests\UserIndexRequest;
 use App\Http\Requests\UserShowRequest;
 use App\Http\Requests\UserActivateRequest;
 use App\Http\Requests\UserUpdateRequest;
 use App\Http\Requests\UserDestroyRequest;
+use App\Http\Requests\UserEmailRequest;
+use App\Http\Requests\UserResetPasswordRequest;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Serializer\JsonApiSerializer;
-
 /**
  * @group  User Management
  * 
@@ -152,5 +160,57 @@ class UserController extends Controller
         $user = Auth::user();
         $user->roles = $user->roles()->select('slug', 'name', 'permissions')->get();
         return response()->success($user);
+    }
+
+ 
+    /**
+     * Forgot Password
+     *
+     * This endpoint will send an authorized email reset password 
+     * 
+     * @uses App\Models\User $user
+     * @param UserEmailRequest $request
+     * @return JsonResponse
+     */
+    public function forgotPassword(UserEmailRequest $request): JsonResponse
+    {
+        if ($user = user::whereEmail($request->email)->first()) {
+            $password_reset = [
+                'email' => $request->email,
+                'token' => Str::random(60),
+                'created_at' => Carbon::now()
+            ];
+            
+            DB::table('password_resets')->insert($password_reset);
+            $url = env('DENTALRAY_APP_URL').'/reset-password?token='.$password_reset['token'];
+
+            Mail::to($user->email)
+            ->send(new ForgotPasswordMail(array_merge($password_reset, [
+                'url' => $url
+            ])));
+            return response()->success('Please check your email to reset your password');
+        }
+        return response()->error("Email doesn't exist", 404);
+    }
+
+    /**
+     * Reset Password
+     *
+     * This endpoint lets you reset and update password
+     * 
+     * @uses App\Models\User $user
+     * @param UserResetPasswordRequest $request
+     * @return JsonResponse
+     */
+    public function resetPassword(UserResetPasswordRequest $request): JsonResponse
+    {
+        $password_reset = DB::table('password_resets')->where('token', $request->token);
+        if ($user_password_reset = $password_reset->first()) {
+            $user = user::whereEmail($user_password_reset->email)->first();
+            Sentinel::update($user, array('password' => $request->password));
+            $password_reset->delete();
+            return response()->success('Reset password successfully');
+        }
+        return response()->error('Forbidden reset password', 403);
     }
 }

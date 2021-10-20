@@ -27,6 +27,10 @@ Route::prefix('auth')->group(function () {
     Route::post('login', [LoginController::class, 'login'])->name('api.login');
     Route::post('register', [RegisterController::class, 'register'])->name('api.register');
     Route::post('activate', [UserController::class, 'activate'])->name('api.user.activate');
+    Route::prefix('password')->group(function() {
+        Route::post('forgot', [UserController::class, 'forgotPassword'])->name('api.user.password.forgot');
+        Route::put('reset', [UserController::class, 'resetPassword'])->name('api.user.password.reset');
+    });
     Route::middleware(['auth:api'])->group(function () {
         Route::get('me', [UserController::class, 'me'])->name('api.me');
     });
