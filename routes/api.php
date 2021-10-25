@@ -27,7 +27,7 @@ Route::prefix('auth')->group(function () {
     Route::post('login', [LoginController::class, 'login'])->name('api.login');
     Route::post('register', [RegisterController::class, 'register'])->name('api.register');
     Route::post('activate', [UserController::class, 'activate'])->name('api.user.activate');
-    Route::prefix('password')->group(function() {
+    Route::prefix('password')->group(function () {
         Route::post('forgot', [UserController::class, 'forgotPassword'])->name('api.user.password.forgot');
         Route::put('reset', [UserController::class, 'resetPassword'])->name('api.user.password.reset');
     });
@@ -37,7 +37,9 @@ Route::prefix('auth')->group(function () {
     Route::prefix('mfa')->group(function () {
         Route::get('qr', [AuthTwilio2FAController::class, 'getQRCode'])->middleware('auth:api')->name('api.mfa.twilio.qr');
         Route::get('settings', [AuthTwilio2FAController::class, 'getSettings'])->middleware('auth:api')->name('api.mfa.twilio.settings');
-        Route::post('verify', [AuthTwilio2FAController::class, 'verifyCode'])->name('api.mfa.twilio.verify');
+        Route::post('verify', [AuthTwilio2FAController::class, 'verifyCode'])
+            ->middleware(['auth:api'])
+            ->name('api.mfa.twilio.verify');
     });
 });
 Route::prefix('user')->middleware(['auth:api', 'mfa.claim'])->group(function () {
