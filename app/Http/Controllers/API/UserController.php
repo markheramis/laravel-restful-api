@@ -7,7 +7,8 @@ use Auth;
 use Sentinel;
 use Activation;
 use App\Models\User;
-use App\Mail\ForgotPasswordMail;
+use App\Mail\UserForgotPasswordMail;
+use App\Mail\WelcomeMail;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
@@ -185,7 +186,7 @@ class UserController extends Controller
             $url = env('DENTALRAY_APP_URL').'/reset-password?token='.$password_reset['token'];
 
             Mail::to($user->email)
-            ->send(new ForgotPasswordMail(array_merge($password_reset, [
+            ->send(new UserForgotPasswordMail(array_merge($password_reset, [
                 'url' => $url
             ])));
             return response()->success('Please check your email to reset your password');
@@ -206,11 +207,14 @@ class UserController extends Controller
     {
         $password_reset = DB::table('password_resets')->where('token', $request->token);
         if ($user_password_reset = $password_reset->first()) {
+            if ($request->password != $request->confirm_password) {
+                return response()->error("Password doesn't match!", 403);
+            }
             $user = user::whereEmail($user_password_reset->email)->first();
             Sentinel::update($user, array('password' => $request->password));
             $password_reset->delete();
             return response()->success('Reset password successfully');
         }
-        return response()->error('Forbidden reset password', 403);
+        return response()->error("Token doesn't exist", 404);
     }
 }
