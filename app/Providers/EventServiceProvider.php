@@ -2,10 +2,14 @@
 
 namespace App\Providers;
 
+use App\Events\User\UserLoggedIn;
+use App\Events\User\UserLoggedOut;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Auth\Events\Registered;
+use App\Listeners\User\UserLoggedInListener;
+use App\Listeners\User\UserLoggedOutListener;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Event;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -23,6 +27,12 @@ class EventServiceProvider extends ServiceProvider
         ],
         'Laravel\Passport\Events\RefreshTokenCreated' => [
             'App\Listeners\PruneOldTokens',
+        ],
+        UserLoggedIn::class => [
+            UserLoggedInListener::class
+        ],
+        UserLoggedOut::class => [
+            UserLoggedOutListener::class
         ],
     ];
 
