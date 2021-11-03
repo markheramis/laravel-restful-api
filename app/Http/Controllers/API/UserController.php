@@ -20,10 +20,12 @@ use App\Http\Requests\UserShowRequest;
 use App\Http\Requests\UserActivateRequest;
 use App\Http\Requests\UserUpdateRequest;
 use App\Http\Requests\UserDestroyRequest;
+use App\Http\Requests\UserUpdateMFARequest;
 use App\Http\Requests\UserEmailRequest;
 use App\Http\Requests\UserResetPasswordRequest;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Serializer\JsonApiSerializer;
+
 /**
  * @group  User Management
  * 
@@ -162,7 +164,24 @@ class UserController extends Controller
         return response()->success($user);
     }
 
- 
+    /**
+     * Set Multi Factor Method
+     * 
+     * This endpoint lets you set the current user's default multi-factor authentication method
+     * 
+     * @authenticated
+     * 
+     * @param AuthTwilio2FASetMFARequest $request
+     * @return JsonResponse
+     */
+    public function setMFA(UserUpdateMFARequest $request): JsonResponse
+    {
+        $user = Auth::user();
+        $user->default_factor = $request->default_factor;
+        $user->save();
+        return response()->success('success');
+    }
+
     /**
      * Forgot Password
      *
@@ -180,14 +199,14 @@ class UserController extends Controller
                 'token' => Str::random(60),
                 'created_at' => Carbon::now()
             ];
-            
+
             DB::table('password_resets')->insert($password_reset);
-            $url = env('DENTALRAY_APP_URL').'/reset-password?token='.$password_reset['token'];
+            $url = env('DENTALRAY_APP_URL') . '/reset-password?token=' . $password_reset['token'];
 
             Mail::to($user->email)
-            ->send(new UserForgotPasswordMail(array_merge($password_reset, [
-                'url' => $url
-            ])));
+                ->send(new UserForgotPasswordMail(array_merge($password_reset, [
+                    'url' => $url
+                ])));
             return response()->success('Please check your email to reset your password');
         }
         return response()->error("Email doesn't exist", 404);

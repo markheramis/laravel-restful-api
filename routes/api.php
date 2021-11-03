@@ -44,6 +44,7 @@ Route::prefix('auth')->group(function () {
 });
 Route::prefix('user')->middleware(['auth:api', 'mfa.claim'])->group(function () {
     Route::get('/', [UserController::class, 'index'])->name('user.index');
+    Route::put('/mfa', [UserController::class, 'setMFA'])->name('user.mfa.default');
     Route::prefix('{user}')->group(function () {
         Route::get('/', [UserController::class, 'show'])->name('user.show');
         Route::put('/', [UserController::class, 'update'])->name('user.update');

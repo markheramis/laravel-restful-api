@@ -13,11 +13,11 @@ Homestead.yaml
 npm-debug.log
 yarn-error.log
 
+build/
+.phpintel/
+.phplint-cache
+
 # Ignore DevSpace cache and log folder
 .devspace/
 database/seeders/UserSeeder.php
 .package-lock.json
-
-# ignore phplint
-build/
-.phplint-cache
