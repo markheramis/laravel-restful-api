@@ -34,7 +34,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'permissions',
         'country_code',
         'phone_number',
-        'authy_id' // Temporary.
+        'authy_id', // Temporary.
+        'default_factor',
     ];
 
     /**
@@ -57,7 +58,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password', 'remember_token', 'default_factor',
     ];
 
     /**
