@@ -10,6 +10,22 @@ class UserUpdateMFATest extends TestCase
 {
     use WithFaker, userTraits;
 
+    private function testValid($role, $default_factor = "sms")
+    {
+        $user = $this->createUser($role);
+        $token = $user->createToken(config('app.name') . ': ' . $user->username, array_keys(array_filter(array_merge(...$user->allPermissions()))))->accessToken;
+        $header = [
+            "Authorization" => "Bearer $token",
+        ];
+        $url = route("user.mfa.default");
+        $data = [
+            "default_factor" => $default_factor
+        ];
+        $response = $this->json("PUT", $url, $data, $header);
+        $response->assertStatus(200);
+        $user->delete();
+    }
+
     public function testUserUpdateMFAWithNoSessionShouldBeUnauthorized()
     {
         $user = $this->createUser('subscriber');
@@ -25,203 +41,63 @@ class UserUpdateMFATest extends TestCase
     #################################################################
     #                           SUBSCRIBER                          #
     #################################################################
-    public function testUserUpdateMFAToSMSAsSubscriberShouldBeAllowed()
-    {   
-        $user = $this->createUser('subscriber');
-        $token = $user->createToken(config('app.name') . ': ' . $user->username, array_keys(array_filter(array_merge(...$user->allPermissions()))))->accessToken;
-        $header = [
-            "Authorization" => "Bearer $token",
-        ];
-        $url = route('user.mfa.default');
-        $data = [
-            "default_factor" => "sms",
-        ];
-        $response = $this->json("PUT", $url, $data, $header);
-        $response->assertStatus(200);
-        $user->delete();
-    }
-    /* 
-
-    public function testUserUpdateMFAToAuthenticatorAsSubscriberShouldBeAllowed()
+    public function testUserUpdateMfaToSmsAsSubscriberShouldBeAllowed()
     {
-        $user = $this->createUser('subscriber');
-        $token = $user->createToken(config('app.name') . ': ' . $user->username, array_keys(array_filter(array_merge(...$user->allPermissions()))))->accessToken;
-        $header = [
-            "Authorization" => "Bearer $token",
-        ];
-        $url = route('user.mfa.default');
-        $data = [
-            "default_factor" => "authenticator",
-        ];
-        $response = $this->json("PUT", $url, $data, $header);
-        $response->assertStatus(200);
-        $user->delete();
+        $this->testValid("subscriber", "sms");
     }
 
-    public function testUserUpdateMFAToCallAsSubscriberShouldBeAllowed()
+    public function testUserUpdateMfaToSmsAsAuthenticatorAsModeratorShouldBeAllowed()
     {
-        $user = $this->createUser('subscriber');
-        $token = $user->createToken(config('app.name') . ': ' . $user->username, array_keys(array_filter(array_merge(...$user->allPermissions()))))->accessToken;
-        $header = [
-            "Authorization" => "Bearer $token",
-        ];
-        $url = route('user.mfa.default');
-        $data = [
-            "default_factor" => "authenticator",
-        ];
-        $response = $this->json("PUT", $url, $data, $header);
-        $response->assertStatus(200);
-        $user->delete();
+        $this->testValid("moderator", "sms");
     }
 
-    public function testUserUpdateMFAToEmailAsSubscriberShouldBeAllowed()
+    public function testUserUpdateMfaToSmsAsAdministratorShouldBeAllowed()
     {
-        $user = $this->createUser('subscriber');
-        $token = $user->createToken(config('app.name') . ': ' . $user->username, array_keys(array_filter(array_merge(...$user->allPermissions()))))->accessToken;
-        $header = [
-            "Authorization" => "Bearer $token",
-        ];
-        $url = route('user.mfa.default');
-        $data = [
-            "default_factor" => "email",
-        ];
-        $response = $this->json("PUT", $url, $data, $header);
-        $response->assertStatus(200);
-        $user->delete();
+        $this->testValid("administrator", "sms");
     }
 
-    #################################################################
-    #                           MODERATOR                           #
-    #################################################################
-    public function testUserUpdateMFAToSMSAsModeratorShouldBeAllowed()
+    public function testUserUpdateMfaToAuthenticatorAsSubscriberShouldBeAllowed()
     {
-        $user = $this->createUser('moderator');
-        $token = $user->createToken(config('app.name') . ': ' . $user->username, array_keys(array_filter(array_merge(...$user->allPermissions()))))->accessToken;
-        $header = [
-            "Authorization" => "Bearer $token",
-        ];
-        $url = route('user.mfa.default');
-        $data = [
-            "default_factor" => "sms",
-        ];
-        $response = $this->json("PUT", $url, $data, $header);
-        $response->assertStatus(200);
-        $user->delete();
+        $this->testValid("subscriber", "authenticator");
     }
 
     public function testUserUpdateMFAToAuthenticatorAsModeratorShouldBeAllowed()
     {
-        $user = $this->createUser('moderator');
-        $token = $user->createToken(config('app.name') . ': ' . $user->username, array_keys(array_filter(array_merge(...$user->allPermissions()))))->accessToken;
-        $header = [
-            "Authorization" => "Bearer $token",
-        ];
-        $url = route('user.mfa.default');
-        $data = [
-            "default_factor" => "authenticator",
-        ];
-        $response = $this->json("PUT", $url, $data, $header);
-        $response->assertStatus(200);
-        $user->delete();
+        $this->testValid("moderator", "authenticator");
     }
 
-    public function testUserUpdateMFAToCallAsModeratorShouldBeAllowed()
+    public function testUserUpdateMfaToAuthenticatorAsAdministratorShouldBeAllowed()
     {
-        $user = $this->createUser('moderator');
-        $token = $user->createToken(config('app.name') . ': ' . $user->username, array_keys(array_filter(array_merge(...$user->allPermissions()))))->accessToken;
-        $header = [
-            "Authorization" => "Bearer $token",
-        ];
-        $url = route('user.mfa.default');
-        $data = [
-            "default_factor" => "authenticator",
-        ];
-        $response = $this->json("PUT", $url, $data, $header);
-        $response->assertStatus(200);
-        $user->delete();
+        $this->testValid("administrator", "authenticator");
     }
 
-    public function testUserUpdateMFAToEmailAsModeratorShouldBeAllowed()
+    public function testUserUpdateMfaToCallAsSubscriberShouldBeAllowed()
     {
-        $user = $this->createUser('moderator');
-        $token = $user->createToken(config('app.name') . ': ' . $user->username, array_keys(array_filter(array_merge(...$user->allPermissions()))))->accessToken;
-        $header = [
-            "Authorization" => "Bearer $token",
-        ];
-        $url = route('user.mfa.default');
-        $data = [
-            "default_factor" => "email",
-        ];
-        $response = $this->json("PUT", $url, $data, $header);
-        $response->assertStatus(200);
-        $user->delete();
+        $this->testValid("subscriber", "call");
     }
 
-
-    #################################################################
-    #                           ADMIN                               #
-    #################################################################
-    public function testUserUpdateMFAToSMSAsAdminShouldBeAllowed()
+    public function testUserUpdateMfaToCallAsModeratorShouldBeAllowed()
     {
-        $user = $this->createUser('admin');
-        $token = $user->createToken(config('app.name') . ': ' . $user->username, array_keys(array_filter(array_merge(...$user->allPermissions()))))->accessToken;
-        $header = [
-            "Authorization" => "Bearer $token",
-        ];
-        $url = route('user.mfa.default');
-        $data = [
-            "default_factor" => "sms",
-        ];
-        $response = $this->json("PUT", $url, $data, $header);
-        $response->assertStatus(200);
-        $user->delete();
+        $this->testValid("moderator", "call");
     }
 
-    public function testUserUpdateMFAToAuthenticatorAsAdminShouldBeAllowed()
+    public function testUserUpdateMfaToCallAsAdministratorShouldBeAllowed()
     {
-        $user = $this->createUser('admin');
-        $token = $user->createToken(config('app.name') . ': ' . $user->username, array_keys(array_filter(array_merge(...$user->allPermissions()))))->accessToken;
-        $header = [
-            "Authorization" => "Bearer $token",
-        ];
-        $url = route('user.mfa.default');
-        $data = [
-            "default_factor" => "authenticator",
-        ];
-        $response = $this->json("PUT", $url, $data, $header);
-        $response->assertStatus(200);
-        $user->delete();
+        $this->testValid("administrator", "call");
     }
 
-    public function testUserUpdateMFAToCallAsAdminShouldBeAllowed()
+    public function testUserUpdateMfaToPushAsSubscriberShouldBeAllowed()
     {
-        $user = $this->createUser('admin');
-        $token = $user->createToken(config('app.name') . ': ' . $user->username, array_keys(array_filter(array_merge(...$user->allPermissions()))))->accessToken;
-        $header = [
-            "Authorization" => "Bearer $token",
-        ];
-        $url = route('user.mfa.default');
-        $data = [
-            "default_factor" => "authenticator",
-        ];
-        $response = $this->json("PUT", $url, $data, $header);
-        $response->assertStatus(200);
-        $user->delete();
+        $this->testValid("subscriber", "push");
     }
 
-    public function testUserUpdateMFAToEmailAsAdminShouldBeAllowed()
+    public function testUserUpdateMfaToPushAsModeratorShouldBeAllowed()
     {
-        $user = $this->createUser('admin');
-        $token = $user->createToken(config('app.name') . ': ' . $user->username, array_keys(array_filter(array_merge(...$user->allPermissions()))))->accessToken;
-        $header = [
-            "Authorization" => "Bearer $token",
-        ];
-        $url = route('user.mfa.default');
-        $data = [
-            "default_factor" => "email",
-        ];
-        $response = $this->json("PUT", $url, $data, $header);
-        $response->assertStatus(200);
-        $user->delete();
-    } */
+        $this->testValid("moderator", "push");
+    }
+
+    public function testUserUpdateMfaToPushAsAdministratorShouldBeAllowed()
+    {
+        $this->testValid("administrator", "push");
+    }
 }
