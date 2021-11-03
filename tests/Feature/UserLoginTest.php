@@ -92,4 +92,25 @@ class UserLoginTest extends TestCase
 
         $user->delete();
     }
+
+    public function testLoginWithCorrectScopeLoginSuccessfully()
+    {
+        $user = $this->createUser();
+        $response = $this->json("POST", route("api.login"), [
+            "username" => $user->username,
+            "password" => "password12345"
+        ]);
+
+        $tokenParts = explode(".", $response->json()['data']['token']);  
+        $tokenPayload = base64_decode($tokenParts[1]);
+        $jwtPayload = json_decode($tokenPayload);
+        $permissions = (array) array_keys(array_filter(array_merge(...$user->allPermissions())));
+
+        $result = array_diff_assoc($jwtPayload->scopes, $permissions);
+        if (empty($result)) {
+            $response->assertStatus(200);
+        }
+
+        $user->delete();
+    }
 }
