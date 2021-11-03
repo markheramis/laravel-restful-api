@@ -78,6 +78,46 @@ build-composer:
     paths:
       - .env
       - vendor
+gitlab-artisan-test:
+  image:
+    name: $DOCKER_IMAGE
+    entrypoint: [""]
+  stage: test
+  services:
+    - name: mysql:8.0
+    - name: redis:latest
+  before_script:
+    - cp .env.gitlab .env
+    - cp .env.gitlab .env.testing
+    - php artisan storage:link
+    - php artisan key:generate
+    - php artisan migrate
+    - php artisan db:seed
+    - php artisan passport:install
+    - php artisan scribe:generate --force
+  script:
+    - php artisan queue:work >> storage/logs/queue.log &
+    - php artisan serve &
+    - XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-text --colors=never
+  only:
+    - master
+  artifacts:
+    paths:
+      - .env
+      - .env.testing
+      - bootstrap/cache/
+      - storage/logs/
+    expire_in: 1 day
+    when: always
+    reports:
+      junit: storage/logs/tests-report.xml
+  coverage: '/^\s*Lines:\s*\d+.\d+\%/'
+  dependencies:
+    - build-docker
+    - build-composer
+  needs:
+    - build-docker
+    - build-composer
 
 artisan-test:
   image:
@@ -115,9 +155,6 @@ artisan-test:
       - storage/logs/
     expire_in: 1 day
     when: always
-    reports:
-      junit: storage/logs/tests-report.xml
-  coverage: '/^\s*Lines:\s*\d+.\d+\%/'
   dependencies:
     - build-docker
     - build-composer

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\API;
 
 use Auth;
-use Sentinel;
 use Authy\AuthyApi;
 use App\Models\User;
 use App\Http\Controllers\Controller;
@@ -25,13 +24,13 @@ class AuthTwilio2FAController extends Controller
      * 
      * This endpoint lets you verify the OTP from Twilio
      * 
+     * @authenticated
      * @param AuthTwilio2FAVerifyCodeRequest $request
-     * @param User $user
      * @return JsonResponse
      */
     public function verifyCode(AuthTwilio2FAVerifyCodeRequest $request): JsonResponse
     {
-        $user = Sentinel::stateless($request->only('username', 'password'));
+        $user = Auth::user();
         $authy_api = new AuthyApi(config('authy.app_secret'));
         $response = $authy_api->verifyToken($user->authy_id, $request->code);
         if ($response->ok()) {
