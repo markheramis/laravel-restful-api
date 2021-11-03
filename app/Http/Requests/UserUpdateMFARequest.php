@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Http\Requests\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class UserUpdateMFARequest extends FormRequest
 {
@@ -25,7 +26,10 @@ class UserUpdateMFARequest extends FormRequest
     public function rules()
     {
         return [
-            'default_factor' => 'required',
+            'default_factor' => [
+                'required',
+                Rule::in(['sms', 'authenticator', 'call', 'push'])
+            ],
         ];
     }
 }
