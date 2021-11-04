@@ -122,8 +122,10 @@ class UserRegisterTest extends TestCase
             "country_code" => "1",
         ]);
         $response->assertStatus(200);
-        #$user = User::find($response["data"]["id"]);
-        $this->assertIsBool(true);
+        $user = User::find($response["data"]["id"]);
+        $activation = $user->activation;
+        $this->assertIsBool($activation->completed);
+        $this->assertEquals($activation->completed, false);
     }
 
     public function testRegisterWithCorrectParametersAndPermissionShouldRegisterSuccessfully()
