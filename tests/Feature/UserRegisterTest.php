@@ -86,7 +86,11 @@ class UserRegisterTest extends TestCase
             "activate" => true,
         ]);
         $response->assertStatus(200);
-        User::find($response["data"]["id"])->delete();
+        $user = User::find($response["data"]["id"]);
+        $activation = $user->activation;
+        $this->assertIsBool($activation->completed);
+        $this->assertEquals($activation->completed, true);
+        $user->delete();
     }
 
     public function testRegisterWithCorrectParametersShouldRegisterSuccessfully()
@@ -96,7 +100,7 @@ class UserRegisterTest extends TestCase
             "email" => $this->faker->email(),
             "password" => "p@s5W0rD1234",
             "v_password" => "p@s5W0rD1234",
-            "first_name" => $this->faker->firstName(),
+            "first_name" => $this->faker->firstName(), 
             "last_name" => $this->faker->lastName(),
             "role" => "subscriber",
             "activate" => true,
@@ -104,7 +108,11 @@ class UserRegisterTest extends TestCase
             "country_code" => "1",
         ]);
         $response->assertStatus(200);
-        User::find($response["data"]["id"])->delete();
+        $user = User::find($response["data"]["id"]);
+        $activation = $user->activation;
+        $this->assertIsBool($activation->completed);
+        $this->assertEquals($activation->completed, true);
+        $user->delete();
     }
 
     public function testRegisterWithCorrectParamtersUnactivatedShouldRegisterSuccessfully()
@@ -126,6 +134,7 @@ class UserRegisterTest extends TestCase
         $activation = $user->activation;
         $this->assertIsBool($activation->completed);
         $this->assertEquals($activation->completed, false);
+        $user->delete();
     }
 
     public function testRegisterWithCorrectParametersAndPermissionShouldRegisterSuccessfully()
@@ -147,6 +156,10 @@ class UserRegisterTest extends TestCase
             "country_code" => "1",
         ]);
         $response->assertStatus(200);
-        User::find($response["data"]["id"])->delete();
+        $user = User::find($response["data"]["id"]);
+        $activation = $user->activation;
+        $this->assertIsBool($activation->completed);
+        $this->assertEquals($activation->completred, true);
+        $user->delete();
     }
 }
