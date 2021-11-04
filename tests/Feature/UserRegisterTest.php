@@ -100,7 +100,7 @@ class UserRegisterTest extends TestCase
             "email" => $this->faker->email(),
             "password" => "p@s5W0rD1234",
             "v_password" => "p@s5W0rD1234",
-            "first_name" => $this->faker->firstName(), 
+            "first_name" => $this->faker->firstName(),
             "last_name" => $this->faker->lastName(),
             "role" => "subscriber",
             "activate" => true,
@@ -159,7 +159,7 @@ class UserRegisterTest extends TestCase
         $user = User::find($response["data"]["id"]);
         $activation = $user->activation;
         $this->assertIsBool($activation->completed);
-        $this->assertEquals($activation->completred, true);
+        $this->assertEquals($activation->completed, true);
         $user->delete();
     }
 }
