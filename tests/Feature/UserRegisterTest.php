@@ -87,9 +87,9 @@ class UserRegisterTest extends TestCase
         ]);
         $response->assertStatus(200);
         $user = User::find($response["data"]["id"]);
-        $activation = $user->activation;
+        $activation = $user->activations->first();
         $this->assertIsBool($activation->completed);
-        $this->assertEquals($activation->completed, true);
+        $this->assertEquals(true, $activation->completed);
         $user->delete();
     }
 
@@ -109,9 +109,9 @@ class UserRegisterTest extends TestCase
         ]);
         $response->assertStatus(200);
         $user = User::find($response["data"]["id"]);
-        $activation = $user->activation;
+        $activation = $user->activations->first();
         $this->assertIsBool($activation->completed);
-        $this->assertEquals($activation->completed, true);
+        $this->assertEquals(true, $activation->completed);
         $user->delete();
     }
 
@@ -131,9 +131,9 @@ class UserRegisterTest extends TestCase
         ]);
         $response->assertStatus(200);
         $user = User::find($response["data"]["id"]);
-        $activation = $user->activation;
+        $activation = $user->activations->first();
         $this->assertIsBool($activation->completed);
-        $this->assertEquals($activation->completed, false);
+        $this->assertEquals(false, $activation->completed);
         $user->delete();
     }
 
@@ -157,9 +157,9 @@ class UserRegisterTest extends TestCase
         ]);
         $response->assertStatus(200);
         $user = User::find($response["data"]["id"]);
-        $activation = $user->activation;
+        $activation = $user->activations->first();
         $this->assertIsBool($activation->completed);
-        $this->assertEquals($activation->completed, true);
+        $this->assertEquals(true, $activation->completed);
         $user->delete();
     }
 }
