@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\Auth;
 
 use Sentinel;
+use Activation;
 use Authy\AuthyApi;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
@@ -25,9 +26,8 @@ class RegisterController extends Controller
     public function register(UserRegisterRequest $request): JsonResponse
     {
         $authy_id = $this->create_authy_api($request);
-        $activate = $request->activate;
+        $activate = (bool) $request->activate;
         $credentials = [
-            "activate" => $request->activate,
             "username" => $request->username,
             "email" => $request->email,
             "password" => $request->password,
@@ -38,7 +38,9 @@ class RegisterController extends Controller
             "country_code" => $request->country_code,
             "authy_id" => $authy_id
         ];
-        $user = $this->createUser($credentials, $activate);
+        $user = Sentinel::register($credentials);
+        if ($activate)
+            $this->activate($user);
         $role = ($request->has('role')) ? $request->role : 'subscriber';
         $this->attachRole($user, $role);
         return response()->success([
@@ -46,17 +48,10 @@ class RegisterController extends Controller
         ]);
     }
 
-    /**
-     * Create the User
-     *
-     * @link https://cartalyst.com/manual/sentinel/5.x#sentinel-register
-     * @param array $credentials
-     * @param bool $activate
-     * @return User
-     */
-    private function createUser(array $credentials, bool $activate)
+    private function activate(User $user): bool
     {
-        return Sentinel::register($credentials, $activate);
+        $activation = $user->activations->first();
+        return Activation::complete($user, $activation->code);
     }
 
     /**

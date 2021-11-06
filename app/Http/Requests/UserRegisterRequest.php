@@ -31,7 +31,7 @@ class UserRegisterRequest extends FormRequest
             "last_name" => "required|string",
             "role" => "nullable|string",
             "permissions" => "nullable|array",
-            "activate" => "nullable|bool",
+            "activate" => "nullable|boolean",
             "phone_number" => "nullable|numeric|unique:users,phone_number",
             "country_code" => "nullable|numeric",
         ];

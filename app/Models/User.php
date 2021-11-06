@@ -90,11 +90,6 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         return $this->where('email', $username)->first();
     }
 
-    public function activation()
-    {
-        return $this->hasOne(Activation::class);
-    }
-
     public function media()
     {
         return $this->hasMany(Media::class);
