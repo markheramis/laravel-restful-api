@@ -116,6 +116,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
             return $role->permissions;
         })->toArray();
         $user_permissions = $this->permissions;
-        return array_merge($role_permissions, $user_permissions);
+        $all_permissions =  array_merge($role_permissions, $user_permissions);
+        return (array) array_keys(array_filter(array_merge(...$all_permissions)));
     }
 }
