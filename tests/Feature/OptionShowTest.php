@@ -24,7 +24,22 @@ class OptionShowTest extends TestCase
     public function testShowOptionAsAdministratorShouldBeAllowed()
     {
         $option = Option::factory()->create();
-        $token = $this->getTokenByRole("administrator");
+        $user = $this->createUser("administrator");
+        $token = $this->getTokenByRole("administrator", $user->id);
+        $header = [
+            "Authorization" => "Bearer $token",
+        ];
+        $url = route("option.show", [$option->name]);
+        $response = $this->json("GET", $url, [], $header);
+        $response->assertStatus(200);
+        $option->delete();
+    }
+
+    public function testShowOptionAsAdministratorShouldBeAllowedWhenMfaEnabledAndMfaVerified()
+    {
+        $option = Option::factory()->create();
+        $user = $this->createUser("administrator", true, true);
+        $token = $this->getTokenByRole("administrator", $user->id, true);
         $header = [
             "Authorization" => "Bearer $token",
         ];
@@ -37,7 +52,8 @@ class OptionShowTest extends TestCase
     public function testShowOptionAsModeratorShouldBeAllowed()
     {
         $option = Option::factory()->create();
-        $token = $this->getTokenByRole("moderator");
+        $user = $this->createUser("moderator", true, true);
+        $token = $this->getTokenByRole("moderator", $user->id, true);
         $header = [
             "Authorization" => "Bearer $token",
         ];
@@ -50,7 +66,8 @@ class OptionShowTest extends TestCase
     public function testShowOptionAsSubscriberShouldBeAllowed()
     {
         $option = Option::factory()->create();
-        $token = $this->getTokenByRole("subscriber");
+        $user = $this->createUser("subscriber", true, true);
+        $token = $this->getTokenByRole("subscriber", $user->id, true);
         $header = [
             "Authorization" => "Bearer $token",
         ];

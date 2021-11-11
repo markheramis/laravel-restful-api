@@ -14,10 +14,12 @@ trait userTraits
 
     use WithFaker;
 
-    public function createUser(string $role = 'subscriber', bool $activated = true): User
+    public function createUser(string $role = 'subscriber', bool $activated = true, bool $mfa_enabled = false): User
     {
         $role = Role::where('slug', $role)->first();
-        $user = User::factory()->create();
+        $user = User::factory([
+            'authy_id' => $mfa_enabled ? 'xxx' : ''
+        ])->create();
         // Attache user to role
         if ($user) {
             $role->users()->attach($user);

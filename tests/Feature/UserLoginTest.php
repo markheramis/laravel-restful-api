@@ -104,7 +104,7 @@ class UserLoginTest extends TestCase
         $tokenParts = explode(".", $response->json()['data']['token']);  
         $tokenPayload = base64_decode($tokenParts[1]);
         $jwtPayload = json_decode($tokenPayload);
-        $permissions = (array) array_keys(array_filter(array_merge(...$user->allPermissions())));
+        $permissions = (array) $user->allPermissions();
 
         $result = array_diff_assoc($jwtPayload->scopes, $permissions);
         if (empty($result)) {

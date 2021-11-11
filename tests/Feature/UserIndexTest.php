@@ -2,9 +2,11 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
 use Tests\TestCase;
+use App\Models\User;
 use Tests\Traits\userTraits;
+use Illuminate\Support\Facades\Auth;
+use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 
 class UserIndexTest extends TestCase
 {
@@ -20,11 +22,31 @@ class UserIndexTest extends TestCase
     {
         $user = $this->createUser('administrator');
         $token = $this->getTokenByRole("administrator", $user->id);
-        # $expected_result = User::paginate()->toArray();
         $response = $this->json("GET", route("user.index"), [], [
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
+    }
+
+    public function testIndexAllUserAsAdminsShouldBeAllowedWhenMfaEnabled()
+    {
+        $user = $this->createUser('administrator', true, true);
+        $token = $this->getTokenByRole("administrator", $user->id, true);
+        $response = $this->json("GET", route("user.index"), [], [
+            "Authorization" => "Bearer $token"
+        ]);
+        $response->assertStatus(200);
+
+    }
+
+    public function testIndexAllUserAsAdminsShouldNotBeAllowedWhenMfaEnabledButNotMfaVerified()
+    {
+        $user = $this->createUser('administrator', true, true);
+        $token = $this->getTokenByRole("administrator", $user->id, false);
+        $response = $this->json("GET", route("user.index"), [], [
+            "Authorization" => "Bearer $token"
+        ]);
+        $response->assertStatus(401);
     }
 
     /**
@@ -44,6 +66,27 @@ class UserIndexTest extends TestCase
         $response->assertStatus(200);
     }
 
+    public function testIndexAllUserAsModeratorShouldBeAllowedWhenMfaEnabled()
+    {
+        $user = $this->createUser('moderator', true, true);
+        $token = $this->getTokenByRole("moderator", $user->id, true);
+        $response = $this->json("GET", route("user.index"), [], [
+            "Authorization" => "Bearer $token"
+        ]);
+        $response->assertStatus(200);
+
+    }
+
+    public function testIndexAllUserAsModeratorShouldNotBeAllowedWhenMfaEnabledButNotMfaVerified()
+    {
+        $user = $this->createUser('moderator', true, true);
+        $token = $this->getTokenByRole("moderator", $user->id, false);
+        $response = $this->json("GET", route("user.index"), [], [
+            "Authorization" => "Bearer $token"
+        ]);
+        $response->assertStatus(401);
+    }
+
     /**
      * Test get all users as subscriber
      *
@@ -59,5 +102,26 @@ class UserIndexTest extends TestCase
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
+    }
+
+    public function testIndexAllUserAsSubscriberShouldBeAllowedWhenMfaEnabled()
+    {
+        $user = $this->createUser('subscriber', true, true);
+        $token = $this->getTokenByRole("subscriber", $user->id, true);
+        $response = $this->json("GET", route("user.index"), [], [
+            "Authorization" => "Bearer $token"
+        ]);
+        $response->assertStatus(200);
+
+    }
+
+    public function testIndexAllUserAsSubscriberShouldNotBeAllowedWhenMfaEnabledButNotMfaVerified()
+    {
+        $user = $this->createUser('subscriber', true, true);
+        $token = $this->getTokenByRole("subscriber", $user->id, false);
+        $response = $this->json("GET", route("user.index"), [], [
+            "Authorization" => "Bearer $token"
+        ]);
+        $response->assertStatus(401);
     }
 }
