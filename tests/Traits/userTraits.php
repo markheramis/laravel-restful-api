@@ -47,9 +47,9 @@ trait userTraits
      * @param int $user_id
      * @return string
      */
-    public function getTokenByRole(string $role_slug, int $user_id = null): string
+    public function getTokenByRole(string $role_slug, int $user_id = null, $mfa_verified = false): string
     {
-        return Role::where('slug', $role_slug)
+        $user = Role::where('slug', $role_slug)
             ->first()
             ->users()
             ->when($user_id != null, function ($query) use ($user_id) {
@@ -57,9 +57,11 @@ trait userTraits
             }, function ($query) {
                 $query->inRandomOrder();
             })
-            ->first()
-            ->createToken('MyApp')
-            ->accessToken;
+            ->first();
+        if ($mfa_verified) {
+            session()->now('mfa_verified', true);
+        }
+        return $user->createToken(config('app.name') . ': ' . $user->username, $user->allPermissions())->accessToken;
     }
 
     public function getUserSlugByRoleSlug(string $role_slug): string
