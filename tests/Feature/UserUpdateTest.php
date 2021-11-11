@@ -125,4 +125,40 @@ class UserUpdateTest extends TestCase
         $response->assertStatus(200);
         $user->delete();
     }
+
+    public function testUpdateAnotherAdministratorAsAdministratorShouldBeAllowedWhenMfaEnabledAndMfaVerified()
+    {
+        $user = $this->createUser("administrator");
+        $token = $this->getTokenByRole("administrator", $user->id);
+        $user_to_update = $this->createUser("moderator");
+        $header = [
+            "Authorization" => "Bearer $token",
+        ];
+        $url = route("user.update", [$user_to_update->id]);
+        $data = [
+            "username" => $this->faker->regexify("^[a-z0-9_-]{8,15}$"),
+            "email" => $this->faker->email(),
+        ];
+        $response = $this->json("PUT", $url, $data, $header);
+        $response->assertStatus(200);
+        $user->delete();
+    }
+
+    public function testUpdateAnotherAdministratorAsAdministratorShouldNotBeAllowedWhenMfaEnabledButNotMfaVerified()
+    {
+        $user = $this->createUser("administrator", true, true);
+        $token = $this->getTokenByRole("administrator", $user->id, false);
+        $user_to_update = $this->createUser("moderator");
+        $header = [
+            "Authorization" => "Bearer $token",
+        ];
+        $url = route("user.update", [$user_to_update->id]);
+        $data = [
+            "username" => $this->faker->regexify("^[a-z0-9_-]{8,15}$"),
+            "email" => $this->faker->email(),
+        ];
+        $response = $this->json("PUT", $url, $data, $header);
+        $response->assertStatus(401);
+        $user->delete();
+    }
 }

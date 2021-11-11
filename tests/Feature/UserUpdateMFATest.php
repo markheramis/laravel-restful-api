@@ -13,7 +13,7 @@ class UserUpdateMFATest extends TestCase
     private function testValid($role, $default_factor = "sms")
     {
         $user = $this->createUser($role);
-        $token = $user->createToken(config('app.name') . ': ' . $user->username, array_keys(array_filter(array_merge(...$user->allPermissions()))))->accessToken;
+        $token = $user->createToken(config('app.name') . ': ' . $user->username, $user->allPermissions())->accessToken;
         $header = [
             "Authorization" => "Bearer $token",
         ];

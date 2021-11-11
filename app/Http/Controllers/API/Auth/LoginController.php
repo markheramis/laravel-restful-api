@@ -6,6 +6,7 @@ use Log;
 use Sentinel;
 use Authy\AuthyApi;
 use App\Models\User;
+use App\Events\User\UserLoggedIn;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserLoginRequest;
@@ -37,15 +38,17 @@ class LoginController extends Controller
                 $verify = $this->sendOTP($user);
                 switch ($verify) {
                     case self::AUTHY_SMS_SUCCESS:
+                        broadcast(new UserLoggedIn($user->id));
                         return response()->success([
                             'verify' => true,
-                            'token' => $user->createToken(config('app.name') . ': ' . $user->username, $this->pemissionScopes($user))->accessToken,
+                            'token' => $user->createToken(config('app.name') . ': ' . $user->username, $user->allPermissions())->accessToken,
                             'mfa_verified' => false,
                         ]);
                         break;
                     case self::AUTHY_SMS_CANCELLED:
+                        broadcast(new UserLoggedIn($user->id));
                         return response()->success([
-                            'token' => $user->createToken(config('app.name') . ': ' . $user->username, $this->pemissionScopes($user))->accessToken,
+                            'token' => $user->createToken(config('app.name') . ': ' . $user->username, $user->allPermissions())->accessToken,
                             'mfa_verified' => false,
                         ]);
                         break;
@@ -55,8 +58,9 @@ class LoginController extends Controller
                 }
                 // @codeCoverageIgnoreEnd
             } else {
+                broadcast(new UserLoggedIn($user->id));
                 return response()->success([
-                    'token' => $user->createToken(config('app.name') . ': ' . $user->username, $this->pemissionScopes($user))->accessToken,
+                    'token' => $user->createToken(config('app.name') . ': ' . $user->username, $user->allPermissions())->accessToken,
                     'mfa_verified' => false
                 ]);
             }
@@ -102,10 +106,5 @@ class LoginController extends Controller
         } else {
             return self::AUTHY_SMS_CANCELLED;
         }
-    }
-
-    private function pemissionScopes(User $user): array
-    {
-        return (array) array_keys(array_filter(array_merge(...$user->allPermissions())));
     }
 }
