@@ -61,7 +61,7 @@ class UserStoreTest extends TestCase
     public function testStoreUserAsSubscriberShouldBeForbidden()
     {
         $user = User::factory()->make();
-        $token = $this->getTokenByRole("subscriber  ");
+        $token = $this->getTokenByRole("subscriber");
         $header = [
             "Authorization" => "Bearer $token",
         ];
@@ -72,6 +72,6 @@ class UserStoreTest extends TestCase
             "first_name" => $user->first_name,
             "last_name" => $user->last_name,
         ], $header);
-        $response->assertStatus(200);
+        $response->assertStatus(403);
     }
 }
