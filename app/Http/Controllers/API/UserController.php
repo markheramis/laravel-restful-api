@@ -151,6 +151,19 @@ class UserController extends Controller
     /**
      * Undocumented function
      *
+     * @param User $user
+     * @param string $role
+     * @return void
+     */
+    private function attachRole(User $user, string $role)
+    {
+        $selectedRole = Sentinel::findRoleBySlug($role);
+        $selectedRole->users()->attach($user);
+    }
+
+    /**
+     * Undocumented function
+     *
      * @param UserRegisterRequest $request
      * @return void
      */
