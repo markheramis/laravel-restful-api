@@ -6,6 +6,7 @@ use DB;
 use Auth;
 use Sentinel;
 use Activation;
+use Authy\AuthyApi;
 use App\Models\User;
 use App\Mail\UserForgotPasswordMail;
 use App\Http\Controllers\Controller;
