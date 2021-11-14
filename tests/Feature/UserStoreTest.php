@@ -27,8 +27,19 @@ class UserStoreTest extends TestCase
 
     public function testStoreUserAsSubscriberShouldBeForbidden()
     {
+        $test_user = json_decode(config("authy.test_user"));
+        $session_user = User::factory([
+            'country_code' => $test_user->country_code,
+            'phone_number' => $test_user->phone_number,
+            'authy_id' => $test_user->authy_id,
+            'authy_enabled' => 1,
+            'default_factor' => 'sms',
+
+        ])->create();
+        $selectedRole = Sentinel::findRoleBySlug("subscriber");
+        $selectedRole->users()->attach($session_user);
         $user = User::factory()->make();
-        $token = $this->getTokenByRole("subscriber");
+        $token = $this->getTokenByRole("subscriber", $session_user->id, true);
         $header = [
             "Authorization" => "Bearer $token",
         ];
@@ -40,12 +51,24 @@ class UserStoreTest extends TestCase
             "last_name" => $user->last_name,
         ], $header);
         $response->assertStatus(403);
+        $session_user->delete();
     }
 
     public function testStoreUserAsModeratorShouldBeForbidden()
     {
+        $test_user = json_decode(config("authy.test_user"));
+        $session_user = User::factory([
+            'country_code' => $test_user->country_code,
+            'phone_number' => $test_user->phone_number,
+            'authy_id' => $test_user->authy_id,
+            'authy_enabled' => 1,
+            'default_factor' => 'sms',
+
+        ])->create();
+        $selectedRole = Sentinel::findRoleBySlug("moderator");
+        $selectedRole->users()->attach($session_user);
         $user = User::factory()->make();
-        $token = $this->getTokenByRole("moderator");
+        $token = $this->getTokenByRole("moderator", $session_user->id, true);
         $header = [
             "Authorization" => "Bearer $token",
         ];
@@ -57,6 +80,7 @@ class UserStoreTest extends TestCase
             "last_name" => $user->last_name,
         ], $header);
         $response->assertStatus(403);
+        $session_user->delete();
     }
 
     public function testStoreUserAsAdministratorWithMfaNotVerifiedShouldBeForbidden()
@@ -115,5 +139,6 @@ class UserStoreTest extends TestCase
             "last_name" => $user->last_name,
         ], $header);
         $response->assertStatus(200);
+        $session_user->delete();
     }
 }
