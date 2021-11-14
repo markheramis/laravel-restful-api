@@ -26,7 +26,7 @@ class UserUpdateMFATest extends TestCase
         $user->delete();
     }
 
-    public function testUserUpdateMFAWithNoSessionShouldBeUnauthorized()
+    public function testUserUpdateMfaWithNoSessionShouldBeUnauthorized()
     {
         $user = $this->createUser('subscriber');
         $url = route('user.mfa.default');
@@ -61,7 +61,7 @@ class UserUpdateMFATest extends TestCase
         $this->testValid("subscriber", "authenticator");
     }
 
-    public function testUserUpdateMFAToAuthenticatorAsModeratorShouldBeAllowed()
+    public function testUserUpdateMfaToAuthenticatorAsModeratorShouldBeAllowed()
     {
         $this->testValid("moderator", "authenticator");
     }

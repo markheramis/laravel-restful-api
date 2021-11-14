@@ -27,15 +27,14 @@ class MfaClaim
         /* check if token parses properly */
         try {
             $jwt = (Configuration::forUnsecuredSigner()->parser()->parse($token));
+            if (notLocal() && hasAuthyConfig() && auth()->user()->hasMFA()) {
+                if ($jwt->claims()->has('mfa_verified') && $jwt->claims()->get('mfa_verified') == true) {
+                    return $next($request);
+                }
+                throw new AuthenticationException('Unauthenticated: MFA not verified.');
+            }
         } catch (\Exception $e) {
             throw new AuthenticationException;
-        }
-
-        if (notLocal() && hasAuthyConfig() && auth()->user()->hasMFA()) {
-            if ($jwt->claims()->has('mfa_verified') && $jwt->claims()->get('mfa_verified') == true) {
-                return $next($request);
-            }
-            throw new AuthenticationException('Unauthenticated: MFA not verified.');
         }
         return $next($request);
     }
