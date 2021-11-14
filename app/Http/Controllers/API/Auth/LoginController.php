@@ -97,10 +97,8 @@ class LoginController extends Controller
             $authy_api = new AuthyApi(config('authy.app_secret'));
             $sms = $authy_api->requestSms($user->authy_id);
             if ($sms->ok()) {
-                Log::info(json_encode($sms->message(), JSON_PRETTY_PRINT));
                 return self::AUTHY_SMS_SUCCESS;
             } else {
-                Log::error(json_encode($sms->errors(), JSON_PRETTY_PRINT));
                 return self::AUTHY_SMS_FAILED;
             }
         } else {

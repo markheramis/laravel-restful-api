@@ -25,6 +25,5 @@ class PruneOldTokens
      */
     public function handle($event)
     {
-        Log::info(json_encode($event, JSON_PRETTY_PRINT));
     }
 }
