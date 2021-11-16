@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
+use App\Models\User;
 use Tests\Traits\userTraits;
 use Lcobucci\JWT\Configuration;
 use Illuminate\Foundation\Testing\WithFaker;
