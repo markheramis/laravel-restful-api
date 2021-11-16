@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
+use App\Models\User;
 use Tests\Traits\userTraits;
 use Lcobucci\JWT\Configuration;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -110,6 +111,25 @@ class UserLoginTest extends TestCase
         if (empty($result)) {
             $response->assertStatus(200);
         }
+
+        $user->delete();
+    }
+
+    public function testLoginHasActivityLog()
+    {
+        $user = $this->createUser();
+        $response = $this->json("POST", route("api.login"), [
+            "username" => $user->username,
+            "password" => "password12345"
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('activity_log', [
+            'subject_type' => null,
+            'event' => 'logged_in',
+            'subject_id' => null,
+            'causer_id' => $user->id,
+            'causer_type' => User::class
+        ]);
 
         $user->delete();
     }
