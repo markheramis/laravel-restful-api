@@ -34,6 +34,6 @@ class UserLoggedOutListener
         })->get();
         Notification::send($admins, new UserLoggedOutNotification($event->user));
 
-        activity()->causedBy($event->user)->log('User:logout');
+        activity()->event('logged_out')->causedBy($event->user)->log('User:logout');
     }
 }

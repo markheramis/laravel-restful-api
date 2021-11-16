@@ -113,4 +113,23 @@ class UserLoginTest extends TestCase
 
         $user->delete();
     }
+
+    public function testLoginHasActivityLog()
+    {
+        $user = $this->createUser();
+        $response = $this->json("POST", route("api.login"), [
+            "username" => $user->username,
+            "password" => "password12345"
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('activity_log', [
+            'subject_type' => null,
+            'event' => 'logged_in',
+            'subject_id' => null,
+            'causer_id' => $user->id,
+            'causer_type' => User::class
+        ]);
+
+        $user->delete();
+    }
 }

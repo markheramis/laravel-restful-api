@@ -34,6 +34,6 @@ class UserLoggedInListener
         })->get();
         Notification::send($admins, new UserLoggedInNotification($event->user));
 
-        activity()->causedBy($event->user)->log('User:login');
+        activity()->event('logged_in')->causedBy($event->user)->log('User:login');
     }
 }

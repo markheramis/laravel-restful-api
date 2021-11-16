@@ -17,7 +17,7 @@ class UserLogoutTest extends TestCase
         $response->assertStatus(401);
     }
 
-    public function testLogoutWithTokenSuccessAndTokenRevoked()
+    public function testLogoutWithTokenSuccessAndTokenRevokedAndHasActivityLog()
     {
         $user = $this->createUser();
         $response = $this->json("POST", route("api.login"), [
