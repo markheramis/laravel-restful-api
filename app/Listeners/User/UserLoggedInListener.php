@@ -33,5 +33,7 @@ class UserLoggedInListener
             $query->where('roles.id', Role::ROLE_ADMIN);
         })->get();
         Notification::send($admins, new UserLoggedInNotification($event->user));
+
+        activity()->causedBy($event->user)->log('User:login');
     }
 }
