@@ -21,20 +21,20 @@ class MfaClaim
     {
         /* check for presence of token */
         if (!($token = $request->bearerToken())) {
-            throw new AuthenticationException;
+            return response('No Token', 401);
         }
 
         /* check if token parses properly */
         try {
             $jwt = (Configuration::forUnsecuredSigner()->parser()->parse($token));
             if (notLocal() && hasAuthyConfig() && auth()->user()->hasMFA()) {
-                if ($jwt->claims()->has('mfa_verified') && $jwt->claims()->get('mfa_verified') == true) {
+                if ($jwt->claims()->has('mfa_verified') && $jwt->claims()->get('mfa_verified') == true)
                     return $next($request);
-                }
-                throw new AuthenticationException('Unauthenticated: MFA not verified.');
+                else
+                    return response('Unauthenticated: MFA not verified.', 403);
             }
         } catch (\Exception $e) {
-            throw new AuthenticationException;
+            return response($e->getMessage(), 500);
         }
         return $next($request);
     }
