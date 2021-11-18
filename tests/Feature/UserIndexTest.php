@@ -142,7 +142,7 @@ class UserIndexTest extends TestCase
             ->transformWith(new UserTransformer)
             ->serializeWith(new JsonApiSerializer())
             ->paginateWith(new IlluminatePaginatorAdapter($userPaginator))
-            ->toArray();
+            ->toArray()['data'];
 
 
         $response = $this->json("GET", route("user.index"), [
@@ -151,7 +151,7 @@ class UserIndexTest extends TestCase
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
-        $response->assertJson($expected_response);
+        $response->assertJsonFragment($expected_response);
         $user->delete();
     }
 
@@ -172,7 +172,7 @@ class UserIndexTest extends TestCase
             ->transformWith(new UserTransformer)
             ->serializeWith(new JsonApiSerializer())
             ->paginateWith(new IlluminatePaginatorAdapter($userPaginator))
-            ->toArray();
+            ->toArray()['data'];
 
         $response = $this->json("GET", route("user.index"), [
             "role" => "administrator"
@@ -180,7 +180,7 @@ class UserIndexTest extends TestCase
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
-        $response->assertJson($expected_response);
+        $response->assertJsonFragment($expected_response);
         $user->delete();
     }
 }
