@@ -15,143 +15,188 @@ class UserIndexTest extends TestCase
 {
     use userTraits;
 
-    /**
-     * test get all users as administraotr
-     *
-     * @todo Assert expected result array
-     * @return void
-     */
     public function testIndexAllUserAsAdminsShouldBeAllowed()
     {
-        $user = $this->createUser('administrator');
+        $user = $this->createUser("administrator");
         $token = $this->getTokenByRole("administrator", $user->id);
+        $userPaginator = User::paginate();
+        $userCollection = $userPaginator->getCollection();
+        $expected_response = fractal()
+            ->collection($userCollection)
+            ->transformWith(new UserTransformer)
+            ->serializeWith(new JsonApiSerializer())
+            ->paginateWith(new IlluminatePaginatorAdapter($userPaginator))
+            ->toArray();
         $response = $this->json("GET", route("user.index"), [], [
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
+        $response->assertJsonPath("data", $expected_response["data"]);
+        $response->assertJsonPath("meta", $expected_response["meta"]);
+        $user->delete();
     }
 
     public function testIndexAllUserAsAdminsShouldBeAllowedWhenMfaEnabled()
     {
-        $user = $this->createUser('administrator', true, true);
+        $user = $this->createUser("administrator", true, true);
         $token = $this->getTokenByRole("administrator", $user->id, true);
+        $userPaginator = User::paginate();
+        $userCollection = $userPaginator->getCollection();
+        $expected_response = fractal()
+            ->collection($userCollection)
+            ->transformWith(new UserTransformer)
+            ->serializeWith(new JsonApiSerializer())
+            ->paginateWith(new IlluminatePaginatorAdapter($userPaginator))
+            ->toArray();
         $response = $this->json("GET", route("user.index"), [], [
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
+        $response->assertJsonPath("data", $expected_response["data"]);
+        $response->assertJsonPath("meta", $expected_response["meta"]);
+        $user->delete();
     }
 
     public function testIndexAllUserAsAdminsShouldNotBeAllowedWhenMfaEnabledButNotMfaVerified()
     {
-        $user = $this->createUser('administrator', true, true);
+        $user = $this->createUser("administrator", true, true);
         $token = $this->getTokenByRole("administrator", $user->id, false);
         $response = $this->json("GET", route("user.index"), [], [
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(401);
+        $user->delete();
     }
 
-    /**
-     * Test get all user as moderator
-     *  
-     * @todo Assert expected result array
-     * @return void
-     */
     public function testIndexAllUserAsModeratorShouldBeAllowed()
     {
-        $user = $this->createUser('moderator');
+        $user = $this->createUser("moderator");
         $token = $this->getTokenByRole("moderator", $user->id);
-        # $expected_result = User::paginate()->toArray();
+        $userPaginator = User::paginate();
+        $userCollection = $userPaginator->getCollection();
+        $expected_response = fractal()
+            ->collection($userCollection)
+            ->transformWith(new UserTransformer)
+            ->serializeWith(new JsonApiSerializer())
+            ->paginateWith(new IlluminatePaginatorAdapter($userPaginator))
+            ->toArray();
         $response = $this->json("GET", route("user.index"), [], [
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
+        $response->assertJsonPath("data", $expected_response["data"]);
+        $response->assertJsonPath("meta", $expected_response["meta"]);
+        $user->delete();
     }
 
     public function testIndexAllUserAsModeratorShouldBeAllowedWhenMfaEnabled()
     {
-        $user = $this->createUser('moderator', true, true);
+        $user = $this->createUser("moderator", true, true);
         $token = $this->getTokenByRole("moderator", $user->id, true);
+        $userPaginator = User::paginate();
+        $userCollection = $userPaginator->getCollection();
+        $expected_response = fractal()
+            ->collection($userCollection)
+            ->transformWith(new UserTransformer)
+            ->serializeWith(new JsonApiSerializer())
+            ->paginateWith(new IlluminatePaginatorAdapter($userPaginator))
+            ->toArray();
         $response = $this->json("GET", route("user.index"), [], [
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
+        $response->assertJsonPath("data", $expected_response["data"]);
+        $response->assertJsonPath("meta", $expected_response["meta"]);
+        $user->delete();
     }
 
     public function testIndexAllUserAsModeratorShouldNotBeAllowedWhenMfaEnabledButNotMfaVerified()
     {
-        $user = $this->createUser('moderator', true, true);
+        $user = $this->createUser("moderator", true, true);
         $token = $this->getTokenByRole("moderator", $user->id, false);
         $response = $this->json("GET", route("user.index"), [], [
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(401);
+        $user->delete();
     }
 
-    /**
-     * Test get all users as subscriber
-     *
-     * @todo Assert expected result array
-     * @return void
-     */
     public function testIndexAllUserAsSubscriberShouldBeAllowed()
     {
-        $user = $this->createUser('subscriber');
+        $user = $this->createUser("subscriber");
         $token = $this->getTokenByRole("subscriber", $user->id);
-        # $expected_result = User::paginate()->toArray();
+        $userPaginator = User::paginate();
+        $userCollection = $userPaginator->getCollection();
+        $expected_response = fractal()
+            ->collection($userCollection)
+            ->transformWith(new UserTransformer)
+            ->serializeWith(new JsonApiSerializer())
+            ->paginateWith(new IlluminatePaginatorAdapter($userPaginator))
+            ->toArray();
         $response = $this->json("GET", route("user.index"), [], [
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
+        $response->assertJsonPath("data", $expected_response["data"]);
+        $response->assertJsonPath("meta", $expected_response["meta"]);
+        $user->delete();
     }
 
     public function testIndexAllUserAsSubscriberShouldBeAllowedWhenMfaEnabled()
     {
-        $user = $this->createUser('subscriber', true, true);
+        $user = $this->createUser("subscriber", true, true);
         $token = $this->getTokenByRole("subscriber", $user->id, true);
+        $userPaginator = User::paginate();
+        $userCollection = $userPaginator->getCollection();
+        $expected_response = fractal()
+            ->collection($userCollection)
+            ->transformWith(new UserTransformer)
+            ->serializeWith(new JsonApiSerializer())
+            ->paginateWith(new IlluminatePaginatorAdapter($userPaginator))
+            ->toArray();
         $response = $this->json("GET", route("user.index"), [], [
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
+        $response->assertJsonPath("data", $expected_response["data"]);
+        $response->assertJsonPath("meta", $expected_response["meta"]);
+        $user->delete();
     }
 
     public function testIndexAllUserAsSubscriberShouldNotBeAllowedWhenMfaEnabledButNotMfaVerified()
     {
-        $user = $this->createUser('subscriber', true, true);
+        $user = $this->createUser("subscriber", true, true);
         $token = $this->getTokenByRole("subscriber", $user->id, false);
         $response = $this->json("GET", route("user.index"), [], [
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(401);
+        $user->delete();
     }
 
     public function testIndexAllUsersAsAdministratorByRoleAdministratorShouldBeAllowed()
     {
         $user = $this->createUser("administrator", true, true);
         $token = $this->getTokenByRole("administrator", $user->id, true);
-
-        $userPaginator = User::join('role_users', 'users.id', '=', 'role_users.user_id')
-            ->join('roles', 'role_users.role_id', 'roles.id')
-            ->where('roles.slug', 'administrator')
+        $userPaginator = User::join("role_users", "users.id", "=", "role_users.user_id")
+            ->join("roles", "role_users.role_id", "roles.id")
+            ->where("roles.slug", "administrator")
             ->paginate();
-
         $userCollection = $userPaginator->getCollection();
-
         $expected_response = fractal()
             ->collection($userCollection)
             ->transformWith(new UserTransformer)
             ->serializeWith(new JsonApiSerializer())
             ->paginateWith(new IlluminatePaginatorAdapter($userPaginator))
-            ->toArray()['data'];
-
-
+            ->toArray();
         $response = $this->json("GET", route("user.index"), [
             "role" => "administrator"
         ], [
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
-        $response->assertJsonFragment($expected_response);
+        $response->assertJsonPath("data", $expected_response["data"]);
+        $response->assertJsonPath("meta", $expected_response["meta"]);
         $user->delete();
     }
 
@@ -159,28 +204,26 @@ class UserIndexTest extends TestCase
     {
         $user = $this->createUser("administrator", true, true);
         $token = $this->getTokenByRole("administrator", $user->id, true);
-
-        $userPaginator = User::join('role_users', 'users.id', '=', 'role_users.user_id')
-            ->join('roles', 'role_users.role_id', 'roles.id')
-            ->where('roles.slug', 'moderator')
+        $userPaginator = User::join("role_users", "users.id", "=", "role_users.user_id")
+            ->join("roles", "role_users.role_id", "roles.id")
+            ->where("roles.slug", "moderator")
             ->paginate();
 
         $userCollection = $userPaginator->getCollection();
-
         $expected_response = fractal()
             ->collection($userCollection)
             ->transformWith(new UserTransformer)
             ->serializeWith(new JsonApiSerializer())
             ->paginateWith(new IlluminatePaginatorAdapter($userPaginator))
-            ->toArray()['data'];
-
+            ->toArray();
         $response = $this->json("GET", route("user.index"), [
             "role" => "administrator"
         ], [
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
-        $response->assertJsonFragment($expected_response);
+        $response->assertJsonPath("data", $expected_response["data"]);
+        $response->assertJsonPath("meta", $expected_response["meta"]);
         $user->delete();
     }
 }
