@@ -36,12 +36,13 @@ class UserTransformer extends TransformerAbstract
     {
         $created_at = Carbon::parse($user->created_at)->toFormattedDateString();
         $updated_at = Carbon::parse($user->updated_at)->toFormattedDateString();
+        $role = $user->roles();
         return [
             'id' => $user->id,
             'uuid' => $user->uuid,
             'slug' => $user->slug,
             'email' => $user->email,
-            'role' => $user->roles()->pluck('slug'),
+            'role' => $user->roles()->pluck('slug')->all(),
             'username' => $user->username,
             'permissions' => $user->permission,
             'first_name' => $user->first_name,
