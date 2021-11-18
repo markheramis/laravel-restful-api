@@ -4,9 +4,12 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use App\Models\User;
+use App\Transformers\UserTransformer;
 use Tests\Traits\userTraits;
 use Illuminate\Support\Facades\Auth;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
+use League\Fractal\Pagination\IlluminatePaginatorAdapter;
+use League\Fractal\Serializer\JsonApiSerializer;
 
 class UserIndexTest extends TestCase
 {
@@ -126,12 +129,28 @@ class UserIndexTest extends TestCase
     {
         $user = $this->createUser("administrator", true, true);
         $token = $this->getTokenByRole("administrator", $user->id, true);
+        $userPaginator = User::join('role_users', 'users.id', '=', 'role_users.user_id')
+            ->join('roles', 'role_users.role_id', 'roles.id')
+            ->where('roles.slug', 'administrator')
+            ->paginate();
+
+        $userCollection = $userPaginator->getCollection();
+
+        $expected_response = fractal()
+            ->collection($userCollection)
+            ->transformWith(new UserTransformer)
+            ->serializeWith(new JsonApiSerializer())
+            ->paginateWith(new IlluminatePaginatorAdapter($userPaginator))
+            ->toArray();
+
+
         $response = $this->json("GET", route("user.index"), [
             "role" => "administrator"
         ], [
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
+        $response->assertJson($expected_response);
         $user->delete();
     }
 
