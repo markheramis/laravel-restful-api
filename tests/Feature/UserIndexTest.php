@@ -217,7 +217,7 @@ class UserIndexTest extends TestCase
             ->paginateWith(new IlluminatePaginatorAdapter($userPaginator))
             ->toArray();
         $response = $this->json("GET", route("user.index"), [
-            "role" => "administrator"
+            "role" => "moderator"
         ], [
             "Authorization" => "Bearer $token"
         ]);
