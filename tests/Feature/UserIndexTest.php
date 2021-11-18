@@ -36,7 +36,6 @@ class UserIndexTest extends TestCase
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
-
     }
 
     public function testIndexAllUserAsAdminsShouldNotBeAllowedWhenMfaEnabledButNotMfaVerified()
@@ -74,7 +73,6 @@ class UserIndexTest extends TestCase
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
-
     }
 
     public function testIndexAllUserAsModeratorShouldNotBeAllowedWhenMfaEnabledButNotMfaVerified()
@@ -112,7 +110,6 @@ class UserIndexTest extends TestCase
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(200);
-
     }
 
     public function testIndexAllUserAsSubscriberShouldNotBeAllowedWhenMfaEnabledButNotMfaVerified()
@@ -123,5 +120,31 @@ class UserIndexTest extends TestCase
             "Authorization" => "Bearer $token"
         ]);
         $response->assertStatus(401);
+    }
+
+    public function testIndexAllUsersAsAdministratorByRoleAdministratorShouldBeAllowed()
+    {
+        $user = $this->createUser("administrator", true, true);
+        $token = $this->getTokenByRole("administrator", $user->id, true);
+        $response = $this->json("GET", route("user.index"), [
+            "role" => "administrator"
+        ], [
+            "Authorization" => "Bearer $token"
+        ]);
+        $response->assertStatus(200);
+        $user->delete();
+    }
+
+    public function testIndexAllUsersAsAdministratorByRoleModeratorShouldBeAllowed()
+    {
+        $user = $this->createUser("administrator", true, true);
+        $token = $this->getTokenByRole("administrator", $user->id, true);
+        $response = $this->json("GET", route("user.index"), [
+            "role" => "administrator"
+        ], [
+            "Authorization" => "Bearer $token"
+        ]);
+        $response->assertStatus(200);
+        $user->delete();
     }
 }
