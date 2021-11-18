@@ -59,6 +59,10 @@ class UserController extends Controller
                 ->orWhere("username", "LIKE", "%$search%")
                 ->orWhere("first_name", "LIKE", "%$search%")
                 ->orWhere("last_name", "LIKE", "%$search%");
+        })->when($request->has('role'), function ($query) use ($request) {
+            $query->join('role_users', 'users.id', '=', 'role_users.user_id')
+                ->join('roles', 'role_users.role_id', 'roles.id')
+                ->where("roles.slug", $request->role);
         })->paginate();
 
 
