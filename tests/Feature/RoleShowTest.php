@@ -152,7 +152,7 @@ class RoleShowTest extends TestCase
         ];
         $url = route("role.show", [$role->slug]);
         $response = $this->json("GET", $url, $data, $header);
-        $response->assertStatus(401);
+        $response->assertStatus(403);
         $role->delete();
     }
 }

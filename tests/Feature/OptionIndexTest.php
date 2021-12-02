@@ -30,6 +30,7 @@ class OptionIndexTest extends TestCase
         $response = $this->json("GET", route("option.index"), [], $header);
         $response->assertStatus(200);
         $response->assertJson($expected_response);
+        $option->delete();
     }
 
     public function testGetOptionIndexAsAdministratorShouldBeAllowedWhenMfaEnabledAndMfaVerified()
@@ -44,6 +45,7 @@ class OptionIndexTest extends TestCase
         $response = $this->json("GET", route("option.index"), [], $header);
         $response->assertStatus(200);
         $response->assertJson($expected_response);
+        $option->delete();
     }
 
     public function testGetOptionIndexAsAdministratorShouldBeNotAllowedWhenMfaEnabledButNotMfaVerified()
@@ -55,7 +57,8 @@ class OptionIndexTest extends TestCase
             "Authorization" => "Bearer $token",
         ];
         $response = $this->json("GET", route("option.index"), [], $header);
-        $response->assertStatus(401);
+        $response->assertStatus(403);
+        $option->delete();
     }
 
     public function testGetOptionIndexAsModeratorShouldBeAllowed()
@@ -70,6 +73,7 @@ class OptionIndexTest extends TestCase
         $response = $this->json("GET", route("option.index"), [], $header);
         $response->assertStatus(200);
         $response->assertJson($expected_response);
+        $option->delete();
     }
 
     public function testGetOptionIndexAsSubscriberShouldBeAllowed()
@@ -84,5 +88,6 @@ class OptionIndexTest extends TestCase
         $response = $this->json("GET", route("option.index"), [], $header);
         $response->assertStatus(200);
         $response->assertJson($expected_response);
+        $option->delete();
     }
 }

@@ -146,6 +146,6 @@ class RoleDestroyTest extends TestCase
         ];
         $url = route("role.update", [$role->slug]);
         $response = $this->json("PUT", $url, $data, $header);
-        $response->assertStatus(401);
+        $response->assertStatus(403);
     }
 }

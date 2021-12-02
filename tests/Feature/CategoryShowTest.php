@@ -58,7 +58,7 @@ class CategoryShowTest extends TestCase
             "Authorization" => "Bearer $token",
         ];
         $response = $this->json("GET", $url, [], $header);
-        $response->assertStatus(401);
+        $response->assertStatus(403);
         $category->delete();
     }
 
