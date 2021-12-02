@@ -70,6 +70,6 @@ class RoleIndexTest extends TestCase
             "Authorization" => "Bearer $token"
         ];
         $response = $this->json("GET", route("role.index"), [], $header);
-        $response->assertStatus(401);
+        $response->assertStatus(403);
     }
 }

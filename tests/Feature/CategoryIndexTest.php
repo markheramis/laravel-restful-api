@@ -50,7 +50,7 @@ class CategoryIndexTest extends TestCase
             "Authorization" => "Bearer $token",
         ];
         $response = $this->json("GET", route("category.index"), [], $header);
-        $response->assertStatus(401);
+        $response->assertStatus(403);
     }
 
 

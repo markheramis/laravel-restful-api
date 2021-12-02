@@ -69,7 +69,7 @@ class OptionUpdateTest extends TestCase
             "value" => "New Update 3",
         ], $header);
 
-        $response->assertStatus(401);
+        $response->assertStatus(403);
         $option->delete();
     }
 
