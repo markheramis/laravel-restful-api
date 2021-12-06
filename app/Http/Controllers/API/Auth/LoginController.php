@@ -20,6 +20,10 @@ class LoginController extends Controller
     const AUTHY_SMS_SUCCESS      = 1;
     const AUTHY_SMS_FAILED       = 2;
 
+    private $token = "";
+    private $verify = false;
+    private $mfa_verified = false;
+
     /**
      * Login API
      * 
@@ -38,19 +42,11 @@ class LoginController extends Controller
                 $verify = $this->sendOTP($user);
                 switch ($verify) {
                     case self::AUTHY_SMS_SUCCESS:
-                        broadcast(new UserLoggedIn($user->id));
-                        return response()->success([
-                            'verify' => true,
-                            'token' => $user->createToken(config('app.name') . ': ' . $user->username, $user->allPermissions())->accessToken,
-                            'mfa_verified' => false,
-                        ]);
+                        $this->token = $this->createToken($user);
+                        $this->verify = true;
                         break;
                     case self::AUTHY_SMS_CANCELLED:
-                        broadcast(new UserLoggedIn($user->id));
-                        return response()->success([
-                            'token' => $user->createToken(config('app.name') . ': ' . $user->username, $user->allPermissions())->accessToken,
-                            'mfa_verified' => false,
-                        ]);
+                        $this->token = $this->createToken($user);
                         break;
                     case self::AUTHY_SMS_FAILED:
                         return response()->error('Critical Error', 500);
@@ -58,15 +54,29 @@ class LoginController extends Controller
                 }
                 // @codeCoverageIgnoreEnd
             } else {
-                broadcast(new UserLoggedIn($user->id));
-                return response()->success([
-                    'token' => $user->createToken(config('app.name') . ': ' . $user->username, $user->allPermissions())->accessToken,
-                    'mfa_verified' => false
-                ]);
+
+                $this->token = $this->createToken($user);
             }
+            broadcast(new UserLoggedIn($user->id));
+            return response()->success([
+                "token" => $this->token,
+                "verify" => $this->verify,
+                "mfa_verified" => $this->mfa_verified,
+            ]);
         } else {
             return response()->error('Invalid User', 401);
         }
+    }
+
+    /**
+     * Generate a token from the User
+     *
+     * @param User $user
+     * @return string
+     */
+    private function createToken(User $user): string
+    {
+        return $user->createToken(config('app.name') . ': ' . $user->username, $user->allPermissions())->accessToken;
     }
 
     /**
