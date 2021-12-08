@@ -24,10 +24,11 @@ class UserFactory extends Factory
     {
         $first_name = $this->faker->firstName();
         $last_name = $this->faker->lastName();
+        $random_number = $this->faker->randomNumber(3, true);
 
-        $email = $first_name . $last_name . "@" . $this->faker->domainName();
+        $email = $first_name . $last_name . $random_number . "@" . $this->faker->domainName();
         return [
-            'username' => $first_name . $last_name,
+            'username' => $first_name . $last_name . $random_number,
             'email' => $email,
             'password' => bcrypt('password12345'),
             'first_name' => $first_name,
