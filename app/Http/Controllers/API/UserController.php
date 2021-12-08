@@ -65,8 +65,6 @@ class UserController extends Controller
                 ->join('roles', 'role_users.role_id', 'roles.id')
                 ->where("roles.slug", $request->role);
         })->paginate();
-
-
         $users = $rolePaginator->getCollection();
         $response = fractal()
             ->collection($users)
