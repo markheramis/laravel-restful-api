@@ -24,12 +24,41 @@ class CategoryShowTest extends TestCase
     {
         $category = Category::factory()->create();
         $url = route("category.show", [$category->slug]);
-        $token = $this->getTokenByRole("administrator");
+        $user = $this->createUser("administrator");
+        $token = $this->getTokenByRole("administrator", $user->id);
         $header = [
             "Authorization" => "Bearer $token",
         ];
         $response = $this->json("GET", $url, [], $header);
         $response->assertStatus(200);
+        $category->delete();
+    }
+
+    public function testShowCategoryAsAdministratorShouldBeAllowedWhenMfaEnabledAndMfaVerified()
+    {
+        $category = Category::factory()->create();
+        $url = route("category.show", [$category->slug]);
+        $user = $this->createUser("administrator", true, true);
+        $token = $this->getTokenByRole("administrator", $user->id, true);
+        $header = [
+            "Authorization" => "Bearer $token",
+        ];
+        $response = $this->json("GET", $url, [], $header);
+        $response->assertStatus(200);
+        $category->delete();
+    }
+
+    public function testShowCategoryAsAdministratorShouldNotBeAllowedWhenMfaEnabledButNotMfaVerified()
+    {
+        $category = Category::factory()->create();
+        $url = route("category.show", [$category->slug]);
+        $user = $this->createUser("administrator", true, true);
+        $token = $this->getTokenByRole("administrator", $user->id, false);
+        $header = [
+            "Authorization" => "Bearer $token",
+        ];
+        $response = $this->json("GET", $url, [], $header);
+        $response->assertStatus(403);
         $category->delete();
     }
 

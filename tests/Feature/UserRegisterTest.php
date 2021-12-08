@@ -86,7 +86,11 @@ class UserRegisterTest extends TestCase
             "activate" => true,
         ]);
         $response->assertStatus(200);
-        User::find($response['data']['id'])->delete();
+        $user = User::find($response["data"]["id"]);
+        $activation = $user->activations->first();
+        $this->assertIsBool($activation->completed);
+        $this->assertEquals(true, $activation->completed);
+        $user->delete();
     }
 
     public function testRegisterWithCorrectParametersShouldRegisterSuccessfully()
@@ -100,11 +104,37 @@ class UserRegisterTest extends TestCase
             "last_name" => $this->faker->lastName(),
             "role" => "subscriber",
             "activate" => true,
-            'phone_number' => rand(1111111111, 9999999999),
-            'country_code' => '1',
+            "phone_number" => rand(1111111111, 9999999999),
+            "country_code" => "1",
         ]);
         $response->assertStatus(200);
-        User::find($response['data']['id'])->delete();
+        $user = User::find($response["data"]["id"]);
+        $activation = $user->activations->first();
+        $this->assertIsBool($activation->completed);
+        $this->assertEquals(true, $activation->completed);
+        $user->delete();
+    }
+
+    public function testRegisterWithCorrectParamtersUnactivatedShouldRegisterSuccessfully()
+    {
+        $response = $this->json("POST", route("api.register"), [
+            "username" => $this->faker->userName(),
+            "email" => $this->faker->email(),
+            "password" => "p@s5w0rd1234",
+            "v_password" => "p@s5w0rd1234",
+            "first_name" => $this->faker->firstName(),
+            "last_name" => $this->faker->lastName(),
+            "role" => "subscriber",
+            "activate" => false,
+            "phone_number" => rand(1111111111, 9999999999),
+            "country_code" => "1",
+        ]);
+        $response->assertStatus(200);
+        $user = User::find($response["data"]["id"]);
+        $activation = $user->activations->first();
+        $this->assertIsBool($activation->completed);
+        $this->assertEquals(false, $activation->completed);
+        $user->delete();
     }
 
     public function testRegisterWithCorrectParametersAndPermissionShouldRegisterSuccessfully()
@@ -122,10 +152,14 @@ class UserRegisterTest extends TestCase
                 "view.user" => true,
                 "update.user" => true,
             ],
-            'phone_number' => rand(1111111111, 9999999999),
-            'country_code' => '1',
+            "phone_number" => rand(1111111111, 9999999999),
+            "country_code" => "1",
         ]);
         $response->assertStatus(200);
-        User::find($response['data']['id'])->delete();
+        $user = User::find($response["data"]["id"]);
+        $activation = $user->activations->first();
+        $this->assertIsBool($activation->completed);
+        $this->assertEquals(true, $activation->completed);
+        $user->delete();
     }
 }

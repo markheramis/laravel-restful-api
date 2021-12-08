@@ -6,18 +6,23 @@ use Log;
 use Sentinel;
 use Authy\AuthyApi;
 use App\Models\User;
+use App\Events\User\UserLoggedIn;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserLoginRequest;
-use App\Http\Requests\LoginUserRequest;
-use App\Http\Requests\LoginPasswordRequest;
 
-
+/**
+ * @group User Management
+ */
 class LoginController extends Controller
 {
     const AUTHY_SMS_CANCELLED    = 0;
     const AUTHY_SMS_SUCCESS      = 1;
     const AUTHY_SMS_FAILED       = 2;
+
+    private $token = "";
+    private $verify = false;
+    private $mfa_verified = false;
 
     /**
      * Login API
@@ -28,28 +33,50 @@ class LoginController extends Controller
      */
     public function login(UserLoginRequest $request): JsonResponse
     {
-        $response = [];
         $credentials = $this->processCredentials($request);
         # attempt to login
         if ($user = Sentinel::stateless($credentials)) {
-            // If has phone number
-            $verify = $this->sendOTP($user);
-            switch ($verify) {
-                case self::AUTHY_SMS_SUCCESS:
-                    return response()->success(['verify' => true]);
-                    break;
-                case self::AUTHY_SMS_CANCELLED:
-                    return response()->success([
-                        'token' => $user->createToken(config('app.name') . ': ' . $user->username)->accessToken,
-                    ]);
-                    break;
-                case self::AUTHY_SMS_FAILED:
-                    return response()->error('Critical Error', 500);
-                    break;
+            if ($user->hasMFA() && notLocal() && hasAuthyConfig()) {
+                // If has phone number
+                // @codeCoverageIgnoreStart
+                $verify = $this->sendOTP($user);
+                switch ($verify) {
+                    case self::AUTHY_SMS_SUCCESS:
+                        $this->token = $this->createToken($user);
+                        $this->verify = true;
+                        break;
+                    case self::AUTHY_SMS_CANCELLED:
+                        $this->token = $this->createToken($user);
+                        break;
+                    case self::AUTHY_SMS_FAILED:
+                        return response()->error('Critical Error', 500);
+                        break;
+                }
+                // @codeCoverageIgnoreEnd
+            } else {
+
+                $this->token = $this->createToken($user);
             }
+            broadcast(new UserLoggedIn($user->id));
+            return response()->success([
+                "token" => $this->token,
+                "verify" => $this->verify,
+                "mfa_verified" => $this->mfa_verified,
+            ]);
         } else {
             return response()->error('Invalid User', 401);
         }
+    }
+
+    /**
+     * Generate a token from the User
+     *
+     * @param User $user
+     * @return string
+     */
+    private function createToken(User $user): string
+    {
+        return $user->createToken(config('app.name') . ': ' . $user->username, $user->allPermissions())->accessToken;
     }
 
     /**
@@ -60,49 +87,32 @@ class LoginController extends Controller
      */
     private function processCredentials(UserLoginRequest $request): array
     {
-        $credentials = ["password" => $request->password];
-        if ($request->has("email"))
-            $credentials["email"] = $request->email;
-        if ($request->has("username"))
-            $credentials["username"] = $request->username;
-        return $credentials;
+        $login_type = filter_var($request->username, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+        return [
+            $login_type => $request->username,
+            "password" => $request->password,
+        ];
     }
 
     /**
      * Send Authy OTP
      *
+     * @codeCoverageIgnore
      * @param User $user
      * @return bool
      */
     private function sendOTP(User $user): bool
     {
-        if ($this->notLocal() && $this->hasAuthyConfig()) {
+        if (notLocal() && hasAuthyConfig()) {
             $authy_api = new AuthyApi(config('authy.app_secret'));
             $sms = $authy_api->requestSms($user->authy_id);
             if ($sms->ok()) {
-                Log::info(json_encode($sms->message(), JSON_PRETTY_PRINT));
                 return self::AUTHY_SMS_SUCCESS;
             } else {
-                Log::error(json_encode($sms->errors(), JSON_PRETTY_PRINT));
                 return self::AUTHY_SMS_FAILED;
             }
         } else {
             return self::AUTHY_SMS_CANCELLED;
         }
-    }
-
-    private function hasMFA(User $user): bool
-    {
-        return (bool) ($user->authy_id && $user->phone_number);
-    }
-
-    private function notLocal(): bool
-    {
-        return (bool) config('app.env') !== "local";
-    }
-
-    private function hasAuthyConfig(): bool
-    {
-        return (bool) config('authy.app_id') && config('authy.app_secret');
     }
 }

@@ -12,32 +12,42 @@
  */
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\API\Auth\LoginController;
-use App\Http\Controllers\API\Auth\RegisterController;
-use App\Http\Controllers\API\AuthTwilio2FAController;
-use App\Http\Controllers\API\MediaController;
-use App\Http\Controllers\API\UserController;
-use App\Http\Controllers\API\UserPermissionController;
-use App\Http\Controllers\API\UserRoleController;
 use App\Http\Controllers\API\RoleController;
+use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\API\MediaController;
 use App\Http\Controllers\API\OptionController;
 use App\Http\Controllers\API\CategoryController;
+use App\Http\Controllers\API\UserRoleController;
+use App\Http\Controllers\API\Auth\LoginController;
+use App\Http\Controllers\API\Auth\LogoutController;
+use App\Http\Controllers\API\Auth\RegisterController;
+use App\Http\Controllers\API\AuthTwilio2FAController;
+use App\Http\Controllers\API\UserPermissionController;
 
 Route::prefix('auth')->group(function () {
     Route::post('login', [LoginController::class, 'login'])->name('api.login');
     Route::post('register', [RegisterController::class, 'register'])->name('api.register');
     Route::post('activate', [UserController::class, 'activate'])->name('api.user.activate');
+    Route::prefix('password')->group(function () {
+        Route::post('forgot', [UserController::class, 'forgotPassword'])->name('api.user.password.forgot');
+        Route::put('reset', [UserController::class, 'resetPassword'])->name('api.user.password.reset');
+    });
     Route::middleware(['auth:api'])->group(function () {
         Route::get('me', [UserController::class, 'me'])->name('api.me');
+        Route::post('logout', [LogoutController::class, 'logout'])->name('api.logout');
     });
     Route::prefix('mfa')->group(function () {
         Route::get('qr', [AuthTwilio2FAController::class, 'getQRCode'])->middleware('auth:api')->name('api.mfa.twilio.qr');
         Route::get('settings', [AuthTwilio2FAController::class, 'getSettings'])->middleware('auth:api')->name('api.mfa.twilio.settings');
-        Route::post('verify', [AuthTwilio2FAController::class, 'verifyCode'])->name('api.mfa.twilio.verify');
+        Route::post('verify', [AuthTwilio2FAController::class, 'verifyCode'])
+            ->middleware(['auth:api'])
+            ->name('api.mfa.twilio.verify');
     });
 });
-Route::prefix('user')->middleware(['auth:api'])->group(function () {
+Route::prefix('user')->middleware(['auth:api', 'mfa.claim'])->group(function () {
     Route::get('/', [UserController::class, 'index'])->name('user.index');
+    Route::post('/', [UserController::class, 'store'])->name('user.store');
+    Route::put('/mfa', [UserController::class, 'setMFA'])->name('user.mfa.default');
     Route::prefix('{user}')->group(function () {
         Route::get('/', [UserController::class, 'show'])->name('user.show');
         Route::put('/', [UserController::class, 'update'])->name('user.update');
@@ -56,7 +66,7 @@ Route::prefix('user')->middleware(['auth:api'])->group(function () {
         });
     });
 });
-Route::prefix('role')->middleware(['auth:api'])->group(function () {
+Route::prefix('role')->middleware(['auth:api', 'mfa.claim'])->group(function () {
     Route::get('/', [RoleController::class, 'index'])->name('role.index');
     Route::post('/', [RoleController::class, 'store'])->name('role.store');
     Route::prefix('{role}')->group(function () {
@@ -65,7 +75,7 @@ Route::prefix('role')->middleware(['auth:api'])->group(function () {
         Route::delete('/', [RoleController::class, 'destroy'])->name('role.destroy');
     });
 });
-Route::prefix('media')->middleware(['auth:api'])->group(function () {
+Route::prefix('media')->middleware(['auth:api', 'mfa.claim'])->group(function () {
     Route::get('/', [MediaController::class, 'index'])->name('media.index');
     Route::post('/', [MediaController::class, 'store'])->name('media.store');
     Route::prefix('{media}', function () {
@@ -74,7 +84,7 @@ Route::prefix('media')->middleware(['auth:api'])->group(function () {
         Route::delete('/', [MediaController::class, 'destroy'])->name('media.destroy');
     });
 });
-Route::prefix('option')->middleware(['auth:api'])->group(function () {
+Route::prefix('option')->middleware(['auth:api', 'mfa.claim'])->group(function () {
     Route::get('/', [OptionController::class, 'index'])->name('option.index');
     Route::post('/', [OptionController::class, 'store'])->name('option.store');
     Route::prefix('{option}')->group(function () {
@@ -83,7 +93,7 @@ Route::prefix('option')->middleware(['auth:api'])->group(function () {
         Route::delete('/', [OptionController::class, 'destory'])->name('option.destroy');
     });
 });
-Route::prefix('category')->middleware(['auth:api'])->group(function () {
+Route::prefix('category')->middleware(['auth:api', 'mfa.claim'])->group(function () {
     Route::get('/', [CategoryController::class, 'index'])->name('category.index');
     Route::post('/', [CategoryController::class, 'store'])->name('category.store');
     Route::prefix('{category}')->group(function () {

@@ -63,6 +63,44 @@ class UserPermissionStoreTest extends TestCase
         $user2->delete();
     }
 
+    public function testStorePermissionAsAdministratorToAdministratorShouldBeAllowedWhenMfaEnabledAndMfaVerified()
+    {
+        $user1 = $this->createUser("administrator", true, true);
+        $user2 = $this->createUser("administrator");
+        $token = $this->getTokenByRole("administrator", $user1->id, true);
+        $url = "/api/user/{$user2->id}/permission";
+        $header = [
+            "Authorization" => "Bearer $token"
+        ];
+        $data = [
+            "slug" => "test_permission",
+            "value" => true
+        ];
+        $response = $this->json("POST", $url, $data, $header);
+        $response->assertStatus(200);
+        $user1->delete();
+        $user2->delete();
+    }
+
+    public function testStorePermissionAsAdministratorToAdministratorShouldNotBeAllowedWhenMfaEnabledButNotMfaVerified()
+    {
+        $user1 = $this->createUser("administrator", true, true);
+        $user2 = $this->createUser("administrator");
+        $token = $this->getTokenByRole("administrator", $user1->id, false);
+        $url = "/api/user/{$user2->id}/permission";
+        $header = [
+            "Authorization" => "Bearer $token"
+        ];
+        $data = [
+            "slug" => "test_permission",
+            "value" => true
+        ];
+        $response = $this->json("POST", $url, $data, $header);
+        $response->assertStatus(403);
+        $user1->delete();
+        $user2->delete();
+    }
+
     public function testStorePermissionAsAdministratorToModeratorShouldBeAllowed()
     {
         $user1 = $this->createUser("administrator");

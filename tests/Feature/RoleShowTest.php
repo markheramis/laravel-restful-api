@@ -33,7 +33,8 @@ class RoleShowTest extends TestCase
 
     public function testGetSingleRoleAsSubscriberShouldBeForbidden()
     {
-        $token = $this->getTokenByRole("subscriber");
+        $user = $this->createUser("subscriber");
+        $token = $this->getTokenByRole("subscriber", $user->id);
         $data = [
             "name" => "TestRoleGetSubscriber",
             "slug" => "testrolegetsubscriber",
@@ -57,7 +58,8 @@ class RoleShowTest extends TestCase
 
     public function testGetSingleRoleAsModeratorShouldBeAllowed()
     {
-        $token = $this->getTokenByRole("moderator");
+        $user = $this->createUser("moderator");
+        $token = $this->getTokenByRole("moderator", $user->id);
         $data = [
             "name" => "TestRoleGetModerator",
             "slug" => "testrolegetmoderator",
@@ -81,10 +83,11 @@ class RoleShowTest extends TestCase
 
     public function testGetSingleRoleAsAdministratorShouldBeAllowed()
     {
-        $token = $this->getTokenByRole("administrator");
+        $user = $this->createUser("administrator");
+        $token = $this->getTokenByRole("administrator", $user->id);
         $data = [
-            "name" => "TestRoleGetAdministrator",
-            "slug" => "testrolegetadministrator",
+            "name" => "TestRoleGetAdministrator1",
+            "slug" => "testrolegetadministrator1",
             "permissions" => [
                 "test.all" => true,
                 "test.get" => true,
@@ -100,6 +103,56 @@ class RoleShowTest extends TestCase
         $url = route("role.show", [$role->slug]);
         $response = $this->json("GET", $url, $data, $header);
         $response->assertStatus(200);
+        $role->delete();
+    }
+
+    public function testGetSingleRoleAsAdministratorShouldBeAllowedWhenMfaEnabledAndMfaVerified()
+    {
+        $user = $this->createUser("administrator", true, true);
+        $token = $this->getTokenByRole("administrator", $user->id, true);
+        $data = [
+            "name" => "TestRoleGetAdministrator2",
+            "slug" => "testrolegetadministrator2",
+            "permissions" => [
+                "test.all" => true,
+                "test.get" => true,
+                "test.update" => true,
+                "test.store" => true,
+                "test.delete" => true,
+            ]
+        ];
+        $role = $this->createRole($data);
+        $header = [
+            "Authorization" => "Bearer $token"
+        ];
+        $url = route("role.show", [$role->slug]);
+        $response = $this->json("GET", $url, $data, $header);
+        $response->assertStatus(200);
+        $role->delete();
+    }
+
+    public function testGetSingleRoleAsAdministratorShouldNotBeAllowedWhenMfaEnabledButNotMfaVerified()
+    {
+        $user = $this->createUser("administrator", true, true);
+        $token = $this->getTokenByRole("administrator", $user->id, false);
+        $data = [
+            "name" => "TestRoleGetAdministrator3",
+            "slug" => "testrolegetadministrator3",
+            "permissions" => [
+                "test.all" => true,
+                "test.get" => true,
+                "test.update" => true,
+                "test.store" => true,
+                "test.delete" => true,
+            ]
+        ];
+        $role = $this->createRole($data);
+        $header = [
+            "Authorization" => "Bearer $token"
+        ];
+        $url = route("role.show", [$role->slug]);
+        $response = $this->json("GET", $url, $data, $header);
+        $response->assertStatus(403);
         $role->delete();
     }
 }

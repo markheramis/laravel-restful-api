@@ -43,7 +43,8 @@ class RoleDestroyTest extends TestCase
             ]
         ];
         $role = $this->createRole($data);
-        $token = $this->getTokenByRole("subscriber");
+        $user = $this->createUser("subscriber");
+        $token = $this->getTokenByRole("subscriber", $user->id);
         $header = [
             "Authorization" => "Bearer $token"
         ];
@@ -66,7 +67,8 @@ class RoleDestroyTest extends TestCase
             ]
         ];
         $role = $this->createRole($data);
-        $token = $this->getTokenByRole("moderator");
+        $user = $this->createUser("moderator");
+        $token = $this->getTokenByRole("moderator", $user->id);
         $header = [
             "Authorization" => "Bearer $token"
         ];
@@ -89,12 +91,61 @@ class RoleDestroyTest extends TestCase
             ]
         ];
         $role = $this->createRole($data);
-        $token = $this->getTokenByRole("administrator");
+        $user = $this->createUser("administrator");
+        $token = $this->getTokenByRole("administrator", $user->id);
         $header = [
             "Authorization" => "Bearer $token"
         ];
         $url = route("role.update", [$role->slug]);
         $response = $this->json("PUT", $url, $data, $header);
         $response->assertStatus(200);
+    }
+
+    public function testDestroyRoleAsAdministratorShouldBeAllowedWhenMfaEnabledAndMfaVerified()
+    {
+        $data = [
+            "name" => "TestRoleDeleteAsAdministrator1",
+            "slug" => "testroleDeleteAsAdministrator1",
+            "permissions" => [
+                "test.index" => true,
+                "test.get" => true,
+                "test.update" => true,
+                "test.store" => true,
+                "test.delete" => true,
+            ]
+        ];
+        $role = $this->createRole($data);
+        $user = $this->createUser("administrator", true, true);
+        $token = $this->getTokenByRole("administrator", $user->id, true);
+        $header = [
+            "Authorization" => "Bearer $token"
+        ];
+        $url = route("role.update", [$role->slug]);
+        $response = $this->json("PUT", $url, $data, $header);
+        $response->assertStatus(200);
+    }
+
+    public function testDestroyRoleAsAdministratorShouldNotBeAllowedWhenMfaEnabledButNotMfaVerified()
+    {
+        $data = [
+            "name" => "TestRoleDeleteAsAdministrator2",
+            "slug" => "testroleDeleteAsAdministrator2",
+            "permissions" => [
+                "test.index" => true,
+                "test.get" => true,
+                "test.update" => true,
+                "test.store" => true,
+                "test.delete" => true,
+            ]
+        ];
+        $role = $this->createRole($data);
+        $user = $this->createUser("administrator", true, true);
+        $token = $this->getTokenByRole("administrator", $user->id, false);
+        $header = [
+            "Authorization" => "Bearer $token"
+        ];
+        $url = route("role.update", [$role->slug]);
+        $response = $this->json("PUT", $url, $data, $header);
+        $response->assertStatus(403);
     }
 }

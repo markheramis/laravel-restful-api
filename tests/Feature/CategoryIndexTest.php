@@ -22,7 +22,8 @@ class CategoryIndexTest extends TestCase
 
     public function testCategoryIndexAsAdministratorShouldBeAllowed()
     {
-        $token = $this->getTokenByRole("administrator");
+        $user = $this->createUser("administrator");
+        $token = $this->getTokenByRole("administrator", $user->id);
         $header = [
             "Authorization" => "Bearer $token",
         ];
@@ -30,9 +31,33 @@ class CategoryIndexTest extends TestCase
         $response->assertStatus(200);
     }
 
+    public function testCategoryIndexAsAdministratorShouldBeAllowedWhenMfaEnabledAndMfaVerified()
+    {
+        $user = $this->createUser("administrator", true, true);
+        $token = $this->getTokenByRole("administrator", $user->id, true);
+        $header = [
+            "Authorization" => "Bearer $token",
+        ];
+        $response = $this->json("GET", route("category.index"), [], $header);
+        $response->assertStatus(200);
+    }
+
+    public function testCategoryIndexAsAdministratorShouldNotBeAllowedWhenMfaEnabledButNotMfaVerified()
+    {
+        $user = $this->createUser("administrator", true, true);
+        $token = $this->getTokenByRole("administrator", $user->id, false);
+        $header = [
+            "Authorization" => "Bearer $token",
+        ];
+        $response = $this->json("GET", route("category.index"), [], $header);
+        $response->assertStatus(403);
+    }
+
+
     public function testCategoryIndexAsModeratorShouldBeAllowed()
     {
-        $token = $this->getTokenByRole("moderator");
+        $user = $this->createUser("moderator");
+        $token = $this->getTokenByRole("moderator", $user->id);
         $header = [
             "Authorization" => "Bearer $token",
         ];
@@ -42,7 +67,8 @@ class CategoryIndexTest extends TestCase
 
     public function testCategoryIndexAsSubscriberShouldBeAllowed()
     {
-        $token = $this->getTokenByRole("subscriber");
+        $user = $this->createUser("subscriber");
+        $token = $this->getTokenByRole("subscriber", $user->id);
         $header = [
             "Authorization" => "Bearer $token",
         ];

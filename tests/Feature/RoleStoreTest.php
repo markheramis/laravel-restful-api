@@ -2,90 +2,79 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use App\Models\Role;
 use Tests\Traits\userTraits;
+use Illuminate\Foundation\Testing\WithFaker;
 
 class RoleStoreTest extends TestCase
 {
     use WithFaker, userTraits;
 
-    public function testDestroyRoleWithNoUserShouldBeUnauthorized()
+    public function testStoreRoleWithNoUserShouldBeUnauthorized()
     {
-        $response = $this->json("POST", route("role.store"), [
-            "name" => "TestRole",
-            "slug" => "testrole",
-            "permissions" => [
-                "test.all" => true,
-                "test.get" => true,
-                "test.update" => true,
-                "test.store" => true,
-                "test.delete" => true,
-            ]
-        ]);
+        $role = Role::factory()->make()->toArray();
+        $response = $this->json("POST", route("role.store"), $role);
         $response->assertStatus(401);
     }
 
-    public function testDestroyRoleAsSubscriberShouldBeForbidden()
+    public function testStoreRoleAsSubscriberShouldBeForbidden()
     {
-        $token = $this->getTokenByRole("subscriber");
-        $body = [
-            "name" => "TestRoleSubscriber",
-            "slug" => "testroleSubscriber",
-            "permissions" => [
-                "test.all" => true,
-                "test.get" => true,
-                "test.update" => true,
-                "test.store" => true,
-                "test.delete" => true,
-            ]
-        ];
+        $role = Role::factory()->make()->toArray();
+        $user = $this->createUser("subscriber");
+        $token = $this->getTokenByRole("subscriber", $user->id);
         $header = [
             "Authorization" => "Bearer $token"
         ];
-        $response = $this->json("POST", route("role.store"), $body, $header);
+        $response = $this->json("POST", route("role.store"), $role, $header);
         $response->assertStatus(403);
     }
 
-    public function testDestroyRoleAsModeratorShouldBeForbidden()
+    public function testStoreRoleAsModeratorShouldBeForbidden()
     {
-        $token = $this->getTokenByRole("moderator");
-        $body = [
-            "name" => "TestRoleModerator",
-            "slug" => "testroleModerator",
-            "permissions" => [
-                "test.all" => true,
-                "test.get" => true,
-                "test.update" => true,
-                "test.store" => true,
-                "test.delete" => true,
-            ]
-        ];
+        $user = $this->createUser("moderator");
+        $token = $this->getTokenByRole("moderator", $user->id, true);
+        $role = Role::factory()->make()->toArray();
         $header = [
             "Authorization" => "Bearer $token"
         ];
-        $response = $this->json("POST", route("role.store"), $body, $header);
+        $response = $this->json("POST", route("role.store"), $role, $header);
         $response->assertStatus(403);
     }
 
-    public function testDestroyRoleAsAdminShouldBeAllowed()
+    public function testStoreRoleAsAdminShouldBeAllowed()
     {
-        $token = $this->getTokenByRole("administrator");
-        $body = [
-            "name" => "TestRoleAdministrator",
-            "slug" => "testroleAdministrator",
-            "permissions" => [
-                "test.all" => true,
-                "test.get" => true,
-                "test.update" => true,
-                "test.store" => true,
-                "test.delete" => true,
-            ]
-        ];
+        $user = $this->createUser("administrator");
+        $token = $this->getTokenByRole("administrator", $user->id, true);
+        $role = Role::factory()->make()->toArray();
         $header = [
             "Authorization" => "Bearer $token"
         ];
-        $response = $this->json("POST", route("role.store"), $body, $header);
+        $response = $this->json("POST", route("role.store"), $role, $header);
         $response->assertStatus(200);
+    }
+
+    public function testStoreRoleAsAdminShouldBeAllowedWhenMfaEnabledAndMfaVerified()
+    {
+        $user = $this->createUser("administrator", true, true);
+        $token = $this->getTokenByRole("administrator", $user->id, true);
+        $role = Role::factory()->make()->toArray();
+        $header = [
+            "Authorization" => "Bearer $token"
+        ];
+        $response = $this->json("POST", route("role.store"), $role, $header);
+        $response->assertStatus(200);
+    }
+
+    public function testStoreRoleAsAdminShouldBeNotAllowedWhenMfaEnabledButNotMfaVerified()
+    {
+        $user = $this->createUser("administrator", true, true);
+        $token = $this->getTokenByRole("administrator", $user->id, false);
+        $role = Role::factory()->make()->toArray();
+        $header = [
+            "Authorization" => "Bearer $token"
+        ];
+        $response = $this->json("POST", route("role.store"), $role, $header);
+        $response->assertStatus(403);
     }
 }

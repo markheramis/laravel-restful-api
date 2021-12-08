@@ -34,7 +34,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'permissions',
         'country_code',
         'phone_number',
-        'authy_id' // Temporary.
+        'authy_id', // Temporary.
+        'default_factor',
     ];
 
     /**
@@ -57,7 +58,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password', 'remember_token', 'default_factor',
     ];
 
     /**
@@ -89,11 +90,6 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         return $this->where('email', $username)->first();
     }
 
-    public function activation()
-    {
-        return $this->hasOne(Activation::class);
-    }
-
     public function media()
     {
         return $this->hasMany(Media::class);
@@ -104,6 +100,21 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         return $this->hasOne(Google2FA::class);
     }
 
+    public function reports()
+    {
+        return $this->hasMany(Report::class);
+    }
+
+    public function office()
+    {
+        return $this->belongsToMany(Office::class, 'dental_office_user', 'user_id', 'office_id');
+    }
+
+    public function hasMFA(): bool
+    {
+        return (bool) ($this->authy_id && $this->phone_number);
+    }
+
     public function getPermissionsAttribute($value)
     {
         return ($value) ? $value : [];
@@ -111,10 +122,19 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
     public function allPermissions()
     {
-        $role_permissions = $this->roles()->orderBy('id', 'desc')->get()->map(function ($role) {
-            return $role->permissions;
-        })->toArray();
+        $role_permissions = $this->roles()
+            ->orderBy('id', 'desc')
+            ->get()
+            ->map(function ($role) {
+                return $role->permissions;
+            })
+            ->toArray();
         $user_permissions = $this->permissions;
-        return array_merge($role_permissions, $user_permissions);
+        $all_permissions =  array_merge($role_permissions, $user_permissions);
+        return (array) array_keys(
+            array_filter(
+                array_merge(...$all_permissions)
+            )
+        );
     }
 }

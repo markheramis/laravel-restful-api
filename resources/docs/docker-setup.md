@@ -1,6 +1,6 @@
 # Docker Setup
 
-or sometimes I call the *Nothing else but Docker* setup.
+or sometimes I call the _Nothing else but Docker_ setup.
 
 ## Prerequisites
 
@@ -9,7 +9,7 @@ If you're on windows, you need to follow [this instructions](https://nickjanetak
 
 ## Setting up the project
 
-- Install Laravel Dependencies
+-   Install Laravel Dependencies
 
 If you have composer installed, use this command to install the composer dependencies
 
@@ -25,10 +25,10 @@ docker run --rm --interactive --tty --volume $PWD:/app --user $(id -u):$(id -g) 
 
 Then before you start sail, add sail to your path first, please see the Laravel Sail [Documentation](https://laravel.com/docs/8.x/sail#configuring-a-bash-alias) for configurating a bash alias to have `sail` available as an aliased command.
 
-Then start *Laravel Sail*
+Then start _Laravel Sail_
 
 ```bash
-sail up # to start 
+sail up # to start
 ```
 
 alternatively, you can also use
@@ -39,26 +39,26 @@ docker-compose up
 
 and it would do the same thing.
 
-
 Then run migrations and other setup scripts
 
 ```bash
 sail artisan migrate
 sail artisan db:seed
+sail artisan telescope:install
 sail artisan passport:install
 sail artisan passport:client --personal
 ```
 
 congratulations, you should have everything setup... to verify, please check the following services:
 
-|Service |Port  |Web URL  |
---- | --- | --- |
-|App|8000| [https://localhost:8000](https://localhost:8000) |
-|MySQL | 3306 | N/A |
-|PHPMyAdmin|8080| [https://localhost:8080](https://localhost:8080) |
-
+| Service    | Port | Web URL                                          |
+| ---------- | ---- | ------------------------------------------------ |
+| App        | 8000 | [https://localhost:8000](https://localhost:8000) |
+| MySQL      | 3306 | N/A                                              |
+| PHPMyAdmin | 8080 | [https://localhost:8080](https://localhost:8080) |
 
 #### Testing
+
 Just like the native way, you also need to copy the `.env.testing.example` file like so:
 
 ```bash
@@ -87,5 +87,5 @@ sail artisan scribe:generate
 
 The documentation will then be available depending on your setup on the list below
 
-- native (http://localhost:8000/docs/)
-- sail/docker (http://localhost/docs/)
+-   native (http://localhost:8000/docs/)
+-   sail/docker (http://localhost/docs/)

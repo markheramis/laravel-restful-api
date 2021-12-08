@@ -19,7 +19,8 @@ class RoleIndexTest extends TestCase
 
     public function testGetAllRolesWithSubscriberShouldBeForbidden()
     {
-        $token = $this->getTokenByRole("subscriber");
+        $user = $this->createUser("subscriber");
+        $token = $this->getTokenByRole("subscriber", $user->id);
         $header = [
             "Authorization" => "Bearer $token"
         ];
@@ -29,7 +30,8 @@ class RoleIndexTest extends TestCase
 
     public function testGetAllRolesWithModeratorShouldBeAllowed()
     {
-        $token = $this->getTokenByRole("moderator");
+        $user = $this->createUser("moderator");
+        $token = $this->getTokenByRole("moderator", $user->id);
         $header = [
             "Authorization" => "Bearer $token"
         ];
@@ -40,11 +42,34 @@ class RoleIndexTest extends TestCase
 
     public function testGetAllRolesWithAdministratorShouldBeAllowed()
     {
-        $token = $this->getTokenByRole("administrator");
+        $user = $this->createUser("administrator");
+        $token = $this->getTokenByRole("administrator", $user->id);
         $header = [
             "Authorization" => "Bearer $token"
         ];
         $response = $this->json("GET", route("role.index"), [], $header);
         $response->assertStatus(200);
+    }
+
+    public function testGetAllRolesWithAdministratorShouldBeAllowedWhenMfaEnabledAndMfaVerified()
+    {
+        $user = $this->createUser("administrator", true, true);
+        $token = $this->getTokenByRole("administrator", $user->id, true);
+        $header = [
+            "Authorization" => "Bearer $token"
+        ];
+        $response = $this->json("GET", route("role.index"), [], $header);
+        $response->assertStatus(200);
+    }
+
+    public function testGetAllRolesWithAdministratorShouldNotBeAllowedWhenMfaEnabledButNotMfaVerified()
+    {
+        $user = $this->createUser("administrator", true, true);
+        $token = $this->getTokenByRole("administrator", $user->id, false);
+        $header = [
+            "Authorization" => "Bearer $token"
+        ];
+        $response = $this->json("GET", route("role.index"), [], $header);
+        $response->assertStatus(403);
     }
 }

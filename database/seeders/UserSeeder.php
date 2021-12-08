@@ -35,7 +35,7 @@ class UserSeeder extends Seeder
         $role = Role::where('slug', $role_slug)->first();
         $users->map(function ($user) use ($role) {
             # automaticall activate generated users
-            $activation = $user->activation;
+            $activation = $user->activations->first();
             Activation::complete($user, $activation->code);
             # attached given role
             $role->users()->attach($user);
