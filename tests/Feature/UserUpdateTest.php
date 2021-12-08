@@ -157,7 +157,7 @@ class UserUpdateTest extends TestCase
             "email" => $this->faker->email(),
         ];
         $response = $this->json("PUT", $url, $data, $header);
-        $response->assertStatus(401);
+        $response->assertStatus(403);
         $user->delete();
     }
 }

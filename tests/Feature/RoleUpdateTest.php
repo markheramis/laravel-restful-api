@@ -105,7 +105,7 @@ class RoleUpdateTest extends TestCase
             'name' => 'RoleName',
             'slug' => Str::slug('RoleName'),
         ], $header);
-        $response->assertStatus(401);
+        $response->assertStatus(403);
         $role->delete();
     }
 }

@@ -194,7 +194,7 @@ class UserDestroyTest extends TestCase
         $response = $this->json("DELETE", $url, [], [
             "Authorization" => "Bearer $token",
         ]);
-        $response->assertStatus(401);
+        $response->assertStatus(403);
         $user1->delete();
         $user2->delete();
     }

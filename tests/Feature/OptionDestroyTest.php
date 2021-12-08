@@ -26,7 +26,7 @@ class OptionDestroyTest extends TestCase
         $user = $this->createUser("administrator", true, true);
         $option = Option::factory()->create();
         
-        $token = $this->getTokenByRole("administrator", $user->id);
+        $token = $this->getTokenByRole("administrator", $user->id, true);
         $header = [
             "Authorization" => "Bearer $token",
         ];
