@@ -64,7 +64,7 @@ class UserIndexTest extends TestCase
         $response = $this->json("GET", route("user.index"), [], [
             "Authorization" => "Bearer $token"
         ]);
-        $response->assertStatus(401);
+        $response->assertStatus(403);
         $user->delete();
     }
 
@@ -117,7 +117,7 @@ class UserIndexTest extends TestCase
         $response = $this->json("GET", route("user.index"), [], [
             "Authorization" => "Bearer $token"
         ]);
-        $response->assertStatus(401);
+        $response->assertStatus(403);
         $user->delete();
     }
 
@@ -170,7 +170,7 @@ class UserIndexTest extends TestCase
         $response = $this->json("GET", route("user.index"), [], [
             "Authorization" => "Bearer $token"
         ]);
-        $response->assertStatus(401);
+        $response->assertStatus(403);
         $user->delete();
     }
 

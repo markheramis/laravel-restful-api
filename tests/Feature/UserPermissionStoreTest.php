@@ -96,7 +96,7 @@ class UserPermissionStoreTest extends TestCase
             "value" => true
         ];
         $response = $this->json("POST", $url, $data, $header);
-        $response->assertStatus(401);
+        $response->assertStatus(403);
         $user1->delete();
         $user2->delete();
     }
