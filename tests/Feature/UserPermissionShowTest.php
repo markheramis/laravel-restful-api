@@ -47,7 +47,7 @@ class UserPermissionShowTest extends TestCase
         $response = $this->json("GET", "/api/user/{$user2->id}/permission", [], [
             "Authorization" => "Bearer $token"
         ]);
-        $response->assertStatus(401);
+        $response->assertStatus(403);
         $user1->delete();
         $user2->delete();
     }

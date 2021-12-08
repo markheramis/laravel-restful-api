@@ -67,7 +67,7 @@ class OptionStoreTest extends TestCase
             "value" => $option->value,
         ], $header);
 
-        $response->assertStatus(401);
+        $response->assertStatus(403);
         $option->delete();
     }
 
