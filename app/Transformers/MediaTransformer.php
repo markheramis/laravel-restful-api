@@ -38,7 +38,7 @@ class MediaTransformer extends TransformerAbstract
         $updated_at = Carbon::parse($media->updated_at)->toFormattedDateString();
         return [
             'id' => $media->id,
-            'owner_id' => $media->owner_id,
+            'user' => $media->user_id,
             'path' => $media->path,
             'desscription' => $media->description,
             'status' => $media->status,

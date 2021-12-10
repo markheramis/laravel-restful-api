@@ -89,7 +89,7 @@ class MediaController extends Controller
      * @uses App\Transformers\MediaTransformer MediaTransformer
      * @return JsonResponse
      */
-    public function get(MediaShowRequest $request, Media $media)
+    public function show(MediaShowRequest $request, Media $media)
     {
         $response = fractal($media, new MediaTransformer())->toArray();
         return response()->success($response);
