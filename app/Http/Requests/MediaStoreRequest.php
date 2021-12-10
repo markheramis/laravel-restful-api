@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Auth;
 use App\Http\Requests\FormRequest;
 
 class MediaStoreRequest extends FormRequest
@@ -13,7 +14,7 @@ class MediaStoreRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return Auth::check();
     }
 
     /**
@@ -24,7 +25,7 @@ class MediaStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'file' => ['file', 'mimes:zip'],
+            'file' => ['file', 'required']
         ];
     }
 }

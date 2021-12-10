@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\API;
 
+use Auth;
+use App\Models\User;
 use App\Models\Media;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Transformers\MediaTransformer;
 use App\Http\Requests\MediaIndexRequest;
@@ -14,6 +15,8 @@ use App\Http\Requests\MediaDestroyRequest;
 use Illuminate\Http\JsonResponse;
 use League\Fractal\Serializer\JsonApiSerializer;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
+use Illuminate\Http\File;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * @group Media Management
@@ -55,7 +58,6 @@ class MediaController extends Controller
      * 
      * This endpoint lets you store a new Media
      * 
-     * @authenticated
      * @param MediaStoreRequest $request
      * @return JsonResponse
      */
@@ -63,18 +65,15 @@ class MediaController extends Controller
     {
         $file = $request->file;
         $user = Auth::user();
-
-        $path = $file->store('/media', 'public');
-
+        $path = Storage::putFile('media', $request->file);
         $save = $user->media()->create([
             'path' => $path,
             'description' => $file->getClientOriginalName(),
         ]);
-
         if ($save) {
-            return response()->success('New media item stored successfully', 200);
+            return response()->success('New media item stored successfully');
         } else {
-            return response()->error('Failed to stored new media', 500);
+            return response()->error('Failed to stored new media');
         }
     }
 
@@ -96,6 +95,15 @@ class MediaController extends Controller
         return response()->success($response);
     }
 
+    /**
+     * Update a Media
+     * This endpoint lets you update a Media File matching the provided ID.
+     *
+     * @authenticated
+     * @param MediaUpdateRequest $request
+     * @param Media $media
+     * @return JsonResponse
+     */
     public function update(MediaUpdateRequest $request, Media $media): JsonResponse
     {
         $media->path = $request->path;
