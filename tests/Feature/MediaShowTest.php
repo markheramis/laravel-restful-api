@@ -44,6 +44,39 @@ class MediaShowTest extends TestCase
         $header = [
             "Authorization" => "Bearer $token",
         ];
+
+        $url = route("media.show", [$media->id]);
+        $response = $this->json("GET", $url, [], $header);
+        $response->assertStatus(200);
+        $user->delete();
+        $media->delete();
+    }
+
+    public function testmediaShowAsModeratorShouldBeAllowed()
+    {
+        $user = $this->createUser("moderator", true, true);
+        $token = $this->getTokenByRole("moderator", $user->id);
+        $media = media::factory()->create();
+        $header = [
+            "Authorization" => "Bearer $token",
+        ];
+
+        $url = route("media.show", [$media->id]);
+        $response = $this->json("GET", $url, [], $header);
+        $response->assertStatus(200);
+        $user->delete();
+        $media->delete();
+    }
+
+    public function testmediaShowAsSubscriberShouldBeAllowed()
+    {
+        $user = $this->createUser("subscriber", true, true);
+        $token = $this->getTokenByRole("subscriber", $user->id);
+        $media = media::factory()->create();
+        $header = [
+            "Authorization" => "Bearer $token",
+        ];
+
         $url = route("media.show", [$media->id]);
         $response = $this->json("GET", $url, [], $header);
         $response->assertStatus(200);
