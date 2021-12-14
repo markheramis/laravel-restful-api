@@ -23,30 +23,31 @@ class MediaShowTest extends TestCase
 
     public function testMediaShowWithMfaProtectionButNoMfaVerifiedTokenShouldBeForbidden() 
     {
-        $media = media::factory()->create();
         $user = $this->createUser("administrator", true, true);
-        $token = $this->getTokenByRole("administrator", false);
-        $header = [
-            "Authorization" => "Bearer $token",
-        ];
+        $token = $this->getTokenByRole("administrator", $user->id, false);
+        $media = media::factory()->create();
         $url = route("media.show", [$media->id]);
-        $response = $this->json("GET", $url, [], $header);
 
+        $response = $this->json("GET", $url, [], [
+            "Authorization" => "Bearer $token"
+        ]);
         $response->assertStatus(403);
+        $user->delete();
         $media->delete();
     }
 
     public function testMediaShowWithoutMfaProtectionButNoMfaVerifiedTokenShouldBeAllowed()
     {
-        $media = media::factory()->create();
         $user = $this->createUser("administrator", true, true);
         $token = $this->getTokenByRole("administrator", true);
+        $media = media::factory()->create();
         $header = [
             "Authorization" => "Bearer $token",
         ];
         $url = route("media.show", [$media->id]);
         $response = $this->json("GET", $url, [], $header);
         $response->assertStatus(200);
+        $user->delete();
         $media->delete();
     }
 }
