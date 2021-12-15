@@ -78,7 +78,7 @@ Route::prefix('role')->middleware(['auth:api', 'mfa.claim'])->group(function () 
 Route::prefix('media')->middleware(['auth:api', 'mfa.claim'])->group(function () {
     Route::get('/', [MediaController::class, 'index'])->name('media.index');
     Route::post('/', [MediaController::class, 'store'])->name('media.store');
-    Route::prefix('{media}', function () {
+    Route::prefix('{media}')->group(function () {
         Route::get('/', [MediaController::class, 'show'])->name('media.show');
         Route::put('/', [MediaController::class, 'update'])->name('media.update');
         Route::delete('/', [MediaController::class, 'destroy'])->name('media.destroy');

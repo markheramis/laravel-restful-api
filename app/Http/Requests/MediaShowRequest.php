@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\FormRequest;
 
 class MediaShowRequest extends FormRequest
@@ -13,7 +14,8 @@ class MediaShowRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        if (!Auth::check()) return;
+        return Auth::user()->hasAccess("media.show");
     }
 
     /**
@@ -23,8 +25,6 @@ class MediaShowRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            //
-        ];
+        return [];
     }
 }
