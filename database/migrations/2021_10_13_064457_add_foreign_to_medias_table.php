@@ -14,7 +14,7 @@ class AddForeignToMediasTable extends Migration
     public function up()
     {
         Schema::table('medias', function (Blueprint $table) {
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('SET NULL');
         });
     }
 

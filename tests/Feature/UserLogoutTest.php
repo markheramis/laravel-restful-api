@@ -3,14 +3,14 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
+use App\Models\User;
 use Tests\Traits\userTraits;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class UserLogoutTest extends TestCase
 {
     use WithFaker, userTraits;
-    
+
     public function testLogoutWithNoTokenShouldBeUnauthorized()
     {
         $response = $this->json("POST", route("api.logout"), []);
@@ -31,8 +31,15 @@ class UserLogoutTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertJsonStructure(['success']);
-        
+
         // manually asserting that token is revoked because assertGuest('api) is not working (?)
         $this->assertTrue(auth('api')->user()->token()->revoked);
+        $this->assertDatabaseHas('activity_log', [
+            'subject_type' => null,
+            'event' => 'logged_out',
+            'subject_id' => null,
+            'causer_id' => $user->id,
+            'causer_type' => User::class
+        ]);
     }
 }

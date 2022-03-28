@@ -12,7 +12,6 @@ class MfaVerifiedClaim
         if (session('mfa_verified') === true) {
             $mfaVerified = true;
         }
-
         $token->addClaim('mfa_verified', $mfaVerified);
         return $next($token);
     }

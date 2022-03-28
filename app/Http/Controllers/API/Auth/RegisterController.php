@@ -17,7 +17,7 @@ class RegisterController extends Controller
 {
     /**
      * Register API
-     * 
+     *
      * This endpoint allows you to register a new user.
      *
      * @param UserRegisterRequest $request
@@ -43,6 +43,7 @@ class RegisterController extends Controller
             $this->activate($user);
         $role = ($request->has('role')) ? $request->role : 'subscriber';
         $this->attachRole($user, $role);
+
         return response()->success([
             'id' => $user->id,
         ]);

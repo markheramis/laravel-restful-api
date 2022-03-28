@@ -127,7 +127,6 @@ class UserStoreTest extends TestCase
         $selectedRole->users()->attach($session_user);
         $user = User::factory()->make();
         $token = $this->getTokenByRole("administrator", $session_user->id, true);
-        \Log::info("MFA Token: $token");
         $header = [
             "Authorization" => "Bearer $token",
         ];

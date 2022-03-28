@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+if ! [ -x "$(command -v docker-compose)" ]; then
+    shopt -s expand_aliases
+    alias docker-compose='docker compose'
+fi
+
 UNAMEOUT="$(uname -s)"
 
 WHITE='\033[1;37m'
@@ -30,31 +35,11 @@ export DB_PORT=${DB_PORT:-3306}
 export WWWUSER=${WWWUSER:-$UID}
 export WWWGROUP=${WWWGROUP:-$(id -g)}
 
+export SAIL_FILES=${SAIL_FILES:-""}
 export SAIL_SHARE_DASHBOARD=${SAIL_SHARE_DASHBOARD:-4040}
 export SAIL_SHARE_SERVER_HOST=${SAIL_SHARE_SERVER_HOST:-"laravel-sail.site"}
 export SAIL_SHARE_SERVER_PORT=${SAIL_SHARE_SERVER_PORT:-8080}
-
-# Ensure that Docker is running...
-if ! docker info > /dev/null 2>&1; then
-    echo -e "${WHITE}Docker is not running.${NC}" >&2
-
-    exit 1
-fi
-
-# Determine if Sail is currently up...
-PSRESULT="$(docker-compose ps -q)"
-
-if docker-compose ps | grep $APP_SERVICE | grep 'Exit'; then
-    echo -e "${WHITE}Shutting down old Sail processes...${NC}" >&2
-
-    docker-compose down > /dev/null 2>&1
-
-    EXEC="no"
-elif [ -n "$PSRESULT" ]; then
-    EXEC="yes"
-else
-    EXEC="no"
-fi
+export SAIL_SHARE_SUBDOMAIN=${SAIL_SHARE_SUBDOMAIN:-""}
 
 # Function that outputs Sail is not running...
 function sail_is_not_running {
@@ -65,16 +50,57 @@ function sail_is_not_running {
     exit 1
 }
 
+# Define Docker Compose command prefix...
+DOCKER_COMPOSE=(docker-compose)
+
+if [ -n "$SAIL_FILES" ]; then
+    # Convert SAIL_FILES to an array...
+    SAIL_FILES=(${SAIL_FILES//:/ })
+
+    for FILE in "${SAIL_FILES[@]}"; do
+        if [ -f "$FILE" ]; then
+            DOCKER_COMPOSE+=(-f "$FILE")
+        else
+            echo -e "${WHITE}Unable to find Docker Compose file: '${FILE}'${NC}" >&2
+
+            exit 1
+        fi
+    done
+fi
+
+EXEC="yes"
+
+if [ -z "$SAIL_SKIP_CHECKS" ]; then
+    # Ensure that Docker is running...
+    if ! docker info > /dev/null 2>&1; then
+        echo -e "${WHITE}Docker is not running.${NC}" >&2
+
+        exit 1
+    fi
+
+    # Determine if Sail is currently up...
+    if "${DOCKER_COMPOSE[@]}" ps "$APP_SERVICE" | grep 'Exit\|exited'; then
+        echo -e "${WHITE}Shutting down old Sail processes...${NC}" >&2
+
+        "${DOCKER_COMPOSE[@]}" down > /dev/null 2>&1
+
+        EXEC="no"
+    elif [ -z "$(${DOCKER_COMPOSE[@]} ps -q)" ]; then
+        EXEC="no"
+    fi
+fi
+
+ARGS=()
+
 if [ $# -gt 0 ]; then
     # Proxy PHP commands to the "php" binary on the application container...
     if [ "$1" == "php" ]; then
         shift 1
 
         if [ "$EXEC" == "yes" ]; then
-            docker-compose exec \
-                -u sail \
-                "$APP_SERVICE" \
-                php "$@"
+            ARGS+=(exec -u sail)
+            [ ! -t 0 ] && ARGS+=(-T)
+            ARGS+=("$APP_SERVICE" "php" "$@")
         else
             sail_is_not_running
         fi
@@ -84,10 +110,9 @@ if [ $# -gt 0 ]; then
         shift 1
 
         if [ "$EXEC" == "yes" ]; then
-            docker-compose exec \
-                -u sail \
-                "$APP_SERVICE" \
-                ./vendor/bin/"$@"
+            ARGS+=(exec -u sail)
+            [ ! -t 0 ] && ARGS+=(-T)
+            ARGS+=("$APP_SERVICE" ./vendor/bin/"$@")
         else
             sail_is_not_running
         fi
@@ -97,10 +122,9 @@ if [ $# -gt 0 ]; then
         shift 1
 
         if [ "$EXEC" == "yes" ]; then
-            docker-compose exec \
-                -u sail \
-                "$APP_SERVICE" \
-                composer "$@"
+            ARGS+=(exec -u sail)
+            [ ! -t 0 ] && ARGS+=(-T)
+            ARGS+=("$APP_SERVICE" "composer" "$@")
         else
             sail_is_not_running
         fi
@@ -110,10 +134,9 @@ if [ $# -gt 0 ]; then
         shift 1
 
         if [ "$EXEC" == "yes" ]; then
-            docker-compose exec \
-                -u sail \
-                "$APP_SERVICE" \
-                php artisan "$@"
+            ARGS+=(exec -u sail)
+            [ ! -t 0 ] && ARGS+=(-T)
+            ARGS+=("$APP_SERVICE" php artisan "$@")
         else
             sail_is_not_running
         fi
@@ -123,11 +146,9 @@ if [ $# -gt 0 ]; then
         shift 1
 
         if [ "$EXEC" == "yes" ]; then
-            docker-compose exec \
-                -u sail \
-                -e XDEBUG_SESSION=1 \
-                "$APP_SERVICE" \
-                php artisan "$@"
+            ARGS+=(exec -u sail -e XDEBUG_SESSION=1)
+            [ ! -t 0 ] && ARGS+=(-T)
+            ARGS+=("$APP_SERVICE" php artisan "$@")
         else
             sail_is_not_running
         fi
@@ -137,10 +158,21 @@ if [ $# -gt 0 ]; then
         shift 1
 
         if [ "$EXEC" == "yes" ]; then
-            docker-compose exec \
-                -u sail \
-                "$APP_SERVICE" \
-                php artisan test "$@"
+            ARGS+=(exec -u sail)
+            [ ! -t 0 ] && ARGS+=(-T)
+            ARGS+=("$APP_SERVICE" php artisan test "$@")
+        else
+            sail_is_not_running
+        fi
+
+    # Proxy the "phpunit" command to "php vendor/bin/phpunit"...
+    elif [ "$1" == "phpunit" ]; then
+        shift 1
+
+        if [ "$EXEC" == "yes" ]; then
+            ARGS+=(exec -u sail)
+            [ ! -t 0 ] && ARGS+=(-T)
+            ARGS+=("$APP_SERVICE" php vendor/bin/phpunit "$@")
         else
             sail_is_not_running
         fi
@@ -150,12 +182,11 @@ if [ $# -gt 0 ]; then
         shift 1
 
         if [ "$EXEC" == "yes" ]; then
-            docker-compose exec \
-                -u sail \
-                -e "APP_URL=http://${APP_SERVICE}" \
-                -e "DUSK_DRIVER_URL=http://selenium:4444/wd/hub" \
-                "$APP_SERVICE" \
-                php artisan dusk "$@"
+            ARGS+=(exec -u sail)
+            [ ! -t 0 ] && ARGS+=(-T)
+            ARGS+=(-e "APP_URL=http://${APP_SERVICE}")
+            ARGS+=(-e "DUSK_DRIVER_URL=http://selenium:4444/wd/hub")
+            ARGS+=("$APP_SERVICE" php artisan dusk "$@")
         else
             sail_is_not_running
         fi
@@ -165,12 +196,11 @@ if [ $# -gt 0 ]; then
         shift 1
 
         if [ "$EXEC" == "yes" ]; then
-            docker-compose exec \
-                -u sail \
-                -e "APP_URL=http://${APP_SERVICE}" \
-                -e "DUSK_DRIVER_URL=http://selenium:4444/wd/hub" \
-                "$APP_SERVICE" \
-                php artisan dusk:fails "$@"
+            ARGS+=(exec -u sail)
+            [ ! -t 0 ] && ARGS+=(-T)
+            ARGS+=(-e "APP_URL=http://${APP_SERVICE}")
+            ARGS+=(-e "DUSK_DRIVER_URL=http://selenium:4444/wd/hub")
+            ARGS+=("$APP_SERVICE" php artisan dusk:fails "$@")
         else
             sail_is_not_running
         fi
@@ -180,10 +210,9 @@ if [ $# -gt 0 ]; then
         shift 1
 
         if [ "$EXEC" == "yes" ]; then
-            docker-compose exec \
-                -u sail \
-                "$APP_SERVICE" \
-                php artisan tinker
+            ARGS+=(exec -u sail)
+            [ ! -t 0 ] && ARGS+=(-T)
+            ARGS+=("$APP_SERVICE" php artisan tinker)
         else
             sail_is_not_running
         fi
@@ -193,10 +222,9 @@ if [ $# -gt 0 ]; then
         shift 1
 
         if [ "$EXEC" == "yes" ]; then
-            docker-compose exec \
-                -u sail \
-                "$APP_SERVICE" \
-                node "$@"
+            ARGS+=(exec -u sail)
+            [ ! -t 0 ] && ARGS+=(-T)
+            ARGS+=("$APP_SERVICE" node "$@")
         else
             sail_is_not_running
         fi
@@ -206,10 +234,9 @@ if [ $# -gt 0 ]; then
         shift 1
 
         if [ "$EXEC" == "yes" ]; then
-            docker-compose exec \
-                -u sail \
-                "$APP_SERVICE" \
-                npm "$@"
+            ARGS+=(exec -u sail)
+            [ ! -t 0 ] && ARGS+=(-T)
+            ARGS+=("$APP_SERVICE" npm "$@")
         else
             sail_is_not_running
         fi
@@ -219,10 +246,9 @@ if [ $# -gt 0 ]; then
         shift 1
 
         if [ "$EXEC" == "yes" ]; then
-            docker-compose exec \
-                -u sail \
-                "$APP_SERVICE" \
-                npx "$@"
+            ARGS+=(exec -u sail)
+            [ ! -t 0 ] && ARGS+=(-T)
+            ARGS+=("$APP_SERVICE" npx "$@")
         else
             sail_is_not_running
         fi
@@ -232,10 +258,9 @@ if [ $# -gt 0 ]; then
         shift 1
 
         if [ "$EXEC" == "yes" ]; then
-            docker-compose exec \
-                -u sail \
-                "$APP_SERVICE" \
-                yarn "$@"
+            ARGS+=(exec -u sail)
+            [ ! -t 0 ] && ARGS+=(-T)
+            ARGS+=("$APP_SERVICE" yarn "$@")
         else
             sail_is_not_running
         fi
@@ -245,9 +270,10 @@ if [ $# -gt 0 ]; then
         shift 1
 
         if [ "$EXEC" == "yes" ]; then
-            docker-compose exec \
-                mysql \
-                bash -c 'MYSQL_PWD=${MYSQL_PASSWORD} mysql -u ${MYSQL_USER} ${MYSQL_DATABASE}'
+            ARGS+=(exec)
+            [ ! -t 0 ] && ARGS+=(-T)
+            ARGS+=(mysql bash -c)
+            ARGS+=('MYSQL_PWD=${MYSQL_PASSWORD} mysql -u ${MYSQL_USER} ${MYSQL_DATABASE}')
         else
             sail_is_not_running
         fi
@@ -257,9 +283,10 @@ if [ $# -gt 0 ]; then
         shift 1
 
         if [ "$EXEC" == "yes" ]; then
-            docker-compose exec \
-                mariadb \
-                bash -c 'MYSQL_PWD=${MYSQL_PASSWORD} mysql -u ${MYSQL_USER} ${MYSQL_DATABASE}'
+            ARGS+=(exec)
+            [ ! -t 0 ] && ARGS+=(-T)
+            ARGS+=(mariadb bash -c)
+            ARGS+=('MYSQL_PWD=${MYSQL_PASSWORD} mysql -u ${MYSQL_USER} ${MYSQL_DATABASE}')
         else
             sail_is_not_running
         fi
@@ -269,9 +296,10 @@ if [ $# -gt 0 ]; then
         shift 1
 
         if [ "$EXEC" == "yes" ]; then
-            docker-compose exec \
-                 pgsql \
-                 bash -c 'PGPASSWORD=${PGPASSWORD} psql -U ${POSTGRES_USER} ${POSTGRES_DB}'
+            ARGS+=(exec)
+            [ ! -t 0 ] && ARGS+=(-T)
+            ARGS+=(pgsql bash -c)
+            ARGS+=('PGPASSWORD=${PGPASSWORD} psql -U ${POSTGRES_USER} ${POSTGRES_DB}')
         else
             sail_is_not_running
         fi
@@ -281,10 +309,9 @@ if [ $# -gt 0 ]; then
         shift 1
 
         if [ "$EXEC" == "yes" ]; then
-            docker-compose exec \
-                -u sail \
-                "$APP_SERVICE" \
-                bash "$@"
+            ARGS+=(exec -u sail)
+            [ ! -t 0 ] && ARGS+=(-T)
+            ARGS+=("$APP_SERVICE" bash "$@")
         else
             sail_is_not_running
         fi
@@ -294,9 +321,9 @@ if [ $# -gt 0 ]; then
         shift 1
 
         if [ "$EXEC" == "yes" ]; then
-            docker-compose exec \
-                "$APP_SERVICE" \
-                bash "$@"
+            ARGS+=(exec)
+            [ ! -t 0 ] && ARGS+=(-T)
+            ARGS+=("$APP_SERVICE" bash "$@")
         else
             sail_is_not_running
         fi
@@ -306,9 +333,9 @@ if [ $# -gt 0 ]; then
         shift 1
 
         if [ "$EXEC" == "yes" ]; then
-            docker-compose exec \
-                redis \
-                redis-cli
+            ARGS+=(exec)
+            [ ! -t 0 ] && ARGS+=(-T)
+            ARGS+=(redis redis-cli)
         else
             sail_is_not_running
         fi
@@ -319,19 +346,24 @@ if [ $# -gt 0 ]; then
 
         if [ "$EXEC" == "yes" ]; then
             docker run --init --rm -p $SAIL_SHARE_DASHBOARD:4040 -t beyondcodegmbh/expose-server:latest share http://host.docker.internal:"$APP_PORT" \
-            --server-host="$SAIL_SHARE_SERVER_HOST" \
-            --server-port="$SAIL_SHARE_SERVER_PORT" \
-            --auth="$SAIL_SHARE_TOKEN" \
-            --subdomain="" \
-            "$@"
+                --server-host="$SAIL_SHARE_SERVER_HOST" \
+                --server-port="$SAIL_SHARE_SERVER_PORT" \
+                --auth="$SAIL_SHARE_TOKEN" \
+                --subdomain="$SAIL_SHARE_SUBDOMAIN" \
+                "$@"
+
+            exit
         else
             sail_is_not_running
         fi
 
     # Pass unknown commands to the "docker-compose" binary...
     else
-        docker-compose "$@"
+        ARGS+=("$@")
     fi
 else
-    docker-compose ps
+    ARGS+=(ps)
 fi
+
+# Run Docker Compose with the defined arguments...
+"${DOCKER_COMPOSE[@]}" "${ARGS[@]}"

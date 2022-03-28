@@ -9,24 +9,7 @@ use App\Models\Media;
 
 class MediaTransformer extends TransformerAbstract
 {
-    /**
-     * List of resources to automatically include
-     *
-     * @var array
-     */
-    protected $defaultIncludes = [
-        //
-    ];
-    
-    /**
-     * List of resources possible to include
-     *
-     * @var array
-     */
-    protected $availableIncludes = [
-        //
-    ];
-    
+
     /**
      * A Fractal transformer.
      *
@@ -40,7 +23,9 @@ class MediaTransformer extends TransformerAbstract
             'id' => $media->id,
             'owner_id' => $media->owner_id,
             'path' => $media->path,
+            'url' => $media->url,
             'desscription' => $media->description,
+            'meta' => $media->meta,
             'status' => $media->status,
             'created_at' => $created_at,
             'updated_at' => $updated_at

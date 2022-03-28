@@ -20,18 +20,20 @@ class MfaClaim
     public function handle($request, Closure $next)
     {
         /* check for presence of token */
-        if (!($token = $request->bearerToken())) {
+        if (!($token = $request->bearerToken()))
             return response('No Token', 401);
-        }
-
         /* check if token parses properly */
         try {
             $jwt = (Configuration::forUnsecuredSigner()->parser()->parse($token));
             if (notLocal() && hasAuthyConfig() && auth()->user()->hasMFA()) {
-                if ($jwt->claims()->has('mfa_verified') && $jwt->claims()->get('mfa_verified') == true)
-                    return $next($request);
-                else
-                    return response('Unauthenticated: MFA not verified.', 403);
+                if ($jwt->claims()->has('mfa_verified')) :
+                    if ($jwt->claims()->get('mfa_verified') == true)
+                        return $next($request);
+                    else
+                        return response('Unauthorized: MFA not verified.', 403);
+                else :
+                    return response('Unauthorized: No MFA claim', 403);
+                endif;
             }
         } catch (\Exception $e) {
             return response($e->getMessage(), 500);

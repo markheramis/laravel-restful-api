@@ -30,7 +30,7 @@ class UserRegisterTest extends TestCase
     {
         $response = $this->json("POST", route("api.register"), [
             "email"     => $this->faker->email(),
-            "password"  => "p@s5W0rD1234",
+            "password"  => "password12345",
         ]);
 
         $response->assertStatus(422);
@@ -41,8 +41,8 @@ class UserRegisterTest extends TestCase
         $response = $this->json("POST", route("api.register"), [
             "username"    => $this->faker->userName(),
             "email"       => $this->faker->email(),
-            "password"    => "p@s5W0rD1234",
-            "v_password"  => "p@s5W0rD12341",
+            "password"    => "password12345",
+            "v_password"  => "password123451",
         ]);
         $response->assertStatus(422);
     }
@@ -52,36 +52,55 @@ class UserRegisterTest extends TestCase
         $response = $this->json("POST", route("api.register"), [
             "username"    => $this->faker->userName(),
             "email"       => $this->faker->email(),
-            "password"    => "p@s5W0rD1234",
-            "v_password"  => "p@s5W0rD1234",
+            "password"    => "password12345",
+            "v_password"  => "password12345",
         ]);
         $response->assertStatus(422);
     }
 
     public function testRegisterWithNoRoleShouldBeAllowed()
     {
+        $user = User::factory()->make();
+
+        $first_name = $this->faker->firstName();
+        $last_name = $this->faker->lastName();
+        $random_number = $this->faker->randomNumber(3, true);
+        $email = $first_name . $last_name . $random_number . "@" . $this->faker->domainName();
+
+
         $response = $this->json("POST", route("api.register"), [
-            "username" => $this->faker->userName(),
-            "email" => $this->faker->email(),
-            "password" => "p@s5W0rD1234",
-            "v_password" => "p@s5W0rD1234",
-            "first_name" => $this->faker->firstName(),
-            "last_name" => $this->faker->lastName(),
+            "username" => $first_name . $last_name . $random_number,
+            "email" => $email,
+            "password" => "password12345",
+            "v_password" => "password12345",
+            "first_name" => $first_name,
+            "last_name" => $last_name,
             "activate" => false,
         ]);
-
-        $response->assertStatus(200);
+        $response
+            ->assertStatus(200)
+            ->assertJsonStructure([
+                'data' => [
+                    'id'
+                ]
+            ]);
+        User::find($response['data']['id'])->delete();
     }
 
     public function testRegisterWithMissingPhoneNumberShouldBeAllowed()
     {
+        $first_name = $this->faker->firstName();
+        $last_name = $this->faker->lastName();
+        $random_number = $this->faker->randomNumber(3, true);
+        $email = $first_name . $last_name . $random_number . "@" . $this->faker->domainName();
+
         $response = $this->json("POST", route("api.register"), [
-            "username" => $this->faker->userName(),
-            "email" => $this->faker->email(),
-            "password" => "p@s5W0rD1234",
-            "v_password" => "p@s5W0rD1234",
-            "first_name" => $this->faker->firstName(),
-            "last_name" => $this->faker->lastName(),
+            "username" => $first_name . $last_name . $random_number,
+            "email" => $email,
+            "password" => "password12345",
+            "v_password" => "password12345",
+            "first_name" => $first_name,
+            "last_name" => $last_name,
             "role" => "subscriber",
             "activate" => true,
         ]);
@@ -95,17 +114,22 @@ class UserRegisterTest extends TestCase
 
     public function testRegisterWithCorrectParametersShouldRegisterSuccessfully()
     {
+        $first_name = $this->faker->firstName();
+        $last_name = $this->faker->lastName();
+        $random_number = $this->faker->randomNumber(3, true);
+        $email = $first_name . $last_name . $random_number . "@" . $this->faker->domainName();
+
         $response = $this->json("POST", route("api.register"), [
-            "username" => $this->faker->userName(),
-            "email" => $this->faker->email(),
-            "password" => "p@s5W0rD1234",
-            "v_password" => "p@s5W0rD1234",
-            "first_name" => $this->faker->firstName(),
-            "last_name" => $this->faker->lastName(),
+            "username" => $first_name . $last_name . $random_number,
+            "email" => $email,
+            "password" => "password12345",
+            "v_password" => "password12345",
+            "first_name" => $first_name,
+            "last_name" => $last_name,
             "role" => "subscriber",
             "activate" => true,
-            "phone_number" => rand(1111111111, 9999999999),
-            "country_code" => "1",
+            'phone_number' => rand(1111111111, 9999999999),
+            'country_code' => '1',
         ]);
         $response->assertStatus(200);
         $user = User::find($response["data"]["id"]);
@@ -117,17 +141,22 @@ class UserRegisterTest extends TestCase
 
     public function testRegisterWithCorrectParamtersUnactivatedShouldRegisterSuccessfully()
     {
+        $first_name = $this->faker->firstName();
+        $last_name = $this->faker->lastName();
+        $random_number = $this->faker->randomNumber(3, true);
+        $email = $first_name . $last_name . $random_number . "@" . $this->faker->domainName();
+
         $response = $this->json("POST", route("api.register"), [
-            "username" => $this->faker->userName(),
-            "email" => $this->faker->email(),
-            "password" => "p@s5w0rd1234",
-            "v_password" => "p@s5w0rd1234",
-            "first_name" => $this->faker->firstName(),
-            "last_name" => $this->faker->lastName(),
+            "username" => $first_name . $last_name . $random_number,
+            "email" => $email,
+            "password" => "password12345",
+            "v_password" => "password12345",
+            "first_name" => $first_name,
+            "last_name" => $last_name,
             "role" => "subscriber",
             "activate" => false,
-            "phone_number" => rand(1111111111, 9999999999),
-            "country_code" => "1",
+            'phone_number' => rand(1111111111, 9999999999),
+            'country_code' => '1',
         ]);
         $response->assertStatus(200);
         $user = User::find($response["data"]["id"]);
@@ -137,23 +166,29 @@ class UserRegisterTest extends TestCase
         $user->delete();
     }
 
+
     public function testRegisterWithCorrectParametersAndPermissionShouldRegisterSuccessfully()
     {
+        $first_name = $this->faker->firstName();
+        $last_name = $this->faker->lastName();
+        $random_number = $this->faker->randomNumber(3, true);
+        $email = $first_name . $last_name . $random_number . "@" . $this->faker->domainName();
+
         $response = $this->json("POST", route("api.register"), [
-            "username" => $this->faker->userName(),
-            "email" => $this->faker->email(),
-            "password" => "p@s5W0rD1234",
-            "v_password" => "p@s5W0rD1234",
-            "first_name" => $this->faker->firstName(),
-            "last_name" => $this->faker->lastName(),
+            "username" => $first_name . $last_name . $random_number,
+            "email" => $email,
+            "password" => "password12345",
+            "v_password" => "password12345",
+            "first_name" => $first_name,
+            "last_name" => $last_name,
             "role" => "subscriber",
             "activate" => true,
             "permissions" => [
                 "view.user" => true,
                 "update.user" => true,
             ],
-            "phone_number" => rand(1111111111, 9999999999),
-            "country_code" => "1",
+            'phone_number' => rand(1111111111, 9999999999),
+            'country_code' => '1',
         ]);
         $response->assertStatus(200);
         $user = User::find($response["data"]["id"]);

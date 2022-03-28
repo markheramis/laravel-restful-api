@@ -63,4 +63,18 @@ return [
         ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Passport token expiration
+    |--------------------------------------------------------------------------
+    |
+    | A JWT token should be stateless, meaning that you should store everything you
+    | need in the payload and skip performing a DB query on every request. Therefore,
+    | the lifespan of the token last until expiration time has been reached. Note: value
+    | must be converted to hours
+    |
+    */
+
+    'token_expire_in' => env('PASSPORT_TOKEN_EXPIRE_IN', 8760),
+
 ];

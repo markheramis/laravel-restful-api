@@ -24,16 +24,17 @@ class UserRegisterRequest extends FormRequest
     public function rules()
     {
         return [
-            "username" => "required",
-            "email" => "required|email|unique:users,email",
-            "password" => "required|string",
-            "first_name" => "required|string",
-            "last_name" => "required|string",
-            "role" => "nullable|string",
-            "permissions" => "nullable|array",
-            "activate" => "nullable|boolean",
-            "phone_number" => "nullable|numeric|unique:users,phone_number",
-            "country_code" => "nullable|numeric",
+            "username" => ["required", "min:5", "max:255"],
+            "email"     => ["required", "email", "unique:users,email", "min:10", "max:255"],
+            "password"  => ["required", "string", "min:8", "max:255"],
+            "first_name" => ["required", "string", "min:3", "max:255"],
+            "last_name" => ["required", "string", "min:3", "max:255"],
+            "role" => ["nullable", "string"],
+            "permissions" => ["nullable", "array"],
+            "activate" => ["nullable", "boolean"],
+            "phone_number" => ["nullable", "numeric", "unique:users,phone_number"],
+            "country_code" => ["nullable", "numeric"],
+
         ];
     }
 }

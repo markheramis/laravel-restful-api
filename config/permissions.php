@@ -21,9 +21,11 @@ return [
     'user.permission.show' => 'user permission show',
     'user.permission.destroy' => 'user permission destroy',
 
-    'media.show' => 'media show',
-    'media.store' => 'media store',
-    'media.destroy' => 'media destroy',
+    "user.meta.index" => "user meta index",
+    "user.meta.store" => "user meta store",
+    "user.meta.show" => "user meta show",
+    "user.meta.update" => "user meta update",
+    "user.meta.destroy" => "user meta destroy",
 
     'category.index' => 'category index',
     'category.store' => 'category store',
@@ -36,4 +38,11 @@ return [
     'option.show' => 'option show',
     'option.update' => 'option update',
     'option.destroy' => 'option destory',
+
+    'media.index' => 'media index',
+    'media.store' => 'media store',
+    'media.show' => 'media show',
+    'media.update' => 'media update',
+    'media.destroy' => 'media destroy',
+    'media.download' => 'media.download',
 ];

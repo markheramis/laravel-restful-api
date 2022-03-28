@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use Auth;
 use Authy\AuthyApi;
+use App\Models\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AuthTwilio2FAVerifyCodeRequest;
 use App\Http\Requests\AuthTwilio2FAIsAuthenticatedRequest;
@@ -14,7 +15,7 @@ use Illuminate\Support\Facades\Request;
 
 /**
  * @group Auth Multi-Factor Management
- * 
+ *
  * APIs for doing two factor authentication with Twilio
  */
 class AuthTwilio2FAController extends Controller
@@ -31,30 +32,34 @@ class AuthTwilio2FAController extends Controller
 
     /**
      * Verify OTP
-     * 
+     *
      * This endpoint lets you verify the OTP from Twilio
-     * 
+     *
      * @authenticated
      * @param AuthTwilio2FAVerifyCodeRequest $request
      * @return JsonResponse
      */
     public function verifyCode(AuthTwilio2FAVerifyCodeRequest $request): JsonResponse
     {
-        $user = Auth::user();
-        $authy_api = new AuthyApi(config('authy.app_secret'));
-        $response = $authy_api->verifyToken($user->authy_id, $request->code);
-        if ($response->ok()) {
-            session()->now('mfa_verified', true);
-            // correct token
-            return response()->success([
-                'message' => 'valid token',
-                'token' => $user->createToken(config('app.name') . ': ' . $user->username, $user->allPermissions())->accessToken,
-                'mfa_verified' => true
-            ]);
+        if (Auth::check()) {
+            $user = Auth::user();
+            $authy_api = new AuthyApi(config('authy.app_secret'));
+            $response = $authy_api->verifyToken($user->authy_id, $request->code);
+
+            if ($response->ok()) {
+                session()->now('mfa_verified', true);
+                // correct token
+                $user->tokens()->delete();
+                return response()->success([
+                    'message' => 'valid token',
+                    'token' => $this->generateUserToken($user),
+                ]);
+            } else {
+                return response()->error(['message' => 'invalid token']);
+            }
         } else {
             return response()->error(['message' => 'invalid token']);
         }
-        return response()->error(['message' => 'invalid token']);
     }
 
     private function recordLoginActivity($device)
@@ -63,7 +68,7 @@ class AuthTwilio2FAController extends Controller
 
     /**
      * is Authenticated
-     * 
+     *
      * This endpoint lets you verify if two-factor authentication with Authy is authenticated
      *
      * @authenticated
@@ -78,9 +83,9 @@ class AuthTwilio2FAController extends Controller
 
     /**
      * Get QR Code
-     * 
+     *
      * This endpoint lets you get an Authy QR Code.
-     * 
+     *
      * @authenticated
      *
      * @param AuthTwilio2FAGetQRCodeRequest $request
@@ -105,7 +110,7 @@ class AuthTwilio2FAController extends Controller
 
     /**
      * Get MFA Settings
-     * 
+     *
      * This endpoint lets you get mfa settings
      *
      * @param AuthTwilio2FAGetStatusRequeust $request
@@ -131,5 +136,10 @@ class AuthTwilio2FAController extends Controller
         $requestSms = $authy_api->requestSms($user->phone_number);
 
         return response()->json($requestSms);
+    }
+
+    private function generateUserToken(User $user)
+    {
+        return $user->createToken(config('app.name') . ': ' . $user->username, $user->allPermissions())->accessToken;
     }
 }
