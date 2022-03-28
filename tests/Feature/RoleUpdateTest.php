@@ -17,9 +17,11 @@ class RoleUpdateTest extends TestCase
     {
         $role = Role::factory()->create();
         $url = route("role.update", [$role->slug]);
+        $role_name = $this->faker->jobTitle() . " " . Str::random(10);
+        $role_slug = Str::slug($role_name) . "-" . Str::random(10);
         $response = $this->json("PUT", $url, [
-            'name' => 'updated',
-            'slug' => Str::slug('RoleName'),
+            'name' => $role_name,
+            'slug' => $role_slug
         ]);
         $response->assertStatus(401);
         $role->delete();
@@ -34,9 +36,11 @@ class RoleUpdateTest extends TestCase
             "Authorization" => "Bearer $token"
         ];
         $url = route("role.update", [$role->slug]);
+        $role_name = $this->faker->jobTitle() . " " . Str::random(10);
+        $role_slug = Str::slug($role_name) . "-" . Str::random(10);
         $response = $this->json("PUT", $url, [
-            'name' => 'RoleName',
-            'slug' => Str::slug('RoleName'),
+            'name' => $role_name,
+            'slug' => $role_slug,
         ], $header);
         $response->assertStatus(403);
         $role->delete();
@@ -45,17 +49,21 @@ class RoleUpdateTest extends TestCase
     public function testUpdateRoleAsModeratorShouldBeForbidden()
     {
         $role = Role::factory()->create();
-        $token = $this->getTokenByRole("moderator");
+        $user = $this->createUser("moderator", true, false);
+        $token = $this->getTokenByRole("moderator", $user->id, false);
         $header = [
             "Authorization" => "Bearer $token"
         ];
         $url = route("role.update", [$role->slug]);
+        $role_name = $this->faker->jobTitle() . " " . Str::random(10);
+        $role_slug = Str::slug($role_name) . "-" . Str::random(10);
         $response = $this->json("PUT", $url, [
-            'name' => 'RoleName',
-            'slug' => Str::slug('RoleName'),
+            'name' => $role_name,
+            'slug' => $role_slug,
         ], $header);
         $response->assertStatus(403);
         $role->delete();
+        $user->delete();
     }
 
     public function testUpdateRoleAsAdministratorShouldBeAllowed()
@@ -67,9 +75,11 @@ class RoleUpdateTest extends TestCase
             "Authorization" => "Bearer $token"
         ];
         $url = route("role.update", [$role->slug]);
+        $role_name = $this->faker->jobTitle() . " " . Str::random(10);
+        $role_slug = Str::slug($role_name) . "-" . Str::random(10);
         $response = $this->json("PUT", $url, [
-            'name' => 'RoleName',
-            'slug' => Str::slug('RoleName'),
+            'name' => $role_name,
+            'slug' => $role_slug,
         ], $header);
         $response->assertStatus(200);
         $role->delete();
@@ -84,9 +94,11 @@ class RoleUpdateTest extends TestCase
             "Authorization" => "Bearer $token"
         ];
         $url = route("role.update", [$role->slug]);
+        $role_name = $this->faker->jobTitle() . " " . Str::random(10);
+        $role_slug = Str::slug($role_name) . "-" . Str::random(10);
         $response = $this->json("PUT", $url, [
-            'name' => 'RoleName',
-            'slug' => Str::slug('RoleName'),
+            'name' => $role_name,
+            'slug' => $role_slug,
         ], $header);
         $response->assertStatus(200);
         $role->delete();
@@ -101,9 +113,11 @@ class RoleUpdateTest extends TestCase
             "Authorization" => "Bearer $token"
         ];
         $url = route("role.update", [$role->slug]);
+        $role_name = $this->faker->jobTitle() . " " . Str::random(10);
+        $role_slug = Str::slug($role_name) . "-" . Str::random(10);
         $response = $this->json("PUT", $url, [
-            'name' => 'RoleName',
-            'slug' => Str::slug('RoleName'),
+            'name' => $role_name,
+            'slug' => $role_slug,
         ], $header);
         $response->assertStatus(403);
         $role->delete();

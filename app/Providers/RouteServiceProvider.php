@@ -41,6 +41,7 @@ class RouteServiceProvider extends ServiceProvider
         Route::model('option', Option::class);
         Route::model("category", Category::class);
 
+
         parent::boot();
     }
 

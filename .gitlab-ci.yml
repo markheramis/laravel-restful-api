@@ -1,7 +1,6 @@
 variables:
   SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar" # Defines the location of the analysis task cache
   GIT_DEPTH: "100" # Tells git to fetch all the branches of the project, required by the analysis task
-  DOCKER_DRIVER: overlay2
   CLAIR_OUTPUT: High
   # Tell docker CLI how to talk to Docker daemon; see
   # https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#use-docker-in-docker-executor
@@ -17,7 +16,7 @@ variables:
   MYSQL_PASSWORD: secret
   MYSQL_ROOT_PASSWORD: secret
   REDIS_PORT: 6379
-  
+
 include:
   - template: Jobs/Code-Quality.gitlab-ci.yml # https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Code-Quality.gitlab-ci.yml
   - template: Jobs/Code-Intelligence.gitlab-ci.yml # https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Code-Intelligence.gitlab-ci.yml
@@ -28,13 +27,14 @@ include:
   - template: Security/Secret-Detection.gitlab-ci.yml # https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/Secret-Detection.gitlab-ci.yml
 
 stages:
+  - pre-build
   - build
   - test
   - analyse
   - deploy
 
 build-docker:
-  stage: build
+  stage: pre-build
   image:
     # An alpine-based image with the `docker` CLI installed.
     name: docker:stable
@@ -42,7 +42,7 @@ build-docker:
   # be available at thedockerhost:2375. If you make e.g. port 5000 public in Docker
   # (`docker run -p 5000:5000 yourimage`) it will be exposed at thedockerhost:5000.
   services:
-    - name: docker:dind
+    - name: docker:stable-dind
       alias: thedockerhost
   script:
     # Download bash:
@@ -78,6 +78,8 @@ build-composer:
     paths:
       - .env
       - vendor
+  needs:
+    - build-docker
 gitlab-artisan-test:
   image:
     name: $DOCKER_IMAGE
@@ -92,6 +94,7 @@ gitlab-artisan-test:
     - php artisan storage:link
     - php artisan key:generate
     - php artisan migrate
+    - php artisan passport:key
     - php artisan db:seed
     - php artisan passport:install
     - php artisan scribe:generate --force
@@ -124,7 +127,7 @@ artisan-test:
     name: $DOCKER_IMAGE
     entrypoint: [""]
   stage: test
-  parallel: 2
+  parallel: 3
   services:
     - name: mysql:8.0
     - name: redis:latest
@@ -134,13 +137,14 @@ artisan-test:
     - php artisan storage:link
     - php artisan key:generate
     - php artisan migrate
+    - php artisan passport:key
     - php artisan db:seed
     - php artisan passport:install
     - php artisan scribe:generate --force
   script:
     - php artisan queue:work >> storage/logs/queue.log &
     - php artisan serve &
-    - php artisan test --env=testing
+    - php artisan test --env=testing --testsuite=Unit,Feature
   only:
     - pull_request
     - push
@@ -196,7 +200,7 @@ code_quality:
     paths: [gl-code-quality-report.json]
 
 
-      
+
 deploy_staging:
   image:
     name: $DOCKER_IMAGE

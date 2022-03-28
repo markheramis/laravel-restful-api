@@ -7,6 +7,7 @@ use Auth;
 use Sentinel;
 use Activation;
 use Authy\AuthyApi;
+use App\Models\Role;
 use App\Models\User;
 use App\Mail\UserForgotPasswordMail;
 use App\Http\Controllers\Controller;
@@ -14,7 +15,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Password;
 use App\Transformers\UserTransformer;
 use Illuminate\Http\Request;
 use App\Http\Requests\UserIndexRequest;
@@ -22,31 +22,43 @@ use App\Http\Requests\UserShowRequest;
 use App\Http\Requests\UserActivateRequest;
 use App\Http\Requests\UserUpdateRequest;
 use App\Http\Requests\UserDestroyRequest;
+use App\Http\Requests\UserRegisterRequest;
 use App\Http\Requests\UserUpdateMFARequest;
 use App\Http\Requests\UserEmailRequest;
 use App\Http\Requests\UserResetPasswordRequest;
 use App\Http\Requests\UserStoreRequest;
+use App\Http\Requests\UserChangePasswordRequest;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Serializer\JsonApiSerializer;
 
 /**
  * @group  User Management
- * 
+ *
  * APIs for managnign Users
  */
 class UserController extends Controller
 {
+    private $authy_app_secret;
+    private $authy_app_id;
+
+
+    public function __construct()
+    {
+        $this->authy_app_secret = config('authy.app_secret');
+        $this->authy_app_id = config('authy.app_id');
+    }
+
     /**
      * Get all Users
-     * 
+     *
      * This endpoint lets you get all Users.
-     * 
+     *
      * @authenticated
      * @todo add role based search.
      * @queryParam search string used to search from email, username, first_name, and last_name
      * @queryParam role string used to filter results based on a specific role.
      * @param UserAllRequest $request
-     * @uses App\Models\User $rolePaginator
+     * @uses App\Models\User $userPaginator
      * @uses App\Transformers\UserTransformer UserTransformer
      * @uses League\Fractal\Pagination\IlluminatePaginatorAdapter IlluminatePaginatorAdapter
      * @uses League\Fractal\Serializer\JsonApiSerializer JsonApiSerializer
@@ -54,30 +66,28 @@ class UserController extends Controller
      */
     public function index(UserIndexRequest $request): JsonResponse
     {
-        $rolePaginator = User::when($request->search, function ($query) use ($request) {
-            $search = $request->search;
-            $query->where("email", "LIKE", "%$search%")
-                ->orWhere("username", "LIKE", "%$search%")
-                ->orWhere("first_name", "LIKE", "%$search%")
-                ->orWhere("last_name", "LIKE", "%$search%");
-        })->when($request->has('role'), function ($query) use ($request) {
-            $query->join('role_users', 'users.id', '=', 'role_users.user_id')
-                ->join('roles', 'role_users.role_id', 'roles.id')
-                ->where("roles.slug", $request->role);
+        $userPaginator = User::when(
+            $request->filter_by,
+            fn ($query) => $query->where($request->filter_by, 'LIKE', "%$request->filter_value%"),
+        )->when($request->has("role"), function ($query) use ($request) {
+            $role = $request->role;
+            $query->whereHas("roles", function ($q) use ($role) {
+                $q->where('slug', $role);
+            });
         })->paginate();
-        $users = $rolePaginator->getCollection();
+        $userCollection = $userPaginator->getCollection();
         $response = fractal()
-            ->collection($users)
+            ->collection($userCollection)
             ->transformWith(new UserTransformer())
             ->serializeWith(new JsonApiSerializer())
-            ->paginateWith(new IlluminatePaginatorAdapter($rolePaginator))
+            ->paginateWith(new IlluminatePaginatorAdapter($userPaginator))
             ->toArray();
         return response()->json($response, 200);
     }
 
     /**
      * Get a User
-     * 
+     *
      * This endpoint lets you get a User.
      *
      * @authenticated
@@ -96,7 +106,7 @@ class UserController extends Controller
 
     /**
      * Activate a User
-     * 
+     *
      * This endpoint lets you activate a User.
      *
      * @authenticated
@@ -119,9 +129,9 @@ class UserController extends Controller
 
     /**
      * Store User
-     * 
+     *
      * This endpoint lets you create a new User.
-     * 
+     *
      * @authenticated
      * @param App\Http\Requests\UserStoreRequest $request
      * @return JsonResponse
@@ -130,7 +140,6 @@ class UserController extends Controller
     {
         $authy_id = $this->create_authy_api($request);
         $activate = (bool) $request->activate;
-
         $credentials = [
             "username" => $request->username,
             "email" => $request->email,
@@ -144,12 +153,10 @@ class UserController extends Controller
         ];
         $user = Sentinel::register($credentials);
         if ($activate)
-            $this->activate($user);
+            redirect('api.user.activate')->with('data', $user->toArray());
         $role = ($request->has('role')) ? $request->role : 'subscriber';
         $this->attachRole($user, $role);
-        return response()->success([
-            'id' => $user->id,
-        ]);
+        return response()->success([$user]);
     }
 
     /**
@@ -168,29 +175,33 @@ class UserController extends Controller
     /**
      * Undocumented function
      *
-     * @param UserRegisterRequest $request
+     * @param User $user
+     * @param Role $role
      * @return void
      */
-    private function create_authy_api(Request $request)
+    private function detachRole(User $user, Role $role)
     {
-        $is_not_local = config('app.env') !== "local";
-        $has_authy = config('authy.app_id') && config('authy.app_secret');
-        if ($is_not_local && $has_authy) {
-            $authy_api = new AuthyApi(config('authy.app_secret'));
-            // register the user to the authy users database
-            $response = $authy_api->registerUser(
-                $request->email,
-                $request->phone_number,
-                $request->country_code
-            );
-            return $response->id();
-        } else {
-            return null;
+        $role->users()->detach($user);
+    }
+
+    /**
+     * Undocumented function
+     *
+     * @param User $user
+     * @return void
+     */
+    private function detachAllRoles(User $user)
+    {
+        $roles = $user->roles()->get();
+        foreach ($roles as $role) {
+            $this->detachRole($user, $role);
         }
     }
+
+
     /**
      * Update a User
-     * 
+     *
      * This endpoint lets you update a User's data.
      *
      * @authenticated
@@ -203,15 +214,19 @@ class UserController extends Controller
     {
         $user->username = $request->username;
         $user->email = $request->email;
-        $user->first_name = $request->firstName;
-        $user->last_name = $request->lastName;
+        $user->first_name = $request->first_name;
+        $user->last_name = $request->last_name;
         $user->update();
+        if ($request->has('role')) {
+            $role = Sentinel::findRoleBySlug($request->role);
+            $user->roles()->sync($role);
+        }
         return response()->success($user);
     }
 
     /**
      * Destroy a User
-     * 
+     *
      * This endpoint lets you update a User.
      *
      * @authenticated
@@ -228,9 +243,9 @@ class UserController extends Controller
 
     /**
      * Me API
-     * 
+     *
      * This endpoint will return the currently logged-in user.
-     * 
+     *
      * @authenticated
      * @return JsonResponse
      */
@@ -242,12 +257,73 @@ class UserController extends Controller
     }
 
     /**
+     * Undocumented function
+     *
+     * @param UserRegisterRequest $request
+     * @return void
+     */
+    private function create_authy_api(Request $request)
+    {
+        $is_not_local = config('app.env') !== "local";
+
+        $has_authy = $this->authy_app_id && $this->authy_app_secret;
+        if ($is_not_local && $has_authy) {
+            $authy_api = new AuthyApi($this->authy_app_secret);
+            // register the user to the authy users database
+            $registered = $authy_api->registerUser(
+                $request->email,
+                $request->phone_number,
+                $request->country_code
+            );
+            return $registered->id();
+        }
+    }
+
+    public function delete_authy_mfa(User $user)
+    {
+        $authy_api = new AuthyApi($this->authy_app_secret);
+        $delete = $authy_api->deleteUser($user->authy_id)->bodyvar('message');
+        $user->authy_id = 0;
+        $user->update();
+        return response()->success($delete);
+    }
+
+    public function enable_authy_mfa(User $user)
+    {
+        $authyId = $this->create_authy_api($user);
+        $user->authy_id = $authyId;
+        $user->update();
+        return response()->success($authyId);
+    }
+
+    public function get_qr_code(User $user)
+    {
+        $authy_api = new AuthyApi($this->authy_app_secret);
+        $data = $authy_api->qrCode($user->authy_id, []);
+        $response = [
+            'qr_code' => $data->bodyvar('qr_code'),
+            'label' => $data->bodyvar('label'),
+            'issuer' => $data->bodyvar('issuer'),
+        ];
+        if ($data->bodyvar('success')) {
+            return response()->success($response);
+        } else {
+            return response()->error('Unable to generate QR Code');
+        }
+    }
+
+    public function request_token_via_sms(User $user)
+    {
+        $authy_api = new AuthyApi($this->authy_app_secret);
+        $authy_api->requestSms($user->phone_number);
+    }
+    /*
      * Set Multi Factor Method
-     * 
+     *
      * This endpoint lets you set the current user's default multi-factor authentication method
-     * 
+     *
      * @authenticated
-     * 
+     *
      * @param AuthTwilio2FASetMFARequest $request
      * @return JsonResponse
      */
@@ -262,8 +338,8 @@ class UserController extends Controller
     /**
      * Forgot Password
      *
-     * This endpoint will send an authorized email reset password 
-     * 
+     * This endpoint will send an authorized email reset password
+     *
      * @uses App\Models\User $user
      * @param UserEmailRequest $request
      * @return JsonResponse
@@ -276,10 +352,8 @@ class UserController extends Controller
                 'token' => Str::random(60),
                 'created_at' => Carbon::now()
             ];
-
             DB::table('password_resets')->insert($password_reset);
             $url = env('DENTALRAY_APP_URL') . '/reset-password?token=' . $password_reset['token'];
-
             Mail::to($user->email)
                 ->send(new UserForgotPasswordMail(array_merge($password_reset, [
                     'url' => $url
@@ -293,7 +367,7 @@ class UserController extends Controller
      * Reset Password
      *
      * This endpoint lets you reset and update password
-     * 
+     *
      * @uses App\Models\User $user
      * @param UserResetPasswordRequest $request
      * @return JsonResponse
@@ -311,5 +385,25 @@ class UserController extends Controller
             return response()->success('Reset password successfully');
         }
         return response()->error("Token doesn't exist", 404);
+    }
+
+    /**
+     * Change Password
+     *
+     * This endpoint lets users change their own passwords
+     *
+     * @authenticated
+     *
+     * @param UserChangePasswordRequest $request
+     * @return JsonResponse
+     */
+    public function changePassword(UserChangePasswordRequest $request): JsonResponse
+    {
+        try {
+            Sentinel::update(Auth::user(), ["password" => $request->password]);
+            return response()->success("User Updated Successfully");
+        } catch (\Exception $e) {
+            return response()->error($e->getMessage());
+        }
     }
 }

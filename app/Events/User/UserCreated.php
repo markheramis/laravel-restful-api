@@ -2,6 +2,7 @@
 
 namespace App\Events\User;
 
+use App\Models\User;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
@@ -26,8 +27,7 @@ class UserCreated implements ShouldBroadcast
      */
     public $queue = 'default';
 
-    private int $id;
-    public bool $afterCommit = true;
+    public User $user;
     /**
      * Create a new event instance.
      *
@@ -35,7 +35,7 @@ class UserCreated implements ShouldBroadcast
      */
     public function __construct(int $id)
     {
-        $this->id = $id;
+        $this->user = User::find($id);
     }
 
     /**
@@ -66,7 +66,8 @@ class UserCreated implements ShouldBroadcast
     public function broadcastWith()
     {
         return [
-            'id' => $this->id,
+            'first_name' => $this->user->first_name,
+            'last_name' => $this->user->last_name
         ];
     }
 

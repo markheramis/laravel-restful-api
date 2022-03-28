@@ -58,7 +58,10 @@ class LoginController extends Controller
                 $this->token = $this->createToken($user);
             }
             broadcast(new UserLoggedIn($user->id));
+            $otp_sent_to = $this->verify ? 
+            censorPhoneNumber($user->phone_number) : $user->email;
             return response()->success([
+                "otp_sent_to" => $otp_sent_to,
                 "token" => $this->token,
                 "verify" => $this->verify,
                 "mfa_verified" => $this->mfa_verified,

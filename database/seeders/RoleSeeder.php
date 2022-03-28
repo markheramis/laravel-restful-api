@@ -40,9 +40,18 @@ class RoleSeeder extends Seeder
                 "user.permission.show" => true,
                 "user.permission.destroy" => true,
 
-                "media.show" => true,
+                "user.meta.index" => true,
+                "user.meta.store" => true,
+                "user.meta.show" => true,
+                "user.meta.update" => true,
+                "user.meta.destroy" => true,
+
+                "media.index" => true,
                 "media.store" => true,
+                "media.show" => true,
+                "media.update" => true,
                 "media.destroy" => true,
+                "media.download" => true,
 
                 "category.index" => true,
                 "category.store" => true,
@@ -64,6 +73,9 @@ class RoleSeeder extends Seeder
                 "user.index" => true,
                 "user.show" => true,
 
+                "media.show" => true,
+                "media.store" => true,
+
                 "role.index" => true,
                 "role.show" => true,
 
@@ -73,8 +85,11 @@ class RoleSeeder extends Seeder
                 "user.permission.store" => true,
                 "user.permission.show" => true,
 
-                "media.show" => true,
-                "media.store" => true,
+                "user.meta.index" => true,
+                "user.meta.store" => true,
+                "user.meta.show" => true,
+                "user.meta.update" => true,
+                "user.meta.destroy" => true,
 
                 "category.index" => true,
                 "category.show" => true,
@@ -92,9 +107,14 @@ class RoleSeeder extends Seeder
                 "user.index" => true,
                 "user.show" => true,
 
+                "media.show" => true,
+
                 "user.role.show" => true,
 
-                "media.show" => true,
+                "user.meta.index" => true,
+                "user.meta.store" => true,
+                "user.meta.show" => true,
+                "user.meta.update" => true,
 
                 "category.index" => true,
                 "category.show" => true,

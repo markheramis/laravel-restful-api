@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\API;
 
 use Auth;
-use App\Models\User;
 use App\Models\Media;
 use App\Http\Controllers\Controller;
 use App\Transformers\MediaTransformer;
@@ -12,22 +11,24 @@ use App\Http\Requests\MediaStoreRequest;
 use App\Http\Requests\MediaShowRequest;
 use App\Http\Requests\MediaUpdateRequest;
 use App\Http\Requests\MediaDestroyRequest;
+use App\Http\Requests\MediaDownloadRequest;
 use Illuminate\Http\JsonResponse;
 use League\Fractal\Serializer\JsonApiSerializer;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
-use Illuminate\Http\File;
+use Symfony\Component\HttpFoundation\StreamedResponse;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
 /**
  * @group Media Management
- * 
+ *
  * APIs for managing Media
  */
 class MediaController extends Controller
 {
     /**
      * Get all Media
-     * 
+     *
      * This endpoint lets you get all the Media
      *
      * @authenticated
@@ -47,7 +48,7 @@ class MediaController extends Controller
             ->collection($media)
             ->transformWith(new MediaTransformer())
             ->serializeWith(new JsonApiSerializer())
-            ->paginatedWith(new IlluminatePaginatorAdapter($paginator))
+            ->paginateWith(new IlluminatePaginatorAdapter($paginator))
             ->toArray();
 
         return response()->json($response);
@@ -55,33 +56,51 @@ class MediaController extends Controller
 
     /**
      * Store a Media
-     * 
+     *
      * This endpoint lets you store a new Media
-     * 
+     * @todo no private status handler
+     *
+     * @authenticated
      * @param MediaStoreRequest $request
      * @return JsonResponse
      */
     public function store(MediaStoreRequest $request): JsonResponse
     {
+        $status = ($request->has("status")) ? $request->status : "public";
         $file = $request->file;
         $user = Auth::user();
-        $path = Storage::putFile('media', $request->file);
+        $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+        $filename = preg_replace("/\s+/", "", $filename);
+        $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
+
+        $path = $request->file("file")->storeAs(
+            "media",
+            "$filename.$extension"
+        );
+
+        $url = ($status == "public") ? asset("storage/media/$filename.$extension") : "";
         $save = $user->media()->create([
-            'path' => $path,
-            'description' => $file->getClientOriginalName(),
+            "path" => $path,
+            "url" => $url,
+            "status" => $status,
+            "type" => $extension,
+            "description" => $request->description,
+            "meta" => ($request->has("meta")) ? $request->meta : null,
         ]);
         if ($save) {
-            return response()->success('New media item stored successfully');
+            return response()->success([
+                'id' => $save->id,
+            ]);
         } else {
-            return response()->error('Failed to stored new media');
+            return response()->error("Failed to stored new media");
         }
     }
 
     /**
      * Show a Media
-     * 
-     * This endpoint lets you get a Media
-     * 
+     *
+     * This endpoint lets you show a Media
+     *
      * @authenticated
      * @todo 2nd parameter should auto resolve to the Media model instance
      * @param MediaShowRequest $request
@@ -113,13 +132,13 @@ class MediaController extends Controller
             $response = fractal($media, new MediaTransformer())->toArray();
             return response()->succes($response);
         } else {
-            return response()->error('Failed to update media', 400);
+            return response()->error("Failed to update media", 400);
         }
     }
 
     /**
      * Delete a Media
-     * 
+     *
      * This endpoint lets you delete a single Role
      *
      * @authenticated
@@ -132,10 +151,48 @@ class MediaController extends Controller
      */
     public function destroy(MediaDestroyRequest $request, Media $media)
     {
-        if ($media->delete()) {
-            return response()->success('Media deleted successfully', 200);
-        } else {
-            return response()->error('Media not found', 404);
+        $media->delete();
+        return response()->success("Media deleted successfully", 200);
+    }
+
+    public function download(MediaDownloadRequest $request, Media $media)
+    {
+        $public = ($media->status == "public") ? "public/" : "";
+        $path = storage_path('app/' . $public . $media->path);
+        if (is_dir($path) || !file_exists($path)) {
+            return response()->error("Media doesn't exist", 404);
         }
+        // return response()->download($path);
+
+        $response = new StreamedResponse;
+
+        $disposition = 'inline';
+        $filename = basename($media->path);
+
+        $disposition = $response->headers->makeDisposition(
+            $disposition,
+            $filename
+        );
+
+        $response->headers->replace([
+            'Content-Type' => File::mimeType($path),
+            'Content-Length' => File::size($path),
+            'Content-Disposition' => $disposition,
+        ]);
+
+        $response->setCallback(function () use ($media) {
+            $fs = Storage::getDriver();
+            $stream = $fs->readStream($media->path);
+
+            while (!feof($stream)) {
+                echo fread($stream, 2048);
+            }
+
+            fclose($stream);
+        });
+
+        ini_set('max_execution_time', 8000000);
+
+        return $response;
     }
 }

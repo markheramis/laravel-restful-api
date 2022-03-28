@@ -2,7 +2,9 @@
 
 namespace Tests\Feature;
 
+
 use Tests\TestCase;
+use App\Models\User;
 use Tests\Traits\userTraits;
 use Illuminate\Foundation\Testing\WithFaker;
 
@@ -13,7 +15,6 @@ class UserUpdateTest extends TestCase
     #####################################
     ############# AS NOBODY #############
     #####################################
-
     public function testUpdateSubscriberWithNoSessionShouldBeUnauthorized()
     {
         $user = $this->createUser("subscriber");
@@ -59,8 +60,8 @@ class UserUpdateTest extends TestCase
     ############################################
     public function testUpdateSelfAsAdministratorShouldBeAlowed()
     {
-        $user = $this->createUser("administrator");
-        $token = $this->getTokenByRole("administrator", $user->id);
+        $user = $this->createUser("administrator", true, true);
+        $token = $this->getTokenByRole("administrator", $user->id, true);
         $header = [
             "Authorization" => "Bearer $token",
         ];
@@ -159,5 +160,37 @@ class UserUpdateTest extends TestCase
         $response = $this->json("PUT", $url, $data, $header);
         $response->assertStatus(403);
         $user->delete();
+    }
+
+    public function testUpdateRoleToSubscriberAsAdministrator()
+    {
+        $user = $this->createUser("administrator", true, true);
+        $token = $this->getTokenByRole("administrator", $user->id, true);
+        $user_to_update = $this->createUser("administrator");
+
+        $header = [
+            "Authorization" => "Bearer $token",
+        ];
+        $url = route("user.update", [$user_to_update->id]);
+        $data = [
+            "username" => $user_to_update->username,
+            "email" => $user_to_update->email,
+            "password" => $user_to_update->password,
+            "first_name" => $user_to_update->first_name,
+            "last_name" => $user_to_update->last_name,
+            "permissions" => $user_to_update->permissions,
+            "country_code" => $user_to_update->country_code,
+            "phone_number" => $user_to_update->phone_number,
+            "authy_id" => $user_to_update->authy_id,
+            "default_factor" => $user_to_update->default_factor,
+            "role" => "subscriber",
+        ];
+        $response = $this->json("PUT", $url, $data, $header);
+        $response->assertStatus(200);
+
+        $updated_user = User::find($user_to_update->id);
+
+        $hasSubscriberRole = (bool) $updated_user->roles()->where('slug', 'subscriber')->count();
+        $this->assertTrue($hasSubscriberRole);
     }
 }

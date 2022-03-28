@@ -9,23 +9,6 @@ use League\Fractal\TransformerAbstract;
 class UserTransformer extends TransformerAbstract
 {
 
-    /**
-     * List of resources to automatically include
-     *
-     * @var array
-     */
-    protected $defaultIncludes = [
-        //
-    ];
-
-    /**
-     * List of resources possible to include
-     *
-     * @var array
-     */
-    protected $availableIncludes = [
-        //
-    ];
 
     /**
      * A Fractal transformer.
@@ -36,7 +19,6 @@ class UserTransformer extends TransformerAbstract
     {
         $created_at = Carbon::parse($user->created_at)->toFormattedDateString();
         $updated_at = Carbon::parse($user->updated_at)->toFormattedDateString();
-        $role = $user->roles();
         return [
             'id' => $user->id,
             'uuid' => $user->uuid,

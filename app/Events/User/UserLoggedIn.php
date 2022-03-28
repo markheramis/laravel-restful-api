@@ -3,10 +3,8 @@
 namespace App\Events\User;
 
 use App\Models\User;
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
@@ -14,13 +12,6 @@ use Illuminate\Queue\SerializesModels;
 class UserLoggedIn implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-
-    /**
-     * The name of the queue connection to use when broadcasting the event.
-     *
-     * @var string
-     */
-    public $connection = 'redis';
 
     /**
      * The name of the queue on which to place the broadcasting job.
@@ -47,7 +38,7 @@ class UserLoggedIn implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('auth');
+        return new PresenceChannel('auth');
     }
 
     /**
@@ -68,8 +59,7 @@ class UserLoggedIn implements ShouldBroadcast
     public function broadcastWith()
     {
         return [
-            'first_name' => $this->user->first_name,
-            'last_name' => $this->user->last_name
+            'id' => $this->user->id,
         ];
     }
 }

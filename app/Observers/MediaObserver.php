@@ -3,6 +3,9 @@
 namespace App\Observers;
 
 use App\Models\Media;
+use Illuminate\Support\Facades\Auth;
+// use App\Jobs\ExtractMediaFile;
+use App\Jobs\CreateWorkList;
 
 class MediaObserver
 {
@@ -14,7 +17,14 @@ class MediaObserver
      */
     public function created(Media $media)
     {
-        //
+        $meta = $media->meta;
+
+        if (isset($meta) && array_key_exists('is_dicom', $meta)) {
+            if ($meta['is_dicom']) {
+                // ExtractMediaFile::dispatch($media);
+                CreateWorkList::dispatch($media);
+            }
+        }
     }
 
     /**

@@ -2,19 +2,20 @@
 
 namespace App\Models;
 
-use Laravel\Passport\HasApiTokens;
+use App\Models\Worklist;
 use Illuminate\Support\Str;
+use Laravel\Passport\HasApiTokens;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Auth\Passwords\CanResetPassword;
+use Cartalyst\Sentinel\Users\EloquentUser as Model;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
-use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 
-use Cartalyst\Sentinel\Users\EloquentUser as Model;
+use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
+use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 
 class User extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
 {
@@ -100,16 +101,6 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         return $this->hasOne(Google2FA::class);
     }
 
-    public function reports()
-    {
-        return $this->hasMany(Report::class);
-    }
-
-    public function office()
-    {
-        return $this->belongsToMany(Office::class, 'dental_office_user', 'user_id', 'office_id');
-    }
-
     public function hasMFA(): bool
     {
         return (bool) ($this->authy_id && $this->phone_number);
@@ -136,5 +127,10 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
                 array_merge(...$all_permissions)
             )
         );
+    }
+
+    public function meta()
+    {
+        return $this->hasMany(UserMeta::class);
     }
 }
