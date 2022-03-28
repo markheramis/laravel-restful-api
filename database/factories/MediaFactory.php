@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use Storage;
 use App\Models\User;
 use App\Models\Media;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -22,11 +23,21 @@ class MediaFactory extends Factory
      */
     public function definition()
     {
+        $status = $this->faker->randomElement(["public", "private"]);
+
+        $public = ($status == "public") ? "public/" : "";
+        $file = $this->faker->image(storage_path("app/" . $public . "media"), 200, 200, "cats", false, true, "Faker", true);
+        $file_info = pathinfo(storage_path("app/" . $public . "media/$file"));
+        $url = ($status == "public") ? asset("storage/media/$file") : "";
+        $path = $public."media/".$file;
         return [
-            "user_id" => User::factory()->create(),
-            "path" => "media/" . $this->faker->bothify('??##??#?#####??##') . ".jpg",
-            "description" => $this->faker->imageUrl($width = 640, $height = 480),
-            "status" => "public",
+            "path" => $path,
+            "url" => $url,
+            "type" => $file_info['extension'],
+            "meta" => [
+                "is_test" => true
+            ],
+            "status" => $status,
         ];
     }
 }

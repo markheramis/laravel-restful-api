@@ -25,9 +25,7 @@ class UserObserver
          * Create and send Activation link
          */
         Activation::create($user);
-        if (config("broadcasting.default") == "pusher") {
-            broadcast(new UserCreated($user->id));
-        }
+        broadcast(new UserCreated($user->id));
     }
 
     /**

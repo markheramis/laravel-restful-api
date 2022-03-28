@@ -15,8 +15,8 @@ class UpdateNameColumnsToUsersTable extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn(['firstName', 'lastName']);
-            $table->string('first_name')->nullable();
-            $table->string('last_name')->nullable();
+            $table->string('first_name')->nullable()->after('username');
+            $table->string('last_name')->nullable()->after('username');
         });
     }
 
@@ -29,8 +29,8 @@ class UpdateNameColumnsToUsersTable extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn(['first_name', 'last_name']);
-            $table->string('firstName')->nullable();
-            $table->string('lastName')->nullable();
+            $table->string('firstName')->nullable()->after('username');
+            $table->string('lastName')->nullable()->after('username');
         });
     }
 }

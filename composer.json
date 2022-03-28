@@ -11,6 +11,7 @@
         "php": "^7.3|^8.0",
         "authy/php": "^4.0.0-rc2",
         "bacon/bacon-qr-code": "^2.0",
+        "barryvdh/laravel-dompdf": "^0.9.0",
         "cartalyst/sentinel": "^5.0",
         "corbosman/laravel-passport-claims": "^2",
         "doctrine/dbal": "^3.1",
@@ -18,13 +19,13 @@
         "fruitcake/laravel-cors": "^2.0",
         "gamegos/php-code-sniffer": "^0.6.1",
         "guzzlehttp/guzzle": "^7.0.1",
-        "laravel/framework": "^8.12",
+        "laravel/framework": "^8.75",
         "laravel/passport": "^10.1",
         "laravel/tinker": "^2.5",
         "pragmarx/google2fa-laravel": "^2.0",
         "pragmarx/google2fa-qrcode": "^3.0",
         "predis/predis": "^1.1",
-        "pusher/pusher-php-server": "~5.0",
+        "pusher/pusher-php-server": "^7.0",
         "ramsey/uuid": "^4.1",
         "sentry/sentry-laravel": "^2.3",
         "spatie/laravel-activitylog": "^4.3",
@@ -41,18 +42,21 @@
         "laravel/dusk": "^6.2",
         "laravel/envoy": "^2.6",
         "laravel/sail": "^1.3",
-        "laravel/telescope": "^4.6",
-        "mockery/mockery": "^1.4.2",
-        "nunomaduro/collision": "^5.0",
+        "laravel/telescope": "^4.8",
+        "mockery/mockery": "^1.4.4",
+        "nunomaduro/collision": "^5.10",
         "overtrue/phplint": "^3.0",
         "phpbench/phpbench": "1.0.0-beta1",
         "phpunit/php-code-coverage": "^9.2",
-        "phpunit/phpunit": "^9.4"
+        "phpunit/phpunit": "^9.5.10"
     },
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "composer/package-versions-deprecated": true
+        }
     },
     "extra": {
         "laravel": {
@@ -96,7 +100,7 @@
         ],
         "doc": [
             "@php artisan scribe:generate --force"
-        ],  
+        ],
         "lint": [
             "./vendor/bin/phplint"
         ],

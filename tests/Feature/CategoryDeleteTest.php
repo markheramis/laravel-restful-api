@@ -24,13 +24,15 @@ class CategoryDeleteTest extends TestCase
     {
         $category = Category::factory()->create();
         $url = route("category.destroy", [$category->slug]);
-        $token = $this->getTokenByRole("administrator");
+        $user = $this->createUser("administrator", true, true);
+        $token = $this->getTokenByRole("administrator", $user->id, true);
         $header = [
             "Authorization" => "Bearer $token",
         ];
         $response = $this->json("DELETE", $url, [], $header);
         $response->assertStatus(200);
         $category->delete();
+        $user->delete();
     }
 
     public function testDestroyCategoryAsAdministratorShouldBeAllowedWhenMfaEnabledAndMfaVerified()

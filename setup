@@ -3,7 +3,5 @@ php artisan telescope:install
 php artisan telescope:publish
 php artisan storage:link
 php artisan key:generate
-php artisan migrate:fresh
-php artisan db:seed
-php artisan passport:install
+php artisan migrate
 service supervisor start

@@ -11,10 +11,24 @@ class Media extends Model
     use HasFactory;
 
     protected $table = 'medias';
+    protected $fillable = [
+        "user_id",
+        "path",
+        "url",
+        "type",
+        "description",
+        "meta",
+        "status",
+    ];
+
     protected $guarded = [];
+
+    protected $casts = [
+        'meta' => 'array'
+    ];
 
     public function user()
     {
-        $this->belongsTo(User::class);
+        return $this->belongsTo(User::class);
     }
 }

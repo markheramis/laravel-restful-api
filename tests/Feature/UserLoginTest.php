@@ -6,7 +6,12 @@ use Tests\TestCase;
 use App\Models\User;
 use Tests\Traits\userTraits;
 use Lcobucci\JWT\Configuration;
+use App\Events\User\UserLoggedIn;
+use Illuminate\Support\Facades\Event;
+use App\Listeners\User\UserLoggedInListener;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\User\UserLoggedInNotification;
 
 class UserLoginTest extends TestCase
 {
@@ -39,6 +44,8 @@ class UserLoginTest extends TestCase
 
     public function testLoginWithCorrectCredentialsShouldLoginSuccessfully()
     {
+        Event::fake([UserLoggedIn::class]);
+        
         $user = $this->createUser();
         $response = $this->json("POST", route("api.login"), [
             "username" => $user->username,
@@ -46,10 +53,18 @@ class UserLoginTest extends TestCase
         ]);
         $response->assertStatus(200);
         $user->delete();
+        
+        // assert event was dispatched
+        Event::assertDispatched(UserLoggedIn::class);
+        Event::assertListening(
+            UserLoggedIn::class,
+            UserLoggedInListener::class,
+        );
     }
 
     public function testLoginWithCorrectCredentialsButWithEmailShouldBeAllowed()
     {
+        Event::fake([UserLoggedIn::class]);
         $user = $this->createUser();
         $response = $this->json("POST", route("api.login"), [
             "username" => $user->email,
@@ -57,10 +72,12 @@ class UserLoginTest extends TestCase
         ]);
         $response->assertStatus(200);
         $user->delete();
+        Event::assertDispatched(UserLoggedIn::class);
     }
 
     public function testLoginWithCorrectCredentialsShouldLoginSuccessfullyWithToken()
     {
+        Event::fake([UserLoggedIn::class]);
         $user = $this->createUser();
         $response = $this->json("POST", route("api.login"), [
             "username" => $user->username,
@@ -69,12 +86,14 @@ class UserLoginTest extends TestCase
         $response->assertJsonStructure(['data' => ['token', 'mfa_verified']]);
         $response->assertStatus(200);
         $user->delete();
+
+        Event::assertDispatched(UserLoggedIn::class);
     }
-
-
 
     public function testLoginTokenHasMfaVerifiedClaim()
     {
+        Event::fake([UserLoggedIn::class]);
+
         $user = $this->createUser();
         $response = $this->json("POST", route("api.login"), [
             "username" => $user->username,
@@ -92,27 +111,7 @@ class UserLoginTest extends TestCase
         $this->assertEquals(false, $mfaVerifiedClaim);
 
         $user->delete();
-    }
-
-    public function testLoginWithCorrectScopeLoginSuccessfully()
-    {
-        $user = $this->createUser();
-        $response = $this->json("POST", route("api.login"), [
-            "username" => $user->username,
-            "password" => "password12345"
-        ]);
-
-        $tokenParts = explode(".", $response->json()['data']['token']);  
-        $tokenPayload = base64_decode($tokenParts[1]);
-        $jwtPayload = json_decode($tokenPayload);
-        $permissions = (array) $user->allPermissions();
-
-        $result = array_diff_assoc($jwtPayload->scopes, $permissions);
-        if (empty($result)) {
-            $response->assertStatus(200);
-        }
-
-        $user->delete();
+        Event::assertDispatched(UserLoggedIn::class);
     }
 
     public function testLoginHasActivityLog()

@@ -2,10 +2,9 @@
 
 namespace Database\Factories;
 
-use Google2FA;
-use App\Models\User;
 use App\Models\Google2FA as Google2FAModel;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use PragmaRX\Google2FALaravel\Facade as Google2FA;
 
 class Google2FAFactory extends Factory
 {
