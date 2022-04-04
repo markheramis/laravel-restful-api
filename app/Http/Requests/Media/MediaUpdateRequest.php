@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Media;
 
 use App\Http\Requests\FormRequest;
 
-class MediaIndexRequest extends FormRequest
+class MediaUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
