@@ -98,9 +98,9 @@ class MediaController extends Controller
 
     /**
      * Show a Media
-     * 
+     *
      * This endpoint lets you get a Media
-     * 
+     *
      * @authenticated
      * @todo 2nd parameter should auto resolve to the Media model instance
      * @param MediaShowRequest $request
@@ -108,7 +108,7 @@ class MediaController extends Controller
      * @uses App\Transformers\MediaTransformer MediaTransformer
      * @return JsonResponse
      */
-    public function get(MediaShowRequest $request, Media $media)
+    public function show(MediaShowRequest $request, Media $media)
     {
         $response = fractal($media, new MediaTransformer())->toArray();
         return response()->success($response);
@@ -138,7 +138,7 @@ class MediaController extends Controller
 
     /**
      * Delete a Media
-     * 
+     *
      * This endpoint lets you delete a single Role
      *
      * @authenticated
@@ -158,7 +158,7 @@ class MediaController extends Controller
     public function download(MediaDownloadRequest $request, Media $media)
     {
         $public = ($media->status == "public") ? "public/" : "";
-        $path = storage_path('app/'.$public.$media->path);
+        $path = storage_path('app/' . $public . $media->path);
         if (is_dir($path) || !file_exists($path)) {
             return response()->error([], "Media doesn't exist", 404);
         }
