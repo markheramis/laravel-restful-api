@@ -153,6 +153,10 @@ class UserController extends Controller
         ];
         $user = Sentinel::register($credentials);
         if ($activate)
+            /**
+             * @todo this is wrong activation method, we should not use redirect in an API
+             * @description problem with this is its probably gonna block the execution if $activation is true.
+             */
             redirect('api.user.activate')->with('data', $user->toArray());
         $role = ($request->has('role')) ? $request->role : 'subscriber';
         $this->attachRole($user, $role);
