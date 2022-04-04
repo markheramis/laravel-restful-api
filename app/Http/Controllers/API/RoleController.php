@@ -5,26 +5,26 @@ namespace App\Http\Controllers\API;
 use App\Models\Role;
 use App\Http\Controllers\Controller;
 use App\Transformers\RoleTransformer;
-use App\Http\Requests\RoleAllRequest;
-use App\Http\Requests\RoleShowRequest;
-use App\Http\Requests\RoleStoreRequest;
-use App\Http\Requests\RoleUpdateReqeust;
-use App\Http\Requests\RoleDestroyRequest;
-use App\Http\Requests\RoleIndexRequest;
+use App\Http\Requests\Role\RoleAllRequest;
+use App\Http\Requests\Role\RoleShowRequest;
+use App\Http\Requests\Role\RoleStoreRequest;
+use App\Http\Requests\Role\RoleUpdateReqeust;
+use App\Http\Requests\Role\RoleDestroyRequest;
+use App\Http\Requests\Role\RoleIndexRequest;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Serializer\JsonApiSerializer;
 use Illuminate\Http\JsonResponse;
 
 /**
  * @group Role Management
- * 
+ *
  * APIs for managing Roles
  */
 class RoleController extends Controller
 {
     /**
      * Get all Roles
-     * 
+     *
      * This endpoint lets you get all the Roles
      *
      * @authenticated
@@ -52,9 +52,9 @@ class RoleController extends Controller
 
     /**
      * Store a Role
-     * 
+     *
      * This endpoint lets you store a new Role
-     * 
+     *
      * @authenticated
      * @param RoleStoreRequest $request
      * @return JsonResponse
@@ -71,7 +71,7 @@ class RoleController extends Controller
 
     /**
      * Show a Role
-     * 
+     *
      * This endpoint lets you get a Role
      *
      * @authenticated
@@ -89,7 +89,7 @@ class RoleController extends Controller
 
     /**
      * Update a Role
-     * 
+     *
      * This endpoint lets you update a single Role
      *
      * @authenticated
@@ -111,7 +111,7 @@ class RoleController extends Controller
 
     /**
      * Delete a Role
-     * 
+     *
      * This endpoint lets you delete a single Role
      *
      * @authenticated

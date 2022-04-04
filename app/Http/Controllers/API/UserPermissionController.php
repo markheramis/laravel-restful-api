@@ -5,15 +5,15 @@ namespace App\Http\Controllers\API;
 use App\Models\User;
 use App\Transformers\PermissionTransformer;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\UserPermissionShowRequest;
-use App\Http\Requests\UserPermissionStoreRequest;
-use App\Http\Requests\UserPermissionUpdateRequest;
-use App\Http\Requests\UserPermissionDestroyRequest;
+use App\Http\Requests\UserPermission\UserPermissionShowRequest;
+use App\Http\Requests\UserPermission\UserPermissionStoreRequest;
+use App\Http\Requests\UserPermission\UserPermissionUpdateRequest;
+use App\Http\Requests\UserPermission\UserPermissionDestroyRequest;
 use \Illuminate\Http\JsonResponse;
 
 /**
  * @group User Permission Management
- * 
+ *
  * APIs for managing a User's Permissions
  */
 class UserPermissionController extends Controller
@@ -21,7 +21,7 @@ class UserPermissionController extends Controller
 
     /**
      * Get User Permission
-     * 
+     *
      * This endpoint lets you get a User's Permissions
      *
      * @authenticated
@@ -41,7 +41,7 @@ class UserPermissionController extends Controller
      * Store User Permission
      *
      * This endpoint lets you add a Permission to a User
-     * 
+     *
      * @authenticated
      * @todo 2nd parameter should autoresolve into a User model instance
      * @param UserPermissionAddRequest $request
@@ -59,7 +59,7 @@ class UserPermissionController extends Controller
      * Update User Permission
      *
      * This endpoint lets you update a Permission from a User
-     * 
+     *
      * @authenticated
      * @todo 2nd parameter should auto resolve into a User model instance
      * @param UserPermissionUpdateRequest $request
@@ -75,7 +75,7 @@ class UserPermissionController extends Controller
 
     /**
      * Destroy User Permission
-     * 
+     *
      * This endpoint lets you delete a Permission from a User
      *
      * @authenticated

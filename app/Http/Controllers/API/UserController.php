@@ -17,17 +17,20 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Mail;
 use App\Transformers\UserTransformer;
 use Illuminate\Http\Request;
-use App\Http\Requests\UserIndexRequest;
-use App\Http\Requests\UserShowRequest;
-use App\Http\Requests\UserActivateRequest;
-use App\Http\Requests\UserUpdateRequest;
-use App\Http\Requests\UserDestroyRequest;
-use App\Http\Requests\UserRegisterRequest;
+
+use App\Http\Requests\User\UserIndexRequest;
+use App\Http\Requests\User\UserStoreRequest;
+use App\Http\Requests\User\UserShowRequest;
+use App\Http\Requests\User\UserUpdateRequest;
+use App\Http\Requests\User\UserDestroyRequest;
+
 use App\Http\Requests\UserUpdateMFARequest;
 use App\Http\Requests\UserEmailRequest;
 use App\Http\Requests\UserResetPasswordRequest;
-use App\Http\Requests\UserStoreRequest;
+
 use App\Http\Requests\UserChangePasswordRequest;
+
+use App\Http\Requests\UserActivateRequest;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Serializer\JsonApiSerializer;
 
@@ -262,12 +265,6 @@ class UserController extends Controller
         return response()->success($user);
     }
 
-    /**
-     * Undocumented function
-     *
-     * @param UserRegisterRequest $request
-     * @return void
-     */
     private function create_authy_api(Request $request)
     {
         $is_not_local = config('app.env') !== "local";

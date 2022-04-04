@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\UserMeta;
 
+use Auth;
 use App\Http\Requests\FormRequest;
-use Illuminate\Support\Facades\Auth;
 
-class RoleStoreRequest extends FormRequest
+class UserMetaIndexRequest extends FormRequest
 {
-
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -16,7 +15,7 @@ class RoleStoreRequest extends FormRequest
     public function authorize()
     {
         if (!Auth::check()) return;
-        return Auth::user()->hasAccess("role.store");
+        return Auth::user()->hasAccess("user.meta.index");
     }
 
     /**
@@ -27,9 +26,7 @@ class RoleStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            "name" => "required",
-            "slug" => "required",
-            "permissions" => "array|required"
+            //
         ];
     }
 }

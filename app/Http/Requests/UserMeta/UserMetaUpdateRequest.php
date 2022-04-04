@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\UserMeta;
 
+use Auth;
 use App\Http\Requests\FormRequest;
-use Illuminate\Support\Facades\Auth;
 
-class RoleShowRequest extends FormRequest
+class UserMetaUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -15,7 +15,7 @@ class RoleShowRequest extends FormRequest
     public function authorize()
     {
         if (!Auth::check()) return;
-        return Auth::user()->hasAccess('role.index');
+        return Auth::user()->hasAccess("user.meta.update");
     }
 
     /**
@@ -26,7 +26,8 @@ class RoleShowRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            "meta_value" => ["nullable", "array", "min:1", "max:10"],
+            "autoload" => ["boolean", "nullable"],
         ];
     }
 }
