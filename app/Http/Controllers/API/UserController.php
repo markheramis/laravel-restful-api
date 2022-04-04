@@ -120,10 +120,10 @@ class UserController extends Controller
             if (Activation::complete($user, $request->code)) {
                 return response()->success('User activated');
             } else {
-                return response()->error('Failed to activate user');
+                return response()->error([], 'Failed to activate user');
             }
         } else {
-            return response()->error('Activation not found', 404);
+            return response()->error([], 'Activation not found', 404);
         }
     }
 
@@ -221,7 +221,8 @@ class UserController extends Controller
             $role = Sentinel::findRoleBySlug($request->role);
             $user->roles()->sync($role);
         }
-        return response()->success($user);
+        $response = fractal($user, new UserTransformer())->toArray();
+        return response()->success($response);
     }
 
     /**
