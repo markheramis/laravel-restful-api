@@ -413,7 +413,7 @@ class UserController extends Controller
             Sentinel::update(Auth::user(), ["password" => $request->password]);
             return response()->success("User Updated Successfully");
         } catch (\Exception $e) {
-            return response()->error($e->getMessage());
+            return response()->error([], $e->getMessage());
         }
     }
 }
