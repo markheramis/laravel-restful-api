@@ -21,11 +21,12 @@ class UserObserver
      */
     public function created(User $user)
     {
-        /**
-         * Create and send Activation link
-         */
+    //     /**
+    //      * Create and send Activation link
+    //      */
         Activation::create($user);
-        broadcast(new UserCreated($user->id));
+    //     broadcast(new UserCreated($user->id));
+        UserCreated::dispatch($user->id);
     }
 
     /**
@@ -37,7 +38,7 @@ class UserObserver
     public function updated(User $user)
     {
         if (config("broadcasting.default") == "pusher") {
-            broadcast(new UserUpdated($user->id));
+            UserUpdated::dispatch($user->id);
         }
     }
 
@@ -50,7 +51,7 @@ class UserObserver
     public function deleted(User $user)
     {
         if (config("broadcasting.default") == "pusher") {
-            broadcast(new UserDeleted($user->id));
+            UserDeleted::dispatch($user->id);
         }
     }
 
@@ -63,7 +64,7 @@ class UserObserver
     public function restored(User $user)
     {
         if (config("broadcasting.default") == "pusher") {
-            broadcast(new UserRestored($user->id));
+            UserRestored::dispatch($user->id);
         }
     }
 
@@ -76,7 +77,7 @@ class UserObserver
     public function forceDeleted(User $user)
     {
         if (config("broadcasting.default") == "pusher") {
-            broadcast(new UserForceDeleted($user->id));
+            UserForceDeleted::dispatch($user->id);
         }
     }
 }

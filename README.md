@@ -66,6 +66,10 @@ For Kubernetes / DevSpace setup, please refer to [this documentation](resource/d
 
 For extending real-time capabilities, we use websocket and [pusher](pusher.com)
 
+### Specification
+
+For defining this project, we use [this specification](https://mm.tt/map/2236026887?t=UQAg8OqwLz) as a guide in the Development.
+
 ## TODO
 
 -   Explore Kubernetes Deploy to Production. (Kubernetes/DevSpace)

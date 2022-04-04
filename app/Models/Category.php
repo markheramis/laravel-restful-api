@@ -5,11 +5,13 @@ namespace App\Models;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Database\Eloquent\BroadcastsEvents;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Category extends Model
 {
-    use HasFactory, HasSlug;
+    use HasFactory, HasSlug, BroadcastsEvents;
 
     protected $fillable = [
         'parent_id',
@@ -46,5 +48,30 @@ class Category extends Model
     public function child()
     {
         return $this->hasMany(Categories::class);
+    }
+
+    /**
+     * Get the channels the event should broadcast on.
+     *
+     * @return \Illuminate\Broadcasting\Channel|array
+     */
+    public function broadcastOn($event)
+    {
+        return new PrivateChannel('category');
+    }
+
+    /**
+     * The event's broadcast name.
+     *
+     * @return string
+     */
+    public function broadcastAs($event)
+    {
+        return match ($event) {
+            'created' => 'category.created',
+            'updated' => 'category.updated',
+            'deleted' => 'category.deleted',
+            default => null,
+        };
     }
 }
