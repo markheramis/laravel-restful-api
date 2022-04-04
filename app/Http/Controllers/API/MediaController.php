@@ -92,15 +92,15 @@ class MediaController extends Controller
                 'id' => $save->id,
             ]);
         } else {
-            return response()->error("Failed to stored new media");
+            return response()->error([], "Failed to stored new media");
         }
     }
 
     /**
      * Show a Media
-     *
-     * This endpoint lets you show a Media
-     *
+     * 
+     * This endpoint lets you get a Media
+     * 
      * @authenticated
      * @todo 2nd parameter should auto resolve to the Media model instance
      * @param MediaShowRequest $request
@@ -132,13 +132,13 @@ class MediaController extends Controller
             $response = fractal($media, new MediaTransformer())->toArray();
             return response()->succes($response);
         } else {
-            return response()->error("Failed to update media", 400);
+            return response()->error([], "Failed to update media", 400);
         }
     }
 
     /**
      * Delete a Media
-     *
+     * 
      * This endpoint lets you delete a single Role
      *
      * @authenticated
@@ -158,9 +158,9 @@ class MediaController extends Controller
     public function download(MediaDownloadRequest $request, Media $media)
     {
         $public = ($media->status == "public") ? "public/" : "";
-        $path = storage_path('app/' . $public . $media->path);
+        $path = storage_path('app/'.$public.$media->path);
         if (is_dir($path) || !file_exists($path)) {
-            return response()->error("Media doesn't exist", 404);
+            return response()->error([], "Media doesn't exist", 404);
         }
         // return response()->download($path);
 

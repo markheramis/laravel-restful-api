@@ -300,15 +300,17 @@ class UserController extends Controller
     {
         $authy_api = new AuthyApi($this->authy_app_secret);
         $data = $authy_api->qrCode($user->authy_id, []);
+
         $response = [
             'qr_code' => $data->bodyvar('qr_code'),
             'label' => $data->bodyvar('label'),
             'issuer' => $data->bodyvar('issuer'),
         ];
+
         if ($data->bodyvar('success')) {
             return response()->success($response);
         } else {
-            return response()->error('Unable to generate QR Code');
+            return response()->error([], 'Unable to generate QR Code');
         }
     }
 
@@ -352,15 +354,17 @@ class UserController extends Controller
                 'token' => Str::random(60),
                 'created_at' => Carbon::now()
             ];
+
             DB::table('password_resets')->insert($password_reset);
             $url = env('DENTALRAY_APP_URL') . '/reset-password?token=' . $password_reset['token'];
+
             Mail::to($user->email)
                 ->send(new UserForgotPasswordMail(array_merge($password_reset, [
                     'url' => $url
                 ])));
             return response()->success('Please check your email to reset your password');
         }
-        return response()->error("Email doesn't exist", 404);
+        return response()->error([], "Email doesn't exist", 404);
     }
 
     /**
@@ -377,14 +381,14 @@ class UserController extends Controller
         $password_reset = DB::table('password_resets')->where('token', $request->token);
         if ($user_password_reset = $password_reset->first()) {
             if ($request->password != $request->confirm_password) {
-                return response()->error("Password doesn't match!", 403);
+                return response()->error([], "Password doesn't match!", 403);
             }
             $user = user::whereEmail($user_password_reset->email)->first();
             Sentinel::update($user, array('password' => $request->password));
             $password_reset->delete();
             return response()->success('Reset password successfully');
         }
-        return response()->error("Token doesn't exist", 404);
+        return response()->error([], "Token doesn't exist", 404);
     }
 
     /**

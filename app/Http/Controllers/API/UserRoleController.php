@@ -37,7 +37,7 @@ class UserRoleController extends Controller
             $role->users()->attach($user);
             return response()->success('Attached Successfully');
         } else {
-            return response()->error('Not Found', 404);
+            return response()->error([], 'Not Found', 404);
         }
     }
 
@@ -75,7 +75,7 @@ class UserRoleController extends Controller
             $user->roles()->sync($role->id);
             return response()->success('User role Updated');
         } else {
-            return response()->error('Not Found', 404);
+            return response()->error([], 'Not Found', 404);
         }
     }
 
@@ -95,7 +95,7 @@ class UserRoleController extends Controller
             $role->users()->detach($user);
             return response()->success('Detached Successfully');
         } else {
-            return response()->error('Not Found', 404);
+            return response()->error([], 'Not Found', 404);
         }
     }
 }
