@@ -115,8 +115,8 @@ class UserController extends Controller
      */
     public function activate(UserActivateRequest $request): JsonResponse
     {
-        $data = ['uuid' => $request->uuid];
-        if ($user = User::where($data)->first()) {
+        if ($activation = Activation::where('code', $request->code)->first()) {
+            $user = $activation->user;
             if (Activation::complete($user, $request->code)) {
                 return response()->success('User activated');
             } else {

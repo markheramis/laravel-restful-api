@@ -24,7 +24,6 @@ class UserActivateRequest extends FormRequest
     public function rules()
     {
         return [
-            "uuid" => "required|string",
             "code" => "required|string",
         ];
     }
@@ -32,10 +31,6 @@ class UserActivateRequest extends FormRequest
     public function bodyParameters()
     {
         return [
-            "uuid" => [
-                "description" => "The user's UUID",
-                "example" => "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
-            ],
             "code" => [
                 "description" => "The activation code",
                 "example" => "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
