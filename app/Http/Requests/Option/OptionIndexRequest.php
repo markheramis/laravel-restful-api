@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Option;
 
 use App\Http\Requests\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class OptionDestroyRequest extends FormRequest
+class OptionIndexRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -15,7 +15,7 @@ class OptionDestroyRequest extends FormRequest
     public function authorize()
     {
         if (!Auth::check()) return;
-        return Auth::user()->hasAccess('option.destroy');
+        return Auth::user()->hasAccess("option.index");
     }
 
     /**
@@ -25,6 +25,8 @@ class OptionDestroyRequest extends FormRequest
      */
     public function rules()
     {
-        return [];
+        return [
+            //
+        ];
     }
 }
