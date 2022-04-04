@@ -48,7 +48,7 @@ class AuthGoogle2FAController extends Controller
             $qrcode_image = base64_encode($writer->writeString($google2faUrl));
             return $qrcode_image;
         }
-        return response()->error('MFA Not enabled');
+        return response()->error([],'MFA Not enabled');
     }
 
     /**

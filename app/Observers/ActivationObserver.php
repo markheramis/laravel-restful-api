@@ -30,7 +30,7 @@ class ActivationObserver
         }
 
         if (config("broadcasting.default") == "pusher") {
-            broadcast(new ActivationCreated($activation->id));
+            ActivationCreated::dispatch($activation->id);
         }
     }
 
@@ -43,7 +43,7 @@ class ActivationObserver
     public function updated(Activation $activation)
     {
         if (config("broadcasting.default") == "pusher") {
-            broadcast(new ActivationUpdated($activation->id));
+            ActivationUpdated::dispatch($activation->id);
         }
     }
 }
