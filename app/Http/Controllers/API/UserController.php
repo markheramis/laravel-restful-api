@@ -160,7 +160,8 @@ class UserController extends Controller
             redirect('api.user.activate')->with('data', $user->toArray());
         $role = ($request->has('role')) ? $request->role : 'subscriber';
         $this->attachRole($user, $role);
-        return response()->success([$user]);
+        $response = fractal($user, new UserTransformer())->toArray();
+        return response()->success($response);
     }
 
     /**
