@@ -42,9 +42,9 @@ jobs:
     - name: Create Database and run migration
       env:
         DB_PORT: ${{ job.services.mysql.ports[3306] }}
+    - name: Passport Setup
+      run: php artisan passport:install
       run: php artisan migrate --seed
-    - name: Install passport
-      run: php artisan passport:install && php artisan passport:client --personal -n
     - name: Start queue
       run: php artisan queue:work &
     - name: Run Laravel Project
