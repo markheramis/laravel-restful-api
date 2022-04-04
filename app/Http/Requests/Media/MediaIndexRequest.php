@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Media;
 
-use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\FormRequest;
 
-class MediaShowRequest extends FormRequest
+class MediaIndexRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -14,8 +13,7 @@ class MediaShowRequest extends FormRequest
      */
     public function authorize()
     {
-        if (!Auth::check()) return;
-        return Auth::user()->hasAccess("media.show");
+        return true;
     }
 
     /**
@@ -25,6 +23,8 @@ class MediaShowRequest extends FormRequest
      */
     public function rules()
     {
-        return [];
+        return [
+            //
+        ];
     }
 }

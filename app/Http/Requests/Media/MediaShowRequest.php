@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Media;
 
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\FormRequest;
 
-class MediaDownloadRequest extends FormRequest
+class MediaShowRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -15,7 +15,7 @@ class MediaDownloadRequest extends FormRequest
     public function authorize()
     {
         if (!Auth::check()) return;
-        return Auth::user()->hasAccess("media.download");
+        return Auth::user()->hasAccess("media.show");
     }
 
     /**
@@ -25,8 +25,6 @@ class MediaDownloadRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            //
-        ];
+        return [];
     }
 }
