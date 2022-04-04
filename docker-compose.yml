@@ -44,10 +44,8 @@ services:
       - vmysql:/var/lib/mysql
     networks:
       - "laravel-network"
-    ports:
-      - 3306:3306
     healthcheck:
-      test: [CMD, mysqladmin, ping, -h, localhost]
+      test: [ CMD, mysqladmin, ping, -h, localhost ]
       timeout: 45s
       interval: 10s
       retries: 10
@@ -79,10 +77,8 @@ services:
       - "vredis:/data"
     networks:
       - "laravel-network"
-    ports:
-      - 6379:6379
     healthcheck:
-      test: [CMD, redis-cli, ping]
+      test: [ CMD, redis-cli, ping ]
       timeout: 45s
       interval: 10s
       retries: 10
