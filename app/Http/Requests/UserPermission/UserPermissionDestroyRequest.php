@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\UserPermission;
 
 use App\Http\Requests\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class RoleIndexRequest extends FormRequest
+class UserPermissionDestroyRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -15,7 +15,7 @@ class RoleIndexRequest extends FormRequest
     public function authorize()
     {
         if (!Auth::check()) return;
-        return Auth::user()->hasAccess("role.index");
+        return Auth::user()->hasAccess("user.permission.destroy");
     }
 
     /**

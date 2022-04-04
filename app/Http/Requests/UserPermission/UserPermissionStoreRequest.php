@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\UserPermission;
 
 use App\Http\Requests\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class UserRoleUpdateRequest extends FormRequest
+class UserPermissionStoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -15,7 +15,7 @@ class UserRoleUpdateRequest extends FormRequest
     public function authorize()
     {
         if (!Auth::check()) return;
-        return Auth::user()->hasAccess("user.role.update");
+        return Auth::user()->hasAccess("user.permission.store");
     }
 
     /**
@@ -26,7 +26,7 @@ class UserRoleUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'slug' => ['required', 'min:2', 'max:20'],
+            //
         ];
     }
 }

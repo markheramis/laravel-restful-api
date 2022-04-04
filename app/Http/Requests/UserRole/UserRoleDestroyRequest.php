@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\UserRole;
 
-use Auth;
 use App\Http\Requests\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
-class UserMetaUpdateRequest extends FormRequest
+class UserRoleDestroyRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -15,7 +15,7 @@ class UserMetaUpdateRequest extends FormRequest
     public function authorize()
     {
         if (!Auth::check()) return;
-        return Auth::user()->hasAccess("user.meta.update");
+        return Auth::user()->hasAccess("user.role.destroy");
     }
 
     /**
@@ -26,8 +26,7 @@ class UserMetaUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            "meta_value" => ["nullable", "array", "min:1", "max:10"],
-            "autoload" => ["boolean", "nullable"],
+            "slug" => ["min:2", "max:100"],
         ];
     }
 }

@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\UserMeta;
 
 use Auth;
 use App\Http\Requests\FormRequest;
 
-class UserMetaIndexRequest extends FormRequest
+class UserMetaDestroyRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -15,7 +15,7 @@ class UserMetaIndexRequest extends FormRequest
     public function authorize()
     {
         if (!Auth::check()) return;
-        return Auth::user()->hasAccess("user.meta.index");
+        return Auth::user()->hasAccess("user.meta.destroy");
     }
 
     /**

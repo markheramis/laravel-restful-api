@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\UserRole;
 
-use Auth;
 use App\Http\Requests\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
-class UserMetaStoreRequest extends FormRequest
+class UserRoleShowRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -15,7 +15,7 @@ class UserMetaStoreRequest extends FormRequest
     public function authorize()
     {
         if (!Auth::check()) return;
-        return Auth::user()->hasAccess("user.meta.store");
+        return Auth::user()->hasAccess("user.role.show");
     }
 
     /**
@@ -26,9 +26,7 @@ class UserMetaStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            "user_id" => ["number", "required"],
-            "meta_value" => ["nullable", "array", "min:1", "max:10"],
-            "autoload" => ["boolean", "nullable"],
+            //
         ];
     }
 }

@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\UserMeta;
 
 use Auth;
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\FormRequest;
 
-class PermissionIndexRequest extends FormRequest
+class UserMetaIndexRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -14,7 +14,8 @@ class PermissionIndexRequest extends FormRequest
      */
     public function authorize()
     {
-        return Auth::check();
+        if (!Auth::check()) return;
+        return Auth::user()->hasAccess("user.meta.index");
     }
 
     /**
