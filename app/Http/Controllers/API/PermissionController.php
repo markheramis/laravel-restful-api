@@ -3,9 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-
-use App\Http\Requests\PermissionIndexRequest;
+use App\Http\Requests\Permission\PermissionIndexRequest;
 
 /**
  * @group Permission Management
@@ -14,7 +12,7 @@ class PermissionController extends Controller
 {
     /**
      * Get all Permissions
-     * 
+     *
      * This endpoint returns all the permissions available in the system.
      *
      * @authenticated
