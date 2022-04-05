@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: testing
     container:
-      image: lorisleiva/laravel-docker
+      image: ghcr.io/markheramis/laravel-restful-api/laravel-restful-api:latest
     env:
       SENTRY_LARAVEL_DSN: ${{ secrets.SENTRY_LARAVEL_DSN }}
     services:
@@ -20,6 +20,13 @@ jobs:
         ports:
           - 33306:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+      redis:
+        image: redis
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
     - uses: actions/checkout@v2
     - name: Copy .env
@@ -35,9 +42,9 @@ jobs:
     - name: Create Database and run migration
       env:
         DB_PORT: ${{ job.services.mysql.ports[3306] }}
+    - name: Passport Setup
+      run: php artisan passport:install
       run: php artisan migrate --seed
-    - name: Install passport
-      run: php artisan passport:install && php artisan passport:client --personal -n
     - name: Start queue
       run: php artisan queue:work &
     - name: Run Laravel Project

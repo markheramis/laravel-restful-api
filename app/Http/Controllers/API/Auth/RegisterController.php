@@ -8,6 +8,7 @@ use Authy\AuthyApi;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
+use App\Transformers\UserTransformer;
 use App\Http\Requests\UserRegisterRequest;
 
 /**
@@ -43,10 +44,9 @@ class RegisterController extends Controller
             $this->activate($user);
         $role = ($request->has('role')) ? $request->role : 'subscriber';
         $this->attachRole($user, $role);
+        $response = fractal($user, new UserTransformer())->toArray();
 
-        return response()->success([
-            'id' => $user->id,
-        ]);
+        return response()->success($response);
     }
 
     private function activate(User $user): bool

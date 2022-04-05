@@ -49,7 +49,7 @@ class LoginController extends Controller
                         $this->token = $this->createToken($user);
                         break;
                     case self::AUTHY_SMS_FAILED:
-                        return response()->error('Critical Error', 500);
+                        return response()->error([], 'Critical Error', 500);
                         break;
                 }
                 // @codeCoverageIgnoreEnd
@@ -67,7 +67,7 @@ class LoginController extends Controller
                 "mfa_verified" => $this->mfa_verified,
             ]);
         } else {
-            return response()->error('Invalid User', 401);
+            return response()->error([], 'Username or Password is Incorrect', 401);
         }
     }
 

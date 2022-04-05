@@ -6,12 +6,12 @@ use Auth;
 use App\Models\Media;
 use App\Http\Controllers\Controller;
 use App\Transformers\MediaTransformer;
-use App\Http\Requests\MediaIndexRequest;
-use App\Http\Requests\MediaStoreRequest;
-use App\Http\Requests\MediaShowRequest;
-use App\Http\Requests\MediaUpdateRequest;
-use App\Http\Requests\MediaDestroyRequest;
-use App\Http\Requests\MediaDownloadRequest;
+use App\Http\Requests\Media\MediaIndexRequest;
+use App\Http\Requests\Media\MediaStoreRequest;
+use App\Http\Requests\Media\MediaShowRequest;
+use App\Http\Requests\Media\MediaUpdateRequest;
+use App\Http\Requests\Media\MediaDestroyRequest;
+use App\Http\Requests\Media\MediaDownloadRequest;
 use Illuminate\Http\JsonResponse;
 use League\Fractal\Serializer\JsonApiSerializer;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
@@ -92,14 +92,14 @@ class MediaController extends Controller
                 'id' => $save->id,
             ]);
         } else {
-            return response()->error("Failed to stored new media");
+            return response()->error([], "Failed to stored new media");
         }
     }
 
     /**
      * Show a Media
      *
-     * This endpoint lets you show a Media
+     * This endpoint lets you get a Media
      *
      * @authenticated
      * @todo 2nd parameter should auto resolve to the Media model instance
@@ -132,7 +132,7 @@ class MediaController extends Controller
             $response = fractal($media, new MediaTransformer())->toArray();
             return response()->succes($response);
         } else {
-            return response()->error("Failed to update media", 400);
+            return response()->error([], "Failed to update media", 400);
         }
     }
 
@@ -160,7 +160,7 @@ class MediaController extends Controller
         $public = ($media->status == "public") ? "public/" : "";
         $path = storage_path('app/' . $public . $media->path);
         if (is_dir($path) || !file_exists($path)) {
-            return response()->error("Media doesn't exist", 404);
+            return response()->error([], "Media doesn't exist", 404);
         }
         // return response()->download($path);
 

@@ -7,15 +7,15 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Role;
 use App\Transformers\RoleTransformer;
-use App\Http\Requests\UserRoleStoreRequest;
-use App\Http\Requests\UserRoleShowRequest;
-use App\Http\Requests\UserRoleUpdateRequest;
-use App\Http\Requests\UserRoleDestroyRequest;
+use App\Http\Requests\UserRole\UserRoleStoreRequest;
+use App\Http\Requests\UserRole\UserRoleShowRequest;
+use App\Http\Requests\UserRole\UserRoleUpdateRequest;
+use App\Http\Requests\UserRole\UserRoleDestroyRequest;
 use Illuminate\Http\JsonResponse;
 
 /**
  * @group User Role Management
- * 
+ *
  * APIs for managing a User's Role
  */
 class UserRoleController extends Controller
@@ -23,7 +23,7 @@ class UserRoleController extends Controller
 
     /**
      * Add Role to User
-     * 
+     *
      * This endpoint lets you add a Role to a User.
      *
      * @authenticated
@@ -37,13 +37,13 @@ class UserRoleController extends Controller
             $role->users()->attach($user);
             return response()->success('Attached Successfully');
         } else {
-            return response()->error('Not Found', 404);
+            return response()->error([], 'Not Found', 404);
         }
     }
 
     /**
      * Get User Roles
-     * 
+     *
      * This endpoint lets you get a User's Roles
      *
      * @authenticated
@@ -60,7 +60,7 @@ class UserRoleController extends Controller
 
     /**
      * Update Role to User
-     * 
+     *
      * The endpoint lets you update a Role to a User
      *
      * @authenticated
@@ -75,13 +75,13 @@ class UserRoleController extends Controller
             $user->roles()->sync($role->id);
             return response()->success('User role Updated');
         } else {
-            return response()->error('Not Found', 404);
+            return response()->error([], 'Not Found', 404);
         }
     }
 
     /**
      * Delete a User's Role
-     * 
+     *
      * This endpoint lets you delete a User's Role
      *
      * @authenticated
@@ -95,7 +95,7 @@ class UserRoleController extends Controller
             $role->users()->detach($user);
             return response()->success('Detached Successfully');
         } else {
-            return response()->error('Not Found', 404);
+            return response()->error([], 'Not Found', 404);
         }
     }
 }

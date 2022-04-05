@@ -5,25 +5,25 @@ namespace App\Http\Controllers\API;
 use App\Models\Category;
 use App\Http\Controllers\Controller;
 use App\Transformers\CategoryTransformer;
-use App\Http\Requests\CategoryIndexRequest;
-use App\Http\Requests\CategoryStoreRequest;
-use App\Http\Requests\CategoryShowRequest;
-use App\Http\Requests\CategoryUpdateRequest;
-use App\Http\Requests\CategoryDestroyRequest;
+use App\Http\Requests\Category\CategoryIndexRequest;
+use App\Http\Requests\Category\CategoryStoreRequest;
+use App\Http\Requests\Category\CategoryShowRequest;
+use App\Http\Requests\Category\CategoryUpdateRequest;
+use App\Http\Requests\Category\CategoryDestroyRequest;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Serializer\JsonApiSerializer;
 use Illuminate\Http\JsonResponse;
 
 /**
  * @group Category Management
- * 
+ *
  * APIs for managing Categories
  */
 class CategoryController extends Controller
 {
     /**
      * Get all Categories
-     * 
+     *
      * This endpoint lets you get all the Categories
      *
      * @authenticated
@@ -51,9 +51,9 @@ class CategoryController extends Controller
 
     /**
      * Store a Category
-     * 
+     *
      * This endpoint lets you store a new Category
-     * 
+     *
      * @authenticated
      * @param CategoryStoreRequest $request
      * @return JsonResponse
@@ -70,7 +70,7 @@ class CategoryController extends Controller
 
     /**
      * Show a Category
-     * 
+     *
      * This endpoint lets you get a Category
      *
      * @authenticated
@@ -88,7 +88,7 @@ class CategoryController extends Controller
 
     /**
      * Update a Category
-     * 
+     *
      * This endpoint lets you update a single Category
      *
      * @authenticated
@@ -107,7 +107,7 @@ class CategoryController extends Controller
 
     /**
      * Delete a Category
-     * 
+     *
      * This endpoint lets you delete a single Category
      *
      * @authenticated
