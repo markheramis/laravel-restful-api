@@ -1,10 +1,7 @@
 <?php
 
 use Knuckles\Scribe\Extracting\Strategies;
-
 return [
-
-    'theme' => 'default',
 
     /*
      * The HTML <title> for the generated documentation. If this is empty, Scribe will infer it from config('app.name').
@@ -16,10 +13,6 @@ return [
      */
     'description' => '',
 
-    /*
-     * The base URL displayed in the docs. If this is empty, Scribe will use the value of config('app.url').
-     */
-    'base_url' => null,
 
     /*
      * Tell Scribe what routes to generate documentation for.
@@ -34,14 +27,14 @@ return [
              */
             'match' => [
                 /*
-                 * Match only routes whose paths match this pattern (use * as a wildcard to match any characters). Example: 'users/*'.
-                 */
-                'prefixes' => ['api/*'],
-
-                /*
                  * Match only routes whose domains match this pattern (use * as a wildcard to match any characters). Example: 'api.*'.
                  */
                 'domains' => ['*'],
+
+                /*
+                 * Match only routes whose paths match this pattern (use * as a wildcard to match any characters). Example: 'users/*'.
+                 */
+                'prefixes' => ['api/*'],
 
                 /*
                  * [Dingo router only] Match only routes registered under this version. Wildcards are not supported.
@@ -173,30 +166,6 @@ return [
         'middleware' => [],
     ],
 
-    'try_it_out' => [
-        /**
-         * Add a Try It Out button to your endpoints so consumers can test endpoints right from their browser.
-         * Don't forget to enable CORS headers for your endpoints.
-         */
-        'enabled' => true,
-
-        /**
-         * The base URL for the API tester to use (for example, you can set this to your staging URL).
-         * Leave as null to use the current app URL (config(app.url)).
-         */
-        'base_url' => null,
-
-        /**
-         * Fetch a CSRF token before each request, and add it as an X-XSRF-TOKEN header. Needed if you're using Laravel Sanctum.
-         */
-        'use_csrf' => false,
-
-        /**
-         * The URL to fetch the CSRF token from (if `use_csrf` is true).
-         */
-        'csrf_url' => '/sanctum/csrf-cookie',
-    ],
-
     /*
      * How is your API authenticated? This information will be used in the displayed docs, generated examples and response calls.
      */
@@ -204,7 +173,7 @@ return [
         /*
          * Set this to true if any endpoints in your API use authentication.
          */
-        'enabled' => false,
+        'enabled' => true,
 
         /*
          * Set this to true if your API should be authenticated by default. If so, you must also set `enabled` (above) to true.
@@ -221,7 +190,7 @@ return [
         /*
          * The name of the auth parameter (eg token, key, apiKey) or header (eg Authorization, Api-Key).
          */
-        'name' => 'key',
+        'name' => 'Authorization',
 
         /*
          * The value of the parameter to be used by Scribe to authenticate response calls.
@@ -240,7 +209,7 @@ return [
          * Any extra authentication-related info for your users. For instance, you can describe how to find or generate their auth credentials.
          * Markdown and HTML are supported.
          */
-        'extra_info' => 'You can retrieve your token by visiting your dashboard and clicking <b>Generate API token</b>.',
+        'extra_info' => 'You can retrieve your token by submitting the correct login information in the <b>Login Endpoint</b>.',
     ],
 
     /*
@@ -256,15 +225,20 @@ INTRO,
     /*
      * Example requests for each endpoint will be shown in each of these languages.
      * Supported options are: bash, javascript, php, python
-     * To add a language of your own, see https://scribe.knuckles.wtf/laravel/advanced/example-requests
+     * To add a language of your own, see https://scribe.readthedocs.io/en/latest/customization.html
      *
      */
     'example_languages' => [
         'bash',
         'javascript',
         'php',
-        'python',
+        'python'
     ],
+
+    /*
+     * The base URL to be used in examples. If this is empty, Scribe will use the value of config('app.url').
+     */
+    'base_url' => null,
 
     /*
      * Generate a Postman collection (v2.1.0) in addition to HTML docs.
@@ -301,13 +275,14 @@ INTRO,
     ],
 
     /*
-     * Endpoints which don't have a @group will be placed in this default group.
+     * Name for the group of endpoints which do not have a @group set.
      */
     'default_group' => 'Endpoints',
 
     /*
      * Custom logo path. This will be used as the value of the src attribute for the <img> tag,
-     * so make sure it points to an accessible URL or path. Set to false to not use a logo.
+     * so make sure it points to a public URL or path accessible from your web server. For best results, the image width should be 230px.
+     * Set this to false to not use a logo.
      *
      * For example, if your logo is in public/img:
      * - 'logo' => '../img/logo.png' // for `static` type (output folder is public/docs)
@@ -324,43 +299,43 @@ INTRO,
 
     /**
      * The strategies Scribe will use to extract information about your routes at each stage.
-     * If you create or install a custom strategy, add it here.
+     * If you write or install a custom strategy, add it here.
      */
     'strategies' => [
         'metadata' => [
-            Strategies\Metadata\GetFromDocBlocks::class,
+            \Knuckles\Scribe\Extracting\Strategies\Metadata\GetFromDocBlocks::class,
         ],
         'urlParameters' => [
-            Strategies\UrlParameters\GetFromLaravelAPI::class,
-            Strategies\UrlParameters\GetFromLumenAPI::class,
-            Strategies\UrlParameters\GetFromUrlParamTag::class,
+            \Knuckles\Scribe\Extracting\Strategies\UrlParameters\GetFromLaravelAPI::class,
+            \Knuckles\Scribe\Extracting\Strategies\UrlParameters\GetFromLumenAPI::class,
+            \Knuckles\Scribe\Extracting\Strategies\UrlParameters\GetFromUrlParamTag::class,
         ],
         'queryParameters' => [
-            Strategies\QueryParameters\GetFromFormRequest::class,
-            Strategies\QueryParameters\GetFromInlineValidator::class,
-            Strategies\QueryParameters\GetFromQueryParamTag::class,
+            \Knuckles\Scribe\Extracting\Strategies\QueryParameters\GetFromQueryParamTag::class,
         ],
         'headers' => [
-            Strategies\Headers\GetFromRouteRules::class,
-            Strategies\Headers\GetFromHeaderTag::class,
+            \Knuckles\Scribe\Extracting\Strategies\Headers\GetFromRouteRules::class,
+            \Knuckles\Scribe\Extracting\Strategies\Headers\GetFromHeaderTag::class,
         ],
         'bodyParameters' => [
-            Strategies\BodyParameters\GetFromFormRequest::class,
-            Strategies\BodyParameters\GetFromInlineValidator::class,
-            Strategies\BodyParameters\GetFromBodyParamTag::class,
+            \Knuckles\Scribe\Extracting\Strategies\BodyParameters\GetFromFormRequest::class,
+            \Knuckles\Scribe\Extracting\Strategies\BodyParameters\GetFromBodyParamTag::class,
         ],
         'responses' => [
-            Strategies\Responses\UseTransformerTags::class,
-            Strategies\Responses\UseApiResourceTags::class,
-            Strategies\Responses\UseResponseTag::class,
-            Strategies\Responses\UseResponseFileTag::class,
-            Strategies\Responses\ResponseCalls::class,
+            \Knuckles\Scribe\Extracting\Strategies\Responses\UseTransformerTags::class,
+            \Knuckles\Scribe\Extracting\Strategies\Responses\UseResponseTag::class,
+            \Knuckles\Scribe\Extracting\Strategies\Responses\UseResponseFileTag::class,
+            \Knuckles\Scribe\Extracting\Strategies\Responses\UseApiResourceTags::class,
+            \Knuckles\Scribe\Extracting\Strategies\Responses\ResponseCalls::class,
         ],
         'responseFields' => [
-            Strategies\ResponseFields\GetFromResponseFieldTag::class,
+            \Knuckles\Scribe\Extracting\Strategies\ResponseFields\GetFromResponseFieldTag::class,
         ],
     ],
 
+    /*
+     * Configure how responses are transformed using @transformer and @transformerCollection (requires league/fractal package)
+     */
     'fractal' => [
         /* If you are using a custom serializer with league/fractal, you can specify it here.
          * Leave as null to use no serializer or return simple JSON.
@@ -369,16 +344,36 @@ INTRO,
     ],
 
     /*
-     * [Advanced] Custom implementation of RouteMatcherInterface to customise how routes are matched
+     * [Advanced] If you would like to customize how routes are matched beyond the route configuration you may
+     * declare your own implementation of RouteMatcherInterface
      *
      */
     'routeMatcher' => \Knuckles\Scribe\Matching\RouteMatcher::class,
 
     /**
-     * For response calls, API resource responses and transformer responses,
-     * Scribe will try to start database transactions, so no changes are persisted to your database.
-     * Tell Scribe which connections should be transacted here.
-     * If you only use one db connection, you can leave this as is.
+     * For response calls, api resource responses and transformer responses, Scribe will try to start database transactions, so no changes are persisted to your database.
+     * Tell Scribe which connections should be transacted here. If you only use the default db connection, you can leave this as is.
      */
-    'database_connections_to_transact' => [config('database.default')]
+    'database_connections_to_transact' => [config('database.default')],
+    'theme' => 'default',
+    'try_it_out' => [
+        /**
+         * Add a Try It Out button to your endpoints so consumers can test endpoints right from their browser.
+         * Don't forget to enable CORS headers for your endpoints.
+         */
+        'enabled' => true,
+        /**
+         * The base URL for the API tester to use (for example, you can set this to your staging URL).
+         * Leave as null to use the current app URL (config(app.url)).
+         */
+        'base_url' => null,
+        /**
+         * Fetch a CSRF token before each request, and add it as an X-XSRF-TOKEN header. Needed if you're using Laravel Sanctum.
+         */
+        'use_csrf' => false,
+        /**
+         * The URL to fetch the CSRF token from (if `use_csrf` is true).
+         */
+        'csrf_url' => '/sanctum/csrf-cookie',
+    ]
 ];

@@ -25,3 +25,6 @@ database/seeders/UserSeeder.php
 # ignore phplint
 build/
 .phplint-cache
+
+# ignore .scribe
+.scribe

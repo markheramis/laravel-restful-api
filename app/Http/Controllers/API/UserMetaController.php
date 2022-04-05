@@ -7,15 +7,15 @@ use App\Models\User;
 use App\Models\UserMeta;
 use Illuminate\Http\JsonResponse;
 
-use App\Http\Requests\UserMetaIndexRequest;
-use App\Http\Requests\UserMetaStoreRequest;
-use App\Http\Requests\UserMetaShowRequest;
-use App\Http\Requests\UserMetaUpdateRequest;
-use App\Http\Requests\UserMetaDestroyRequest;
+use App\Http\Requests\UserMeta\UserMetaIndexRequest;
+use App\Http\Requests\UserMeta\UserMetaStoreRequest;
+use App\Http\Requests\UserMeta\UserMetaShowRequest;
+use App\Http\Requests\UserMeta\UserMetaUpdateRequest;
+use App\Http\Requests\UserMeta\UserMetaDestroyRequest;
 
 /**
  * @group User Meta Management
- * 
+ *
  * APIs for User Meta Management
  */
 class UserMetaController extends Controller
@@ -23,7 +23,7 @@ class UserMetaController extends Controller
 
     /**
      * Get all User Meta Data
-     * 
+     *
      * This endpoint lets you get all User Meta
      *
      * @authenticated
@@ -39,7 +39,7 @@ class UserMetaController extends Controller
 
     /**
      * Store User Meta
-     * 
+     *
      * This endpoint lets you store User Meta
      *
      * @authenticated
@@ -60,7 +60,7 @@ class UserMetaController extends Controller
 
     /**
      * Show User Meta
-     * 
+     *
      * This endpoint will return a single User Meta
      *
      * @authenticated
@@ -80,7 +80,7 @@ class UserMetaController extends Controller
 
     /**
      * Update User Meta
-     * 
+     *
      * This endpoint will update a single User Meta
      *
      * @authenticated
@@ -107,7 +107,7 @@ class UserMetaController extends Controller
      * Destroy User Meta
      *
      * This endpoint will destroy a single User Meta
-     * 
+     *
      * @authenticated
      * @param UserMetaDestroyRequest $request
      * @param User $user

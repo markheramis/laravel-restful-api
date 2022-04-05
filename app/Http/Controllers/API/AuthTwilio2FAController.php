@@ -55,10 +55,10 @@ class AuthTwilio2FAController extends Controller
                     'token' => $this->generateUserToken($user),
                 ]);
             } else {
-                return response()->error(['message' => 'invalid token']);
+                return response()->error([], 'Invalid Token');
             }
         } else {
-            return response()->error(['message' => 'invalid token']);
+            return response()->error([], 'Invalid token');
         }
     }
 
@@ -104,7 +104,7 @@ class AuthTwilio2FAController extends Controller
         if ($data->bodyvar('success')) {
             return response()->success($response);
         } else {
-            return response()->error('Unable to generate QR Code');
+            return response()->error([], 'Unable to generate QR Code');
         }
     }
 

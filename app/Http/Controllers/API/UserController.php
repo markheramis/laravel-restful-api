@@ -17,17 +17,21 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Mail;
 use App\Transformers\UserTransformer;
 use Illuminate\Http\Request;
-use App\Http\Requests\UserIndexRequest;
-use App\Http\Requests\UserShowRequest;
-use App\Http\Requests\UserActivateRequest;
-use App\Http\Requests\UserUpdateRequest;
-use App\Http\Requests\UserDestroyRequest;
-use App\Http\Requests\UserRegisterRequest;
+
+use App\Http\Requests\User\UserIndexRequest;
+use App\Http\Requests\User\UserStoreRequest;
+use App\Http\Requests\User\UserShowRequest;
+use App\Http\Requests\User\UserUpdateRequest;
+use App\Http\Requests\User\UserDestroyRequest;
+
 use App\Http\Requests\UserUpdateMFARequest;
 use App\Http\Requests\UserEmailRequest;
 use App\Http\Requests\UserResetPasswordRequest;
-use App\Http\Requests\UserStoreRequest;
+
 use App\Http\Requests\UserChangePasswordRequest;
+use App\Transformers\RoleTransformer;
+
+use App\Http\Requests\UserActivateRequest;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Serializer\JsonApiSerializer;
 
@@ -115,15 +119,15 @@ class UserController extends Controller
      */
     public function activate(UserActivateRequest $request): JsonResponse
     {
-        $data = ['uuid' => $request->uuid];
-        if ($user = User::where($data)->first()) {
+        if ($activation = Activation::where('code', $request->code)->first()) {
+            $user = $activation->user;
             if (Activation::complete($user, $request->code)) {
                 return response()->success('User activated');
             } else {
-                return response()->error('Failed to activate user');
+                return response()->error([], 'Failed to activate user');
             }
         } else {
-            return response()->error('Activation not found', 404);
+            return response()->error([], 'Activation not found', 404);
         }
     }
 
@@ -153,10 +157,15 @@ class UserController extends Controller
         ];
         $user = Sentinel::register($credentials);
         if ($activate)
+            /**
+             * @todo this is wrong activation method, we should not use redirect in an API
+             * @description problem with this is its probably gonna block the execution if $activation is true.
+             */
             redirect('api.user.activate')->with('data', $user->toArray());
         $role = ($request->has('role')) ? $request->role : 'subscriber';
         $this->attachRole($user, $role);
-        return response()->success([$user]);
+        $response = fractal($user, new UserTransformer())->toArray();
+        return response()->success($response);
     }
 
     /**
@@ -221,7 +230,8 @@ class UserController extends Controller
             $role = Sentinel::findRoleBySlug($request->role);
             $user->roles()->sync($role);
         }
-        return response()->success($user);
+        $response = fractal($user, new UserTransformer())->toArray();
+        return response()->success($response);
     }
 
     /**
@@ -252,16 +262,10 @@ class UserController extends Controller
     public function me(): JsonResponse
     {
         $user = Auth::user();
-        $user->roles = $user->roles()->select('slug', 'name', 'permissions')->get();
-        return response()->success($user);
+        $response = $user->with('roles')->first();
+        return response()->success($response);
     }
 
-    /**
-     * Undocumented function
-     *
-     * @param UserRegisterRequest $request
-     * @return void
-     */
     private function create_authy_api(Request $request)
     {
         $is_not_local = config('app.env') !== "local";
@@ -300,15 +304,17 @@ class UserController extends Controller
     {
         $authy_api = new AuthyApi($this->authy_app_secret);
         $data = $authy_api->qrCode($user->authy_id, []);
+
         $response = [
             'qr_code' => $data->bodyvar('qr_code'),
             'label' => $data->bodyvar('label'),
             'issuer' => $data->bodyvar('issuer'),
         ];
+
         if ($data->bodyvar('success')) {
             return response()->success($response);
         } else {
-            return response()->error('Unable to generate QR Code');
+            return response()->error([], 'Unable to generate QR Code');
         }
     }
 
@@ -352,15 +358,17 @@ class UserController extends Controller
                 'token' => Str::random(60),
                 'created_at' => Carbon::now()
             ];
+
             DB::table('password_resets')->insert($password_reset);
             $url = env('DENTALRAY_APP_URL') . '/reset-password?token=' . $password_reset['token'];
+
             Mail::to($user->email)
                 ->send(new UserForgotPasswordMail(array_merge($password_reset, [
                     'url' => $url
                 ])));
             return response()->success('Please check your email to reset your password');
         }
-        return response()->error("Email doesn't exist", 404);
+        return response()->error([], "Email doesn't exist", 404);
     }
 
     /**
@@ -377,14 +385,14 @@ class UserController extends Controller
         $password_reset = DB::table('password_resets')->where('token', $request->token);
         if ($user_password_reset = $password_reset->first()) {
             if ($request->password != $request->confirm_password) {
-                return response()->error("Password doesn't match!", 403);
+                return response()->error([], "Password doesn't match!", 403);
             }
             $user = user::whereEmail($user_password_reset->email)->first();
             Sentinel::update($user, array('password' => $request->password));
             $password_reset->delete();
             return response()->success('Reset password successfully');
         }
-        return response()->error("Token doesn't exist", 404);
+        return response()->error([], "Token doesn't exist", 404);
     }
 
     /**
@@ -403,7 +411,7 @@ class UserController extends Controller
             Sentinel::update(Auth::user(), ["password" => $request->password]);
             return response()->success("User Updated Successfully");
         } catch (\Exception $e) {
-            return response()->error($e->getMessage());
+            return response()->error([], $e->getMessage());
         }
     }
 }

@@ -21,7 +21,7 @@ class RoleObserver
     public function created(Role $role)
     {
         if (config("broadcast.default") == "pusher") {
-            broadcast(new RoleCreated($role->id));
+            RoleCreated::dispatch($role->id);
         }
     }
 
@@ -34,7 +34,7 @@ class RoleObserver
     public function updated(Role $role)
     {
         if (config("broadcast.default") == "pusher") {
-            broadcast(new RoleUpdated($role->id));
+            RoleUpdated::dispatch($role->id);
         }
     }
 
@@ -47,7 +47,7 @@ class RoleObserver
     public function deleted(Role $role)
     {
         if (config("broadcast.default") == "pusher") {
-            broadcast(new RoleDeleted($role->id));
+            RoleDeleted::dispatch($role->id);
         }
     }
 
@@ -60,7 +60,7 @@ class RoleObserver
     public function restored(Role $role)
     {
         if (config("broadcast.default") == "pusher") {
-            broadcast(new RoleRestored($role->id));
+            RoleRestored::dispatch($role->id);
         }
     }
 
@@ -73,7 +73,7 @@ class RoleObserver
     public function forceDeleted(Role $role)
     {
         if (config("broadcast.default") == "pusher") {
-            broadcast(new RoleForceDeleted($role->id));
+            RoleForceDeleted::dispatch($role->id);
         }
     }
 }

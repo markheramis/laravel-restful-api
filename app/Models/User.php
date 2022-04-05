@@ -11,6 +11,8 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Cartalyst\Sentinel\Users\EloquentUser as Model;
 use Illuminate\Foundation\Auth\Access\Authorizable;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Database\Eloquent\BroadcastsEvents;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 
@@ -19,7 +21,7 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 
 class User extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
 {
-    use HasApiTokens, Authenticatable, MustVerifyEmail, Notifiable, CanResetPassword, Authorizable, HasFactory;
+    use HasApiTokens, Authenticatable, MustVerifyEmail, Notifiable, CanResetPassword, Authorizable, HasFactory, BroadcastsEvents;
 
     /**
      * The attributes that are mass assignable.
@@ -61,19 +63,6 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     protected $hidden = [
         'password', 'remember_token', 'default_factor',
     ];
-
-    /**
-     * Boot function for using with User Events
-     *
-     * @return void
-     */
-    protected static function boot()
-    {
-        parent::boot();
-        self::creating(function ($model) {
-            $model->uuid = Str::uuid();
-        });
-    }
 
     /**
      * Get the route key for the model.
@@ -132,5 +121,30 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function meta()
     {
         return $this->hasMany(UserMeta::class);
+    }
+
+    /**
+     * Get the channels the event should broadcast on.
+     *
+     * @return \Illuminate\Broadcasting\Channel|array
+     */
+    public function broadcastOn($event)
+    {
+        return new PrivateChannel('user');
+    }
+
+    /**
+     * The event's broadcast name.
+     * @todo create tests automations
+     * @return string
+     */
+    public function broadcastAs($event)
+    {
+        return match ($event) {
+            'created'   => 'user.created',
+            'updated'   => 'user.updated',
+            'deleted'   => 'user.deleted',
+            default => null,
+        };
     }
 }
