@@ -17,21 +17,16 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Mail;
 use App\Transformers\UserTransformer;
 use Illuminate\Http\Request;
-
 use App\Http\Requests\User\UserIndexRequest;
 use App\Http\Requests\User\UserStoreRequest;
 use App\Http\Requests\User\UserShowRequest;
 use App\Http\Requests\User\UserUpdateRequest;
 use App\Http\Requests\User\UserDestroyRequest;
-
-use App\Http\Requests\UserUpdateMFARequest;
-use App\Http\Requests\UserEmailRequest;
-use App\Http\Requests\UserResetPasswordRequest;
-
-use App\Http\Requests\UserChangePasswordRequest;
-use App\Transformers\RoleTransformer;
-
-use App\Http\Requests\UserActivateRequest;
+use App\Http\Requests\User\UserUpdateMFARequest;
+use App\Http\Requests\User\UserForgetPasswordRequest;
+use App\Http\Requests\User\UserResetPasswordRequest;
+use App\Http\Requests\User\UserChangePasswordRequest;
+use App\Http\Requests\User\UserActivateRequest;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Serializer\JsonApiSerializer;
 
@@ -114,7 +109,7 @@ class UserController extends Controller
      * This endpoint lets you activate a User.
      *
      * @authenticated
-     * @param App\Http\Requests\UserActivateRequest $request
+     * @param App\Http\Requests\User\UserActivateRequest $request
      * @return JsonResponse
      */
     public function activate(UserActivateRequest $request): JsonResponse
@@ -347,10 +342,10 @@ class UserController extends Controller
      * This endpoint will send an authorized email reset password
      *
      * @uses App\Models\User $user
-     * @param UserEmailRequest $request
+     * @param UserForgetPasswordRequest $request
      * @return JsonResponse
      */
-    public function forgotPassword(UserEmailRequest $request): JsonResponse
+    public function forgotPassword(UserForgetPasswordRequest $request): JsonResponse
     {
         if ($user = user::whereEmail($request->email)->first()) {
             $password_reset = [

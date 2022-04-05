@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\User;
 
 use App\Http\Requests\FormRequest;
 
-class UserActivateRequest extends FormRequest
+class UserLoginRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,17 +24,8 @@ class UserActivateRequest extends FormRequest
     public function rules()
     {
         return [
-            "code" => "required|string",
-        ];
-    }
-
-    public function bodyParameters()
-    {
-        return [
-            "code" => [
-                "description" => "The activation code",
-                "example" => "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-            ]
+            'username' => ["required", "string", "min:5", "max:255"],
+            'password' => ["required", "string", "min:5", "max:255"],
         ];
     }
 }

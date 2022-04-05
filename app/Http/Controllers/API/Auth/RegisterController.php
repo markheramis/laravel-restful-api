@@ -8,7 +8,7 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Transformers\UserTransformer;
-use App\Http\Requests\UserRegisterRequest;
+use App\Http\Requests\User\UserRegisterRequest;
 use App\Events\User\UserCreated;
 
 

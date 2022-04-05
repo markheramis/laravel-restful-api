@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\User;
 
 use App\Http\Requests\FormRequest;
 
-class UserEmailRequest extends FormRequest
+class UserActivateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +24,17 @@ class UserEmailRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'email|required',
+            "code" => "required|string",
+        ];
+    }
+
+    public function bodyParameters()
+    {
+        return [
+            "code" => [
+                "description" => "The activation code",
+                "example" => "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            ]
         ];
     }
 }
