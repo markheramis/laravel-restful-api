@@ -56,13 +56,6 @@
             "composer/package-versions-deprecated": true
         }
     },
-    "extra": {
-        "laravel": {
-            "dont-discover": [
-                "laravel/telescope"
-            ]
-        }
-    },
     "autoload": {
         "psr-4": {
             "App\\": "app/",
