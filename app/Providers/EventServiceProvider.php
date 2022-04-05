@@ -6,11 +6,13 @@ use App\Events\User\UserCreated;
 use App\Events\User\UserLoggedIn;
 use App\Events\User\UserLoggedOut;
 use Illuminate\Auth\Events\Registered;
-use App\Listeners\User\UserCreatedListener;
 use App\Listeners\User\UserLoggedInListener;
 use App\Listeners\User\UserLoggedOutListener;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+
+use App\Listeners\User\UserCreated\UserCreatedAdminNotificationEventListener;
+use App\Listeners\User\UserCreated\UserCreatedActivationEventListener;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -30,7 +32,8 @@ class EventServiceProvider extends ServiceProvider
             'App\Listeners\PruneOldTokens',
         ],
         UserCreated::class => [
-            UserCreatedListener::class
+            UserCreatedAdminNotificationEventListener::class,
+            UserCreatedActivationEventListener::class,
         ],
         UserLoggedIn::class => [
             UserLoggedInListener::class
