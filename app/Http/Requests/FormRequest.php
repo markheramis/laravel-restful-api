@@ -36,13 +36,8 @@ abstract class FormRequest extends LaravelFormRequest
   protected function failedValidation(Validator $validator)
   {
     $errors = (new ValidationException($validator))->errors();
-
     throw new HttpResponseException(
-      response()->json([
-        'status' => 'error',
-        'data' => $errors,
-        'message' => 'Data validation failed',
-      ], JsonResponse::HTTP_UNPROCESSABLE_ENTITY)
+      response()->error($errors, 'Data validation failed', JsonResponse::HTTP_UNPROCESSABLE_ENTITY)
     );
   }
 

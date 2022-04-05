@@ -20,9 +20,9 @@ class UserSeeder extends Seeder
     {
         $users = User::factory()->count(2)->create();
         $this->__attach_users_to_role($users, 'administrator');
-        $users = User::factory()->count(10)->create();
+        $users = User::factory()->count(2)->create();
         $this->__attach_users_to_role($users, 'moderator');
-        $users = User::factory()->count(10)->create();
+        $users = User::factory()->count(2)->create();
         $this->__attach_users_to_role($users, 'subscriber');
 
         $admin = User::first();
@@ -35,7 +35,7 @@ class UserSeeder extends Seeder
         $role = Role::where('slug', $role_slug)->first();
         $users->map(function ($user) use ($role) {
             # automaticall activate generated users
-            $activation = $user->activation;
+            $activation = $user->activations->first();
             Activation::complete($user, $activation->code);
             # attached given role
             $role->users()->attach($user);

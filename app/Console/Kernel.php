@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Jobs\MediaGarbageCollector;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -28,6 +29,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('telescope:prune')->daily();
         $schedule->command('backup:clean')->daily()->at('01:00');
         $schedule->command('backup:run')->daily()->at('02:00');
+        $schedule->command('passport:purge')->hourly();
+        $schedule->job(new MediaGarbageCollector)->daily();
     }
 
     /**

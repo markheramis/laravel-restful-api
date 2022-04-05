@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use Auth;
 use App\Http\Requests\FormRequest;
 
 class UserLoginRequest extends FormRequest
@@ -25,9 +24,8 @@ class UserLoginRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required_without:username|email',
-            'username' => 'required_without:email|string',
-            'password' => 'required|string'
+            'username' => ["required", "string", "min:5", "max:255"],
+            'password' => ["required", "string", "min:5", "max:255"],
         ];
     }
 }

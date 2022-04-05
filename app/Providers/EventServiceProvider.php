@@ -2,10 +2,15 @@
 
 namespace App\Providers;
 
+use App\Events\User\UserCreated;
+use App\Events\User\UserLoggedIn;
+use App\Events\User\UserLoggedOut;
 use Illuminate\Auth\Events\Registered;
+use App\Listeners\User\UserCreatedListener;
+use App\Listeners\User\UserLoggedInListener;
+use App\Listeners\User\UserLoggedOutListener;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Event;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -18,8 +23,22 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+        'Laravel\Passport\Events\AccessTokenCreated' => [
+            'App\Listeners\RevokeOldTokens',
+        ],
+        'Laravel\Passport\Events\RefreshTokenCreated' => [
+            'App\Listeners\PruneOldTokens',
+        ],
+        UserCreated::class => [
+            UserCreatedListener::class
+        ],
+        UserLoggedIn::class => [
+            UserLoggedInListener::class
+        ],
+        UserLoggedOut::class => [
+            UserLoggedOutListener::class
+        ],
     ];
-
     /**
      * Register any events for your application.
      *
@@ -28,7 +47,5 @@ class EventServiceProvider extends ServiceProvider
     public function boot()
     {
         parent::boot();
-
-        //
     }
 }

@@ -23,32 +23,45 @@ class RoleSeeder extends Seeder
                 "user.show" => true,
                 "user.store" => true,
                 "user.update" => true,
-                "user.delete" => true,
+                "user.destroy" => true,
 
                 "role.index" => true,
                 "role.show" => true,
                 "role.store" => true,
                 "role.update" => true,
-                "role.delete" => true,
+                "role.destroy" => true,
 
                 "user.role.show" => true,
-                "user.role.add" => true,
+                "user.role.store" => true,
                 "user.role.update" => true,
-                "user.role.delete" => true,
+                "user.role.destroy" => true,
 
-                "user.permission.add" => true,
-                "user.permission.get" => true,
-                "user.permission.delete" => true,
+                "user.permission.store" => true,
+                "user.permission.show" => true,
+                "user.permission.destroy" => true,
+
+                "user.meta.index" => true,
+                "user.meta.store" => true,
+                "user.meta.show" => true,
+                "user.meta.update" => true,
+                "user.meta.destroy" => true,
+
+                "media.index" => true,
+                "media.store" => true,
+                "media.show" => true,
+                "media.update" => true,
+                "media.destroy" => true,
+                "media.download" => true,
 
                 "category.index" => true,
-                "category/store" => true,
-                "category.get" => true,
+                "category.store" => true,
+                "category.show" => true,
                 "category.update" => true,
                 "category.destroy" => true,
 
                 "option.index" => true,
                 "option.store" => true,
-                "option.get" => true,
+                "option.show" => true,
                 "option.update" => true,
                 "option.destroy" => true,
             ]
@@ -59,35 +72,32 @@ class RoleSeeder extends Seeder
             "permissions" => [
                 "user.index" => true,
                 "user.show" => true,
-                "user.store" => false,
-                "user.update" => false,
-                "user.delete" => false,
+
+                "media.show" => true,
+                "media.store" => true,
 
                 "role.index" => true,
                 "role.show" => true,
-                "role.store" => false,
-                "role.update" => false,
-                "role.delete" => false,
 
                 "user.role.show" => true,
-                "user.role.add" => true,
-                "user.role.delete" => false,
+                "user.role.store" => true,
 
-                "user.permission.add" => true,
-                "user.permission.get" => true,
-                "user.permission.delete" => false,
+                "user.permission.store" => true,
+                "user.permission.show" => true,
+
+                "user.meta.index" => true,
+                "user.meta.store" => true,
+                "user.meta.show" => true,
+                "user.meta.update" => true,
+                "user.meta.destroy" => true,
 
                 "category.index" => true,
-                "category.store" => false,
-                "category.get" => true,
+                "category.show" => true,
                 "category.update" => true,
-                "category.destroy" => false,
 
                 "option.index" => true,
-                "option.store" => false,
-                "option.get" => true,
+                "option.show" => true,
                 "option.update" => true,
-                "option.destroy" => false,
             ]
         ]);
         $this->create([
@@ -96,35 +106,21 @@ class RoleSeeder extends Seeder
             "permissions" => [
                 "user.index" => true,
                 "user.show" => true,
-                "user.store" => false,
-                "user.update" => false,
-                "user.delete" => false,
 
-                "role.index" => false,
-                "role.show" => false,
-                "role.store" => false,
-                "role.update" => false,
-                "role.delete" => false,
+                "media.show" => true,
 
                 "user.role.show" => true,
-                "user.role.add" => false,
-                "user.role.delete" => false,
 
-                "user.permission.add" => false,
-                "user.permission.get" => false,
-                "user.permission.delete" => false,
+                "user.meta.index" => true,
+                "user.meta.store" => true,
+                "user.meta.show" => true,
+                "user.meta.update" => true,
 
                 "category.index" => true,
-                "category.store" => false,
-                "category.get" => true,
-                "category.update" => false,
-                "category.destroy" => false,
+                "category.show" => true,
 
                 "option.index" => true,
-                "option.store" => false,
-                "option.get" => true,
-                "option.update" => false,
-                "option.destroy" => false,
+                "option.show" => true,
             ]
         ]);
     }

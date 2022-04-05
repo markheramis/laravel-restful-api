@@ -2,20 +2,18 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-
 use App\Models\Option;
-use App\Http\Requests\OptionIndexRequest;
-use App\Http\Requests\OptionStoreRequest;
-use App\Http\Requests\OptionGetRequest;
-use App\Http\Requests\OptionUpdateRequest;
-use App\Http\Requests\OptionDestroyRequest;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Option\OptionIndexRequest;
+use App\Http\Requests\Option\OptionStoreRequest;
+use App\Http\Requests\Option\OptionShowRequest;
+use App\Http\Requests\Option\OptionUpdateRequest;
+use App\Http\Requests\Option\OptionDestroyRequest;
 use Illuminate\Http\JsonResponse;
 
 /**
  * @group Options Management
- * 
+ *
  * APIs for managing Options
  */
 class OptionController extends Controller
@@ -23,9 +21,9 @@ class OptionController extends Controller
 
     /**
      * Get All Options
-     * 
+     *
      * This endpoint lets you get all autoloaded options
-     * 
+     *
      * @authenticated
      *
      * @param OptionIndexRequest $request
@@ -39,9 +37,9 @@ class OptionController extends Controller
 
     /**
      * Store Option
-     * 
+     *
      * This endpoint lets you add a new option
-     * 
+     *
      * @authenticated
      *
      * @param OptionStoreRequest $request
@@ -54,23 +52,22 @@ class OptionController extends Controller
         $option->value = $request->value;
         $option->autoload = $request->autoload;
 
-        if ($option->save()) {
-            return response()->json($option);
-        }
+        $option->save();
+        return response()->json($option);
     }
 
     /**
      * Show Option
-     * 
+     *
      * This endpoint lets you get a single option that matches the name.
-     * 
+     *
      * @authenticated
      *
-     * @param OptionGetRequest $request
+     * @param OptionShowRequest $request
      * @param Option $option
      * @return JsonResponse
      */
-    public function show(OptionGetRequest $request, Option $option): JsonResponse
+    public function show(OptionShowRequest $request, Option $option): JsonResponse
     {
         return response()->json([
             'name' => $option->name,
@@ -80,9 +77,9 @@ class OptionController extends Controller
 
     /**
      * Update Option
-     * 
+     *
      * This endpoint lets you update a single option that matches the neme.
-     * 
+     *
      * @authenticated
      *
      * @param OptionUpdateRequest $request
@@ -93,16 +90,15 @@ class OptionController extends Controller
     {
         $option->value = $request->value;
         $option->autoload = $request->autoload;
-        if ($option->save()) {
-            return response()->json($option);
-        }
+        $option->save();
+        return response()->json($option);
     }
 
     /**
      * Destroy Option
-     * 
+     *
      * This endpoint lets you delete a single option that matches the name.
-     * 
+     *
      * @authenticated
      *
      * @param OptionDestroyRequest $request
@@ -111,8 +107,7 @@ class OptionController extends Controller
      */
     public function destory(OptionDestroyRequest $request, Option $option): JsonResponse
     {
-        if ($option->delete()) {
-            return response()->json('success', 200);
-        }
+        $option->delete();
+        return response()->json('success', 200);
     }
 }

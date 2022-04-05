@@ -14,9 +14,10 @@ abstract class TestCase extends BaseTestCase
     public function setUp(): void
     {
         parent::setUp();
-        \Artisan::call('migrate:fresh');
-        \Artisan::call('db:seed');
-        \Artisan::call('passport:install');
-        \Artisan::call('passport:client --personal -n');
+    }
+
+    public function tearDown(): void
+    {
+        parent::tearDown();
     }
 }

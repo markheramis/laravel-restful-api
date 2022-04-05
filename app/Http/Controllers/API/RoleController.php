@@ -2,29 +2,29 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
 use App\Models\Role;
+use App\Http\Controllers\Controller;
 use App\Transformers\RoleTransformer;
-use App\Http\Requests\RoleAllRequest;
-use App\Http\Requests\RoleShowRequest;
-use App\Http\Requests\RoleStoreRequest;
-use App\Http\Requests\RoleUpdateReqeust;
-use App\Http\Requests\RoleDeleteRequest;
-use App\Http\Requests\RoleIndexRequest;
+use App\Http\Requests\Role\RoleAllRequest;
+use App\Http\Requests\Role\RoleShowRequest;
+use App\Http\Requests\Role\RoleStoreRequest;
+use App\Http\Requests\Role\RoleUpdateReqeust;
+use App\Http\Requests\Role\RoleDestroyRequest;
+use App\Http\Requests\Role\RoleIndexRequest;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Serializer\JsonApiSerializer;
 use Illuminate\Http\JsonResponse;
 
 /**
  * @group Role Management
- * 
+ *
  * APIs for managing Roles
  */
 class RoleController extends Controller
 {
     /**
      * Get all Roles
-     * 
+     *
      * This endpoint lets you get all the Roles
      *
      * @authenticated
@@ -52,32 +52,26 @@ class RoleController extends Controller
 
     /**
      * Store a Role
-     * 
+     *
      * This endpoint lets you store a new Role
-     * 
+     *
      * @authenticated
      * @param RoleStoreRequest $request
      * @return JsonResponse
      */
     public function store(RoleStoreRequest $request): JsonResponse
     {
-        $data = [
-            'name' => $request->name,
-            'slug' => $request->slug,
-            /* 'permissions' => $request->permissions, */
-        ];
-        $role = Role::create($data);
-        if ($role) {
-            $response = fractal($role, new RoleTransformer())->toArray();
-            return response()->success($response);
-        } else {
-            return response()->error('Failed to create role');
-        }
+
+        $role = new Role;
+        $role->name = $request->name;
+        $role->slug = $request->slug;
+        $role->save();
+        return response()->success(fractal($role, new RoleTransformer())->toArray());
     }
 
     /**
      * Show a Role
-     * 
+     *
      * This endpoint lets you get a Role
      *
      * @authenticated
@@ -95,7 +89,7 @@ class RoleController extends Controller
 
     /**
      * Update a Role
-     * 
+     *
      * This endpoint lets you update a single Role
      *
      * @authenticated
@@ -110,32 +104,26 @@ class RoleController extends Controller
         $role->name = $request->name;
         $role->slug = $request->slug;
         $role->permissions = $request->permissions;
-        if ($role->update()) {
-            $response = fractal($role, new RoleTransformer())->toArray();
-            return response()->success($response);
-        } else {
-            return response()->error('Failed to update role', 400);
-        }
+        $role->update();
+        $response = fractal($role, new RoleTransformer())->toArray();
+        return response()->success($response);
     }
 
     /**
      * Delete a Role
-     * 
+     *
      * This endpoint lets you delete a single Role
      *
      * @authenticated
      * @todo add body parameter `force` that allows force delete when user is an admin.
-     * @param RoleDeleteRequest $request
+     * @param RoleDestroyRequest $request
      * @param App\Models\Role $role auto resolved instance of Eloquent Role
      * @uses App\Models\Role $role
      * @return JsonResponse
      */
-    public function destroy(RoleDeleteRequest $request, Role $role): JsonResponse
+    public function destroy(RoleDestroyRequest $request, Role $role): JsonResponse
     {
-        if ($role->delete()) {
-            return response()->success('Role deleted successfully');
-        } else {
-            return response()->error('Failed to delete role', 500);
-        }
+        $role->delete();
+        return response()->success('Role deleted successfully');
     }
 }

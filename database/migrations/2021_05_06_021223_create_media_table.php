@@ -15,7 +15,7 @@ class CreateMediaTable extends Migration
     {
         Schema::create('medias', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('user_id')->refences('id')->on('users');
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->string('path');
             $table->text('description')->nullable();
             $table->enum('status', ['private', 'public'])->default('public');

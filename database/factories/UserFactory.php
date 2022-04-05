@@ -2,11 +2,8 @@
 
 namespace Database\Factories;
 
-use Activation;
 
 use App\Models\User;
-use App\Models\Role;
-
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class UserFactory extends Factory
@@ -27,12 +24,18 @@ class UserFactory extends Factory
     {
         $first_name = $this->faker->firstName();
         $last_name = $this->faker->lastName();
+        $random_number = $this->faker->randomNumber(3, true);
+
+        $email = $first_name . $last_name . $random_number . "@" . $this->faker->domainName();
         return [
-            'username' => $first_name . $last_name,
-            'email' => $this->faker->email(),
+            'username' => $first_name . $last_name . $random_number,
+            'email' => $email,
             'password' => bcrypt('password12345'),
-            'firstName' => $first_name,
-            'lastName' => $last_name,
+            'first_name' => $first_name,
+            'last_name' => $last_name,
+            'phone_number' => rand(1111111111, 9999999999),
+            'country_code' => '1',
+
         ];
     }
 
@@ -61,7 +64,7 @@ class UserFactory extends Factory
      * Configure the model factory.
      *
      * @return $this
-     */
+
     public function configure()
     {
         return $this
@@ -69,4 +72,5 @@ class UserFactory extends Factory
             })->afterCreating(function (User $user) {
             });
     }
+     */
 }
