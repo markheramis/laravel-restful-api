@@ -26,7 +26,7 @@ class UserChangePasswordRequest extends FormRequest
     {
         return [
             "password_current" => "string|required|current_password:api",
-            "password" => "string|required",
+            "password" => "string|required_with:password_confirmation|same:password_confirmation|min:6|max:15",
             "password_confirmation" => "string|required|min:6|max:15",
         ];
     }
