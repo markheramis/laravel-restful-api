@@ -6,11 +6,10 @@ use Auth;
 use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Laravel\Passport\Passport;
 use Laravel\Passport\TokenRepository;
 
-use App\Http\Requests\PersonalAccessTokenIndexRequest;
-use App\Http\Requests\PersonalAccessTokenStoreRequest;
+use App\Http\Requests\OAuth\PersonalAccessTokenIndexRequest;
+use App\Http\Requests\OAuth\PersonalAccessTokenStoreRequest;
 
 /**
  * @group Personal Access Token Management
@@ -46,7 +45,7 @@ class PersonalAccessTokenController
 
     /**
      * Get Personal Access Token
-     * 
+     *
      * Get all of the personal access tokens for the authenticated user.
      *
      * @authenticated
@@ -64,7 +63,7 @@ class PersonalAccessTokenController
 
     /**
      * Store Personal Access Token
-     * 
+     *
      * Create a new personal access token for the user.
      *
      * @authenticated
@@ -79,7 +78,7 @@ class PersonalAccessTokenController
 
     /**
      * Revoke Perosnal Access Token
-     * 
+     *
      * Delete the given token.
      *
      * @authenticated

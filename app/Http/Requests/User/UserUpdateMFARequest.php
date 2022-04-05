@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\User;
 
-use Auth;
 use App\Http\Requests\FormRequest;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
-class AuthTwilio2FAGetSettingsRequeust extends FormRequest
+class UserUpdateMFARequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,7 +26,10 @@ class AuthTwilio2FAGetSettingsRequeust extends FormRequest
     public function rules()
     {
         return [
-            //
+            'default_factor' => [
+                'required',
+                Rule::in(['sms', 'authenticator', 'call', 'push'])
+            ],
         ];
     }
 }

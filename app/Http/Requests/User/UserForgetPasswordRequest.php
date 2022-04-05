@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\User;
 
-use Auth;
 use App\Http\Requests\FormRequest;
 
-class PersonalAccessTokenIndexRequest extends FormRequest
+class UserForgetPasswordRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -14,7 +13,7 @@ class PersonalAccessTokenIndexRequest extends FormRequest
      */
     public function authorize()
     {
-        return Auth::check();
+        return true;
     }
 
     /**
@@ -25,7 +24,7 @@ class PersonalAccessTokenIndexRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'email' => 'email|required',
         ];
     }
 }
