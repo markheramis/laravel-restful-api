@@ -29,6 +29,7 @@ use App\Http\Requests\UserEmailRequest;
 use App\Http\Requests\UserResetPasswordRequest;
 
 use App\Http\Requests\UserChangePasswordRequest;
+use App\Transformers\RoleTransformer;
 
 use App\Http\Requests\UserActivateRequest;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
@@ -261,8 +262,8 @@ class UserController extends Controller
     public function me(): JsonResponse
     {
         $user = Auth::user();
-        $user->roles = $user->roles()->select('slug', 'name', 'permissions')->get();
-        return response()->success($user);
+        $response = $user->with('roles')->first();
+        return response()->success($response);
     }
 
     private function create_authy_api(Request $request)
