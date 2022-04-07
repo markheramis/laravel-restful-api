@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Twilio;
 
+use Auth;
 use App\Http\Requests\FormRequest;
-use Illuminate\Support\Facades\Auth;
 
-class AuthTwilio2FAVerifyCodeRequest extends FormRequest
+class AuthTwilio2FAGetQRCodeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,7 +25,7 @@ class AuthTwilio2FAVerifyCodeRequest extends FormRequest
     public function rules()
     {
         return [
-            'code' => ['string', 'required']
+            //
         ];
     }
 }

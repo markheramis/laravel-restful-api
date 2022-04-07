@@ -9,7 +9,7 @@ use App\Models\User;
 use App\Events\User\UserLoggedIn;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\UserLoginRequest;
+use App\Http\Requests\User\UserLoginRequest;
 
 /**
  * @group User Management
@@ -26,9 +26,9 @@ class LoginController extends Controller
 
     /**
      * Login API
-     * 
+     *
      * This endpoint allows you to login users.
-     * @param UserLoginRequest $request
+     * @param App\Http\Requests\UserLoginRequest $request
      * @return JsonResponse
      */
     public function login(UserLoginRequest $request): JsonResponse
@@ -58,8 +58,8 @@ class LoginController extends Controller
                 $this->token = $this->createToken($user);
             }
             broadcast(new UserLoggedIn($user->id));
-            $otp_sent_to = $this->verify ? 
-            censorPhoneNumber($user->phone_number) : $user->email;
+            $otp_sent_to = $this->verify ?
+                censorPhoneNumber($user->phone_number) : $user->email;
             return response()->success([
                 "otp_sent_to" => $otp_sent_to,
                 "token" => $this->token,

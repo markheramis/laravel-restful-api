@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Twilio;
 
 use App\Http\Requests\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
-class UserResetPasswordRequest extends FormRequest
+class AuthTwilio2FAVerifyCodeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +14,7 @@ class UserResetPasswordRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return Auth::check();
     }
 
     /**
@@ -24,9 +25,7 @@ class UserResetPasswordRequest extends FormRequest
     public function rules()
     {
         return [
-            "password" => "required|string",
-            "confirm_password" => "required|string",
-            "token" => "required|string",
+            'code' => ['string', 'required']
         ];
     }
 }

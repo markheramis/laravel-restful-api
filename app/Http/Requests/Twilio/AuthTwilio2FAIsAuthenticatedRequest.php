@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Twilio;
 
+use Auth;
 use App\Http\Requests\FormRequest;
 
-class UserLoginRequest extends FormRequest
+class AuthTwilio2FAIsAuthenticatedRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +14,7 @@ class UserLoginRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return Auth::check();
     }
 
     /**
@@ -24,8 +25,7 @@ class UserLoginRequest extends FormRequest
     public function rules()
     {
         return [
-            'username' => ["required", "string", "min:5", "max:255"],
-            'password' => ["required", "string", "min:5", "max:255"],
+            //
         ];
     }
 }

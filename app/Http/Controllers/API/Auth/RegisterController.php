@@ -3,13 +3,14 @@
 namespace App\Http\Controllers\API\Auth;
 
 use Sentinel;
-use Activation;
 use Authy\AuthyApi;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Transformers\UserTransformer;
-use App\Http\Requests\UserRegisterRequest;
+use App\Http\Requests\User\UserRegisterRequest;
+use App\Events\User\UserCreated;
+
 
 /**
  * @group User Management
@@ -27,7 +28,6 @@ class RegisterController extends Controller
     public function register(UserRegisterRequest $request): JsonResponse
     {
         $authy_id = $this->create_authy_api($request);
-        $activate = (bool) $request->activate;
         $credentials = [
             "username" => $request->username,
             "email" => $request->email,
@@ -40,19 +40,11 @@ class RegisterController extends Controller
             "authy_id" => $authy_id
         ];
         $user = Sentinel::register($credentials);
-        if ($activate)
-            $this->activate($user);
         $role = ($request->has('role')) ? $request->role : 'subscriber';
         $this->attachRole($user, $role);
+        UserCreated::dispatch($user->id, $role, $request->all());
         $response = fractal($user, new UserTransformer())->toArray();
-
         return response()->success($response);
-    }
-
-    private function activate(User $user): bool
-    {
-        $activation = $user->activations->first();
-        return Activation::complete($user, $activation->code);
     }
 
     /**
@@ -64,6 +56,7 @@ class RegisterController extends Controller
      */
     private function attachRole(User $user, string $role)
     {
+        \Log::info("RegisterController::attachRole " . $role);
         $selectedRole = Sentinel::findRoleBySlug($role);
         $selectedRole->users()->attach($user);
     }

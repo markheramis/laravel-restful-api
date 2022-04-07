@@ -6,10 +6,10 @@ use Auth;
 use Authy\AuthyApi;
 use App\Models\User;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\AuthTwilio2FAVerifyCodeRequest;
-use App\Http\Requests\AuthTwilio2FAIsAuthenticatedRequest;
-use App\Http\Requests\AuthTwilio2FAGetQRCodeRequest;
-use App\Http\Requests\AuthTwilio2FAGetSettingsRequeust;
+use App\Http\Requests\Twilio\AuthTwilio2FAVerifyCodeRequest;
+use App\Http\Requests\Twilio\AuthTwilio2FAIsAuthenticatedRequest;
+use App\Http\Requests\Twilio\AuthTwilio2FAGetQRCodeRequest;
+use App\Http\Requests\Twilio\AuthTwilio2FAGetSettingsRequeust;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Request;
 

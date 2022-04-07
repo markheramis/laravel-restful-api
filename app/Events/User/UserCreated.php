@@ -8,6 +8,7 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Http\Request;
 
 class UserCreated implements ShouldBroadcast
 {
@@ -25,17 +26,23 @@ class UserCreated implements ShouldBroadcast
      *
      * @var string
      */
-    public $queue = 'default';
+    public $queue = 'user';
 
-    public User $user;
+    public int $user_id;
+
+    public $role;
+
+    public $params;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(int $id)
+    public function __construct(int $user_id, string $role, array $params)
     {
-        $this->user = User::find($id);
+        $this->user_id = $user_id;
+        $this->role = $role;
+        $this->params = $params;
     }
 
     /**
@@ -55,7 +62,7 @@ class UserCreated implements ShouldBroadcast
      */
     public function broadcastAs()
     {
-        return 'user.created';
+        return 'user.created.event';
     }
 
     /**
@@ -65,9 +72,10 @@ class UserCreated implements ShouldBroadcast
      */
     public function broadcastWith()
     {
+        $user = User::find($this->user_id);
         return [
-            'first_name' => $this->user->first_name,
-            'last_name' => $this->user->last_name
+            'first_name' => $user->first_name,
+            'last_name' => $user->last_name
         ];
     }
 
