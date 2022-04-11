@@ -45,6 +45,10 @@ jobs:
           php artisan migrate
           php artisan passport:install
           php artisan db:seed
+      - name: Run Application
+        run: |
           php artisan queue:work >> storage/logs/queue.log &
           php artisan serve &
+      - name: Run Tests
+        run: |
           php artisan test --env=testing --testsuite=Unit,Feature
