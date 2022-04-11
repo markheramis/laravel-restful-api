@@ -52,3 +52,17 @@ jobs:
       - name: Run Tests
         run: |
           php artisan test --env=testing --testsuite=Unit,Feature
+      - uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: env
+          path: |
+            .env
+            .env.testing
+          retention-days: 5
+      - uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: logs
+          path: storage/logs/*
+          retention-days: 5
