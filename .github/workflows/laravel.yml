@@ -45,6 +45,8 @@ jobs:
           php artisan migrate
           php artisan passport:install
           php artisan db:seed
+      - name: Check config
+        run: php artisan config
       - name: Run Application
         run: |
           php artisan queue:work >> storage/logs/queue.log &
