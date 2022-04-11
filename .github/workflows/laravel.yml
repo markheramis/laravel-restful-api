@@ -1,14 +1,10 @@
-name: Laravel
-# Triggered when code is pushed to any branch in a repository
+name: Laravel CI
 on: [push, pull_request]
 jobs:
-  laravel-test-job:
+  phpunit:
     runs-on: ubuntu-latest
-    environment: testing
     container:
-      image: ghcr.io/markheramis/laravel-restful-api/laravel-restful-api:latest
-    env:
-      SENTRY_LARAVEL_DSN: ${{ secrets.SENTRY_LARAVEL_DSN }}
+      image: wendyourway/laravel-docker:latest
     services:
       mysql:
         image: mysql:5.7
@@ -19,7 +15,11 @@ jobs:
           MYSQL_ROOT_PASSWORD: secret
         ports:
           - 33306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
       redis:
         image: redis
         options: >-
@@ -29,24 +29,19 @@ jobs:
           --health-retries 5
     steps:
       - uses: actions/checkout@v2
-      - name: Copy .env
-        run: php -r "file_exists('.env') || copy('.env.testing.example', '.env');"
-      - name: Copy .env.testing
-        run: php -r "file_exists('.env.testing') || copy('.env.testing.example', '.env.testing');"
-      - name: Install Dependencies
-        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
-      - name: cache config
-        run: php artisan config:cache
-      - name: Generate key
-        run: php artisan key:generate
-      - name: Create Database and run migration
-        env:
-          DB_PORT: ${{ job.services.mysql.ports[3306] }}
-      - name: Setup Database
-        run: php artisan migrate && php artisan passport:install && php artisan db:seed
-      - name: Start queue
-        run: php artisan queue:work &
-      - name: Run Laravel Project
-        run: php artisan serve &
-      - name: Execute tests
-        run: php artisan test --env=testing
+        with:
+          fetch-depth: 1
+      - name: Install composer dependencies
+        run: |
+          composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+      - name: Prepare Laravel Application
+        run: |
+          cp .env.testing.example .env
+          cp .env.testing.example .env.testing
+          php artisan config:cache
+          php artisan key:generate
+          php artisan route:cache
+          php artisan scribe:generate
+          php artisan migrate
+          php artisan passport:install
+          php artisan db:seed
