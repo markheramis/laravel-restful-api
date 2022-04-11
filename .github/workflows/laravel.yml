@@ -63,6 +63,11 @@ jobs:
       - uses: actions/upload-artifact@v3
         if: failure()
         with:
+          name: Bootstrap Cache
+          path: bootstrap/cache/*
+          retention-days: 5
+      - uses: actions/upload-artifact@v3
+        with:
           name: logs
           path: storage/logs/*
           retention-days: 5
