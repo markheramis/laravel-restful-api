@@ -89,8 +89,8 @@ gitlab-artisan-test:
     - name: mysql:8.0
     - name: redis:latest
   before_script:
-    - cp .env.gitlab .env
-    - cp .env.gitlab .env.testing
+    - cp .env.ci .env
+    - cp .env.ci .env.testing
     - php artisan storage:link
     - php artisan key:generate
     - php artisan migrate
