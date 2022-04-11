@@ -28,26 +28,27 @@ jobs:
           --health-timeout 5s
           --health-retries 5
     steps:
-    - uses: actions/checkout@v2
-    - name: Copy .env
-      run: php -r "file_exists('.env') || copy('.env.testing.example', '.env');"
-    - name: Copy .env.testing
-      run: php -r "file_exists('.env.testing') || copy('.env.testing.example', '.env.testing');"
-    - name: Install Dependencies
-      run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
-    - name: cache config
-      run: php artisan config:cache
-    - name: Generate key
-      run: php artisan key:generate
-    - name: Create Database and run migration
-      env:
-        DB_PORT: ${{ job.services.mysql.ports[3306] }}
-    - name: Passport Setup
-      run: php artisan passport:install
-      run: php artisan migrate --seed
-    - name: Start queue
-      run: php artisan queue:work &
-    - name: Run Laravel Project
-      run: php artisan serve &
-    - name: Execute tests
-      run: php artisan test --env=testing
+      - uses: actions/checkout@v2
+      - name: Copy .env
+        run: php -r "file_exists('.env') || copy('.env.testing.example', '.env');"
+      - name: Copy .env.testing
+        run: php -r "file_exists('.env.testing') || copy('.env.testing.example', '.env.testing');"
+      - name: Install Dependencies
+        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+      - name: cache config
+        run: php artisan config:cache
+      - name: Generate key
+        run: php artisan key:generate
+      - name: Create Database and run migration
+        env:
+          DB_PORT: ${{ job.services.mysql.ports[3306] }}
+      - name: Passport Setup
+        run: php artisan passport:install
+      - name: Migrate Database
+        run: php artisan migrate --seed
+      - name: Start queue
+        run: php artisan queue:work &
+      - name: Run Laravel Project
+        run: php artisan serve &
+      - name: Execute tests
+        run: php artisan test --env=testing
