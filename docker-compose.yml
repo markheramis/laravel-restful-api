@@ -82,6 +82,17 @@ services:
       timeout: 45s
       interval: 10s
       retries: 10
+  redis-commander:
+    container_name: ${PROJECT_NAME}-redis-commander
+    hostname: redis-commander
+    image: ghcr.io/joeferner/redis-commander:latest
+    restart: always
+    environment:
+    - REDIS_HOSTS=local:redis:6379
+    ports:
+    - "8081:8081"
+    networks:
+      - "laravel-network"
   mailhog:
     container_name: ${PROJECT_NAME}-mailhog
     image: 'mailhog/mailhog:latest'
