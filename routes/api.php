@@ -1,14 +1,13 @@
 <?php
-
-/*
-  |--------------------------------------------------------------------------
-  | API Routes
-  |--------------------------------------------------------------------------
-  |
-  | Here is where you can register API routes for your application. These
-  | routes are loaded by the RouteServiceProvider within a group which
-  | is assigned the "api" middleware group. Enjoy building your API!
-  |
+/**
+ * --------------------------------------------------------------------------
+ * API Routes
+ *--------------------------------------------------------------------------
+ *
+ * Here is where you can register API routes for your application. These
+ * routes are loaded by the RouteServiceProvider within a group which
+ * is assigned the "api" middleware group. Enjoy building your API!
+ *
  */
 
 use Illuminate\Support\Facades\Route;
@@ -137,6 +136,8 @@ Route::prefix('role')->middleware(['auth:api', 'mfa.claim'])->group(function () 
         ->name('role.index');
     Route::post('/', [RoleController::class, 'store'])
         ->name('role.store');
+    Route::get("/stats", [RoleController::class, 'roleStats'])
+        ->name('role.stats');
     Route::prefix('{role}')->group(function () {
         Route::get('/', [RoleController::class, 'show'])
             ->name('role.show');

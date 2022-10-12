@@ -34,7 +34,7 @@
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.7",
-        "fakerphp/faker": "^1.9.1",
+        "fakerphp/faker": "^1.20",
         "knuckleswtf/scribe": "^3.0",
         "laravel/dusk": "^6.2",
         "laravel/envoy": "^2.6",
