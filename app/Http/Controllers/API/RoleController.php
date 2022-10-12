@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\API;
 
+use DB;
+use App\Models\User;
 use App\Models\Role;
 use App\Http\Controllers\Controller;
 use App\Transformers\RoleTransformer;
@@ -11,6 +13,7 @@ use App\Http\Requests\Role\RoleStoreRequest;
 use App\Http\Requests\Role\RoleUpdateReqeust;
 use App\Http\Requests\Role\RoleDestroyRequest;
 use App\Http\Requests\Role\RoleIndexRequest;
+use App\Http\Requests\Role\RoleStatsRequest;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Serializer\JsonApiSerializer;
 use Illuminate\Http\JsonResponse;
@@ -125,5 +128,35 @@ class RoleController extends Controller
     {
         $role->delete();
         return response()->success('Role deleted successfully');
+    }
+
+    /**
+     * Role stats
+     *
+     * Get the statistics, number of users per role.
+     *
+     *
+     * @authenticated
+     *
+     * ```
+     * SELECT
+	 *      r.id, r.name, count(*) as user_count
+     * FROM users as u
+     * JOIN role_users as ru ON u.id = ru.user_id
+     * JOIN roles as r ON r.id = ru.role_id
+     * GROUP BY r.id;
+     * ```
+     *
+     * @param [type] $request
+     * @return void
+     */
+    public function roleStats(RoleStatsRequest $request): JsonResponse
+    {
+        $result = User::select(DB::raw('roles.id, roles.name, count(*) as user_count'))
+            ->join("role_users", "users.id", "=", "role_users.user_id")
+            ->join("roles", "role_users.role_id", "=", "roles.id")
+            ->groupBy("roles.id")
+            ->get();
+        return response()->success($result);
     }
 }
