@@ -24,12 +24,15 @@ class MediaFactory extends Factory
     public function definition()
     {
         $status = $this->faker->randomElement(["public", "private"]);
-
         $public = ($status == "public") ? "public/" : "";
-        $file = $this->faker->image(storage_path("app/" . $public . "media"), 200, 200, "cats", false, true, "Faker", true);
+
+        $file = $this->faker->file(
+            resource_path('test/img'),
+            storage_path("app/" . $public . "media/")
+        );
         $file_info = pathinfo(storage_path("app/" . $public . "media/$file"));
         $url = ($status == "public") ? asset("storage/media/$file") : "";
-        $path = $public."media/".$file;
+        $path = $public . "media/" . $file;
         return [
             "path" => $path,
             "url" => $url,
