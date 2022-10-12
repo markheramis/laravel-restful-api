@@ -167,6 +167,8 @@ artisan-test:
   services:
     - name: mysql:8.0
     - name: redis:latest
+    - name: quay.io/soketi/soketi:latest-16-alpine
+      alias: soketi
   before_script:
     - cp .env.gitlab .env
     - cp .env.gitlab .env.testing
