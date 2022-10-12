@@ -101,6 +101,40 @@ services:
         - '${FORWARD_MAILHOG_DASHBOARD_PORT:-8025}:8025'
     networks:
         - "laravel-network"
+  localstack:
+    container_name: ${PROJECT_NAME}-localstack
+    image: localstack/localstack:latest
+    ports:
+      - "4566-4583:4566-4583"
+    environment:
+      - DEBUG=0
+      - DATA_DIR=/storage/localstack/data
+      - AWS_DEFAULT_REGION=us-east-1
+      - SERVICES=s3
+      - AWS_BUCKET=${AWS_BUCKET}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - EDGE_PORT=4566
+    volumes:
+      - './storage/localstack:/tmp/localstack'
+      - '/var/run/docker.sock:/var/run/docker.sock'
+      - './resources/localstack/init:/docker-entrypoint-initaws.d'
+    networks:
+      - "laravel-network"
+  s3manager:
+    container_name: ${PROJECT_NAME}-s3-manager
+    image: mastertinner/s3manager
+    environment:
+      - ENDPOINT=${AWS_ENDPOINT}
+      - ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - USE_SSL=false
+    ports:
+      - 8089:8080
+    depends_on:
+      - localstack
+    networks:
+      - "laravel-network"
 networks:
   laravel-network:
     name: ${PROJECT_NAME}-network
