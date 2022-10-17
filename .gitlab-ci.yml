@@ -93,6 +93,8 @@ gitlab-artisan-test:
     - name: redis:latest
     - name: quay.io/soketi/soketi:latest-16-alpine
       alias: soketi
+    - name: mailhog/mailhog:latest
+      alias: mailhog
   before_script:
     - cp .env.gitlab .env
     - cp .env.gitlab .env.testing
@@ -138,6 +140,8 @@ artisan-test:
     - name: redis:latest
     - name: quay.io/soketi/soketi:latest-16-alpine
       alias: soketi
+    - name: mailhog/mailhog:latest
+      alias: mailhog
   before_script:
     - cp .env.gitlab .env
     - cp .env.gitlab .env.testing
@@ -153,7 +157,7 @@ artisan-test:
   script:
     - php artisan queue:work >> storage/logs/queue.log &
     - php artisan serve &
-    - php artisan test --env=testing --testsuite=Unit,Feature
+    - php artisan test --env=testing --testsuite=Unit,Feature --parallel --processes=4
   only:
     - pull_request
     - push

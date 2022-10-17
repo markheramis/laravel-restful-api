@@ -5,6 +5,7 @@ namespace Tests\Feature\User\Forgot;
 use Tests\TestCase;
 use Tests\Traits\userTraits;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Mail;
 
 class UserForgotPasswordResponseCodeTest extends TestCase
 {
@@ -12,6 +13,7 @@ class UserForgotPasswordResponseCodeTest extends TestCase
 
     public function testForgotPasswordWithCorrectDataSuccessfully()
     {
+        Mail::fake();
         $user = $this->createUser();
         $response = $this->json("POST", route("api.user.password.forgot"), [
             "email" => $user->email,
