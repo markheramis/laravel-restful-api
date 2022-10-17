@@ -49,6 +49,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        if (config('app.env') !== 'local') {
+            \URL::forceScheme('https');
+        }
         Schema::defaultStringLength(200); // Default String Length on Database
         $this->registerPolicies();
         /**
