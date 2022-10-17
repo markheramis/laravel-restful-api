@@ -26,7 +26,6 @@ class UserCreatedAdminNotificationEventListener implements ShouldQueue
      */
     public function handle($event)
     {
-        \Log::info("UserCreatedAdminNotificationEventListener");
         $user = User::find($event->user_id);
     }
 }

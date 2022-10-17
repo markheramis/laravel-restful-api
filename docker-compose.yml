@@ -25,6 +25,7 @@ services:
     depends_on:
       - mysql
       - redis
+      - soketi
     links:
       - mysql
       - redis
@@ -86,11 +87,56 @@ services:
     container_name: ${PROJECT_NAME}-redis-commander
     hostname: redis-commander
     image: ghcr.io/joeferner/redis-commander:latest
-    restart: always
     environment:
     - REDIS_HOSTS=local:redis:6379
     ports:
     - "8081:8081"
+    networks:
+      - "laravel-network"
+  soketi:
+    container_name: ${PROJECT_NAME}-soketi
+    image: 'quay.io/soketi/soketi:latest-16-alpine'
+    environment:
+      #SOKETI_DEBUG: '1'
+      #SOKETI_METRICS_ENABLED: true
+      #SOKETI_METRICS_SERVER_PORT: '9601'
+      #SOKETI_DEFAULT_APP_ID: 'app-id'
+      #SOKETI_DEFAULT_APP_KEY: 'app-key'
+      #SOKETI_DEFAULT_APP_SECRET: 'app-secret'
+      #SOKETI_DEFAULT_APP_MAX_CONNS: '5'
+      #SOKETI_DEFAULT_APP_ENABLE_CLIENT_MESSAGES: false
+      #SOKETI_DEFAULT_APP_ENABLED: true
+      #SOKETI_DEFAULT_APP_MAX_BACKEND_EVENTS_PER_SEC: '-1'
+      #SOKETI_DEFAULT_APP_MAX_CLIENT_EVENTS_PER_SEC: '-1'
+      #SOKETI_DEFAULT_APP_MAX_READ_REQ_PER_SEC: '-1'
+      #SOKETI_DEFAULT_APP_WEBHOOKS: '[]'
+      #DEFAULT_APP_USER_AUTHENTICATION: false
+      #SOKETI_APP_MANAGER_DRIVER: 'mysql'
+      #SOKETI_APP_MANAGER_CACHE_ENABLED: false
+      #SOKETI_APP_MANAGER_CACHE_TTL: '-1'
+      #SOKETI_DB_MYSQL_HOST: 'mysql'
+      #SOKETI_DB_MYSQL_PORT: '3306'
+      #SOKETI_DB_MYSQL_USERNAME: ${DB_USERNAME}
+      #SOKETI_DB_MYSQL_PASSWORD: ${DB_PASSWORD}
+      #SOKETI_DB_MYSQL_DATABASE: ${DB_DATABASE}
+      #SOKETI_APP_MANAGER_MYSQL_TABLE: 'soketi_app'
+      #SOKETI_APP_MANAGER_MYSQL_USE_V2: true
+      #SOKETI_DB_REDIS_HOST: 'redis'
+      #SOKETI_DB_REDIS_PORT: '6379'
+      #SOKETI_DB_REDIS_DB: '0'
+      #SOKETI_DB_REDIS_USERNAME: null
+      #SOKETI_DB_REDIS_PASSWORD: null
+      #SOKETI_DB_REDIS_KEY_PREFIX: null
+      #SOKETI_QUEUE_DRIVER: 'redis'
+      #SOKETI_QUEUE_REDIS_CONCURRENCY: '1'
+      #SOKETI_SHUTDOWN_GRACE_PERIOD: '1000'
+      SOKETI_DEBUG: '1'
+      SOKETI_METRICS_SERVER_PORT: '9601'
+    ports:
+      - '${SOKETI_PORT:-6001}:6001'
+      - '${SOKETI_METRICS_SERVER_PORT:-9601}:9601'
+    depends_on:
+      - mysql
     networks:
       - "laravel-network"
   mailhog:
