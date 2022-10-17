@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\API\Auth;
 
-use Sentinel;
+use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use Authy\AuthyApi;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
@@ -27,6 +27,7 @@ class RegisterController extends Controller
      */
     public function register(UserRegisterRequest $request): JsonResponse
     {
+        \Log::info("Register Request: " . json_encode($request->all()));
         $authy_id = $this->create_authy_api($request);
         $credentials = [
             "username" => $request->username,
@@ -39,7 +40,9 @@ class RegisterController extends Controller
             "country_code" => $request->country_code,
             "authy_id" => $authy_id
         ];
-        $user = Sentinel::register($credentials);
+        $user = ($request->activate) ?
+            Sentinel::registerAndActivate($credentials):
+            Sentinel::register($credentials);
         $role = ($request->has('role')) ? $request->role : 'subscriber';
         $this->attachRole($user, $role);
         UserCreated::dispatch($user->id, $role, $request->all());
@@ -56,7 +59,6 @@ class RegisterController extends Controller
      */
     private function attachRole(User $user, string $role)
     {
-        \Log::info("RegisterController::attachRole " . $role);
         $selectedRole = Sentinel::findRoleBySlug($role);
         $selectedRole->users()->attach($user);
     }

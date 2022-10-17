@@ -33,7 +33,6 @@ class EventServiceProvider extends ServiceProvider
         ],
         UserCreated::class => [
             UserCreatedAdminNotificationEventListener::class,
-            UserCreatedActivationEventListener::class,
         ],
         UserLoggedIn::class => [
             UserLoggedInListener::class
