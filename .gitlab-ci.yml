@@ -157,7 +157,7 @@ artisan-test:
   script:
     - php artisan queue:work >> storage/logs/queue.log &
     - php artisan serve &
-    - php artisan test --env=testing --testsuite=Unit,Feature --parallel --processes=4
+    - php artisan test --env=testing --testsuite=Unit,Feature
   only:
     - pull_request
     - push
