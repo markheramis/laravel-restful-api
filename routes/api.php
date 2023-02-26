@@ -204,19 +204,3 @@ Route::prefix('option')
                 ->name('option.destroy');
         });
     });
-/*
-Route::prefix('category')->middleware(['auth:api', 'mfa.claim'])->group(function () {
-    Route::get('/', [CategoryController::class, 'index'])
-        ->name('category.index');
-    Route::post('/', [CategoryController::class, 'store'])
-        ->name('category.store');
-    Route::prefix('{category}')->group(function () {
-        Route::get('/', [CategoryController::class, 'show'])
-            ->name('category.show');
-        Route::put('/', [CategoryController::class, 'update'])
-            ->name('category.update');
-        Route::delete('/', [CategoryController::class, 'destroy'])
-            ->name('category.destroy');
-    });
-});
-*/
