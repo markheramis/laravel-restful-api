@@ -60,31 +60,6 @@ Route::prefix('auth')
                 ->name('api.mfa.twilio.settings');
         });
 });
-Route::prefix('oauth')->group(function() {
-    // forAuthorization
-    Route::prefix('authorize')
-        ->middleware(['api','auth:api'])
-        ->group(function() {
-            Route::get('/', [AuthorizationController::class, 'authorize'])
-                ->name('passport.authorizations.authorize');
-            Route::post('/', [ApproveAuthorizationController::class, 'approve'])
-                ->name('passport.authorizations.approve');
-            Route::delete('/', [DenyAuthorizationController::class, 'deny'])
-                ->name('passport.authorizations.deny');
-        });
-    // forAccessTokens
-    Route::post('token', [AccessTokenController::class, 'issueToken'])
-        ->middleware('throttle')
-        ->name('passport.token');
-    Route::prefix('tokens')
-    ->middleware(['api','auth:api'])
-    ->group(function() {
-        Route::get('/', [AuthorizedAccessTokenController::class, 'forUser'])
-            ->name('passport.tokens.index');
-        Route::delete('/{token_id}', [AuthorizedAccessTokenController::class, 'destroy'])
-            ->name('passport.tokens.destroy');
-    });
-});
 Route::prefix('user')
     ->middleware(['auth:api', 'mfa.claim'])
     ->group(function () {
