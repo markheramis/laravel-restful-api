@@ -1,12 +1,12 @@
 <?php
 
-namespace Tests\Feature\Passport\PersonalAccessToken\Store;
+namespace Tests\Feature\Passport;
 
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\Traits\userTraits;
 use Tests\TestCase;
 
-class OAuthPersonalAccessTokenStoreResponseCodeTest extends TestCase
+class PassportPersonalAccessTokenStoreResponseCodeTest extends TestCase
 {
     use userTraits, WithFaker;
 

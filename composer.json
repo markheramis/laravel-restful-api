@@ -26,28 +26,25 @@
         "predis/predis": "^1.1",
         "pusher/pusher-php-server": "^7.0",
         "ramsey/uuid": "^4.1",
-        "sentry/sentry-laravel": "^2.3",
+        "sentry/sentry-laravel": "^2.12",
         "spatie/laravel-activitylog": "^4.3",
-        "spatie/laravel-backup": "dev-main",
         "spatie/laravel-fractal": "^6.0",
         "spatie/laravel-sluggable": "^3.1",
         "twilio/sdk": "^6.28"
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.7",
-        "fakerphp/faker": "^1.20",
-        "knuckleswtf/scribe": "^3.0",
+        "fakerphp/faker": "^1.9.1",
         "laravel/dusk": "^6.2",
         "laravel/envoy": "^2.6",
         "laravel/sail": "^1.0.1",
-        "laravel/telescope": "5.x-dev",
+        "laravel/telescope": "^4.8",
         "mockery/mockery": "^1.4.4",
         "nunomaduro/collision": "^6.1",
         "overtrue/phplint": "^4.0",
         "phpbench/phpbench": "1.2.x-dev",
         "phpunit/php-code-coverage": "^9.2",
-        "phpunit/phpunit": "^9.5.10",
-        "spatie/laravel-ignition": "dev-main"
+        "phpunit/phpunit": "^9.5.10"
     },
     "config": {
         "optimize-autoloader": true,
