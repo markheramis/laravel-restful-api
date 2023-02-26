@@ -53,10 +53,8 @@ class RouteServiceProvider extends ServiceProvider
     public function map()
     {
         $this->mapApiRoutes();
-
+        $this->mapPassportApiRoutes();
         $this->mapWebRoutes();
-
-        //
     }
 
     /**
@@ -86,5 +84,13 @@ class RouteServiceProvider extends ServiceProvider
             ->middleware('api')
             ->namespace("{$this->namespace}\API")
             ->group(base_path('routes/api.php'));
+    }
+
+    protected function mapPassportApiRoutes()
+    {
+        Route::prefix('api/oauth')
+            ->middleware('api')
+            ->namespace("{$this->namespace}\API")
+            ->group(base_path('routes/passport.php'));
     }
 }
