@@ -26,7 +26,7 @@ class AddForeignToPersistencesTable extends Migration
     public function down()
     {
         Schema::table('persistences', function (Blueprint $table) {
-            $table->dropForeign('activations_user_id_foreign');
+            $table->dropForeign('persistences_user_id_foreign');
         });
     }
 }

@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Database\Eloquent\Collection;
 
 use Laravel\Passport\TokenRepository;
@@ -55,11 +56,11 @@ class PersonalAccessTokenController
          *
          * @authenticated
          * @param  PersonalAccessTokenIndexRequest  $request
-         * @return Collection
+         * @return JsonResponse
          */
-        public function index(
+        public function forUser(
                 PersonalAccessTokenIndexRequest $request
-        ): Collection {
+        ): JsonResponse {
                 $tokens = $this
                         ->tokenRepository
                         ->forUser(
@@ -79,11 +80,11 @@ class PersonalAccessTokenController
          *
          * @authenticated
          * @param  Request  $request
-         * @return PersonalAccessTokenResult
+         * @return JsonResponse
          */
         public function store(
                 PersonalAccessTokenStoreRequest $request
-        ): PersonalAccessTokenResult {
+        ): JsonResponse {
                 /**
                  * @var User
                  */
@@ -103,18 +104,18 @@ class PersonalAccessTokenController
          * @authenticated
          * @param  Request  $request
          * @param  string  $tokenId
-         * @return Response
+         * @return JsonResponse
          */
-        public function destroy(Request $request, $tokenId): Response
+        public function destroy(Request $request, $tokenId): JsonResponse
         {
                 $token = $this->tokenRepository->findForUser(
                         $tokenId,
                         Auth::user()->getAuthIdentifier()
                 );
                 if (is_null($token)) {
-                        return new Response('', 404);
+                        return response()->error([], 404);
                 }
                 $token->revoke();
-                return new Response('', Response::HTTP_NO_CONTENT);
+                return response()->success([], 204);
         }
 }

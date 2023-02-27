@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\MustVerifyEmail;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Cartalyst\Sentinel\Users\EloquentUser as Model;
@@ -72,6 +73,14 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function getRouteKeyName()
     {
         return 'id';
+    }
+
+    /**
+     * Validate the password of the user for the Passport password grant.
+     */
+    public function validateForPassportPasswordGrant(string $password): bool
+    {
+        return Hash::check($password, $this->password);
     }
 
 
