@@ -26,7 +26,7 @@ class AddForeignToRemindersTable extends Migration
     public function down()
     {
         Schema::table('reminders', function (Blueprint $table) {
-            $table->dropForeign('persistences_user_id_foreign');
+            $table->dropForeign('reminders_user_id_foreign');
         });
     }
 }

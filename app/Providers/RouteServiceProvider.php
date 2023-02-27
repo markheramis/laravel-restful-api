@@ -89,7 +89,7 @@ class RouteServiceProvider extends ServiceProvider
     protected function mapPassportApiRoutes()
     {
         Route::prefix('api/oauth')
-            ->middleware('api')
+            ->middleware(['throttle'])
             ->namespace("{$this->namespace}\API")
             ->group(base_path('routes/passport.php'));
     }

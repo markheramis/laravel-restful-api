@@ -25,6 +25,8 @@ class UpdateUserIdColumnForGoogle2faTable extends Migration
      */
     public function down()
     {
-        $table->integer('user_id')->unsigned()->change();
+        Schema::table('google2fa', function(Blueprint $table) {
+            $table->integer('user_id')->unsigned()->change();
+        });
     }
 }

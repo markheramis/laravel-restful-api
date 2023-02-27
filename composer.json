@@ -19,7 +19,7 @@
         "gamegos/php-code-sniffer": "^0.6.1",
         "guzzlehttp/guzzle": "^7.5",
         "laravel/framework": "^9.3",
-        "laravel/passport": "^10.1",
+        "laravel/passport": "^11.0",
         "laravel/tinker": "^2.7",
         "pragmarx/google2fa-laravel": "^2.0",
         "pragmarx/google2fa-qrcode": "^3.0",
