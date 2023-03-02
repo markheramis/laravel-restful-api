@@ -19,7 +19,6 @@ variables:
   # SOKETI
   SOKETI_DEBUG: '1'
   SOKETI_METRICS_SERVER_PORT: '9601'
-
 include:
   - template: Code-Quality.gitlab-ci.yml
   - template: Jobs/Code-Intelligence.gitlab-ci.yml # https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Code-Intelligence.gitlab-ci.yml
@@ -28,7 +27,6 @@ include:
   - template: Security/License-Scanning.gitlab-ci.yml # https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/License-Scanning.gitlab-ci.yml
   - template: Security/SAST.gitlab-ci.yml # https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml
   - template: Security/Secret-Detection.gitlab-ci.yml # https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/Secret-Detection.gitlab-ci.yml
-
 stages:
   - pre-build
   - build
@@ -48,19 +46,13 @@ build-docker:
     - name: docker:stable-dind
       alias: thedockerhost
   script:
-    # Download bash:
-    - apk add --no-cache bash python3
-    # Delete setup
-    - rm setup
     # GitLab has a built-in Docker image registry, whose parameters are set automatically.
     # See https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#using-the-gitlab-contai
     # CHANGEME: You can use some other Docker registry though by changing the
     # login and image name.
-    - docker info
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
     - docker build -t $DOCKER_IMAGE .
     - docker push $DOCKER_IMAGE
-
 build-composer:
   image: composer:latest
   stage: build
@@ -84,12 +76,12 @@ build-composer:
   needs:
     - build-docker
 
-artisan-test:
+artisan-test-feature:
   image:
     name: $DOCKER_IMAGE
     entrypoint: [""]
   stage: test
-  parallel: 3
+  parallel: 2
   services:
     - name: mysql:8.0
     - name: redis:latest
@@ -100,17 +92,82 @@ artisan-test:
   before_script:
     - cp .env.example .env
     - cp .env.testing.example .env.testing
+    - php artisan config:clear
+    - php artisan route:clear
+    - php artisan key:generate
+    - php artisan key:generate --env=testing
+    - php artisan migrate
+    - output=$(php artisan passport:install)
+    - client_id=$(echo "$output" | awk '/Client ID:/{print $3; exit}')
+    - client_secret=$(echo "$output" | awk '/Client secret:/{print $3; exit}')
+    - sed -i "s/^PASSPORT_PERSONAL_ACCESS_CLIENT_ID=.*/PASSPORT_PERSONAL_ACCESS_CLIENT_ID=${client_id}/" .env
+    - sed -i "s/^PASSPORT_PERSONAL_ACCESS_CLIENT_SECRET=.*/PASSPORT_PERSONAL_ACCESS_CLIENT_SECRET=${client_secret}/" .env
+    - sed -i "s/^PASSPORT_PERSONAL_ACCESS_CLIENT_ID=.*/PASSPORT_PERSONAL_ACCESS_CLIENT_ID=${client_id}/" .env.testing
+    - sed -i "s/^PASSPORT_PERSONAL_ACCESS_CLIENT_SECRET=.*/PASSPORT_PERSONAL_ACCESS_CLIENT_SECRET=${client_secret}/" .env.testing
     - php artisan config:cache
     - php artisan config:cache --env=testing
-    - php artisan storage:link
-    - php artisan key:generate
-    - php artisan migrate
-    - php artisan passport:install
+    - php artisan route:cache
     - php artisan db:seed
   script:
     - php artisan queue:work >> storage/logs/queue.log &
     - php artisan serve &
-    - php artisan test --env=testing --testsuite=Unit,Feature
+    - php artisan test --env=testing --testsuite=Feature
+  only:
+    - pull_request
+    - push
+    - master
+    - staging
+    - production
+  artifacts:
+    paths:
+      - .env
+      - .env.testing
+      - bootstrap/cache/
+      - storage/logs/
+    expire_in: 1 day
+    when: always
+  dependencies:
+    - build-docker
+    - build-composer
+  needs:
+    - build-docker
+    - build-composer
+artisan-test-unit:
+  image:
+    name: $DOCKER_IMAGE
+    entrypoint: [""]
+  stage: test
+  parallel: 2
+  services:
+    - name: mysql:8.0
+    - name: redis:latest
+    - name: quay.io/soketi/soketi:latest-16-alpine
+      alias: soketi
+    - name: mailhog/mailhog:latest
+      alias: mailhog
+  before_script:
+    - cp .env.example .env
+    - cp .env.testing.example .env.testing
+    - php artisan config:clear
+    - php artisan route:clear
+    - php artisan key:generate
+    - php artisan key:generate --env=testing
+    - php artisan migrate
+    - output=$(php artisan passport:install)
+    - client_id=$(echo "$output" | awk '/Client ID:/{print $3; exit}')
+    - client_secret=$(echo "$output" | awk '/Client secret:/{print $3; exit}')
+    - sed -i "s/^PASSPORT_PERSONAL_ACCESS_CLIENT_ID=.*/PASSPORT_PERSONAL_ACCESS_CLIENT_ID=${client_id}/" .env
+    - sed -i "s/^PASSPORT_PERSONAL_ACCESS_CLIENT_SECRET=.*/PASSPORT_PERSONAL_ACCESS_CLIENT_SECRET=${client_secret}/" .env
+    - sed -i "s/^PASSPORT_PERSONAL_ACCESS_CLIENT_ID=.*/PASSPORT_PERSONAL_ACCESS_CLIENT_ID=${client_id}/" .env.testing
+    - sed -i "s/^PASSPORT_PERSONAL_ACCESS_CLIENT_SECRET=.*/PASSPORT_PERSONAL_ACCESS_CLIENT_SECRET=${client_secret}/" .env.testing
+    - php artisan config:cache
+    - php artisan config:cache --env=testing
+    - php artisan route:cache
+    - php artisan db:seed
+  script:
+    - php artisan queue:work >> storage/logs/queue.log &
+    - php artisan serve &
+    - php artisan test --env=testing --testsuite=Unit
   only:
     - pull_request
     - push
@@ -144,35 +201,6 @@ php-lint:
   needs:
     - build-docker
     - build-composer
-
-#code_quality:
-#  stage: test
-#  rules:
-#    # Run code_quality in pipelines on the master branch (but not in other branch pipelines)
-#    - if: '$CI_COMMIT_BRANCH == "master"'
-#    # Run code_quality in pipelines for tags
-#    - if: "$CI_COMMIT_TAG"
-#  artifacts:
-#    paths: [gl-code-quality-report.json]
-#  dependencies:
-#    - build-docker
-#    - build-composer
-#  needs:
-#    - build-docker
-#    - build-composer
-
-code_quality:
-  variables:
-    REPORT_FORMAT: html
-  artifacts:
-    paths: [gl-code-quality-report.html]
-  #rules:
-  #  - if: '$CODE_QUALITY_DISABLED'
-  #    when: never
-  #  - if: '$CI_PIPELINE_SOURCE == "merge_request_event"' # Run code quality job in merge request pipelines
-  #  - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'      # Run code quality job in pipelines on the default branch (but not in other branch pipelines)
-  #  - if: '$CI_COMMIT_TAG'                               # Run code quality job in pipelines for tags
-
 deploy_staging:
   image:
     name: $DOCKER_IMAGE
@@ -183,10 +211,11 @@ deploy_staging:
   only:
     - staging
   dependencies:
-    - artisan-test
+    - artisan-test-feature
+    - artisan-test-unit
   needs:
-    - artisan-test
-
+    - artisan-test-feature
+    - artisan-test-unit
 deploy_production:
   image:
     name: $DOCKER_IMAGE
@@ -197,10 +226,11 @@ deploy_production:
   only:
     - production
   dependencies:
-    - artisan-test
+    - artisan-test-feature
+    - artisan-test-unit
   needs:
-    - artisan-test
-
+    - artisan-test-feature
+    - artisan-test-unit
 sonarcloud-check:
   stage: analyse
   image:
@@ -216,10 +246,11 @@ sonarcloud-check:
   only:
     - master
   dependencies:
-    - artisan-test
+    - artisan-test-feature
+    - artisan-test-unit
   needs:
-    - artisan-test
-
+    - artisan-test-feature
+    - artisan-test-unit
 code_intelligence_go:
   stage: analyse
   rules:
@@ -293,9 +324,11 @@ secret_detection:
     # Run secret_detection in pipelines for tags
     - if: "$CI_COMMIT_TAG"
   dependencies:
-    - artisan-test
+    - artisan-test-feature
+    - artisan-test-unit
   needs:
-    - artisan-test
+    - artisan-test-feature
+    - artisan-test-unit
 
 license_scanning:
   stage: analyse

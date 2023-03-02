@@ -4,6 +4,11 @@ namespace App\Providers;
 
 use Laravel\Passport\Passport;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use App\Models\Passport\AuthCode;
+use App\Models\Passport\Client;
+use App\Models\Passport\PersonalAccessClient;
+use App\Models\Passport\RefreshToken;
+use App\Models\Passport\Token;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -23,6 +28,12 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
+        # Custom Passport Models
+        Passport::useTokenModel(Token::class);
+        Passport::useRefreshTokenModel(RefreshToken::class);
+        Passport::useAuthCodeModel(AuthCode::class);
+        Passport::useClientModel(Client::class);
+        Passport::usePersonalAccessClientModel(PersonalAccessClient::class);
         # Expiry Configuration
         Passport::tokensExpireIn(now()->addHours(config('passport.token_expire_in')));
         Passport::refreshTokensExpireIn(now()->addHours(config('passport.token_expire_in')));
@@ -30,5 +41,6 @@ class AuthServiceProvider extends ServiceProvider
         # End  Expiry Configuration
         Passport::enableImplicitGrant();
         Passport::tokensCan(config('permissions'));
+        Passport::hashClientSecrets();
     }
 }

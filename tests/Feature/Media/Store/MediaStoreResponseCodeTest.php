@@ -23,10 +23,10 @@ class MediaStoreResponseCodeTest extends TestCase
         $response->assertStatus(401);
     }
 
-    public function testStoreMediaAsAdministratorWithoutMfaShouldBeAllowed()
+    public function testStoreMediaAsAdministratorShouldBeAllowed()
     {
-        $user = $this->createUser("administrator", true, false);
-        $token = $this->getTokenByRole("administrator", $user->id, false);
+        $user = $this->createUser("administrator", true);
+        $token = $this->getTokenByRole("administrator", $user->id);
         $header = [
             "Authorization" => "Bearer $token"
         ];
@@ -48,110 +48,10 @@ class MediaStoreResponseCodeTest extends TestCase
         $user->delete();
     }
 
-    public function testStoreMediaAsAdministratorWithMfaShouldBeAllowed()
+    public function testStoreMediaAsModeratorShouldBeAllowed()
     {
-        $user = $this->createUser("administrator", true, true);
-        $token = $this->getTokenByRole("administrator", $user->id, true);
-        $header = [
-            "Authorization" => "Bearer $token",
-        ];
-        $filename = $this->faker->randomDigit();
-        $fullFileName = $filename . ".jpg";
-        $response = $this->json(
-            "POST",
-            route("media.store"),
-            [
-                "file" => UploadedFile::fake()->image($fullFileName),
-                "meta" => [
-                    "is_test" => true,
-                ]
-            ],
-            $header
-        );
-        $response->assertStatus(200);
-        Storage::disk("public")->assertExists("/media/{$fullFileName}");
-        $user->delete();
-    }
-
-    public function testStoreMediaAsAdministratorWithNoOtpShouldBeAllowed()
-    {
-        $user = $this->createUser("administrator", true, false);
-        $token = $this->getTokenByRole("administrator", $user->id, false);
-        $header = [
-            "Authorization" => "Bearer $token",
-        ];
-        $filename = $this->faker->randomDigit();
-        $fillFileName = $filename . '.jpg';
-        $response = $this->json(
-            "POST",
-            route("media.store"),
-            [
-                "file" => UploadedFile::fake()->image($fillFileName),
-                "meta" => [
-                    "is_test" => true,
-                ]
-            ],
-            $header
-        );
-        $response->assertStatus(200);
-        Storage::disk('public')->assertExists("/media/$fillFileName");
-        $user->delete();
-    }
-
-    public function testStoreMediaAsAdministratorWithOtpShouldBeAllowed()
-    {
-        $user =  $this->createUser("administrator", true, true);
-        $token = $this->getTokenByRole("administrator", $user->id, true);
-        $header = [
-            "Authorization" => "Bearer $token",
-        ];
-        $filename = $this->faker->randomDigit();
-        $fillFileName = $filename . '.jpg';
-        $response = $this->json(
-            "POST",
-            route("media.store"),
-            [
-                "file" => UploadedFile::fake()->image($fillFileName),
-                "meta" => [
-                    "is_test" => true,
-                ]
-            ],
-            $header
-        );
-        $response->assertStatus(200);
-        Storage::disk('public')->assertExists("/media/$fillFileName");
-        $user->delete();
-    }
-
-    public function testStoreMediaAsModeratorWithoutMfaShouldBeAllowed()
-    {
-        $user = $this->createUser("moderator", true, false);
-        $token = $this->getTokenByRole("moderator", $user->id, false);
-        $header = [
-            "Authorization" => "Bearer $token"
-        ];
-        $filename = $this->faker->randomDigit();
-        $fillFileName = $filename . '.jpg';
-        $response = $this->json(
-            "POST",
-            route("media.store"),
-            [
-                "file" => UploadedFile::fake()->image($fillFileName),
-                "meta" => [
-                    "is_test" => true,
-                ]
-            ],
-            $header
-        );
-        $response->assertStatus(200);
-        Storage::disk('public')->assertExists("/media/$fillFileName");
-        $user->delete();
-    }
-
-    public function testStoreMediaAsModeratorWithMfaShouldBeAllowed()
-    {
-        $user = $this->createUser("moderator", true, true);
-        $token = $this->getTokenByRole("moderator", $user->id, true);
+        $user = $this->createUser("moderator", true);
+        $token = $this->getTokenByRole("moderator", $user->id);
         $header = [
             "Authorization" => "Bearer $token"
         ];
@@ -175,8 +75,8 @@ class MediaStoreResponseCodeTest extends TestCase
 
     public function testMediaStoreShouldReturnMediaId()
     {
-        $user = $this->createUser("administrator", true, false);
-        $token = $this->getTokenByRole("administrator", $user->id, false);
+        $user = $this->createUser("administrator", true);
+        $token = $this->getTokenByRole("administrator", $user->id);
         $header = [
             "Authorization" => "Bearer $token"
         ];
@@ -198,71 +98,4 @@ class MediaStoreResponseCodeTest extends TestCase
         Storage::disk('public')->assertExists("/media/$fillFileName");
         $user->delete();
     }
-
-    /*
-    public function testStoreMediaAsAdministratorShouldNotBeAllowed()
-    {
-        $token = $this->getTokenByRole("administrator");
-        $header = [
-            "Authorization" => "Bearer $token"
-        ];
-
-        $filename = $this->faker->randomDigit();
-        $fullName = $filename . '.jpg';
-
-        $response = $this->json("POST", route("media.store"), [
-            "file" => UploadedFile::fake()->image($fullName),
-        ], $header);
-        $response->assertStatus(403);
-    }
-
-    public function testStoreMediaAsDentistWithoutFileShouldBeUnprocessableEntity()
-    {
-        $user = $this->createUser("dentist", true, true);
-        $token = $this->getTokenByRole("dentist", $user->id, true);
-        $header = [
-            "Authorization" => "Bearer $token"
-        ];
-
-        $filename = $this->faker->randomDigit();
-        $fullName = $filename . '.jpg';
-
-        $response = $this->json("POST", route("media.store"), [
-            "file" => UploadedFile::fake()->image($fullName),
-        ], $header);
-        $response->assertStatus(422);
-    }
-    */
-
-
-
-    /*
-    public function testStoreMediaAsDentistWithFileShouldBeSuccessful()
-    {
-        $office = Office::factory()->create();
-        $user = $this->createUser("dentist", true, true);
-        $user->office()->save($office);
-        $token = $this->getTokenByRole("dentist", $user->id, true);
-        $header = [
-            "Authorization" => "Bearer $token"
-        ];
-        $filename = $this->faker->randomDigit();
-        $fullName = $filename . '.jpg';
-        $response = $this->json("POST", route("media.store"), [
-            "file" => UploadedFile::fake()->image($fullName),
-            "meta" => [
-                "is_test" => true,
-            ]
-        ], $header);
-        \Log::info(json_encode($response, JSON_PRETTY_PRINT));
-        $response->assertStatus(200);
-
-        $path = "/media/$fullName";
-        Storage::disk('public')->assertExists($path);
-
-        $this->assertNotEmpty($user->worklists);
-        $user->worklists()->delete();
-        Storage::disk('public')->delete($path);
-    }
-    */
 }

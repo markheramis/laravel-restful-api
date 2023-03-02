@@ -83,36 +83,13 @@ class UserLoginTest extends TestCase
             "username" => $user->username,
             "password" => "password12345"
         ]);
-        $response->assertJsonStructure(['data' => ['token', 'mfa_verified']]);
+        $response->assertJsonStructure(['data' => ['token']]);
         $response->assertStatus(200);
         $user->delete();
 
         Event::assertDispatched(UserLoggedIn::class);
     }
 
-    public function testLoginTokenHasMfaVerifiedClaim()
-    {
-        Event::fake([UserLoggedIn::class]);
-
-        $user = $this->createUser();
-        $response = $this->json("POST", route("api.login"), [
-            "username" => $user->username,
-            "password" => "password12345"
-        ]);
-
-        $response->assertStatus(200);
-        $response->assertJsonStructure(['data' => ['token', 'mfa_verified']]);
-        $token = $response->json()['data']['token'];
-
-        $jwt = Configuration::forUnsecuredSigner()->parser()->parse($token);
-        $mfaVerifiedClaim = $jwt->claims()->get('mfa_verified');
-
-        /* assert our claims were set on the token */
-        $this->assertEquals(false, $mfaVerifiedClaim);
-
-        $user->delete();
-        Event::assertDispatched(UserLoggedIn::class);
-    }
 
     public function testLoginHasActivityLog()
     {

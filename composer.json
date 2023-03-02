@@ -9,7 +9,6 @@
     "license": "MIT",
     "require": {
         "php": "^7.3|^8.1",
-        "authy/php": "^4.0.0-rc2",
         "bacon/bacon-qr-code": "^2.0",
         "brianium/paratest": "^6.6",
         "cartalyst/sentinel": "^6.0",

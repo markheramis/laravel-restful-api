@@ -23,54 +23,23 @@ class OptionDestroyResponseCodeTest extends TestCase
 
     public function testDestoryOptionAsAdministratorShouldBeAllowed()
     {
-        $user = $this->createUser("administrator", true, true);
+        $user = $this->createUser("administrator", true);
         $option = Option::factory()->create();
 
-        $token = $this->getTokenByRole("administrator", $user->id, true);
+        $token = $this->getTokenByRole("administrator", $user->id);
         $header = [
             "Authorization" => "Bearer $token",
         ];
         $url = route("option.destroy", [$option->name]);
         $response = $this->json("DELETE", $url, [], $header);
         $response->assertStatus(200);
-    }
-
-    public function testDestoryOptionAsAdministratorShouldBeAllowedWhenMfaEnabledAndMfaVerified()
-    {
-        $user = $this->createUser("administrator", true, true);
-        $option = Option::factory()->create();
-        $token = $this->getTokenByRole("administrator", true);
-        $header = [
-            "Authorization" => "Bearer $token",
-        ];
-        $url = route("option.destroy", [$option->name]);
-        $response = $this->json("DELETE", $url, [], $header);
-        $response->assertStatus(200);
-        $user->delete();
-        $option->delete();
-    }
-
-    public function testDestoryOptionAsAdministratorShouldNotBeAllowedWhenMfaEnabledButNotMfaVerified()
-    {
-        $user = $this->createUser("administrator", true, true);
-        $option = Option::factory()->create();
-
-        $token = $this->getTokenByRole("administrator", $user->id, false);
-        $header = [
-            "Authorization" => "Bearer $token",
-        ];
-        $url = route("option.destroy", [$option->name]);
-        $response = $this->json("DELETE", $url, [], $header);
-        $response->assertStatus(403);
-        $user->delete();
-        $option->delete();
     }
 
     public function testDestoryOptionAsModeratorShouldBeForbidden()
     {
-        $user = $this->createUser("moderator", true, true);
+        $user = $this->createUser("moderator", true);
         $option = Option::factory()->create();
-        $token = $this->getTokenByRole("moderator", $user->id, true);
+        $token = $this->getTokenByRole("moderator", $user->id);
         $header = [
             "Authorization" => "Bearer $token",
         ];
@@ -82,9 +51,9 @@ class OptionDestroyResponseCodeTest extends TestCase
 
     public function testDestoryOptionAsSubscriberShouldBeForbidden()
     {
-        $user = $this->createUser("subscriber", true, true);
+        $user = $this->createUser("subscriber", true);
         $option = Option::factory()->create();
-        $token = $this->getTokenByRole("subscriber", $user->id, true);
+        $token = $this->getTokenByRole("subscriber", $user->id);
         $header = [
             "Authorization" => "Bearer $token",
         ];

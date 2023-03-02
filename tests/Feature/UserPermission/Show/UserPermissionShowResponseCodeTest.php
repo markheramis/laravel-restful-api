@@ -26,32 +26,6 @@ class UserPermissionShowResponseCodeTest extends TestCase
         $user2->delete();
     }
 
-    public function testShowPermissionAsAdministratorToAdministratorShouldBeAllowedWhenMfaEnabledAndMfaVerified()
-    {
-        $user1 = $this->createUser("administrator", true, true);
-        $user2 = $this->createUser("administrator");
-        $token = $this->getTokenByRole("administrator", $user1->id, true);
-        $response = $this->json("GET", "/api/user/{$user2->id}/permission", [], [
-            "Authorization" => "Bearer $token"
-        ]);
-        $response->assertStatus(200);
-        $user1->delete();
-        $user2->delete();
-    }
-
-    public function testShowPermissionAsAdministratorToAdministratorShouldNotBeAllowedWhenMfaEnabledButNotMfaVerified()
-    {
-        $user1 = $this->createUser("administrator", true, true);
-        $user2 = $this->createUser("administrator");
-        $token = $this->getTokenByRole("administrator", $user1->id, false);
-        $response = $this->json("GET", "/api/user/{$user2->id}/permission", [], [
-            "Authorization" => "Bearer $token"
-        ]);
-        $response->assertStatus(403);
-        $user1->delete();
-        $user2->delete();
-    }
-
     public function testShowPermissionAsAdministratorToModeratorShouldBeAllowed()
     {
         $user1 = $this->createUser("administrator");
