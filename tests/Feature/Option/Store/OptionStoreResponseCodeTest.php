@@ -36,41 +36,6 @@ class OptionStoreResponseCodeTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function testUpdateOptionAsAdministratorShouldBeAllowedWhenMfaEnabledAndMfaVerified()
-    {
-        $option = Option::factory()->make(['name' => 'test1' . rand()]);
-        $user = $this->createUser("administrator", true, true);
-        $token = $this->getTokenByRole("administrator", $user->id, true);
-        $header = [
-            "Authorization" => "Bearer $token",
-        ];
-        $response = $this->json("POST", route("option.store"), [
-            "name" => $option->name,
-            "value" => $option->value,
-        ], $header);
-
-        $response->assertStatus(200);
-        $option->delete();
-    }
-
-    public function testUpdateOptionAsAdministratorShouldNotBeAllowedWhenMfaEnabledButNotMfaVerified()
-    {
-        $option = Option::factory()->create();
-        $user = $this->createUser("administrator", true, true);
-        $token = $this->getTokenByRole("administrator", $user->id, false);
-        $header = [
-            "Authorization" => "Bearer $token",
-        ];
-        $url = route("option.update", [$option->name]);
-        $response = $this->json("POST", route("option.store"), [
-            "name" => $option->name,
-            "value" => $option->value,
-        ], $header);
-
-        $response->assertStatus(403);
-        $option->delete();
-    }
-
     public function testDestroyOptionAsModeratorShouldBeForbidden()
     {
         $user = $this->createUser("moderator");

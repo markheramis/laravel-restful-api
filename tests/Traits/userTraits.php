@@ -14,12 +14,10 @@ trait userTraits
 
     use WithFaker;
 
-    public function createUser(string $role = 'subscriber', bool $activated = true, bool $mfa_enabled = false): User
+    public function createUser(string $role = 'subscriber', bool $activated = true): User
     {
         $role = Role::where('slug', $role)->first();
-        $user = User::factory([
-            'authy_id' => $mfa_enabled ? 'xxx' : ''
-        ])->create();
+        $user = User::factory()->create();
         // Attache user to role
         if ($user) {
             $role->users()->attach($user);
@@ -49,7 +47,7 @@ trait userTraits
      * @param int $user_id
      * @return string
      */
-    public function getTokenByRole(string $role_slug, int $user_id = null, $mfa_verified = false): string
+    public function getTokenByRole(string $role_slug, int $user_id = null, ): string
     {
         $user = Role::where('slug', $role_slug)
             ->first()
@@ -60,9 +58,6 @@ trait userTraits
                 $query->inRandomOrder();
             })
             ->first();
-        if ($mfa_verified) {
-            session()->now('mfa_verified', true);
-        }
         return $user->createToken(config('app.name') . ': ' . $user->username, $user->allPermissions())->accessToken;
     }
 

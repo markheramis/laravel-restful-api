@@ -61,7 +61,7 @@ Route::prefix('auth')
         });
 });
 Route::prefix('user')
-    ->middleware(['auth:api', 'mfa.claim'])
+    ->middleware(['auth:api'])
     ->group(function () {
         Route::get('/', [UserController::class, 'index'])
             ->name('user.index');
@@ -122,7 +122,7 @@ Route::prefix('user')
         });
     });
 Route::prefix('role')
-    ->middleware(['auth:api', 'mfa.claim'])
+    ->middleware(['auth:api'])
     ->group(function () {
         Route::get('/', [RoleController::class, 'index'])
             ->name('role.index');
@@ -140,13 +140,13 @@ Route::prefix('role')
         });
     });
 Route::prefix('permission')
-    ->middleware(['auth:api', 'mfa.claim'])
+    ->middleware(['auth:api'])
     ->group(function () {
         Route::get('/', [PermissionController::class, 'index'])
             ->name('permission.index');
     });
 Route::prefix('media')
-    ->middleware(['auth:api', 'mfa.claim'])
+    ->middleware(['auth:api'])
     ->group(function () {
         Route::get('/', [MediaController::class, 'index'])
             ->name('media.index');
@@ -164,7 +164,7 @@ Route::prefix('media')
         });
     });
 Route::prefix('option')
-    ->middleware(['auth:api', 'mfa.claim'])
+    ->middleware(['auth:api'])
     ->group(function () {
         Route::get('/', [OptionController::class, 'index'])
             ->name('option.index');

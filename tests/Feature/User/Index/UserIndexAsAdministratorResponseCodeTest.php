@@ -34,42 +34,10 @@ class UserIndexAsAdministratorResponseCodeTest extends TestCase
         $user->delete();
     }
 
-    public function testIndexAllUserAsAdminsShouldBeAllowedWhenMfaEnabled()
-    {
-        $user = $this->createUser("administrator", true, true);
-        $token = $this->getTokenByRole("administrator", $user->id, true);
-        $userPaginator = User::paginate();
-        $userCollection = $userPaginator->getCollection();
-        $expected_response = fractal()
-            ->collection($userCollection)
-            ->transformWith(new UserTransformer)
-            ->serializeWith(new JsonApiSerializer())
-            ->paginateWith(new IlluminatePaginatorAdapter($userPaginator))
-            ->toArray();
-        $response = $this->json("GET", route("user.index"), [], [
-            "Authorization" => "Bearer $token"
-        ]);
-        $response->assertStatus(200);
-        $response->assertJsonPath("data", $expected_response["data"]);
-        $response->assertJsonPath("meta", $expected_response["meta"]);
-        $user->delete();
-    }
-
-    public function testIndexAllUserAsAdminsShouldNotBeAllowedWhenMfaEnabledButNotMfaVerified()
-    {
-        $user = $this->createUser("administrator", true, true);
-        $token = $this->getTokenByRole("administrator", $user->id, false);
-        $response = $this->json("GET", route("user.index"), [], [
-            "Authorization" => "Bearer $token"
-        ]);
-        $response->assertStatus(403);
-        $user->delete();
-    }
-
     public function testIndexAllUsersAsAdministratorByRoleAdministratorShouldBeAllowed()
     {
-        $user = $this->createUser("administrator", true, true);
-        $token = $this->getTokenByRole("administrator", $user->id, true);
+        $user = $this->createUser("administrator", true);
+        $token = $this->getTokenByRole("administrator", $user->id);
         $userPaginator = User::whereHas("roles", function ($query) {
             $query->where("slug", "administrator");
         })->paginate();
@@ -93,8 +61,8 @@ class UserIndexAsAdministratorResponseCodeTest extends TestCase
 
     public function testIndexAllUsersAsAdministratorByRoleModeratorShouldBeAllowed()
     {
-        $user = $this->createUser("administrator", true, true);
-        $token = $this->getTokenByRole("administrator", $user->id, true);
+        $user = $this->createUser("administrator", true);
+        $token = $this->getTokenByRole("administrator", $user->id);
         $userPaginator = User::whereHas("roles", function ($query) {
             $query->where("slug", "moderator");
         })->paginate();

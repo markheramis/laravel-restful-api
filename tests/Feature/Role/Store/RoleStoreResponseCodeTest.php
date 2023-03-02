@@ -33,7 +33,7 @@ class RoleStoreResponseCodeTest extends TestCase
     public function testStoreRoleAsModeratorShouldBeForbidden()
     {
         $user = $this->createUser("moderator");
-        $token = $this->getTokenByRole("moderator", $user->id, true);
+        $token = $this->getTokenByRole("moderator", $user->id);
         $role = Role::factory()->make()->toArray();
         $header = [
             "Authorization" => "Bearer $token"
@@ -45,7 +45,7 @@ class RoleStoreResponseCodeTest extends TestCase
     public function testStoreRoleAsAdminShouldBeAllowed()
     {
         $user = $this->createUser("administrator");
-        $token = $this->getTokenByRole("administrator", $user->id, true);
+        $token = $this->getTokenByRole("administrator", $user->id);
         $role = Role::factory()->make()->toArray();
         $header = [
             "Authorization" => "Bearer $token"
@@ -54,27 +54,4 @@ class RoleStoreResponseCodeTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function testStoreRoleAsAdminShouldBeAllowedWhenMfaEnabledAndMfaVerified()
-    {
-        $user = $this->createUser("administrator", true, true);
-        $token = $this->getTokenByRole("administrator", $user->id, true);
-        $role = Role::factory()->make()->toArray();
-        $header = [
-            "Authorization" => "Bearer $token"
-        ];
-        $response = $this->json("POST", route("role.store"), $role, $header);
-        $response->assertStatus(200);
-    }
-
-    public function testStoreRoleAsAdminShouldBeNotAllowedWhenMfaEnabledButNotMfaVerified()
-    {
-        $user = $this->createUser("administrator", true, true);
-        $token = $this->getTokenByRole("administrator", $user->id, false);
-        $role = Role::factory()->make()->toArray();
-        $header = [
-            "Authorization" => "Bearer $token"
-        ];
-        $response = $this->json("POST", route("role.store"), $role, $header);
-        $response->assertStatus(403);
-    }
 }

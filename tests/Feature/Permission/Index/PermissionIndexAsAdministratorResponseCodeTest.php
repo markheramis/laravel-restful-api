@@ -9,21 +9,10 @@ class PermissionIndexAsAdministratorResponseCodeTest extends TestCase
 {
     use userTraits;
 
-    public function testPermissionIndexAsAdministratorWithNoOtpShouldBeAllowed()
+    public function testPermissionIndexAsAdministratorShouldBeAllowed()
     {
-        $user = $this->createUser("administrator", true, false);
-        $token = $this->getTokenByRole("administrator", $user->id, false);
-        $header = [
-            "Authorization" => "Bearer $token",
-        ];
-        $response = $this->json("GET", route("permission.index"), [], $header);
-        $response->assertStatus(200);
-    }
-
-    public function testPermissionIndexAsAdministratorWithOtpShouldBeAllowed()
-    {
-        $user =  $this->createUser("administrator", true, true);
-        $token = $this->getTokenByRole("administrator", $user->id, true);
+        $user = $this->createUser("administrator", true);
+        $token = $this->getTokenByRole("administrator", $user->id);
         $header = [
             "Authorization" => "Bearer $token",
         ];

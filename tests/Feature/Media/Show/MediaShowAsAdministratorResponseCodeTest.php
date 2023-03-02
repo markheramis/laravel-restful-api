@@ -11,25 +11,9 @@ class MediaShowAsAdministratorResponseCodeTest extends TestCase
 {
     use WithFaker, userTraits;
 
-    public function testMediaShowWithMfaProtectionButNoMfaVerifiedTokenShouldBeForbidden()
-    {
-        $user = $this->createUser("administrator", true, true);
-        $token = $this->getTokenByRole("administrator", $user->id, false);
-        $media = media::factory()->create();
-        $url = route("media.show", [$media->id]);
-
-        $response = $this->json("GET", $url, [], [
-            "Authorization" => "Bearer $token"
-        ]);
-        $response->assertStatus(403);
-        $user->delete();
-        $media->delete();
-    }
-
-    public function testMediaShowWithoutMfaProtectionButNoMfaVerifiedTokenShouldBeAllowed()
-    {
-        $user = $this->createUser("administrator", true, true);
-        $token = $this->getTokenByRole("administrator", true);
+    public function testMediaAsAdministratorShouldBeAllowed() {
+        $user = $this->createUser("administrator", true);
+        $token = $this->getTokenByRole("administrator", $user->id);
         $media = media::factory()->create();
         $header = [
             "Authorization" => "Bearer $token",

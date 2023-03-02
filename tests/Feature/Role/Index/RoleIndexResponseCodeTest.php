@@ -51,25 +51,4 @@ class RoleIndexResponseCodeTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function testGetAllRolesWithAdministratorShouldBeAllowedWhenMfaEnabledAndMfaVerified()
-    {
-        $user = $this->createUser("administrator", true, true);
-        $token = $this->getTokenByRole("administrator", $user->id, true);
-        $header = [
-            "Authorization" => "Bearer $token"
-        ];
-        $response = $this->json("GET", route("role.index"), [], $header);
-        $response->assertStatus(200);
-    }
-
-    public function testGetAllRolesWithAdministratorShouldNotBeAllowedWhenMfaEnabledButNotMfaVerified()
-    {
-        $user = $this->createUser("administrator", true, true);
-        $token = $this->getTokenByRole("administrator", $user->id, false);
-        $header = [
-            "Authorization" => "Bearer $token"
-        ];
-        $response = $this->json("GET", route("role.index"), [], $header);
-        $response->assertStatus(403);
-    }
 }

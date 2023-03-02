@@ -60,31 +60,4 @@ class UserDestroyAsAdminResponseCodeTest extends TestCase
         $user2->delete();
     }
 
-    public function testDestroyAdministratorAsAdministratorShouldBeAllowedWhenMfaEnabledAndMfaVerified()
-    {
-        $user1 = $this->createUser("administrator", true, true);
-        $user2 = $this->createUser("administrator");
-        $token = $this->getTokenByRole("administrator", $user1->id, true);
-        $url = route("user.destroy", [$user2->id]);
-        $response = $this->json("DELETE", $url, [], [
-            "Authorization" => "Bearer $token",
-        ]);
-        $response->assertStatus(200);
-        $user1->delete();
-        $user2->delete();
-    }
-
-    public function testDestroyAdministratorAsAdministratorShouldNotBeAllowedWhenMfaEnabledButNotMfaVerified()
-    {
-        $user1 = $this->createUser("administrator", true, true);
-        $user2 = $this->createUser("administrator");
-        $token = $this->getTokenByRole("administrator", $user1->id, false);
-        $url = route("user.destroy", [$user2->id]);
-        $response = $this->json("DELETE", $url, [], [
-            "Authorization" => "Bearer $token",
-        ]);
-        $response->assertStatus(403);
-        $user1->delete();
-        $user2->delete();
-    }
 }

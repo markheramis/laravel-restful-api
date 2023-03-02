@@ -15,8 +15,8 @@ class RoleUpdateAsModeratorResponseCodeTest extends TestCase
     public function testUpdateRoleAsModeratorShouldBeForbidden()
     {
         $role = Role::factory()->create();
-        $user = $this->createUser("moderator", true, false);
-        $token = $this->getTokenByRole("moderator", $user->id, false);
+        $user = $this->createUser("moderator", true);
+        $token = $this->getTokenByRole("moderator", $user->id);
         $header = [
             "Authorization" => "Bearer $token"
         ];

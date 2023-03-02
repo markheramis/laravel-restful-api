@@ -51,32 +51,7 @@ class UserShowTest extends TestCase
         $user1->delete();
         $user2->delete();
     }
-    public function testGetSingleUserAsAdministratorToSubscriberShouldBeAllowedWhenMfaEnabledAndMfaVerified()
-    {
-        $user1 = $this->createUser("administrator", true, true);
-        $user2 = $this->createUser("subscriber");
-        $token = $this->getTokenByRole("administrator", $user1->id, true);
-        $url = route("user.show", [$user2->id]);
-        $response = $this->json("GET", $url, [], [
-            "Authorization" => "Bearer $token"
-        ]);
-        $response->assertStatus(200);
-        $user1->delete();
-        $user2->delete();
-    }
-    public function testGetSingleUserAsAdministratorToSubscriberShouldNotBeAllowedWhenMfaEnabledButNotMfaVerified()
-    {
-        $user1 = $this->createUser("administrator", true, true);
-        $user2 = $this->createUser("subscriber");
-        $token = $this->getTokenByRole("administrator", $user1->id, false);
-        $url = route("user.show", [$user2->id]);
-        $response = $this->json("GET", $url, [], [
-            "Authorization" => "Bearer $token"
-        ]);
-        $response->assertStatus(403);
-        $user1->delete();
-        $user2->delete();
-    }
+    
     #############################################
     ############# TEST AS MODERATOR #############
     #############################################

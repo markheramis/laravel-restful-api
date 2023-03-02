@@ -16,7 +16,7 @@ class UserLoginTokenTest extends TestCase
 
     public function testUserLoginAsAdministratorShouldReturnAdministratorToken()
     {
-        $user = $this->createUser("administrator", true, true);
+        $user = $this->createUser("administrator", true);
         $response = $this->json("POST", route("api.login"), [
             "username" => $user->username,
             "password" => "password12345"
@@ -41,7 +41,7 @@ class UserLoginTokenTest extends TestCase
 
     public function testUserLoginAsModeratorShouldReturnModeratorToken()
     {
-        $user = $this->createUser("moderator", true, true);
+        $user = $this->createUser("moderator", true);
         $response = $this->json("POST", route("api.login"), [
             "username" => $user->username,
             "password" => "password12345"
@@ -66,7 +66,7 @@ class UserLoginTokenTest extends TestCase
 
     public function testUserLoginAsSubscriberShouldReturnSubscriberToken()
     {
-        $user = $this->createUser("subscriber", true, true);
+        $user = $this->createUser("subscriber", true);
         $response = $this->json("POST", route("api.login"), [
             "username" => $user->username,
             "password" => "password12345"

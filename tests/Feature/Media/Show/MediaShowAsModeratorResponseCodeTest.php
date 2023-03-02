@@ -17,7 +17,6 @@ class MediaShowAsModeratorResponseCodeTest extends TestCase
         $header = [
             "Authorization" => "Bearer $token",
         ];
-
         $url = route("media.show", [$media->id]);
         $response = $this->json("GET", $url, [], $header);
         $response->assertStatus(200);
