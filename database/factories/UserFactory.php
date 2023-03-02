@@ -59,18 +59,4 @@ class UserFactory extends Factory
         }
         return $result;
     }
-
-    /**
-     * Configure the model factory.
-     *
-     * @return $this
-
-    public function configure()
-    {
-        return $this
-            ->afterMaking(function (User $user) {
-            })->afterCreating(function (User $user) {
-            });
-    }
-     */
 }
