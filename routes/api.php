@@ -163,19 +163,3 @@ Route::prefix('media')
                 ->name('media.download');
         });
     });
-Route::prefix('option')
-    ->middleware(['auth:api'])
-    ->group(function () {
-        Route::get('/', [OptionController::class, 'index'])
-            ->name('option.index');
-        Route::post('/', [OptionController::class, 'store'])
-            ->name('option.store');
-        Route::prefix('{option}')->group(function () {
-            Route::get('/', [OptionController::class,  'show'])
-                ->name('option.show');
-            Route::put('/', [OptionController::class, 'update'])
-                ->name('option.update');
-            Route::delete('/', [OptionController::class, 'destory'])
-                ->name('option.destroy');
-        });
-    });
