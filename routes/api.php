@@ -104,21 +104,6 @@ Route::prefix('user')
                 Route::delete('/', [UserPermissionController::class, 'destroy'])
                     ->name('user.permission.destroy');
             });
-
-            Route::prefix('meta')->group(function () {
-                Route::get('/', [UserMetaController::class, 'index'])
-                    ->name('user.meta.index');
-                Route::post('/', [UserMetaController::class, 'store'])
-                    ->name('user.meta.store');
-                Route::prefix('{key}')->group(function () {
-                    Route::get('/', [UserMetaController::class, 'show'])
-                        ->name('user.meta.show');
-                    Route::put('/', [UserMetaController::class, 'update'])
-                        ->name('user.meta.update');
-                    Route::delete('/', [UserMetaController::class, 'destroy'])
-                        ->name('user.meta.destroy');
-                });
-            });
         });
     });
 Route::prefix('role')
