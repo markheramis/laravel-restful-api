@@ -41,6 +41,5 @@ class AuthServiceProvider extends ServiceProvider
         # End  Expiry Configuration
         Passport::enableImplicitGrant();
         Passport::tokensCan(config('permissions'));
-        Passport::hashClientSecrets();
     }
 }
