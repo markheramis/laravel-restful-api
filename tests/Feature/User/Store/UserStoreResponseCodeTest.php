@@ -2,18 +2,30 @@
 
 namespace Tests\Feature\User\Store;
 
-use Sentinel;
 use Tests\TestCase;
 use App\Models\User;
 use Tests\Traits\userTraits;
 use Illuminate\Foundation\Testing\WithFaker;
+use App\Repositories\RoleRepository;
 
-class UserStoreResponseCodeTest extends TestCase
-{
-    use WithFaker, userTraits;
+class UserStoreResponseCodeTest extends TestCase {
 
-    public function testStoreUserWithNoSessionShouldBeUnauthorized()
-    {
+    use WithFaker,
+        userTraits;
+
+    /**
+     * The role repository
+     * 
+     * @var \App\Repositories\RoleRepository
+     */
+    protected $roles;
+
+    public function setUp(): void {
+        $this->roles = new RoleRepository();
+        parent::setUp();
+    }
+
+    public function testStoreUserWithNoSessionShouldBeUnauthorized() {
         $user = User::factory()->make();
         $response = $this->json("POST", route("user.store"), [
             "username" => $user->username,
@@ -25,10 +37,9 @@ class UserStoreResponseCodeTest extends TestCase
         $response->assertStatus(401);
     }
 
-    public function testStoreUserAsSubscriberShouldBeForbidden()
-    {
+    public function testStoreUserAsSubscriberShouldBeForbidden() {
         $session_user = User::factory()->create();
-        $selectedRole = Sentinel::findRoleBySlug("subscriber");
+        $selectedRole = $this->roles->findBySlug("subscriber");
         $selectedRole->users()->attach($session_user);
         $user = User::factory()->make();
         $token = $this->getTokenByRole("subscriber", $session_user->id);
@@ -41,15 +52,14 @@ class UserStoreResponseCodeTest extends TestCase
             "password" => "p@s5W0rd12345",
             "first_name" => $user->first_name,
             "last_name" => $user->last_name,
-        ], $header);
+                ], $header);
         $response->assertStatus(403);
         $session_user->delete();
     }
 
-    public function testStoreUserAsModeratorShouldBeForbidden()
-    {
+    public function testStoreUserAsModeratorShouldBeForbidden() {
         $session_user = User::factory()->create();
-        $selectedRole = Sentinel::findRoleBySlug("moderator");
+        $selectedRole = $this->roles->findBySlug("moderator");
         $selectedRole->users()->attach($session_user);
         $user = User::factory()->make();
         $token = $this->getTokenByRole("moderator", $session_user->id);
@@ -62,8 +72,9 @@ class UserStoreResponseCodeTest extends TestCase
             "password" => "p@s5W0rd12345",
             "first_name" => $user->first_name,
             "last_name" => $user->last_name,
-        ], $header);
+                ], $header);
         $response->assertStatus(403);
         $session_user->delete();
     }
+
 }

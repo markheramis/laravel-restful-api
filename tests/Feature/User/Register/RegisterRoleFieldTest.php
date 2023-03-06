@@ -25,7 +25,7 @@ class RegisterRoleFieldTest extends TestCase
             "last_name" => $last_name,
         ]);
         $response->assertStatus(200);
-        $user = User::find($response['data']['data']['id']);
+        $user = User::find($response['data']['id']);
         $this->assertDatabaseHas('roles', [
             'slug' => 'subscriber'
         ]);
@@ -48,7 +48,7 @@ class RegisterRoleFieldTest extends TestCase
             "role" => "administrator",
         ]);
         $response->assertStatus(200);
-        $user = User::find($response['data']['data']['id']);
+        $user = User::find($response['data']['id']);
         $this->assertDatabaseHas('roles', [
             'slug' => 'administrator'
         ]);

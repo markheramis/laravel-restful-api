@@ -14,16 +14,12 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\Auth\LoginController;
 use App\Http\Controllers\API\Auth\LogoutController;
 use App\Http\Controllers\API\Auth\RegisterController;
-use App\Http\Controllers\API\Passport\PersonalAccessTokenController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\UserRoleController;
 use App\Http\Controllers\API\UserPermissionController;
-use App\Http\Controllers\API\UserMetaController;
 use App\Http\Controllers\API\RoleController;
 use App\Http\Controllers\API\PermissionController;
 use App\Http\Controllers\API\MediaController;
-use App\Http\Controllers\API\OptionController;
-use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\AuthTwilio2FAController;
 
 Route::prefix('auth')

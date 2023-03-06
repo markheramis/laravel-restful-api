@@ -2,27 +2,35 @@
 
 namespace App\Models;
 
-use App\Models\Worklist;
-use Illuminate\Support\Str;
+use IteratorAggregate;
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\MustVerifyEmail;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Auth\Passwords\CanResetPassword;
-use Cartalyst\Sentinel\Users\EloquentUser as Model;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\Access\Authorizable;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Database\Eloquent\BroadcastsEvents;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
-
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use App\Interfaces\UserInterface;
+use App\Security\RoleableInterface;
+use App\Security\PermissibleTrait;
+use App\Security\PermissibleInterface;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class User extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
-{
-    use HasApiTokens, Authenticatable, MustVerifyEmail, Notifiable, CanResetPassword, Authorizable, HasFactory, BroadcastsEvents;
+class User extends Model implements UserInterface, PermissibleInterface, RoleableInterface, AuthenticatableContract, AuthorizableContract, CanResetPasswordContract {
+
+    use HasApiTokens;
+    use Authenticatable;
+    use MustVerifyEmail;
+    use Notifiable;
+    use CanResetPassword;
+    use Authorizable;
+    use HasFactory;
+    use PermissibleTrait;
 
     /**
      * The attributes that are mass assignable.
@@ -36,10 +44,10 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'first_name',
         'last_name',
         'permissions',
-        'country_code',
-        'phone_number',
-        'authy_id', // Temporary.
-        'default_factor',
+            #'country_code',
+            #'phone_number',
+            #'authy_id', // Temporary.
+            #'default_factor',
     ];
 
     /**
@@ -66,94 +74,253 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     ];
 
     /**
-     * Get the route key for the model.
+     * The attributes that should be cast to native types.
      *
-     * @return string
+     * @var array
      */
-    public function getRouteKeyName()
-    {
-        return 'id';
+    protected $casts = [
+        'permissions' => 'json',
+    ];
+
+    /**
+     * The Roles model FQCN.
+     *
+     * @var string
+     */
+    protected static $rolesModel = \App\Models\Role::class;
+
+    /**
+     * The Activations model FQCN.
+     *
+     * @var string
+     */
+    protected static $activationsModel = \App\Models\Activation::class;
+
+    /**
+     * The Throttling model FQCN.
+     *
+     * @var string
+     */
+    protected static $throttlingModel = \App\Models\Throttle::class;
+
+    /**
+     * Returns an array of login column names.
+     *
+     * @return array
+     */
+    public function getLoginNames(): array {
+        return $this->loginNames;
     }
 
     /**
-     * Validate the password of the user for the Passport password grant.
+     * {@inheritdoc}
      */
-    public function validateForPassportPasswordGrant(string $password): bool
-    {
-        return Hash::check($password, $this->password);
+    public function getUserId(): int {
+        return $this->getKey();
     }
 
-
-    public function findForPassport($username)
-    {
-        return $this->where('email', $username)->first();
+    /**
+     * {@inheritdoc}
+     */
+    public function getUserLogin(): string {
+        return $this->getAttribute($this->getUserLoginName());
     }
 
-    public function media()
-    {
-        return $this->hasMany(Media::class);
+    /**
+     * {@inheritdoc}
+     */
+    public function getUserLoginName(): string {
+        return reset($this->loginNames);
     }
 
-    public function google2fa()
-    {
-        return $this->hasOne(Google2FA::class);
+    /**
+     * {@inheritdoc}
+     */
+    public function getUserPassword(): string {
+        return $this->password;
     }
 
-    public function hasMFA(): bool
-    {
-        return (bool) ($this->authy_id && $this->phone_number);
+    /**
+     * {@inheritdoc}
+     */
+    public function delete() {
+        $isSoftDeletable = property_exists($this, 'forceDeleting');
+        $isSoftDeleted = $isSoftDeletable && !$this->forceDeleting;
+        if ($this->exists && !$isSoftDeleted) {
+            $this->activations()->delete();
+            $this->roles()->detach();
+        }
+
+        return parent::delete();
     }
 
-    public function getPermissionsAttribute($value)
-    {
+    /**
+     * Returns the activations relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function activations(): HasMany {
+        return $this->hasMany(static::$activationsModel, 'user_id');
+    }
+
+    /**
+     * Returns the activations model.
+     *
+     * @return string
+     * 
+     * @deprecated
+     */
+    public static function getActivationsModel(): string {
+        return static::$activationsModel;
+    }
+
+    /**
+     * Sets the activations model.
+     *
+     * @param string $activationsModel
+     *
+     * @return void
+     * 
+     * @deprecated
+     */
+    public static function setActivationsModel(string $activationsModel): void {
+        static::$activationsModel = $activationsModel;
+    }
+
+    /**
+     * Returns the roles relationship.
+     *
+     * @return BelongsToMany
+     */
+    public function roles(): BelongsToMany {
+        return $this->belongsToMany(static::$rolesModel, 'role_users', 'user_id', 'role_id')->withTimestamps();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getRoles(): IteratorAggregate {
+        return $this->roles;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function inRole($role): bool {
+        if ($role instanceof RoleInterface) {
+            $roleId = $role->getRoleId();
+        }
+        foreach ($this->roles as $instance) {
+            if ($role instanceof RoleInterface) {
+                return ($instance->getRoleId() === $roleId);
+            } else {
+                return ($instance->getRoleId() == $role || $instance->getRoleSlug() == $role);
+            }
+        }
+        return false;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function inAnyRole(array $roles): bool {
+        foreach ($roles as $role) {
+            return ($this->inRole($role));
+        }
+        return false;
+    }
+
+    /**
+     * Returns the roles model.
+     *
+     * @return string
+     * 
+     * @deprecated
+     */
+    public static function getRolesModel(): string {
+        return static::$rolesModel;
+    }
+
+    /**
+     * Sets the roles model.
+     *
+     * @param string $rolesModel
+     *
+     * @return void
+     * 
+     * @deprecated
+     */
+    public static function setRolesModel(string $rolesModel): void {
+        static::$rolesModel = $rolesModel;
+    }
+
+    /**
+     * Creates a permissions object.
+     *
+     * @return \App\Security\PermissionsInterface
+     */
+    protected function createPermissions(): \App\Security\PermissionsInterface {
+        $userPermissions = $this->getPermissions();
+        $rolePermissions = [];
+        foreach ($this->roles as $role) {
+            $rolePermissions[] = $role->getPermissions();
+        }
+        return new static::$permissionsClass($userPermissions, $rolePermissions);
+    }
+
+    /**
+     * Dynamically pass missing methods to the user.
+     *
+     * @param string $method
+     * @param array  $parameters
+     *
+     * @return mixed
+     */
+    public function __call($method, $parameters) {
+        $methods = ['hasAccess', 'hasAnyAccess'];
+
+        if (in_array($method, $methods)) {
+            $permissions = $this->getPermissionsInstance();
+
+            return call_user_func_array([$permissions, $method], $parameters);
+        }
+
+        return parent::__call($method, $parameters);
+    }
+
+    public function allPermissions() {
+        $role_permissions = $this->roles()
+                        ->orderBy('id', 'desc')
+                        ->get()
+                        ->map(function ($role) {
+                            return $role->permissions;
+                        })
+                        ->toArray()[0];
+        $user_permissions = $this->permissions;
+        $all_permissions = array_merge(
+                $role_permissions,
+                $user_permissions
+        );
+        return (array) array_keys(array_filter($all_permissions));
+    }
+
+    /**
+     * return permissions or return an empty array
+     * 
+     * @param array $value
+     * @return array
+     */
+    public function getPermissionsAttribute($value): array {
         return ($value) ? $value : [];
     }
 
-    public function allPermissions()
-    {
-        $role_permissions = $this->roles()
-            ->orderBy('id', 'desc')
-            ->get()
-            ->map(function ($role) {
-                return $role->permissions;
-            })
-            ->toArray();
-        $user_permissions = $this->permissions;
-        $all_permissions =  array_merge($role_permissions, $user_permissions);
-        return (array) array_keys(
-            array_filter(
-                array_merge(...$all_permissions)
-            )
-        );
-    }
-
-    public function meta()
-    {
-        return $this->hasMany(UserMeta::class);
-    }
-
     /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return \Illuminate\Broadcasting\Channel|array
+     * Returns the Media relationship.
+     * 
+     * @return HasMany
      */
-    public function broadcastOn($event)
-    {
-        return new PrivateChannel('user');
+    public function media(): HasMany {
+        return $this->hasMany(Media::class);
     }
 
-    /**
-     * The event's broadcast name.
-     * @todo create tests automations
-     * @return string
-     */
-    public function broadcastAs($event)
-    {
-        return match ($event) {
-            'created'   => 'user.created',
-            'updated'   => 'user.updated',
-            'deleted'   => 'user.deleted',
-            default => null,
-        };
-    }
 }

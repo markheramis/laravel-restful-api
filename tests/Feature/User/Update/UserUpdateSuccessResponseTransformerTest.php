@@ -2,21 +2,34 @@
 
 namespace Tests\Feature\User\Update;
 
-use Sentinel;
 use Tests\TestCase;
 use Tests\Traits\userTraits;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Models\User;
 use App\Transformers\UserTransformer;
+use App\Repositories\RoleRepository;
 
-class UserUpdateSuccessResponseTransformerTest extends TestCase
-{
-    use WithFaker, userTraits;
+class UserUpdateSuccessResponseTransformerTest extends TestCase {
 
-    public function testUpdateSuccessResponseShouldMatchTransfomerOfUpdateUser()
-    {
+    use WithFaker,
+        userTraits;
+
+    /**
+     * The role repository
+     * 
+     * @var \App\Repositories\RoleRepository
+     */
+    protected $roles;
+
+    public function setUp(): void {
+        $this->roles = new RoleRepository();
+        parent::setUp();
+    }
+
+    public function testUpdateSuccessResponseShouldMatchTransfomerOfUpdateUser() {
         $session_user = User::factory()->create();
-        $selectedRole = Sentinel::findRoleBySlug("administrator");
+        $this->assertNotNull($session_user);
+        $selectedRole = $this->roles->findBySlug("administrator");
         $selectedRole->users()->attach($session_user);
         $user = User::factory()->create();
         $update_user = User::factory()->make();
@@ -24,20 +37,21 @@ class UserUpdateSuccessResponseTransformerTest extends TestCase
         $header = [
             "Authorization" => "Bearer $token",
         ];
-        $response = $this->json("PUT", route("user.update", [$user->id]), [
+        $data = [
             "username" => $update_user->username,
             "email" => $update_user->email,
             "password" => "p@s5W0rd12345",
             "first_name" => $update_user->first_name,
             "last_name" => $update_user->last_name,
-        ], $header);
+        ];
+        $response = $this->json("PUT", route("user.update", [$user->id]), $data, $header);
         $expected_user = User::find($user->id);
         $expectedResponse = fractal($expected_user, new UserTransformer())
-            ->toArray();
-
+                ->toArray();
         $response->assertStatus(200);
         $response->assertJsonFragment($expectedResponse);
         $session_user->delete();
         $expected_user->delete();
     }
+
 }

@@ -8,12 +8,11 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Events\User\UserCreated;
 
-class RegisterActivationTest extends TestCase
-{
+class RegisterActivationTest extends TestCase {
+
     use WithFaker;
 
-    public function testRegisterWithNoActivationFlagShouldCreateUnactivatedUserAccount()
-    {
+    public function testRegisterWithNoActivationFlagShouldCreateUnactivatedUserAccount() {
         Event::fake();
         $first_name = $this->faker->firstName();
         $last_name = $this->faker->lastName();
@@ -28,9 +27,12 @@ class RegisterActivationTest extends TestCase
             "last_name" => $last_name,
         ]);
         $response->assertStatus(200);
-        $response->assertJsonStructure(['data' => ['data' => ['id']]]);
+        $response->assertJsonStructure(['data' => ['id']]);
         Event::assertDispatched(UserCreated::class);
-        $user_id = $response['data']['data']['id'];
+        $user_id = $response['data']['id'];
+        /**
+         * @var \App\Models\User
+         */
         $user = User::find($user_id);
         $activation = $user->activations->first();
         $this->assertDatabaseHas('activations', [
@@ -41,8 +43,7 @@ class RegisterActivationTest extends TestCase
         $user->delete();
     }
 
-    public function testRegisterWithFalseActivationFlagShouldCreateUnactivatedUserAccount()
-    {
+    public function testRegisterWithFalseActivationFlagShouldCreateUnactivatedUserAccount() {
         Event::fake();
         $first_name = $this->faker->firstName();
         $last_name = $this->faker->lastName();
@@ -58,9 +59,9 @@ class RegisterActivationTest extends TestCase
             "activate" => false,
         ]);
         $response->assertStatus(200);
-        $response->assertJsonStructure(['data' => ['data' => ['id']]]);
+        $response->assertJsonStructure(['data' => ['id']]);
         Event::assertDispatched(UserCreated::class);
-        $user_id = $response['data']['data']['id'];
+        $user_id = $response['data']['id'];
         $user = User::find($user_id);
         $activation = $user->activations->first();
         $this->assertDatabaseHas('activations', [
@@ -71,8 +72,7 @@ class RegisterActivationTest extends TestCase
         $user->delete();
     }
 
-    public function testRegisterWithTrueActivationFlagShouldCreateActivatedUserAccount()
-    {
+    public function testRegisterWithTrueActivationFlagShouldCreateActivatedUserAccount() {
         Event::fake();
         $first_name = $this->faker->firstName();
         $last_name = $this->faker->lastName();
@@ -88,9 +88,9 @@ class RegisterActivationTest extends TestCase
             "activate" => true,
         ]);
         $response->assertStatus(200);
-        $response->assertJsonStructure(['data' => ['data' => ['id']]]);
+        $response->assertJsonStructure(['data' => ['id']]);
         Event::assertDispatched(UserCreated::class);
-        $user_id = $response['data']['data']['id'];
+        $user_id = $response['data']['id'];
         $user = User::find($user_id);
         $activation = $user->activations->first();
         $this->assertDatabaseHas('activations', [
@@ -100,4 +100,5 @@ class RegisterActivationTest extends TestCase
         ]);
         $user->delete();
     }
+
 }

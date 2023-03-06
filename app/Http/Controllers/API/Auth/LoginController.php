@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers\API\Auth;
 
-use Log;
-use Sentinel;
-use App\Models\User;
-use App\Events\User\UserLoggedIn;
+use Auth;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\UserLoginRequest;
+use App\Models\User;
+use App\Events\User\UserLoggedIn;
 
 /**
  * @group User Management
  */
-class LoginController extends Controller
-{
+class LoginController extends Controller {
+
+    private User $user;
 
     /**
      * Login API
@@ -23,45 +23,26 @@ class LoginController extends Controller
      * @param App\Http\Requests\UserLoginRequest $request
      * @return JsonResponse
      */
-    public function login(UserLoginRequest $request): JsonResponse
-    {
+    public function login(UserLoginRequest $request): JsonResponse {
         $credentials = $this->processCredentials($request);
-        # attempt to login
-        if ($user = Sentinel::stateless($credentials)) {
-            $token = $this->createToken($user);
-            broadcast(new UserLoggedIn($user->id));
-            $response = [
-                "token" => $token,
-            ];
-            return response()->success($response);
+        if (Auth::attempt($credentials)) {
+            $this->user = Auth::user();
+            $token_name = config('app.name') . ': ' . $this->user->username;
+            $permissions = $this->user->allPermissions();
+            $token = $this->user->createToken($token_name, $permissions)->accessToken;
+            broadcast(new UserLoggedIn($this->user->id));
+            return response()->success(['token' => $token]);
         } else {
             return response()->error([], 'Username or Password is Incorrect', 401);
         }
     }
 
-    /**
-     * Generate a token from the User
-     *
-     * @param User $user
-     * @return string
-     */
-    private function createToken(User $user): string
-    {
-        return $user->createToken(config('app.name') . ': ' . $user->username, $user->allPermissions())->accessToken;
-    }
-
-    /**
-     * Undocumented function
-     *
-     * @param UserLoginRequest $request
-     * @return array
-     */
-    private function processCredentials(UserLoginRequest $request): array
-    {
+    private function processCredentials(UserLoginRequest $request): array {
         $login_type = filter_var($request->username, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
         return [
             $login_type => $request->username,
             "password" => $request->password,
         ];
     }
+
 }

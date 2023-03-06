@@ -14,8 +14,7 @@ class UserPermissionStoreRequest extends FormRequest
      */
     public function authorize()
     {
-        if (!Auth::check()) return;
-        return Auth::user()->hasAccess("user.permission.store");
+        return (Auth::check() && Auth::user()->hasAccess("user.permission.store"));
     }
 
     /**

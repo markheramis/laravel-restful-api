@@ -14,8 +14,7 @@ class UserRoleDestroyRequest extends FormRequest
      */
     public function authorize()
     {
-        if (!Auth::check()) return;
-        return Auth::user()->hasAccess("user.role.destroy");
+        return (Auth::check() && Auth::user()->hasAccess("user.role.destroy"));
     }
 
     /**

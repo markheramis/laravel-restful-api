@@ -23,8 +23,8 @@ use Illuminate\Http\JsonResponse;
  *
  * APIs for managing Roles
  */
-class RoleController extends Controller
-{
+class RoleController extends Controller {
+
     /**
      * Get all Roles
      *
@@ -38,17 +38,16 @@ class RoleController extends Controller
      * @uses League\Fractal\Pagination\IlluminatePaginatorAdapter IlluminatePaginatorAdapter
      * @return JsonResponse
      */
-    public function index(RoleIndexRequest $request): JsonResponse
-    {
+    public function index(RoleIndexRequest $request): JsonResponse {
         $paginator = Role::paginate();
         $roles = $paginator->getCollection();
 
         $response = fractal()
-            ->collection($roles)
-            ->transformWith(new RoleTransformer())
-            ->serializeWith(new JsonApiSerializer())
-            ->paginateWith(new IlluminatePaginatorAdapter($paginator))
-            ->toArray();
+                ->collection($roles)
+                ->transformWith(new RoleTransformer())
+                ->serializeWith(new JsonApiSerializer())
+                ->paginateWith(new IlluminatePaginatorAdapter($paginator))
+                ->toArray();
 
         return response()->json($response);
     }
@@ -62,8 +61,7 @@ class RoleController extends Controller
      * @param RoleStoreRequest $request
      * @return JsonResponse
      */
-    public function store(RoleStoreRequest $request): JsonResponse
-    {
+    public function store(RoleStoreRequest $request): JsonResponse {
 
         $role = new Role;
         $role->name = $request->name;
@@ -84,8 +82,7 @@ class RoleController extends Controller
      * @uses App\Transformers\RoleTransformer RoleTransformer
      * @return JsonResponse
      */
-    public function show(RoleShowRequest $request, Role $role): JsonResponse
-    {
+    public function show(RoleShowRequest $request, Role $role): JsonResponse {
         $response = fractal($role, new RoleTransformer())->toArray();
         return response()->success($response);
     }
@@ -102,8 +99,7 @@ class RoleController extends Controller
      * @uses App\Models\Role $role
      * @return JsonResponse
      */
-    public function update(RoleUpdateReqeust $request, Role $role): JsonResponse
-    {
+    public function update(RoleUpdateReqeust $request, Role $role): JsonResponse {
         $role->name = $request->name;
         $role->slug = $request->slug;
         $role->permissions = $request->permissions;
@@ -124,8 +120,7 @@ class RoleController extends Controller
      * @uses App\Models\Role $role
      * @return JsonResponse
      */
-    public function destroy(RoleDestroyRequest $request, Role $role): JsonResponse
-    {
+    public function destroy(RoleDestroyRequest $request, Role $role): JsonResponse {
         $role->delete();
         return response()->success('Role deleted successfully');
     }
@@ -140,7 +135,7 @@ class RoleController extends Controller
      *
      * ```
      * SELECT
-	 *      r.id, r.name, count(*) as user_count
+     *      r.id, r.name, count(*) as user_count
      * FROM users as u
      * JOIN role_users as ru ON u.id = ru.user_id
      * JOIN roles as r ON r.id = ru.role_id
@@ -150,13 +145,14 @@ class RoleController extends Controller
      * @param [type] $request
      * @return void
      */
-    public function roleStats(RoleStatsRequest $request): JsonResponse
-    {
-        $result = User::select(DB::raw('roles.id, roles.name, count(*) as user_count'))
-            ->join("role_users", "users.id", "=", "role_users.user_id")
-            ->join("roles", "role_users.role_id", "=", "roles.id")
-            ->groupBy("roles.id")
-            ->get();
+    public function roleStats(RoleStatsRequest $request): JsonResponse {
+        $result = DB::table('users')
+                ->join('role_users', 'users.id', '=', 'role_users.user_id')
+                ->join('roles', 'role_users.role_id', '=', 'roles.id')
+                ->select('roles.id', 'roles.name', DB::raw('count(*) as user_count'))
+                ->groupBy('roles.id', 'roles.name')
+                ->get();
         return response()->success($result);
     }
+
 }

@@ -5,17 +5,15 @@ namespace App\Http\Requests\UserRole;
 use App\Http\Requests\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class UserRoleUpdateRequest extends FormRequest
-{
+class UserRoleUpdateRequest extends FormRequest {
+
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-    public function authorize()
-    {
-        if (!Auth::check()) return;
-        return Auth::user()->hasAccess("user.role.update");
+    public function authorize() {
+        return (Auth::check() && Auth::user()->hasAccess("user.role.update"));
     }
 
     /**
@@ -23,10 +21,14 @@ class UserRoleUpdateRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
-    {
+    public function rules() {
         return [
-            'slug' => ['required', 'min:2', 'max:20'],
+            'slug' => [
+                'required',
+                'min:2',
+                'max:20'
+            ],
         ];
     }
+
 }

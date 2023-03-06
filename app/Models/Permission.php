@@ -1,8 +1,7 @@
 <?php
 
 namespace App\Models;
-
-use Cartalyst\Sentinel\Permissions\StandardPermissions as Model;
+use Illuminate\Database\Eloquent\Model;
 
 class Permission extends Model
 {

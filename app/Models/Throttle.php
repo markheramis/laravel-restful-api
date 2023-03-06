@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Cartalyst\Sentinel\Throttling\EloquentThrottle as Model;
+use Illuminate\Database\Eloquent\Model;
 
 class Throttle extends Model
 {
