@@ -18,27 +18,27 @@ class RegisterController extends Controller {
 
     /**
      * The activation repository
-     * 
+     *
      * @var ActivationRepository
      */
     protected $activations;
 
     /**
      * The user repository
-     * 
+     *
      * @var \App\Repositories\UserRepository
      */
     protected $users;
 
     /**
      * The role repository
-     * 
+     *
      * @var \App\Repositories\RoleRepository
      */
     protected $roles;
 
     /**
-     * 
+     *
      * @param UserRepository $users dependency injected instance of UserRepository
      * @param RoleRepository $roles dependency injected instance of RoleRepository
      */
@@ -81,7 +81,7 @@ class RegisterController extends Controller {
         }
         $user = $this->users->create($credentials);
         $activation = $this->activations->create($user);
-        if ($request->activate) {
+        if ($request->has('activate') && $request->activate == true) {
             $this->activations->complete($user, $activation->code);
         }
         $role = ($request->has('role')) ? $request->role : 'subscriber';
