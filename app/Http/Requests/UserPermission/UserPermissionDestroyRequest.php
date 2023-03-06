@@ -14,8 +14,7 @@ class UserPermissionDestroyRequest extends FormRequest
      */
     public function authorize()
     {
-        if (!Auth::check()) return;
-        return Auth::user()->hasAccess("user.permission.destroy");
+        return (Auth::check() && Auth::user()->hasAccess("user.permission.destroy"));
     }
 
     /**

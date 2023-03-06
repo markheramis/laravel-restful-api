@@ -14,8 +14,7 @@ class RoleUpdateReqeust extends FormRequest
      */
     public function authorize()
     {
-        if (!Auth::check()) return;
-        return Auth::user()->hasAccess("role.update");
+        return (Auth::check() && Auth::user()->hasAccess("role.update"));
     }
 
     /**

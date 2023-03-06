@@ -2,20 +2,33 @@
 
 namespace App\Observers;
 
-use Activation;
 use App\Models\User;
+use App\Repositories\ActivationRepository;
 
-class UserObserver
-{
+class UserObserver {
+
+    /**
+     * 
+     * @var ActivationRepository
+     */
+    protected ActivationRepository $activation;
+
+    /**
+     * 
+     * @param ActivationRepository $activation
+     */
+    public function __construct(ActivationRepository $activation) {
+        $this->activation = $activation;
+    }
+
     /**
      * Handle the user "created" event.
      *
      * @param  \App\Models\User  $user
      * @return void
      */
-    public function created(User $user)
-    {
-        Activation::create($user);
+    public function created(User $user) {
+        $this->activation->create($user);
     }
 
     /**
@@ -24,8 +37,8 @@ class UserObserver
      * @param  \App\Models\User  $user
      * @return void
      */
-    public function updated(User $user)
-    {
+    public function updated(User $user) {
+        
     }
 
     /**
@@ -34,8 +47,8 @@ class UserObserver
      * @param  \App\Models\User  $user
      * @return void
      */
-    public function deleted(User $user)
-    {
+    public function deleted(User $user) {
+        
     }
 
     /**
@@ -44,8 +57,8 @@ class UserObserver
      * @param  \App\Models\User  $user
      * @return void
      */
-    public function restored(User $user)
-    {
+    public function restored(User $user) {
+        
     }
 
     /**
@@ -54,7 +67,8 @@ class UserObserver
      * @param  \App\Models\User  $user
      * @return void
      */
-    public function forceDeleted(User $user)
-    {
+    public function forceDeleted(User $user) {
+        
     }
+
 }

@@ -4,7 +4,6 @@ namespace App\Http\Controllers\API;
 
 use DB;
 use Auth;
-use Sentinel;
 use Activation;
 use Authy\AuthyApi;
 use App\Models\Role;
@@ -29,20 +28,35 @@ use App\Http\Requests\User\UserChangePasswordRequest;
 use App\Http\Requests\User\UserActivateRequest;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Serializer\JsonApiSerializer;
+use App\Repositories\UserRepository;
+use App\Repositories\RoleRepository;
 
 /**
  * @group  User Management
  *
  * APIs for managnign Users
  */
-class UserController extends Controller
-{
+class UserController extends Controller {
+
     private $authy_app_secret;
     private $authy_app_id;
 
+    /**
+     * The users repository
+     * @var \App\Repositories\UserRepository
+     */
+    protected UserRepository $users;
 
-    public function __construct()
-    {
+    /**
+     * The role repository
+     * 
+     * @var \App\Repositories\RoleRepository
+     */
+    protected RoleRepository $roles;
+
+    public function __construct(UserRepository $users, RoleRepository $roles) {
+        $this->users = $users;
+        $this->roles = $roles;
         $this->authy_app_secret = config('authy.app_secret');
         $this->authy_app_id = config('authy.app_id');
     }
@@ -63,24 +77,23 @@ class UserController extends Controller
      * @uses League\Fractal\Serializer\JsonApiSerializer JsonApiSerializer
      * @return JsonResponse
      */
-    public function index(UserIndexRequest $request): JsonResponse
-    {
+    public function index(UserIndexRequest $request): JsonResponse {
         $userPaginator = User::when(
-            $request->filter_by,
-            fn ($query) => $query->where($request->filter_by, 'LIKE', "%$request->filter_value%"),
-        )->when($request->has("role"), function ($query) use ($request) {
-            $role = $request->role;
-            $query->whereHas("roles", function ($q) use ($role) {
-                $q->where('slug', $role);
-            });
-        })->paginate();
+                        $request->filter_by,
+                        fn($query) => $query->where($request->filter_by, 'LIKE', "%$request->filter_value%"),
+                )->when($request->has("role"), function ($query) use ($request) {
+                    $role = $request->role;
+                    $query->whereHas("roles", function ($q) use ($role) {
+                        $q->where('slug', $role);
+                    });
+                })->paginate();
         $userCollection = $userPaginator->getCollection();
         $response = fractal()
-            ->collection($userCollection)
-            ->transformWith(new UserTransformer())
-            ->serializeWith(new JsonApiSerializer())
-            ->paginateWith(new IlluminatePaginatorAdapter($userPaginator))
-            ->toArray();
+                ->collection($userCollection)
+                ->transformWith(new UserTransformer())
+                ->serializeWith(new JsonApiSerializer())
+                ->paginateWith(new IlluminatePaginatorAdapter($userPaginator))
+                ->toArray();
         return response()->json($response, 200);
     }
 
@@ -97,8 +110,7 @@ class UserController extends Controller
      * @uses App\Transformers\UserTransformer UserTransformer
      * @return JsonResponse
      */
-    public function show(UserShowRequest $request, User $user): JsonResponse
-    {
+    public function show(UserShowRequest $request, User $user): JsonResponse {
         $response = fractal($user, new UserTransformer())->toArray();
         return response()->success($response);
     }
@@ -112,8 +124,7 @@ class UserController extends Controller
      * @param App\Http\Requests\User\UserActivateRequest $request
      * @return JsonResponse
      */
-    public function activate(UserActivateRequest $request): JsonResponse
-    {
+    public function activate(UserActivateRequest $request): JsonResponse {
         if ($activation = Activation::where('code', $request->code)->first()) {
             $user = $activation->user;
             if (Activation::complete($user, $request->code)) {
@@ -135,8 +146,7 @@ class UserController extends Controller
      * @param App\Http\Requests\UserStoreRequest $request
      * @return JsonResponse
      */
-    public function store(UserStoreRequest $request): JsonResponse
-    {
+    public function store(UserStoreRequest $request): JsonResponse {
         $authy_id = $this->create_authy_api($request);
         $activate = (bool) $request->activate;
         $credentials = [
@@ -150,13 +160,18 @@ class UserController extends Controller
             "country_code" => $request->country_code,
             "authy_id" => $authy_id
         ];
-        $user = Sentinel::register($credentials);
-        if ($activate)
+
+        if (!$this->users->validForCreation($credentials)) {
+            return response()->error([], 400);
+        }
+        $user = $this->users->create($credentials);
+        if ($activate) {
             /**
              * @todo this is wrong activation method, we should not use redirect in an API
              * @description problem with this is its probably gonna block the execution if $activation is true.
              */
             redirect('api.user.activate')->with('data', $user->toArray());
+        }
         $role = ($request->has('role')) ? $request->role : 'subscriber';
         $this->attachRole($user, $role);
         $response = fractal($user, new UserTransformer())->toArray();
@@ -170,9 +185,8 @@ class UserController extends Controller
      * @param string $role
      * @return void
      */
-    private function attachRole(User $user, string $role)
-    {
-        $selectedRole = Sentinel::findRoleBySlug($role);
+    private function attachRole(User $user, string $role) {
+        $selectedRole = $this->roles->findBySlug($role);
         $selectedRole->users()->attach($user);
     }
 
@@ -183,8 +197,7 @@ class UserController extends Controller
      * @param Role $role
      * @return void
      */
-    private function detachRole(User $user, Role $role)
-    {
+    private function detachRole(User $user, Role $role) {
         $role->users()->detach($user);
     }
 
@@ -194,14 +207,12 @@ class UserController extends Controller
      * @param User $user
      * @return void
      */
-    private function detachAllRoles(User $user)
-    {
+    private function detachAllRoles(User $user) {
         $roles = $user->roles()->get();
         foreach ($roles as $role) {
             $this->detachRole($user, $role);
         }
     }
-
 
     /**
      * Update a User
@@ -214,15 +225,14 @@ class UserController extends Controller
      * @param App\Models\User $user
      * @return JsonResponse
      */
-    public function update(UserUpdateRequest $request, User $user): JsonResponse
-    {
+    public function update(UserUpdateRequest $request, User $user): JsonResponse {
         $user->username = $request->username;
         $user->email = $request->email;
         $user->first_name = $request->first_name;
         $user->last_name = $request->last_name;
         $user->update();
         if ($request->has('role')) {
-            $role = Sentinel::findRoleBySlug($request->role);
+            $role = $this->roles->findBySlug($request->role);
             $user->roles()->sync($role);
         }
         $response = fractal($user, new UserTransformer())->toArray();
@@ -240,8 +250,7 @@ class UserController extends Controller
      * @param App\Models\User $user
      * @return JsonResponse
      */
-    public function destroy(UserDestroyRequest $request, User $user): JsonResponse
-    {
+    public function destroy(UserDestroyRequest $request, User $user): JsonResponse {
         $user->delete();
         return response()->success('User deleted successfully');
     }
@@ -254,15 +263,13 @@ class UserController extends Controller
      * @authenticated
      * @return JsonResponse
      */
-    public function me(): JsonResponse
-    {
+    public function me(): JsonResponse {
         $user = Auth::user();
         $response = $user->with('roles')->first();
         return response()->success($response);
     }
 
-    private function create_authy_api(Request $request)
-    {
+    private function create_authy_api(Request $request) {
         $is_not_local = config('app.env') !== "local";
 
         $has_authy = $this->authy_app_id && $this->authy_app_secret;
@@ -270,16 +277,15 @@ class UserController extends Controller
             $authy_api = new AuthyApi($this->authy_app_secret);
             // register the user to the authy users database
             $registered = $authy_api->registerUser(
-                $request->email,
-                $request->phone_number,
-                $request->country_code
+                    $request->email,
+                    $request->phone_number,
+                    $request->country_code
             );
             return $registered->id();
         }
     }
 
-    public function delete_authy_mfa(User $user)
-    {
+    public function delete_authy_mfa(User $user) {
         $authy_api = new AuthyApi($this->authy_app_secret);
         $delete = $authy_api->deleteUser($user->authy_id)->bodyvar('message');
         $user->authy_id = 0;
@@ -287,16 +293,14 @@ class UserController extends Controller
         return response()->success($delete);
     }
 
-    public function enable_authy_mfa(User $user)
-    {
+    public function enable_authy_mfa(User $user) {
         $authyId = $this->create_authy_api($user);
         $user->authy_id = $authyId;
         $user->update();
         return response()->success($authyId);
     }
 
-    public function get_qr_code(User $user)
-    {
+    public function get_qr_code(User $user) {
         $authy_api = new AuthyApi($this->authy_app_secret);
         $data = $authy_api->qrCode($user->authy_id, []);
 
@@ -313,11 +317,11 @@ class UserController extends Controller
         }
     }
 
-    public function request_token_via_sms(User $user)
-    {
+    public function request_token_via_sms(User $user) {
         $authy_api = new AuthyApi($this->authy_app_secret);
         $authy_api->requestSms($user->phone_number);
     }
+
     /*
      * Set Multi Factor Method
      *
@@ -328,8 +332,8 @@ class UserController extends Controller
      * @param AuthTwilio2FASetMFARequest $request
      * @return JsonResponse
      */
-    public function setMFA(UserUpdateMFARequest $request): JsonResponse
-    {
+
+    public function setMFA(UserUpdateMFARequest $request): JsonResponse {
         $user = Auth::user();
         $user->default_factor = $request->default_factor;
         $user->save();
@@ -345,8 +349,7 @@ class UserController extends Controller
      * @param UserForgetPasswordRequest $request
      * @return JsonResponse
      */
-    public function forgotPassword(UserForgetPasswordRequest $request): JsonResponse
-    {
+    public function forgotPassword(UserForgetPasswordRequest $request): JsonResponse {
         if ($user = user::whereEmail($request->email)->first()) {
             $password_reset = [
                 'email' => $request->email,
@@ -358,9 +361,9 @@ class UserController extends Controller
             $url = env('DENTALRAY_APP_URL') . '/reset-password?token=' . $password_reset['token'];
 
             Mail::to($user->email)
-                ->send(new UserForgotPasswordMail(array_merge($password_reset, [
-                    'url' => $url
-                ])));
+                    ->send(new UserForgotPasswordMail(array_merge($password_reset, [
+                                        'url' => $url
+            ])));
             return response()->success('Please check your email to reset your password');
         }
         return response()->error([], "Email doesn't exist", 404);
@@ -375,15 +378,16 @@ class UserController extends Controller
      * @param UserResetPasswordRequest $request
      * @return JsonResponse
      */
-    public function resetPassword(UserResetPasswordRequest $request): JsonResponse
-    {
-        $password_reset = DB::table('password_resets')->where('token', $request->token);
-        if ($user_password_reset = $password_reset->first()) {
+    public function resetPassword(UserResetPasswordRequest $request): JsonResponse {
+        $password_reset = DB::table('password_resets')
+                ->where('token', $request->token)
+                ->first();
+        if ($user_password_reset === $password_reset->first()) {
             if ($request->password != $request->confirm_password) {
                 return response()->error([], "Password doesn't match!", 403);
             }
             $user = user::whereEmail($user_password_reset->email)->first();
-            Sentinel::update($user, array('password' => $request->password));
+            $this->users->update($user, ['password' => $request->password]);
             $password_reset->delete();
             return response()->success('Reset password successfully');
         }
@@ -400,13 +404,13 @@ class UserController extends Controller
      * @param UserChangePasswordRequest $request
      * @return JsonResponse
      */
-    public function changePassword(UserChangePasswordRequest $request): JsonResponse
-    {
+    public function changePassword(UserChangePasswordRequest $request): JsonResponse {
         try {
-            Sentinel::update(Auth::user(), ["password" => $request->password]);
+            $this->users->update(Auth::user(), ['password' => $request->password]);
             return response()->success("User Updated Successfully");
         } catch (\Exception $e) {
             return response()->error([], $e->getMessage());
         }
     }
+
 }

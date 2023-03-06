@@ -14,8 +14,9 @@ class UserUpdateRequest extends FormRequest
      */
     public function authorize()
     {
-        if (!Auth::check()) return;
-        return Auth::user()->hasAccess("user.update") || $this->isUpdatingSelf();
+        if (Auth::check()) {
+            return Auth::user()->hasAccess("user.update") || $this->isUpdatingSelf();
+        }
     }
 
     /**

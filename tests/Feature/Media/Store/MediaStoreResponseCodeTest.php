@@ -3,8 +3,6 @@
 namespace Tests\Feature\Media\Store;
 
 use Tests\TestCase;
-use App\Models\Media;
-use App\Models\Office;
 use Tests\Traits\userTraits;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -16,9 +14,10 @@ class MediaStoreResponseCodeTest extends TestCase
     public function testStoreMediaWithoutSessionShouldBeUnauthorized()
     {
         $filename = $this->faker->randomDigit();
+        $uploadedFile = UploadedFile::fake()->image($filename);
         $fullName = $filename . '.jpg';
         $response = $this->json("POST", route("media.store"), [
-            "file" => UploadedFile::fake()->image($fullName),
+            "file" => $uploadedFile,
         ]);
         $response->assertStatus(401);
     }

@@ -5,17 +5,15 @@ namespace App\Http\Requests\User;
 use App\Http\Requests\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class UserDestroyRequest extends FormRequest
-{
+class UserDestroyRequest extends FormRequest {
+
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-    public function authorize()
-    {
-        if (!Auth::check()) return;
-        return Auth::user()->hasAccess("user.destroy");
+    public function authorize() {
+        return (Auth::check() && Auth::user()->hasAccess("user.destroy"));
     }
 
     /**
@@ -23,10 +21,10 @@ class UserDestroyRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
-    {
+    public function rules() {
         return [
-            //
+                //
         ];
     }
+
 }

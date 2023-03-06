@@ -2,10 +2,7 @@
 
 namespace App\Listeners\User;
 
-use App\Models\Role;
 use App\Models\User;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\User\UserLoggedInNotification;
 
@@ -30,10 +27,9 @@ class UserLoggedInListener
     public function handle($event)
     {
         $admins = User::whereHas('roles', function ($query) {
-            $query->where('roles.id', Role::ROLE_ADMIN);
+            $query->where('roles.id', 1);
         })->get();
         Notification::send($admins, new UserLoggedInNotification($event->user));
-
         activity()->event('logged_in')->causedBy($event->user)->log('User:login');
     }
 }

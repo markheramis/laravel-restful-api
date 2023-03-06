@@ -2,22 +2,56 @@
 
 namespace App\Http\Controllers\API\Auth;
 
-use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
-use Cartalyst\Sentinel\Laravel\Facades\Activation;
-use Authy\AuthyApi;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
-use App\Transformers\UserTransformer;
 use App\Http\Requests\User\UserRegisterRequest;
 use App\Events\User\UserCreated;
-
+use App\Repositories\ActivationRepository;
+use App\Repositories\UserRepository;
+use App\Repositories\RoleRepository;
 
 /**
  * @group User Management
  */
-class RegisterController extends Controller
-{
+class RegisterController extends Controller {
+
+    /**
+     * The activation repository
+     * 
+     * @var ActivationRepository
+     */
+    protected $activations;
+
+    /**
+     * The user repository
+     * 
+     * @var \App\Repositories\UserRepository
+     */
+    protected $users;
+
+    /**
+     * The role repository
+     * 
+     * @var \App\Repositories\RoleRepository
+     */
+    protected $roles;
+
+    /**
+     * 
+     * @param UserRepository $users dependency injected instance of UserRepository
+     * @param RoleRepository $roles dependency injected instance of RoleRepository
+     */
+    public function __construct(
+            ActivationRepository $activations,
+            UserRepository $users,
+            RoleRepository $roles
+    ) {
+        $this->activations = $activations;
+        $this->users = $users;
+        $this->roles = $roles;
+    }
+
     /**
      * Register API
      *
@@ -26,9 +60,7 @@ class RegisterController extends Controller
      * @param UserRegisterRequest $request
      * @return JsonResponse
      */
-    public function register(UserRegisterRequest $request): JsonResponse
-    {
-        $authy_id = $this->create_authy_api($request);
+    public function register(UserRegisterRequest $request): JsonResponse {
         $credentials = [
             "username" => $request->username,
             "email" => $request->email,
@@ -37,20 +69,26 @@ class RegisterController extends Controller
             "last_name" => $request->last_name,
             "permissions" => $request->permissions,
             "phone_number" => $request->phone_number,
-            "country_code" => $request->country_code,
-            "authy_id" => $authy_id
+            "country_code" => $request->country_code
         ];
+        #if ($request->activate) {
+        /**
+         * @todo put this in the UserRegisterRequest
+         */
+        $valid = $this->users->validForCreation($credentials);
+        if (!$valid) {
+            return response()->error([], 401);
+        }
+        $user = $this->users->create($credentials);
+        $activation = $this->activations->create($user);
         if ($request->activate) {
-            $user = Sentinel::registerAndActivate($credentials);
-        } else {
-            $user = Sentinel::register($credentials);
-            Activation::create($user);
+            $this->activations->complete($user, $activation->code);
         }
         $role = ($request->has('role')) ? $request->role : 'subscriber';
         $this->attachRole($user, $role);
         UserCreated::dispatch($user->id, $role, $request->all());
-        $response = fractal($user, new UserTransformer())->toArray();
-        return response()->success($response);
+        $this->attachRole($user, 'subscriber');
+        return response()->success($user);
     }
 
     /**
@@ -60,33 +98,9 @@ class RegisterController extends Controller
      * @param string $role
      * @return void
      */
-    private function attachRole(User $user, string $role)
-    {
-        $selectedRole = Sentinel::findRoleBySlug($role);
+    private function attachRole(User $user, string $role) {
+        $selectedRole = $this->roles->findBySlug($role);
         $selectedRole->users()->attach($user);
     }
 
-    /**
-     * Undocumented function
-     *
-     * @param UserRegisterRequest $request
-     * @return void
-     */
-    private function create_authy_api(UserRegisterRequest $request)
-    {
-        $is_not_local = config('app.env') !== "local";
-        $has_authy = config('authy.app_id') && config('authy.app_secret');
-        if ($is_not_local && $has_authy) {
-            $authy_api = new AuthyApi(config('authy.app_secret'));
-            // register the user to the authy users database
-            $response = $authy_api->registerUser(
-                $request->email,
-                $request->phone_number,
-                $request->country_code
-            );
-            return $response->id();
-        } else {
-            return null;
-        }
-    }
 }

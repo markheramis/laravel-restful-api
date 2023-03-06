@@ -2,12 +2,13 @@
 
 namespace Database\Factories;
 
-
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Hashers\BcryptHasher;
 
-class UserFactory extends Factory
-{
+class UserFactory extends Factory {
+
+
     /**
      * The name of the factory's corresponding model.
      *
@@ -20,27 +21,24 @@ class UserFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array 
     {
-        $first_name = $this->faker->firstName();
-        $last_name = $this->faker->lastName();
-        $random_number = $this->faker->randomNumber(3, true);
-
-        $email = $first_name . $last_name . $random_number . "@" . $this->faker->domainName();
+        $hasher = new \App\Hashers\BcryptHasher();
+        $first_name = fake()->firstName();
+        $last_name = fake()->lastName();
+        $random_number = fake()->randomNumber(3, true);
+        $email = $first_name . $last_name . $random_number . "@" . fake()->domainName();
+        $password = $hasher->hash("password12345");
         return [
             'username' => $first_name . $last_name . $random_number,
             'email' => $email,
-            'password' => bcrypt('password12345'),
+            'password' => $password,
             'first_name' => $first_name,
             'last_name' => $last_name,
-            'phone_number' => rand(1111111111, 9999999999),
-            'country_code' => '1',
-
         ];
     }
 
-    private function __generate_random_permissions()
-    {
+    private function __generate_random_permissions() {
         $permissions = [
             'users.all',
             'users.get',
@@ -59,4 +57,5 @@ class UserFactory extends Factory
         }
         return $result;
     }
+
 }

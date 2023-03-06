@@ -2,25 +2,70 @@
 
 namespace App\Models;
 
-use Cartalyst\Sentinel\Roles\EloquentRole as Model;
+use IteratorAggregate;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Database\Eloquent\BroadcastsEvents;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Security\PermissibleTrait;
 
-class Role extends Model
-{
-    use HasFactory, BroadcastsEvents;
-    const ROLE_ADMIN = 1;
-    const ROLE_DENTIST = 4;
-    const ROLE_RADIOLOGIST = 5;
+class Role extends Model implements \App\Interfaces\RoleInterface {
+
+    use HasFactory;
+    use BroadcastsEvents;
+    use PermissibleTrait;
+
     /**
-     * Get the route key for the model.
+     * The attributes that are mass assignable.
      *
-     * @return string
+     * @var array
      */
-    public function getRouteKeyName()
-    {
-        return 'slug';
+    protected $fillable = [
+        'name',
+        'slug',
+        'permissions',
+    ];
+
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'permissions' => 'json',
+    ];
+
+    /**
+     * The Users model FQCN.
+     *
+     * @var string
+     */
+    protected static $usersModel = \App\Models\User::class;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function delete() {
+        if ($this->exists && (!method_exists(static::class, 'isForceDeleting') || $this->isForceDeleting())) {
+            $this->users()->detach();
+        }
+        return parent::delete();
+    }
+
+    /**
+     * The Users relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function users(): \Illuminate\Database\Eloquent\Relations\BelongsToMany {
+        return $this->belongsToMany(static::$usersModel, 'role_users', 'role_id', 'user_id')->withTimestamps();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getUsers(): IteratorAggregate {
+        return $this->users;
     }
 
     /**
@@ -28,8 +73,7 @@ class Role extends Model
      *
      * @return \Illuminate\Broadcasting\Channel|array
      */
-    public function broadcastOn($event)
-    {
+    public function broadcastOn($event) {
         return new PrivateChannel('role');
     }
 
@@ -38,8 +82,7 @@ class Role extends Model
      *
      * @return string
      */
-    public function broadcastAs($event)
-    {
+    public function broadcastAs($event) {
         return match ($event) {
             'created' => 'role.created',
             'updated' => 'role.updated',
@@ -47,4 +90,29 @@ class Role extends Model
             default => null,
         };
     }
+
+    public function getRoleId(): int {
+        return $this->getKey();
+    }
+
+    public function getRoleSlug(): string {
+        return $this->slug;
+    }
+
+    public static function getUsersModel(): string {
+        return static::$usersModel;
+    }
+
+    public static function setUsersModel(string $usersModel): void {
+        static::$usersModel = $usersModel;
+    }
+
+    protected function createPermissions(): \App\Security\PermissionsInterface {
+        return new static::$permissionsClass($this->getPermissions());
+    }
+
+    public function getRouteKeyName() {
+        return 'slug';
+    }
+
 }

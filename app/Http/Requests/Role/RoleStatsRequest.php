@@ -15,10 +15,11 @@ class RoleStatsRequest extends FormRequest
      */
     public function authorize()
     {
-        if (!Auth::check()) return;
+        if (!Auth::check()) {
+            return;
+        }
         $user = Auth::user();
-        $role = Role::where('name', 'administrator')->first();
-        return $user->inRole($role);
+        return $user->inRole("administrator");
     }
 
     /**

@@ -2,23 +2,18 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\ServiceProvider;
 
-class BroadcastServiceProvider extends ServiceProvider
-{
+class BroadcastServiceProvider extends ServiceProvider {
+
     /**
      * Bootstrap any application services.
      *
      * @return void
      */
-    public function boot()
-    {
-        Broadcast::routes([
-            'middleware' => ['sentinel.custom-auth'],
-            'prefix' => 'api'
-        ]);
+    public function boot() {
 
         require base_path('routes/channels.php');
     }
+
 }

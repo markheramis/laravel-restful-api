@@ -14,8 +14,7 @@ class RoleShowRequest extends FormRequest
      */
     public function authorize()
     {
-        if (!Auth::check()) return;
-        return Auth::user()->hasAccess('role.index');
+        return (Auth::check() && Auth::user()->hasAccess('role.index'));
     }
 
     /**

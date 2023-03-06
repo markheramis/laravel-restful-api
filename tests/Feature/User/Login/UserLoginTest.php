@@ -5,13 +5,10 @@ namespace Tests\Feature\User\Login;
 use Tests\TestCase;
 use App\Models\User;
 use Tests\Traits\userTraits;
-use Lcobucci\JWT\Configuration;
 use App\Events\User\UserLoggedIn;
 use Illuminate\Support\Facades\Event;
 use App\Listeners\User\UserLoggedInListener;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Notification;
-use App\Notifications\User\UserLoggedInNotification;
 
 class UserLoginTest extends TestCase
 {
