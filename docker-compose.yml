@@ -76,6 +76,8 @@ services:
       - no-new-privileges:true
     volumes:
       - "vredis:/data"
+    ports:
+      - ${FORWARD_REDIS_PORT:-6379}:6379
     networks:
       - "laravel-network"
     healthcheck:
@@ -83,53 +85,10 @@ services:
       timeout: 45s
       interval: 10s
       retries: 10
-  #redis-commander:
-  #  container_name: ${PROJECT_NAME}-redis-commander
-  #  hostname: redis-commander
-  #  image: ghcr.io/joeferner/redis-commander:latest
-  #  environment:
-  #  - REDIS_HOSTS=local:redis:6379
-  #  ports:
-  #  - "8081:8081"
-  #  networks:
-  #    - "laravel-network"
   soketi:
     container_name: ${PROJECT_NAME}-soketi
     image: 'quay.io/soketi/soketi:latest-16-alpine'
     environment:
-      #SOKETI_DEBUG: '1'
-      #SOKETI_METRICS_ENABLED: true
-      #SOKETI_METRICS_SERVER_PORT: '9601'
-      #SOKETI_DEFAULT_APP_ID: 'app-id'
-      #SOKETI_DEFAULT_APP_KEY: 'app-key'
-      #SOKETI_DEFAULT_APP_SECRET: 'app-secret'
-      #SOKETI_DEFAULT_APP_MAX_CONNS: '5'
-      #SOKETI_DEFAULT_APP_ENABLE_CLIENT_MESSAGES: false
-      #SOKETI_DEFAULT_APP_ENABLED: true
-      #SOKETI_DEFAULT_APP_MAX_BACKEND_EVENTS_PER_SEC: '-1'
-      #SOKETI_DEFAULT_APP_MAX_CLIENT_EVENTS_PER_SEC: '-1'
-      #SOKETI_DEFAULT_APP_MAX_READ_REQ_PER_SEC: '-1'
-      #SOKETI_DEFAULT_APP_WEBHOOKS: '[]'
-      #DEFAULT_APP_USER_AUTHENTICATION: false
-      #SOKETI_APP_MANAGER_DRIVER: 'mysql'
-      #SOKETI_APP_MANAGER_CACHE_ENABLED: false
-      #SOKETI_APP_MANAGER_CACHE_TTL: '-1'
-      #SOKETI_DB_MYSQL_HOST: 'mysql'
-      #SOKETI_DB_MYSQL_PORT: '3306'
-      #SOKETI_DB_MYSQL_USERNAME: ${DB_USERNAME}
-      #SOKETI_DB_MYSQL_PASSWORD: ${DB_PASSWORD}
-      #SOKETI_DB_MYSQL_DATABASE: ${DB_DATABASE}
-      #SOKETI_APP_MANAGER_MYSQL_TABLE: 'soketi_app'
-      #SOKETI_APP_MANAGER_MYSQL_USE_V2: true
-      #SOKETI_DB_REDIS_HOST: 'redis'
-      #SOKETI_DB_REDIS_PORT: '6379'
-      #SOKETI_DB_REDIS_DB: '0'
-      #SOKETI_DB_REDIS_USERNAME: null
-      #SOKETI_DB_REDIS_PASSWORD: null
-      #SOKETI_DB_REDIS_KEY_PREFIX: null
-      #SOKETI_QUEUE_DRIVER: 'redis'
-      #SOKETI_QUEUE_REDIS_CONCURRENCY: '1'
-      #SOKETI_SHUTDOWN_GRACE_PERIOD: '1000'
       SOKETI_DEBUG: '1'
       SOKETI_METRICS_SERVER_PORT: '9601'
     ports:
@@ -147,40 +106,6 @@ services:
         - '${FORWARD_MAILHOG_DASHBOARD_PORT:-8025}:8025'
     networks:
         - "laravel-network"
-  #localstack:
-  #  container_name: ${PROJECT_NAME}-localstack
-  #  image: localstack/localstack:latest
-  #  ports:
-  #    - "4566-4583:4566-4583"
-  #  environment:
-  #    - DEBUG=0
-  #    - DATA_DIR=/storage/localstack/data
-  #    - AWS_DEFAULT_REGION=us-east-1
-  #    - SERVICES=s3
-  #    - AWS_BUCKET=${AWS_BUCKET}
-  #    - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-  #    - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-  #    - EDGE_PORT=4566
-  #  volumes:
-  #    - './storage/localstack:/tmp/localstack'
-  #    - '/var/run/docker.sock:/var/run/docker.sock'
-  #    - './resources/localstack/init:/docker-entrypoint-initaws.d'
-  #  networks:
-  #    - "laravel-network"
-  #s3manager:
-  #  container_name: ${PROJECT_NAME}-s3-manager
-  #  image: mastertinner/s3manager
-  #  environment:
-  #    - ENDPOINT=${AWS_ENDPOINT}
-  #    - ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-  #    - SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-  #    - USE_SSL=false
-  #  ports:
-  #    - 8089:8080
-  #  depends_on:
-  #    - localstack
-  #  networks:
-  #    - "laravel-network"
 networks:
   laravel-network:
     name: ${PROJECT_NAME}-network
