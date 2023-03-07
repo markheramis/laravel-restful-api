@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Providers;
-
+use Laravel\Passport\Passport;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use App\Models\User;
@@ -47,7 +47,7 @@ class AppServiceProvider extends ServiceProvider {
             $this->app->register(TelescopeServiceProvider::class);
         }
     }
-    
+
     protected function registerRole() {
         $this->app->singleton('roles', function($app) {
             return new RoleRepository();
@@ -83,6 +83,7 @@ class AppServiceProvider extends ServiceProvider {
      * @return void
      */
     public function boot() {
+        Passport::hashClientSecrets();
         if (config('app.env') !== 'local') {
             \URL::forceScheme('https');
         }
