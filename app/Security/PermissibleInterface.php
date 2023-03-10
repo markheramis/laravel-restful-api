@@ -3,7 +3,6 @@
 namespace App\Security;
 
 use App\Security\PermissionsInterface;
-use App\Security\PermissibleInterface;
 /**
  *
  * @author Mark
