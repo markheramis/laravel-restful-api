@@ -16,6 +16,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Mail;
 use App\Transformers\UserTransformer;
 use Illuminate\Http\Request;
+use App\Http\Requests\User\UserMeRequest;
 use App\Http\Requests\User\UserIndexRequest;
 use App\Http\Requests\User\UserStoreRequest;
 use App\Http\Requests\User\UserShowRequest;
@@ -263,7 +264,7 @@ class UserController extends Controller {
      * @authenticated
      * @return JsonResponse
      */
-    public function me(): JsonResponse {
+    public function me(UserMeRequest $request): JsonResponse {
         $user = Auth::user();
         $response = $user->with('roles')->first();
         return response()->success($response);
