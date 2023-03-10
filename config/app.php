@@ -166,6 +166,7 @@ return [
          * Package Service Providers...
          */
         PragmaRX\Google2FALaravel\ServiceProvider::class,
+        App\Providers\FortifyServiceProvider::class,
         /*
          * Application Service Providers...
          */

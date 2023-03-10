@@ -16,6 +16,7 @@
         "fruitcake/laravel-cors": "^3.0",
         "gamegos/php-code-sniffer": "^0.6.1",
         "guzzlehttp/guzzle": "^7.5",
+        "laravel/fortify": "^1.16",
         "laravel/framework": "^9.3",
         "laravel/passport": "^11.0",
         "laravel/tinker": "^2.7",
