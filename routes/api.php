@@ -20,7 +20,6 @@ use App\Http\Controllers\API\UserPermissionController;
 use App\Http\Controllers\API\RoleController;
 use App\Http\Controllers\API\PermissionController;
 use App\Http\Controllers\API\MediaController;
-use App\Http\Controllers\API\AuthTwilio2FAController;
 
 Route::prefix('auth')
     ->middleware('throttle:60,1')
@@ -44,16 +43,6 @@ Route::prefix('auth')
                 ->name('api.me');
             Route::post('logout', [LogoutController::class, 'logout'])
                 ->name('api.logout');
-        });
-    Route::prefix('mfa')
-        ->middleware(['auth:api'])
-        ->group(function () {
-            Route::get('sms', [AuthTwilio2FAController::class, 'requestTokenSMS'])
-                ->name('api.mfa.twilio.sms');
-            Route::post('verify', [AuthTwilio2FAController::class, 'verifyCode'])
-                ->name('api.mfa.twilio.verify');
-            Route::get('settings', [AuthTwilio2FAController::class, 'getSettings'])
-                ->name('api.mfa.twilio.settings');
         });
 });
 Route::prefix('user')
