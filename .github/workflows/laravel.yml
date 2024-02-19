@@ -32,7 +32,6 @@ jobs:
     - uses: actions/checkout@v2
     - name: Copy .env
       run: php -r "file_exists('.env') || copy('.env.testing.example', '.env');"
-    
     - name: Install Dependencies
       run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
     - name: cache config
@@ -41,8 +40,18 @@ jobs:
       run: php artisan key:generate
     - name: Run Migration
       run: php artisan migrate --seed
-    - name: Passport Setup
-      run: php artisan passport:install
+    - name: Setup Laravel Passport
+      run: |
+        # run passport and assign the output to the output variable
+        output=$(php artisan passport:install)
+        # capture the client_id from the output variable
+        client_id=$(echo "$output" | awk '/Client ID:/{print $3; exit}')
+        # capture the client_secret from the output variable
+        client_secret=$(echo "$output" | awk '/Client secret:/{print $3; exit}')
+        # assign the client_id to the environment variable
+        echo "PASSPORT_PERSONAL_ACCESS_CLIENT_ID=$client_id" >> $GITHUB_ENV
+        # assign the client_secret to the environmeent variable
+        echo "PASSPORT_PERSONAL_ACCESS_CLIENT_SECRET=$client_secret" >> $GITHUB_ENV
     - name: Start queue
       run: php artisan queue:work &
     - name: Run Laravel Project
