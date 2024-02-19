@@ -97,5 +97,19 @@
         "bench": [
             "@php vendor/bin/phpbench run"
         ]
-    }
+    },
+    "repositories": [
+        {
+            "type": "package",
+            "package": {
+                "name": "knuckleswtf/scribe",
+                "version": "4.29.0",
+                "source": {
+                    "url": "https://github.com/markheramis/scribe.git",
+                    "type": "git",
+                    "reference": "bugfix/send-request-ui-bug"
+                }
+            }
+        }
+    ]
 }
