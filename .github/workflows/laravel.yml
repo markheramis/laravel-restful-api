@@ -32,8 +32,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: Copy .env
       run: php -r "file_exists('.env') || copy('.env.testing.example', '.env');"
-    - name: Copy .env.testing
-      run: php -r "file_exists('.env.testing') || copy('.env.testing.example', '.env.testing');"
+    
     - name: Install Dependencies
       run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
     - name: cache config
@@ -48,5 +47,11 @@ jobs:
       run: php artisan queue:work &
     - name: Run Laravel Project
       run: php artisan serve &
+    - name: Copy .env.testing
+      run: php -r "file_exists('.env.testing') || copy('.env', '.env.testing');"
+    - name: Display .env
+      run: cat .env
+    - name: Display .env.testing
+      run: cat .env.testing
     - name: Execute tests
       run: php artisan test --env=testing
