@@ -244,7 +244,7 @@ INTRO,
     /*
      * The base URL to be used in examples. If this is empty, Scribe will use the value of config('app.url').
      */
-    'base_url' => null,
+    'base_url' => config('app.url'),
 
     /*
      * Generate a Postman collection (v2.1.0) in addition to HTML docs.
@@ -361,7 +361,7 @@ INTRO,
          * The base URL for the API tester to use (for example, you can set this to your staging URL).
          * Leave as null to use the current app URL (config(app.url)).
          */
-        'base_url' => null,
+        'base_url' => config('app.url'),
         /**
          * Fetch a CSRF token before each request, and add it as an X-XSRF-TOKEN header. Needed if you're using Laravel Sanctum.
          */

@@ -34,7 +34,7 @@
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.7",
         "fakerphp/faker": "^1.9.1",
-        "knuckleswtf/scribe": "^4.16",
+        "knuckleswtf/scribe": "^4.29",
         "laravel/dusk": "^6.2",
         "laravel/envoy": "^2.6",
         "laravel/sail": "^1.0.1",
@@ -51,7 +51,8 @@
         "preferred-install": "dist",
         "sort-packages": true,
         "allow-plugins": {
-            "composer/package-versions-deprecated": true
+            "composer/package-versions-deprecated": true,
+            "php-http/discovery": true
         }
     },
     "autoload": {
@@ -96,5 +97,19 @@
         "bench": [
             "@php vendor/bin/phpbench run"
         ]
-    }
+    },
+    "repositories": [
+        {
+            "type": "package",
+            "package": {
+                "name": "knuckleswtf/scribe",
+                "version": "4.29.0",
+                "source": {
+                    "url": "https://github.com/markheramis/scribe.git",
+                    "type": "git",
+                    "reference": "bugfix/send-request-ui-bug"
+                }
+            }
+        }
+    ]
 }
