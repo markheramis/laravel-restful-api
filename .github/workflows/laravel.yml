@@ -9,6 +9,7 @@ jobs:
       image: ghcr.io/markheramis/laravel-restful-api/laravel-restful-api:latest
     env:
       SENTRY_LARAVEL_DSN: ${{ secrets.SENTRY_LARAVEL_DSN }}
+      DB_PORT: 3306
     services:
       mysql:
         image: mysql:5.7
@@ -39,12 +40,10 @@ jobs:
       run: php artisan config:cache
     - name: Generate key
       run: php artisan key:generate
-    - name: Create Database and run migration
-      env:
-        DB_PORT: ${{ job.services.mysql.ports[3306] }}
+    - name: Run Migration
+      run: php artisan migrate --seed
     - name: Passport Setup
       run: php artisan passport:install
-      run: php artisan migrate --seed
     - name: Start queue
       run: php artisan queue:work &
     - name: Run Laravel Project
