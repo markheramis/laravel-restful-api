@@ -38,5 +38,7 @@ php artisan telescope:install
 php artisan telescope:publish
 # Link storage
 php artisan storage:link
+# Install scribe
+php artisan scribe:generate
 # Start Supervisor Service
 service supervisor start
