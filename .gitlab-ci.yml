@@ -54,7 +54,7 @@ build-docker:
     - docker build -t $DOCKER_IMAGE .
     - docker push $DOCKER_IMAGE
 build-composer:
-  image: composer:latest
+  image: cimg/php:8.2
   stage: build
   script:
     - composer install
