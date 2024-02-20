@@ -88,7 +88,6 @@ class AppServiceProvider extends ServiceProvider {
             \URL::forceScheme('https');
         }
         Schema::defaultStringLength(200); // Default String Length on Database
-        $this->registerPolicies();
         /**
          * Register Observers
          */
