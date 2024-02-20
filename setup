@@ -39,6 +39,6 @@ php artisan telescope:publish
 # Link storage
 php artisan storage:link
 # Install scribe
-php artisan scribe:generate
+php artisan scribe:generate --force
 # Start Supervisor Service
-service supervisor start
+exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf

@@ -5,7 +5,6 @@ namespace App\Http\Controllers\API;
 use DB;
 use Auth;
 use Activation;
-use Authy\AuthyApi;
 use App\Models\Role;
 use App\Models\User;
 use App\Mail\UserForgotPasswordMail;
@@ -15,14 +14,12 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Mail;
 use App\Transformers\UserTransformer;
-use Illuminate\Http\Request;
 use App\Http\Requests\User\UserMeRequest;
 use App\Http\Requests\User\UserIndexRequest;
 use App\Http\Requests\User\UserStoreRequest;
 use App\Http\Requests\User\UserShowRequest;
 use App\Http\Requests\User\UserUpdateRequest;
 use App\Http\Requests\User\UserDestroyRequest;
-use App\Http\Requests\User\UserUpdateMFARequest;
 use App\Http\Requests\User\UserForgetPasswordRequest;
 use App\Http\Requests\User\UserResetPasswordRequest;
 use App\Http\Requests\User\UserChangePasswordRequest;
@@ -39,8 +36,6 @@ use App\Repositories\RoleRepository;
  */
 class UserController extends Controller {
 
-    private $authy_app_secret;
-    private $authy_app_id;
 
     /**
      * The users repository
@@ -58,8 +53,6 @@ class UserController extends Controller {
     public function __construct(UserRepository $users, RoleRepository $roles) {
         $this->users = $users;
         $this->roles = $roles;
-        $this->authy_app_secret = config('authy.app_secret');
-        $this->authy_app_id = config('authy.app_id');
     }
 
     /**
@@ -148,7 +141,6 @@ class UserController extends Controller {
      * @return JsonResponse
      */
     public function store(UserStoreRequest $request): JsonResponse {
-        $authy_id = $this->create_authy_api($request);
         $activate = (bool) $request->activate;
         $credentials = [
             "username" => $request->username,
@@ -158,10 +150,8 @@ class UserController extends Controller {
             "last_name" => $request->last_name,
             "permissions" => $request->permissions,
             "phone_number" => $request->phone_number,
-            "country_code" => $request->country_code,
-            "authy_id" => $authy_id
+            "country_code" => $request->country_code
         ];
-
         if (!$this->users->validForCreation($credentials)) {
             return response()->error([], 400);
         }
@@ -268,77 +258,6 @@ class UserController extends Controller {
         $user = Auth::user();
         $response = $user->with('roles')->first();
         return response()->success($response);
-    }
-
-    private function create_authy_api(Request $request) {
-        $is_not_local = config('app.env') !== "local";
-
-        $has_authy = $this->authy_app_id && $this->authy_app_secret;
-        if ($is_not_local && $has_authy) {
-            $authy_api = new AuthyApi($this->authy_app_secret);
-            // register the user to the authy users database
-            $registered = $authy_api->registerUser(
-                    $request->email,
-                    $request->phone_number,
-                    $request->country_code
-            );
-            return $registered->id();
-        }
-    }
-
-    public function delete_authy_mfa(User $user) {
-        $authy_api = new AuthyApi($this->authy_app_secret);
-        $delete = $authy_api->deleteUser($user->authy_id)->bodyvar('message');
-        $user->authy_id = 0;
-        $user->update();
-        return response()->success($delete);
-    }
-
-    public function enable_authy_mfa(User $user) {
-        $authyId = $this->create_authy_api($user);
-        $user->authy_id = $authyId;
-        $user->update();
-        return response()->success($authyId);
-    }
-
-    public function get_qr_code(User $user) {
-        $authy_api = new AuthyApi($this->authy_app_secret);
-        $data = $authy_api->qrCode($user->authy_id, []);
-
-        $response = [
-            'qr_code' => $data->bodyvar('qr_code'),
-            'label' => $data->bodyvar('label'),
-            'issuer' => $data->bodyvar('issuer'),
-        ];
-
-        if ($data->bodyvar('success')) {
-            return response()->success($response);
-        } else {
-            return response()->error([], 'Unable to generate QR Code');
-        }
-    }
-
-    public function request_token_via_sms(User $user) {
-        $authy_api = new AuthyApi($this->authy_app_secret);
-        $authy_api->requestSms($user->phone_number);
-    }
-
-    /*
-     * Set Multi Factor Method
-     *
-     * This endpoint lets you set the current user's default multi-factor authentication method
-     *
-     * @authenticated
-     *
-     * @param AuthTwilio2FASetMFARequest $request
-     * @return JsonResponse
-     */
-
-    public function setMFA(UserUpdateMFARequest $request): JsonResponse {
-        $user = Auth::user();
-        $user->default_factor = $request->default_factor;
-        $user->save();
-        return response()->success('success');
     }
 
     /**

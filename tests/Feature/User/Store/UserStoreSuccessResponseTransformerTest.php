@@ -41,7 +41,7 @@ class UserStoreSuccessResponseTransformerTest extends TestCase {
             "password" => "p@s5W0rd12345",
             "first_name" => $user->first_name,
             "last_name" => $user->last_name,
-                ], $header);
+        ], $header);
         $created_user = User::where('username', $user->username)->first();
         $expectedResponse = fractal($created_user, new UserTransformer())->toArray();
         $response->assertStatus(200);
