@@ -52,8 +52,6 @@ Route::prefix('user')
             ->name('user.index');
         Route::post('/', [UserController::class, 'store'])
             ->name('user.store');
-        Route::put('/mfa', [UserController::class, 'setMFA'])
-            ->name('user.mfa.default');
         Route::post('change', [UserController::class, 'changePassword'])
             ->name('user.password.change');
         Route::prefix('{user}')->group(function () {
@@ -61,10 +59,6 @@ Route::prefix('user')
                 ->name('user.show');
             Route::put('/', [UserController::class, 'update'])
                 ->name('user.update');
-            Route::post('mfa', [UserController::class, 'enable_authy_mfa'])
-                ->name('user.mfa.enable');
-            Route::delete('mfa', [UserController::class, 'delete_authy_mfa'])
-                ->name('user.mfa.delete');
             Route::get('qr', [UserController::class, 'get_qr_code'])
                 ->name('user.qr.get');
             Route::delete('/', [UserController::class, 'destroy'])

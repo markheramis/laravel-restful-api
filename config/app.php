@@ -162,13 +162,12 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
 
-        /*
-         * Package Service Providers...
+        /**
+         * Dependency Service Providers
          */
-        PragmaRX\Google2FALaravel\ServiceProvider::class,
         App\Providers\FortifyServiceProvider::class,
         /*
-         * Application Service Providers...
+         * Application Service Providers
          */
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
@@ -227,7 +226,6 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-        'Google2FA' => PragmaRX\Google2FALaravel\Facade::class,
     ],
 
 ];
