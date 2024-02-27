@@ -30,8 +30,7 @@ class LoginController extends Controller {
             $this->user = Auth::user();
             $token_name = config('app.name') . ': ' . $this->user->username;
             $permissions = $this->user->allPermissions();
-            echo "hello";
-            exit();
+           
             $token = $this->user->createToken($token_name, $permissions)->accessToken;
            
             broadcast(new UserLoggedIn($this->user->id));

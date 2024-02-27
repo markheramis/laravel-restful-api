@@ -10,6 +10,11 @@ use App\Http\Requests\User\UpdateUserProfileRequest;
 use App\Http\Requests\User\StoreUserProfileRequest;
 use App\Models\UserProfile;
 
+/**
+ * @group  User Profile Management
+ *
+ * APIs for managnign Users Meta Data
+ */
 class UserProfileController extends Controller
 {
     public function index($request) {
@@ -23,7 +28,7 @@ class UserProfileController extends Controller
      * This endpoint allows you to show a user profile that matches the ID
      *
      * @authenticated
-     * @param Request $request
+     * @param ShowUserProfileRequest $request
      * @param integer $id
      * @return void
      */
@@ -40,7 +45,7 @@ class UserProfileController extends Controller
      * This endpoint allows you to store a new user profile
      *
      * @authenticated
-     * @param Request $request
+     * @param StoreUserProfileRequest $request
      * @param integer $id
      * @return JsonResponse
      */
@@ -65,7 +70,7 @@ class UserProfileController extends Controller
      * This endpoint allows you to update a new user profile
      *
      * @authenticated
-     * @param Request $request
+     * @param UpdateUserProfileRequest $request
      * @param integer $id
      * @return JsonResponse
      */
@@ -88,7 +93,7 @@ class UserProfileController extends Controller
      * This endpoint allows you to delete a new user profile
      *
      * @authenticated
-     * @param Request $request
+     * @param DestroyUserProfileRequest $request
      * @param integer $id
      * @return JsonResponse
      */
