@@ -11,7 +11,7 @@ class DeleteUserProfileRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return Auth::check();
     }
 
     /**

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-//use App\Http\Requests\User\ShowUserProfileRequest;
+use App\Http\Requests\User\ShowUserProfileRequest;
 use App\Http\Requests\User\DeleteUserProfileRequest;
 use App\Http\Requests\User\UpdateUserProfileRequest;
 use App\Http\Requests\User\StoreUserProfileRequest;
@@ -28,10 +28,10 @@ class UserProfileController extends Controller
      * @return void
      */
 
-    //  public function show(ShowUserProfileRequest $request, int $id) {
-    //     $profile = UserProfile::find($id);
-    //     return response()->success($profile);
-    // }
+     public function show(ShowUserProfileRequest $request, int $id) {
+        $profile = UserProfile::find($id);
+        return response()->success($profile);
+    }
 
 
      /**

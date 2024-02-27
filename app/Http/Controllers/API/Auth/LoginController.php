@@ -25,6 +25,8 @@ class LoginController extends Controller {
      */
     public function login(UserLoginRequest $request): JsonResponse {
         $credentials = $this->processCredentials($request);
+        echo "HELLO";
+	    exit();
         if (Auth::attempt($credentials)) {
             $this->user = Auth::user();
             $token_name = config('app.name') . ': ' . $this->user->username;
