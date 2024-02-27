@@ -20,6 +20,7 @@ use App\Http\Controllers\API\UserPermissionController;
 use App\Http\Controllers\API\RoleController;
 use App\Http\Controllers\API\PermissionController;
 use App\Http\Controllers\API\MediaController;
+use App\Http\Controllers\API\UserProfileController;
 
 Route::prefix('auth')
     ->middleware('throttle:60,1')
@@ -85,6 +86,10 @@ Route::prefix('user')
             });
         });
     });
+
+
+
+    
 Route::prefix('role')
     ->middleware(['auth:api'])
     ->group(function () {
@@ -127,3 +132,18 @@ Route::prefix('media')
                 ->name('media.download');
         });
     });
+
+// Route::prefix('userprofile')
+//     ->middleware(['auth:api'])
+//     ->group(function () {
+//         Route::post('/', [UserProfileController::class, 'store'])
+//             ->name('userprofile.store');
+//         Route::prefix('{userprofile}')->group(function () {
+//             Route::get('/', [UserProfileController::class, 'show'])
+//                 ->name('userprofile.show');
+//             Route::put('/', [UserProfileController::class, 'update'])
+//                 ->name('userprofile.update');
+//             Route::delete('/', [UserProfileController::class, 'destroy'])
+//                 ->name('userprofile.destroy');
+//             });
+//         });
