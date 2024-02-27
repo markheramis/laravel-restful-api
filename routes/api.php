@@ -133,17 +133,17 @@ Route::prefix('media')
         });
     });
 
-// Route::prefix('userprofile')
-//     ->middleware(['auth:api'])
-//     ->group(function () {
-//         Route::post('/', [UserProfileController::class, 'store'])
-//             ->name('userprofile.store');
-//         Route::prefix('{userprofile}')->group(function () {
-//             Route::get('/', [UserProfileController::class, 'show'])
-//                 ->name('userprofile.show');
-//             Route::put('/', [UserProfileController::class, 'update'])
-//                 ->name('userprofile.update');
-//             Route::delete('/', [UserProfileController::class, 'destroy'])
-//                 ->name('userprofile.destroy');
-//             });
-//         });
+Route::prefix('userprofile')
+    ->middleware(['auth:api'])
+    ->group(function () {
+        Route::post('/', [UserProfileController::class, 'store'])
+            ->name('userprofile.store');
+        Route::prefix('{userprofile}')->group(function () {
+            Route::get('/', [UserProfileController::class, 'show'])
+                ->name('userprofile.show');
+            Route::put('/', [UserProfileController::class, 'update'])
+                ->name('userprofile.update');
+            Route::delete('/', [UserProfileController::class, 'destroy'])
+                ->name('userprofile.destroy');
+            });
+        });
