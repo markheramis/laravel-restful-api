@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Note;
 
 use App\Http\Requests\Note\ShowNoteRequest;
+use App\Http\Requests\Note\StoreNoteRequest;
 
 /**
  * @group  User Profile Management
@@ -16,7 +17,7 @@ use App\Http\Requests\Note\ShowNoteRequest;
 class NoteController extends Controller
 {
       /**
-     * Show Notes
+     * Show User Notes
      * 
      * This endpoint allows you to show a user note that matches the user ID
      *
@@ -31,5 +32,24 @@ class NoteController extends Controller
         return response()->success($note);
     }
 
+     /**
+     * Store User Notes
+     * 
+     * This endpoint allows you to store a new user notes
+     *
+     * @authenticated
+     * @param StoreNoteRequest $request
+     * @param integer $id
+     * @return JsonResponse
+     */
+    public function store(StoreNoteRequest $request) {
+        $note = new Note;
+        $note->user_id = $request->userid;
+        $note->title = $request->title;
+        $note->badge = $request->badge;
+        $note->body = $request->body;      
+        $note->save();
+        return response()->success($note);
+    }
 
 }
