@@ -22,7 +22,7 @@ return new class extends Migration
             $table->date('birthday');
             $table->string('gender');
             $table->integer('pay');
-            $table->integer('phone');
+            $table->string('phone');
             $table->timestamps();
         });
     }

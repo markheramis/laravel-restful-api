@@ -3,15 +3,17 @@
 namespace App\Http\Requests\UserProfile;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class ShowUserProfileRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
+    * @return bool
      */
     public function authorize(): bool
     {
-        return false;
+        return Auth::check();
     }
 
     /**

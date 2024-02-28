@@ -49,9 +49,9 @@ class UserProfileController extends Controller
      * @param integer $id
      * @return JsonResponse
      */
-    public function store(StoreUserProfileRequest $request, int $id) {
+    public function store(StoreUserProfileRequest $request) {
         $profile = new UserProfile;
-        $profile->user_id = $id;
+        $profile->user_id = $request->userid;
         $profile->firstname = $request->firstname;
         $profile->lastname = $request->lastname;
         $profile->middlename = $request->middlename;
@@ -85,7 +85,7 @@ class UserProfileController extends Controller
         $profile->pay = $request->pay;
         $profile->phone = $request->phone;
         $profile->save();
-        return responce()->success($profile);
+        return response()->success($profile);
     }
      /**
      * Delete User Profile
