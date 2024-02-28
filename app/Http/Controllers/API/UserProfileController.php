@@ -4,10 +4,10 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Http\Requests\User\ShowUserProfileRequest;
-use App\Http\Requests\User\DeleteUserProfileRequest;
-use App\Http\Requests\User\UpdateUserProfileRequest;
-use App\Http\Requests\User\StoreUserProfileRequest;
+use App\Http\Requests\UserProfile\ShowUserProfileRequest;
+use App\Http\Requests\UserProfile\DeleteUserProfileRequest;
+use App\Http\Requests\UserProfile\UpdateUserProfileRequest;
+use App\Http\Requests\UserProfile\StoreUserProfileRequest;
 use App\Models\UserProfile;
 
 /**
