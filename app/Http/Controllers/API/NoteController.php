@@ -12,9 +12,9 @@ use App\Http\Requests\Note\UpdateNoteRequest;
 use App\Http\Requests\Note\DeleteNoteRequest;
 
 /**
- * @group  User Profile Management
+ * @group  User Notes
  *
- * APIs for managnign Users Meta Data
+ * APIs for managing Users Notes
  */
 class NoteController extends Controller
 {
@@ -25,12 +25,13 @@ class NoteController extends Controller
      *
      * @authenticated
      * @param ShowNoteRequest $request
-     * @param integer $id
+     * @param integer $userid
      * @return void
      */
 
-     public function show(ShowNoteRequest $request, int $id) {
-        $note = Note::find($id);
+     public function show(ShowNoteRequest $request, int $userid) {
+        $note = new Note;
+        $note = Note::where('user_id', $userid)->get();
         return response()->success($note);
     }
 
@@ -64,10 +65,9 @@ class NoteController extends Controller
      * @param integer $id
      * @return JsonResponse
      */
-    public function update(UpdateNoteRequest $request, Note $note, int $id){
-        
+    public function update(UpdateNoteRequest $request, int $id){
+        $note = new Note;
         $note = Note::find($id);
-        $note->user_id = $request->userid;
         $note->title = $request->title;
         $note->badge = $request->badge;
         $note->body = $request->body;      
@@ -85,7 +85,9 @@ class NoteController extends Controller
      * @param integer $id
      * @return JsonResponse
      */
-    public function destroy(DeleteNoteRequest $request, Note $note, int $id){
+    public function destroy(DeleteNoteRequest $request, int $id){
+        $note = new Note;
+        $note = Note::find($id);
         $note->delete();
         return response()->success('Note Deleted');
     }

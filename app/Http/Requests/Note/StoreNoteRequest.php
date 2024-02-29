@@ -23,10 +23,10 @@ class StoreNoteRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "userid"    => ["requiured","numeric"],
-            "title"     => ["requiured","string"],
+            "userid"    => ["required","numeric"],
+            "title"     => ["required","string"],
             "badge"     => ["nullable","string"],
-            "body"      => ["requiured","string"],
+            "body"      => ["required","string"],
         ];
     }
 }

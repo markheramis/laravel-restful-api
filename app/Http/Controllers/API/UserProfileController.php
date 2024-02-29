@@ -13,7 +13,7 @@ use App\Models\UserProfile;
 /**
  * @group  User Profile Management
  *
- * APIs for managnign Users Meta Data
+ * APIs for managing Users Meta Data
  */
 class UserProfileController extends Controller
 {
