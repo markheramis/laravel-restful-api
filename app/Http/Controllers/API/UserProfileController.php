@@ -4,11 +4,13 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\UserProfile;
+
 use App\Http\Requests\UserProfile\ShowUserProfileRequest;
 use App\Http\Requests\UserProfile\DeleteUserProfileRequest;
 use App\Http\Requests\UserProfile\UpdateUserProfileRequest;
 use App\Http\Requests\UserProfile\StoreUserProfileRequest;
-use App\Models\UserProfile;
+
 
 /**
  * @group  User Profile Management
@@ -25,16 +27,17 @@ class UserProfileController extends Controller
       /**
      * Show User Profile
      * 
-     * This endpoint allows you to show a user profile that matches the ID
+     * This endpoint allows you to show a user profile that matches the user ID
      *
      * @authenticated
      * @param ShowUserProfileRequest $request
-     * @param integer $id
+     * @param integer $userid
      * @return void
      */
 
-     public function show(ShowUserProfileRequest $request, int $id) {
-        $profile = UserProfile::find($id);
+     public function show(ShowUserProfileRequest $request, int $userid) {
+        $profile = new UserProfile;
+        $profile = UserProfile::where('user_id', $userid)->get();
         return response()->success($profile);
     }
 
@@ -74,7 +77,8 @@ class UserProfileController extends Controller
      * @param integer $id
      * @return JsonResponse
      */
-    public function update(UpdateUserProfileRequest $request, UserProfile $profile, int $id){
+    public function update(UpdateUserProfileRequest $request, int $id){
+        $profile = new UserProfile;
         $profile = UserProfile::find($id);
         $profile->firstname = $request->firstname;
         $profile->lastname = $request->lastname;
@@ -97,7 +101,9 @@ class UserProfileController extends Controller
      * @param integer $id
      * @return JsonResponse
      */
-    public function destroy(DeleteUserProfileRequest $request, UserProfile $profile, int $id){
+    public function destroy(DeleteUserProfileRequest $request, int $id){
+        $profile = new UserProfile;
+        $profile = UserProfile::find($id);
         $profile->delete();
         return response()->success('User Deleted');
     }
