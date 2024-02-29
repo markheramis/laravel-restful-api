@@ -8,6 +8,8 @@ use App\Models\Note;
 
 use App\Http\Requests\Note\ShowNoteRequest;
 use App\Http\Requests\Note\StoreNoteRequest;
+use App\Http\Requests\Note\UpdateNoteRequest;
+use App\Http\Requests\Note\DeleteNoteRequest;
 
 /**
  * @group  User Profile Management
@@ -33,9 +35,9 @@ class NoteController extends Controller
     }
 
      /**
-     * Store User Notes
+     * Store User Note
      * 
-     * This endpoint allows you to store a new user notes
+     * This endpoint allows you to store a new user note
      *
      * @authenticated
      * @param StoreNoteRequest $request
@@ -51,5 +53,42 @@ class NoteController extends Controller
         $note->save();
         return response()->success($note);
     }
+
+    /**
+     * Update User Note
+     * 
+     * This endpoint allows you to update a new user note
+     *
+     * @authenticated
+     * @param UpdateNoteRequest $request
+     * @param integer $id
+     * @return JsonResponse
+     */
+    public function update(UpdateNoteRequest $request, Note $note, int $id){
+        
+        $note = Note::find($id);
+        $note->user_id = $request->userid;
+        $note->title = $request->title;
+        $note->badge = $request->badge;
+        $note->body = $request->body;      
+        $note->save();
+        return response()->success($note);
+    }
+
+    /**
+     * Delete User Note
+     * 
+     * This endpoint allows you to delete a new user note
+     *
+     * @authenticated
+     * @param DesleteNoteRequest $request
+     * @param integer $id
+     * @return JsonResponse
+     */
+    public function destroy(DeleteNoteRequest $request, Note $note, int $id){
+        $note->delete();
+        return response()->success('Note Deleted');
+    }
+
 
 }

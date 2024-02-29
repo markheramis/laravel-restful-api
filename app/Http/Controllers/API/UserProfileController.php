@@ -93,11 +93,11 @@ class UserProfileController extends Controller
      * This endpoint allows you to delete a new user profile
      *
      * @authenticated
-     * @param DestroyUserProfileRequest $request
+     * @param DeleteUserProfileRequest $request
      * @param integer $id
      * @return JsonResponse
      */
-    public function destroy(DestroyUserProfileRequest $request, UserProfile $profile, int $id){
+    public function destroy(DeleteUserProfileRequest $request, UserProfile $profile, int $id){
         $profile->delete();
         return response()->success('User Deleted');
     }

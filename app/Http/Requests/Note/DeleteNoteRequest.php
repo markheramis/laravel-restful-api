@@ -5,16 +5,14 @@ namespace App\Http\Requests\Note;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class ShowNoteRequest extends FormRequest
+class DeleteNoteRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
-     * @return bool
      */
     public function authorize(): bool
     {
         return Auth::check();
-    
     }
 
     /**
@@ -25,7 +23,7 @@ class ShowNoteRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            
         ];
     }
 }
