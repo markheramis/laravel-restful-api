@@ -1,19 +1,20 @@
 <?php
 
-namespace App\Http\Requests\UserProfile;
+namespace App\Http\Requests\Note;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class ShowUserProfileRequest extends FormRequest
+class ShowNoteRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
-    * @return bool
+     * @return bool
      */
     public function authorize(): bool
     {
         return Auth::check();
+    
     }
 
     /**

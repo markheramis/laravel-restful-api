@@ -3,6 +3,7 @@
 namespace App\Http\Requests\UserProfile;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class UpdateUserProfileRequest extends FormRequest
 {
@@ -33,7 +34,7 @@ class UpdateUserProfileRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array
      */
     public function rules(): array
     {     
@@ -44,7 +45,7 @@ class UpdateUserProfileRequest extends FormRequest
                 "address"       => ["required", "string"],
                 "birthday"      => ["required", "date"],
                 "gender"        => ["required", "string"],
-                "pay"           => ["required", "numberic"],
+                "pay"           => ["required", "numeric"],
                 "phone"         => ["required", "string", "unique:user_profiles,phone"],
     
             ];  

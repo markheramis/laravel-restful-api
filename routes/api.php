@@ -21,6 +21,7 @@ use App\Http\Controllers\API\RoleController;
 use App\Http\Controllers\API\PermissionController;
 use App\Http\Controllers\API\MediaController;
 use App\Http\Controllers\API\UserProfileController;
+use App\Http\Controllers\API\NoteController;
 
 Route::prefix('auth')
     ->middleware('throttle:60,1')
@@ -133,17 +134,32 @@ Route::prefix('media')
         });
     });
 
-// Route::prefix('userprofile')
-//     ->middleware(['auth:api'])
-//     ->group(function () {
-//         Route::post('/', [UserProfileController::class, 'store'])
-//             ->name('userprofile.store');
-//         Route::prefix('{userprofile}')->group(function () {
-//             Route::get('/', [UserProfileController::class, 'show'])
-//                 ->name('userprofile.show');
-//             Route::put('/', [UserProfileController::class, 'update'])
-//                 ->name('userprofile.update');
-//             Route::delete('/', [UserProfileController::class, 'destroy'])
-//                 ->name('userprofile.destroy');
-//             });
-//         });
+Route::prefix('userprofile')
+    ->middleware(['auth:api'])
+    ->group(function () {
+        Route::post('/', [UserProfileController::class, 'store'])
+            ->name('userprofile.store');
+        Route::prefix('{userprofile}')->group(function () {
+            Route::get('/', [UserProfileController::class, 'show'])
+                ->name('userprofile.show');
+            Route::put('/', [UserProfileController::class, 'update'])
+                ->name('userprofile.update');
+            Route::delete('/', [UserProfileController::class, 'destroy'])
+                ->name('userprofile.destroy');
+            });
+        });
+
+Route::prefix('note')
+    ->middleware(['auth:api'])
+    ->group(function () {
+        Route::post('/', [NoteController::class, 'store'])
+            ->name('note.store');
+        Route::prefix('{note}')->group(function () {
+            Route::get('/', [NoteController::class, 'show'])
+                ->name('note.show');
+            Route::put('/', [NoteController::class, 'update'])
+                ->name('note.update');
+            Route::delete('/', [NoteController::class, 'destroy'])
+                ->name('note.destroy');
+            });
+        });

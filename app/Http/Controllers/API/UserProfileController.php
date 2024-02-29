@@ -4,12 +4,17 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Http\Requests\User\ShowUserProfileRequest;
-use App\Http\Requests\User\DeleteUserProfileRequest;
-use App\Http\Requests\User\UpdateUserProfileRequest;
-use App\Http\Requests\User\StoreUserProfileRequest;
+use App\Http\Requests\UserProfile\ShowUserProfileRequest;
+use App\Http\Requests\UserProfile\DeleteUserProfileRequest;
+use App\Http\Requests\UserProfile\UpdateUserProfileRequest;
+use App\Http\Requests\UserProfile\StoreUserProfileRequest;
 use App\Models\UserProfile;
 
+/**
+ * @group  User Profile Management
+ *
+ * APIs for managing Users Meta Data
+ */
 class UserProfileController extends Controller
 {
     public function index($request) {
@@ -23,7 +28,7 @@ class UserProfileController extends Controller
      * This endpoint allows you to show a user profile that matches the ID
      *
      * @authenticated
-     * @param Request $request
+     * @param ShowUserProfileRequest $request
      * @param integer $id
      * @return void
      */
@@ -40,13 +45,13 @@ class UserProfileController extends Controller
      * This endpoint allows you to store a new user profile
      *
      * @authenticated
-     * @param Request $request
+     * @param StoreUserProfileRequest $request
      * @param integer $id
      * @return JsonResponse
      */
-    public function store(StoreUserProfileRequest $request, int $id) {
+    public function store(StoreUserProfileRequest $request) {
         $profile = new UserProfile;
-        $profile->user_id = $id;
+        $profile->user_id = $request->userid;
         $profile->firstname = $request->firstname;
         $profile->lastname = $request->lastname;
         $profile->middlename = $request->middlename;
@@ -65,7 +70,7 @@ class UserProfileController extends Controller
      * This endpoint allows you to update a new user profile
      *
      * @authenticated
-     * @param Request $request
+     * @param UpdateUserProfileRequest $request
      * @param integer $id
      * @return JsonResponse
      */
@@ -80,7 +85,7 @@ class UserProfileController extends Controller
         $profile->pay = $request->pay;
         $profile->phone = $request->phone;
         $profile->save();
-        return responce()->success($profile);
+        return response()->success($profile);
     }
      /**
      * Delete User Profile
@@ -88,11 +93,11 @@ class UserProfileController extends Controller
      * This endpoint allows you to delete a new user profile
      *
      * @authenticated
-     * @param Request $request
+     * @param DeleteUserProfileRequest $request
      * @param integer $id
      * @return JsonResponse
      */
-    public function destroy(DestroyUserProfileRequest $request, UserProfile $profile, int $id){
+    public function destroy(DeleteUserProfileRequest $request, UserProfile $profile, int $id){
         $profile->delete();
         return response()->success('User Deleted');
     }

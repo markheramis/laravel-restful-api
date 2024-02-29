@@ -23,24 +23,23 @@ class LoginController extends Controller {
      * @param App\Http\Requests\UserLoginRequest $request
      * @return JsonResponse
      */
-    public function login() {
-        echo "HELLO";
+    public function login(UserLoginRequest $request): JsonResponse {
+        $credentials = $this->processCredentials($request);
+        if (Auth::attempt($credentials)) {
+           
+            $this->user = Auth::user();
+            $token_name = config('app.name') . ': ' . $this->user->username;
+            $permissions = $this->user->allPermissions();
+           
+            $token = $this->user->createToken($token_name, $permissions)->accessToken;
+           
+            broadcast(new UserLoggedIn($this->user->id));
+            
+            return response()->success(['token' => $token]);
+        } else {
+            return response()->error([], 'Username or Password is Incorrect', 401);
+        }
     }
-    // public function login(UserLoginRequest $request): JsonResponse {
-    //     $credentials = $this->processCredentials($request);
-    //     echo "HELLO";
-	//     exit();
-    //     if (Auth::attempt($credentials)) {
-    //         $this->user = Auth::user();
-    //         $token_name = config('app.name') . ': ' . $this->user->username;
-    //         $permissions = $this->user->allPermissions();
-    //         $token = $this->user->createToken($token_name, $permissions)->accessToken;
-    //         broadcast(new UserLoggedIn($this->user->id));
-    //         return response()->success(['token' => $token]);
-    //     } else {
-    //         return response()->error([], 'Username or Password is Incorrect', 401);
-    //     }
-    // }
 
     private function processCredentials(UserLoginRequest $request): array {
         $login_type = filter_var($request->username, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
