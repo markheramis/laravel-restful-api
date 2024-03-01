@@ -16,6 +16,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Mail;
 use App\Transformers\UserTransformer;
+
 use App\Http\Requests\User\UserMeRequest;
 use App\Http\Requests\User\UserIndexRequest;
 use App\Http\Requests\User\UserStoreRequest;
@@ -26,6 +27,7 @@ use App\Http\Requests\User\UserForgetPasswordRequest;
 use App\Http\Requests\User\UserResetPasswordRequest;
 use App\Http\Requests\User\UserChangePasswordRequest;
 use App\Http\Requests\User\UserActivateRequest;
+
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Serializer\JsonApiSerializer;
 use App\Repositories\UserRepository;
