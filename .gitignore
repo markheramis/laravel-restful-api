@@ -28,3 +28,4 @@ build/
 
 # ignore .scribe
 .scribe
+/resources/views/scribe/*
