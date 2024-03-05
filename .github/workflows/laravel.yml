@@ -3,21 +3,13 @@ on: [push, pull_request]
 jobs:
   laravel-test-job:
     runs-on: ubuntu-latest
-    environment: testing
     container:
-      image: ghcr.io/markheramis/laravel-restful-api/laravel-restful-api:latest
-    env:
-      SENTRY_LARAVEL_DSN: ${{ secrets.SENTRY_LARAVEL_DSN }}
+      image: ${{ secrets.DOCKER_IMAGE }}
     services:
       mysql:
-        image: mysql:5.7
-        env:
-          MYSQL_DATABASE: homestead
-          MYSQL_USER: homestead
-          MYSQL_PASSWORD: secret
-          MYSQL_ROOT_PASSWORD: secret
+        image: mysql:8.0
         ports:
-          - 33306:3306
+          - 3306:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
       redis:
         image: redis
@@ -34,30 +26,36 @@ jobs:
       run: php -r "file_exists('.env.testing') || copy('.env.testing.example', '.env.testing');"
     - name: Install Dependencies
       run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
-    - name: cache config
-      run: php artisan config:cache
+    - name: Clear config cache
+      run: php artisan config:clear
+    - name: Clear route cache
+      run: php artisan route:clear
     - name: Generate key
-      run: php artisan key:generate --force --show
-    - name: Create Database and run migration
-      env:
-        DB_PORT: ${{ job.services.mysql.ports[3306] }}
-      run: php artisan migrate:fresh
+      run: php artisan key:generate
+    - name: Generate testing key
+      run: php artisan key:generate --env=testing
+    - name: Migrate Database
+      run: php artisan migrate
     - name: Passport Setup
       run: |
-        output=$(php artisan passport:install --force)
+        output=$(php artisan passport:install)
         client_id=$(echo "$output" | awk '/Client ID:/{print $3; exit}')
         client_secret=$(echo "$output" | awk '/Client secret:/{print $3; exit}')
-        sed -i "/^PASSPORT_PERSONAL_ACCESS_CLIENT_ID=/d" .env
-        sed -i "/^PASSPORT_PERSONAL_ACCESS_CLIENT_SECRET=/d" .env
-        sed -i "/^PASSPORT_PERSONAL_ACCESS_CLIENT_ID=/d" .env.testing
-        sed -i "/^PASSPORT_PERSONAL_ACCESS_CLIENT_SECRET=/d" .env.testing
-        echo "PASSPORT_PERSONAL_ACCESS_CLIENT_ID=${client_id}" >> .env
-        echo "PASSPORT_PERSONAL_ACCESS_CLIENT_SECRET=${client_secret}" >> .env
-        echo "PASSPORT_PERSONAL_ACCESS_CLIENT_ID=${client_id}" >> .env.testing
-        echo "PASSPORT_PERSONAL_ACCESS_CLIENT_SECRET=${client_secret}" >> .env.testing
+        sed -i "s/^PASSPORT_PERSONAL_ACCESS_CLIENT_ID=.*/PASSPORT_PERSONAL_ACCESS_CLIENT_ID=${client_id}/" .env
+        sed -i "s/^PASSPORT_PERSONAL_ACCESS_CLIENT_SECRET=.*/PASSPORT_PERSONAL_ACCESS_CLIENT_SECRET=${client_secret}/" .env
+        sed -i "s/^PASSPORT_PERSONAL_ACCESS_CLIENT_ID=.*/PASSPORT_PERSONAL_ACCESS_CLIENT_ID=${client_id}/" .env.testing
+        sed -i "s/^PASSPORT_PERSONAL_ACCESS_CLIENT_SECRET=.*/PASSPORT_PERSONAL_ACCESS_CLIENT_SECRET=${client_secret}/" .env.testing
+    - name: Cache Config
+      run: php artisan config:cache
+    - name: Cache Config for testing
+      run: php artisan config:cache --env=testing
+    - name: Cache Routes
+      run: php artisan route:cache
+    - name: Seed Database
+      run: php artisan db:seed
     - name: Start queue
       run: php artisan queue:work &
     - name: Run Laravel Project
       run: php artisan serve &
     - name: Execute tests
-      run: php artisan test --env=testing
+      run: php artisan test --env=testing --testsuite=Feature
