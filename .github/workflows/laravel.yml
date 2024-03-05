@@ -23,6 +23,10 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+      soketi:
+        image: quay.io/soketi/soketi:latest-16-alpine
+        ports:
+          - 6001:6001
     steps:
     - uses: actions/checkout@v2
     - name: Copy .env
