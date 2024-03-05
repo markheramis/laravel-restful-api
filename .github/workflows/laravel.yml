@@ -1,5 +1,4 @@
 name: Laravel
-# Triggered when code is pushed to any branch in a repository
 on: [push, pull_request]
 jobs:
   laravel-test-job:
@@ -38,14 +37,24 @@ jobs:
     - name: cache config
       run: php artisan config:cache
     - name: Generate key
-      run: php artisan key:generate
+      run: php artisan key:generate --force --show
     - name: Create Database and run migration
       env:
         DB_PORT: ${{ job.services.mysql.ports[3306] }}
+      run: php artisan migrate:fresh
     - name: Passport Setup
       run: |
-        php artisan migrate --seed
-        php artisan passport:install
+        output=$(php artisan passport:install --force)
+        client_id=$(echo "$output" | awk '/Client ID:/{print $3; exit}')
+        client_secret=$(echo "$output" | awk '/Client secret:/{print $3; exit}')
+        sed -i "/^PASSPORT_PERSONAL_ACCESS_CLIENT_ID=/d" .env
+        sed -i "/^PASSPORT_PERSONAL_ACCESS_CLIENT_SECRET=/d" .env
+        sed -i "/^PASSPORT_PERSONAL_ACCESS_CLIENT_ID=/d" .env.testing
+        sed -i "/^PASSPORT_PERSONAL_ACCESS_CLIENT_SECRET=/d" .env.testing
+        echo "PASSPORT_PERSONAL_ACCESS_CLIENT_ID=${client_id}" >> .env
+        echo "PASSPORT_PERSONAL_ACCESS_CLIENT_SECRET=${client_secret}" >> .env
+        echo "PASSPORT_PERSONAL_ACCESS_CLIENT_ID=${client_id}" >> .env.testing
+        echo "PASSPORT_PERSONAL_ACCESS_CLIENT_SECRET=${client_secret}" >> .env.testing
     - name: Start queue
       run: php artisan queue:work &
     - name: Run Laravel Project
