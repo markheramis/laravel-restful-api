@@ -11,24 +11,29 @@ php artisan config:clear
 # Clear route cache
 php artisan route:clear
 # Generate APP_KEY
-php artisan key:generate
-php artisan key:generate --env=testing
+output=$(php artisan key:generate --force --show)
+# Replace or create the APP_KEY environment variable in .env and .env.testing
+sed -i "s/^APP_KEY=.*/APP_KEY=${output}/" .env
+sed -i "s/^APP_KEY=.*/APP_KEY=${output}/" .env.testing
 # Migrate Database
 php artisan migrate:fresh
 # Run php artisan passport:install command and store the output in a variable
-output=$(php artisan passport:install)
+output=$(php artisan passport:install --force)
 # Extract Personal Access Client ID and Secret from the output
 client_id=$(echo "$output" | awk '/Client ID:/{print $3; exit}')
 client_secret=$(echo "$output" | awk '/Client secret:/{print $3; exit}')
-# Replace or create the PERSONAL_ACCESS_CLIENT_ID and PERSONAL_ACCESS_CLIENT_SECRET environment variables in .env
-sed -i "s/^PASSPORT_PERSONAL_ACCESS_CLIENT_ID=.*/PASSPORT_PERSONAL_ACCESS_CLIENT_ID=${client_id}/" .env
-sed -i "s/^PASSPORT_PERSONAL_ACCESS_CLIENT_SECRET=.*/PASSPORT_PERSONAL_ACCESS_CLIENT_SECRET=${client_secret}/" .env
-# Replace or create the PERSONAL_ACCESS_CLIENT_ID and PERSONAL_ACCESS_CLIENT_SECRET environment variables in .env.testing
-sed -i "s/^PASSPORT_PERSONAL_ACCESS_CLIENT_ID=.*/PASSPORT_PERSONAL_ACCESS_CLIENT_ID=${client_id}/" .env.testing
-sed -i "s/^PASSPORT_PERSONAL_ACCESS_CLIENT_SECRET=.*/PASSPORT_PERSONAL_ACCESS_CLIENT_SECRET=${client_secret}/" .env.testing
+# Delete the existing PERSONAL_ACCESS_CLIENT_ID and PERSONAL_ACCESS_CLIENT_SECRET environment variables in .env and .env.testing
+sed -i "/^PASSPORT_PERSONAL_ACCESS_CLIENT_ID=/d" .env
+sed -i "/^PASSPORT_PERSONAL_ACCESS_CLIENT_SECRET=/d" .env
+sed -i "/^PASSPORT_PERSONAL_ACCESS_CLIENT_ID=/d" .env.testing
+sed -i "/^PASSPORT_PERSONAL_ACCESS_CLIENT_SECRET=/d" .env.testing
+# Add the new PERSONAL_ACCESS_CLIENT_ID and PERSONAL_ACCESS_CLIENT_SECRET environment variables in .env and .env.testing
+echo "PASSPORT_PERSONAL_ACCESS_CLIENT_ID=${client_id}" >> .env
+echo "PASSPORT_PERSONAL_ACCESS_CLIENT_SECRET=${client_secret}" >> .env
+echo "PASSPORT_PERSONAL_ACCESS_CLIENT_ID=${client_id}" >> .env.testing
+echo "PASSPORT_PERSONAL_ACCESS_CLIENT_SECRET=${client_secret}" >> .env.testing
 # Cache Config
 php artisan config:cache
-php artisan config:cache --env=testing
 # Cache Routes
 php artisan route:cache
 # Seed Database
