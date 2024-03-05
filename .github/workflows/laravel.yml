@@ -4,7 +4,7 @@ jobs:
   laravel-test-job:
     runs-on: ubuntu-latest
     container:
-      image: ${{ secrets.DOCKER_IMAGE }}
+      image: ghcr.io/markheramis/laravel-restful-api/laravel-restful-api:latest
     services:
       mysql:
         image: mysql:8.0
