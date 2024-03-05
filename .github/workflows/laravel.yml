@@ -5,6 +5,9 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/markheramis/laravel-restful-api/laravel-restful-api:latest
+    environment: testing
+    env:
+      SENTRY_LARAVEL_DSN: ${{ secrets.SENTRY_LARAVEL_DSN }}
     services:
       mysql:
         image: mysql:5.7
@@ -27,6 +30,7 @@ jobs:
         image: quay.io/soketi/soketi:latest-16-alpine
         ports:
           - 6001:6001
+    
     steps:
     - uses: actions/checkout@v2
     - name: Copy .env
