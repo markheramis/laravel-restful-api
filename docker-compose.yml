@@ -45,6 +45,8 @@ services:
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
     volumes:
       - vmysql:/var/lib/mysql
+    ports:
+      - 3306:3306
     networks:
       - "laravel-network"
     healthcheck:
