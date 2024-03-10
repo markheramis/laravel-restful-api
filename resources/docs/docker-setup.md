@@ -1,55 +1,46 @@
 # Docker Setup
 
-or sometimes I call the _Nothing else but Docker_ setup.
+This guide will walk you through the process of setting up Docker for your project, which we sometimes refer to as the Nothing else but Docker setup.
 
 ## Prerequisites
 
-Before starting, you need to setup and install your docker environment first. Please follow the instructions provided in the Docker Documentation.
-If you're on windows, you need to follow [this instructions](https://nickjanetakis.com/blog/setting-up-docker-for-windows-and-wsl-to-work-flawlessly) to setup your WSL environment.
+Before you begin, ensure that your Docker environment is set up and installed. Follow the instructions provided in the Docker Documentation. If you’re using Windows, follow these instructions to set up your Windows Subsystem for Linux (WSL) environment.
 
-## Setting up the project
+## Project Setup
 
--   Install Laravel Dependencies
+### Installing Laravel Dependencies
 
-If you have composer installed, use this command to install the composer dependencies
+If you have Composer installed, use the following command to install the Composer dependencies:
 
-```bash
+```
 composer install
 ```
 
-else you can insntall composer dependencies without installing composer and just use the one provided in the Docker hub repository as follows:
+If you don’t have Composer installed, you can install the Composer dependencies using the Docker Hub repository:
 
-```bash
+```
 docker run --rm --interactive --tty --volume $PWD:/app --user $(id -u):$(id -g) composer install
 ```
 
-Then before you start sail, add sail to your path first, please see the Laravel Sail [Documentation](https://laravel.com/docs/8.x/sail#configuring-a-bash-alias) for configurating a bash alias to have `sail` available as an aliased command.
+### Configuring Laravel Sail
 
-Then start _Laravel Sail_
+Before you start Sail, add Sail to your path. Refer to the Laravel Sail Documentation for instructions on configuring a bash alias to make sail available as a command.
 
-```bash
-sail up # to start
+### Starting Laravel Sail
+
+Use the following command to start Laravel Sail:
+
 ```
+sail up
+```
+Alternatively, you can use the following command, which performs the same action:
 
-alternatively, you can also use
-
-```bash
+```
 docker-compose up
 ```
+Wait a few minutes for the setup script to run.
 
-and it would do the same thing.
-
-Then run migrations and other setup scripts
-
-```bash
-sail artisan migrate
-sail artisan db:seed
-sail artisan telescope:install
-sail artisan passport:install
-sail artisan passport:client --personal
-```
-
-congratulations, you should have everything setup... to verify, please check the following services:
+Congratulations! You should now have everything set up. To verify, please check the following services:
 
 | Service    | Port | Web URL                                          |
 | ---------- | ---- | ------------------------------------------------ |
@@ -57,35 +48,35 @@ congratulations, you should have everything setup... to verify, please check the
 | MySQL      | 3306 | N/A                                              |
 | PHPMyAdmin | 8080 | [https://localhost:8080](https://localhost:8080) |
 
-#### Testing
+## Testing
 
-Just like the native way, you also need to copy the `.env.testing.example` file like so:
+Given that the setup script automatically copies .env to .env.testing, you can immediately run tests using the artisan test command:
 
-```bash
-cp .env.testing.example .env.testing
 ```
-
-Then you can test the setup with the `artisan test` command to make sure all is going well.
-
-```bash
 sail artisan test
 ```
 
+This command will ensure that everything is working correctly in your Docker setup. If the tests pass, your setup is good to go! If not, you’ll need to troubleshoot the issues based on the failed test cases.
+
+Remember, the testing environment variables are set by the setup script, so there’s no need to manually copy the .env.testing.example file. This streamlines the testing process and helps you verify your setup more efficiently.
+
+Happy testing! 🚀
+
 ## Documentation
 
-For the API endpoint documentation, you can use the command below to generate the documentation file
+To generate the API endpoint documentation, use the following command:
 
-```bash
+```
 php artisan scribe:generate
 ```
 
-or
+Or, if you’re using Sail:
 
-```bash
+```
 sail artisan scribe:generate
 ```
 
-The documentation will then be available depending on your setup on the list below
+Depending on your setup, the documentation will be available at one of the following URLs:
 
--   native (http://localhost:8000/docs/)
--   sail/docker (http://localhost/docs/)
+- Native: http://localhost:8000/docs/
+- Sail/Docker: http://localhost/docs/
