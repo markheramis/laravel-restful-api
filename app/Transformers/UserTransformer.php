@@ -40,8 +40,6 @@ class UserTransformer extends TransformerAbstract
             'email' => $user->email,
             'username' => $user->username,
             'permissions' => $user->permission,
-            'first_name' => $user->first_name,
-            'last_name' => $user->last_name,
             'created_at' => $created_at,
             'updated_at' => $updated_at,
         ];

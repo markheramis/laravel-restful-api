@@ -20,9 +20,7 @@ class RegisterRoleFieldTest extends TestCase
             "username" => $first_name . $last_name . $random_number,
             "email" => $email,
             "password" => "password12345",
-            "v_password" => "password12345",
-            "first_name" => $first_name,
-            "last_name" => $last_name,
+            "v_password" => "password12345"
         ]);
         $response->assertStatus(200);
         $user = User::find($response['data']['id']);
@@ -43,8 +41,6 @@ class RegisterRoleFieldTest extends TestCase
             "email" => $email,
             "password" => "password12345",
             "v_password" => "password12345",
-            "first_name" => $first_name,
-            "last_name" => $last_name,
             "role" => "administrator",
         ]);
         $response->assertStatus(200);
