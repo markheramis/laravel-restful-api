@@ -62,7 +62,7 @@ class UserController extends Controller {
      *
      * @authenticated
      * @todo add role based search.
-     * @queryParam search string used to search from email, username, first_name, and last_name
+     * @queryParam search string used to search from email, username
      * @queryParam role string used to filter results based on a specific role.
      * @param UserAllRequest $request
      * @uses App\Models\User $userPaginator
@@ -146,8 +146,6 @@ class UserController extends Controller {
             "username" => $request->username,
             "email" => $request->email,
             "password" => $request->password,
-            "first_name" => $request->first_name,
-            "last_name" => $request->last_name,
             "permissions" => $request->permissions,
             "phone_number" => $request->phone_number,
             "country_code" => $request->country_code
@@ -217,15 +215,13 @@ class UserController extends Controller {
      * @return JsonResponse
      */
     public function update(UserUpdateRequest $request, User $user): JsonResponse {
-        $user->username = $request->username;
-        $user->email = $request->email;
-        $user->first_name = $request->first_name;
-        $user->last_name = $request->last_name;
-        $user->update();
-        if ($request->has('role')) {
-            $role = $this->roles->findBySlug($request->role);
-            $user->roles()->sync($role);
+        if($request->has('username')) {
+            $user->username = $request->username;
         }
+        if($request->has('email')) {
+            $user->email = $request->email;
+        }
+        $user->update();
         $response = fractal($user, new UserTransformer())->toArray();
         return response()->success($response);
     }

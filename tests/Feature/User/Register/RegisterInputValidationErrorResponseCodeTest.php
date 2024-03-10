@@ -45,15 +45,4 @@ class RegisterInputValidationErrorResponseCodeTest extends TestCase
         ]);
         $response->assertStatus(422);
     }
-
-    public function testRegisterWithoutFullnameShouldBeUnprocessableEntity()
-    {
-        $response = $this->json("POST", route("api.register"), [
-            "username"    => $this->faker->userName(),
-            "email"       => $this->faker->email(),
-            "password"    => "password12345",
-            "v_password"  => "password12345",
-        ]);
-        $response->assertStatus(422);
-    }
 }

@@ -65,8 +65,6 @@ class RegisterController extends Controller {
             "username" => $request->username,
             "email" => $request->email,
             "password" => $request->password,
-            "first_name" => $request->first_name,
-            "last_name" => $request->last_name,
             "permissions" => $request->permissions,
             "phone_number" => $request->phone_number,
             "country_code" => $request->country_code
