@@ -2,14 +2,15 @@
 
 namespace App\Notifications\User;
 
+use App\Models\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
 class UserLoggedInNotification extends Notification
 {
     use Queueable;
+
+    private User $user;
 
     /**
      * Create a new notification instance.
@@ -41,8 +42,7 @@ class UserLoggedInNotification extends Notification
     public function toArray($notifiable)
     {
         return [
-            'name' => $this->user->first_name . ' ' . $this->user->last_name,
-            'email' => $this->user->email
+            'id' => $this->user->id
         ];
     }
 }

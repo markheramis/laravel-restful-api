@@ -61,8 +61,6 @@ Route::prefix('user')
                 ->name('user.show');
             Route::put('/', [UserController::class, 'update'])
                 ->name('user.update');
-            Route::get('qr', [UserController::class, 'get_qr_code'])
-                ->name('user.qr.get');
             Route::delete('/', [UserController::class, 'destroy'])
                 ->name('user.destroy');
             Route::prefix('role')->group(function () {

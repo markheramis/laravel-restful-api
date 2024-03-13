@@ -33,8 +33,6 @@ class UserFactory extends Factory {
             'username' => $first_name . $last_name . $random_number,
             'email' => $email,
             'password' => $password,
-            'first_name' => $first_name,
-            'last_name' => $last_name,
         ];
     }
 

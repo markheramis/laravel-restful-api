@@ -27,16 +27,10 @@ class UserRegisterRequest extends FormRequest
             "username" => ["required", "min:5", "max:255"],
             "email"     => ["required", "email", "unique:users,email", "min:10", "max:255"],
             "password"  => ["required", "string", "min:8", "max:255"],
+            "v_password" => ["required_with:password", "same:password", "min:8", "max:255"],
             "role" => ["nullable", "string"],
             "permissions" => ["nullable", "array"],
             "activate" => ["nullable", "boolean"],
-
-            //must be removed
-            "first_name" => ["nullable", "string", "min:3", "max:255"],
-            "last_name" => ["nullable", "string", "min:3", "max:255"],
-            "phone_number" => ["nullable", "numeric", "unique:users,phone_number"],
-            "country_code" => ["nullable", "numeric"],
-
         ];
     }
 }

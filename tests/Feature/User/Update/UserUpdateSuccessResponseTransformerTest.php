@@ -41,8 +41,6 @@ class UserUpdateSuccessResponseTransformerTest extends TestCase {
             "username" => $update_user->username,
             "email" => $update_user->email,
             "password" => "p@s5W0rd12345",
-            "first_name" => $update_user->first_name,
-            "last_name" => $update_user->last_name,
         ];
         $response = $this->json("PUT", route("user.update", [$user->id]), $data, $header);
         $expected_user = User::find($user->id);

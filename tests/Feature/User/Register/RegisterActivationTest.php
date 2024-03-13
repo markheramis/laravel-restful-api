@@ -22,9 +22,7 @@ class RegisterActivationTest extends TestCase {
             "username" => $first_name . $last_name . $random_number,
             "email" => $email,
             "password" => "password12345",
-            "v_password" => "password12345",
-            "first_name" => $first_name,
-            "last_name" => $last_name,
+            "v_password" => "password12345"
         ]);
         $response->assertStatus(200);
         $response->assertJsonStructure(['data' => ['id']]);
@@ -54,8 +52,6 @@ class RegisterActivationTest extends TestCase {
             "email" => $email,
             "password" => "password12345",
             "v_password" => "password12345",
-            "first_name" => $first_name,
-            "last_name" => $last_name,
             "activate" => false,
         ]);
         $response->assertStatus(200);
@@ -83,8 +79,6 @@ class RegisterActivationTest extends TestCase {
             "email" => $email,
             "password" => "password12345",
             "v_password" => "password12345",
-            "first_name" => $first_name,
-            "last_name" => $last_name,
             "activate" => true,
         ]);
         $response->assertStatus(200);

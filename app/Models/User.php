@@ -41,13 +41,7 @@ class User extends Model implements UserInterface, PermissibleInterface, Roleabl
         'username',
         'email',
         'password',
-        'first_name',
-        'last_name',
         'permissions',
-            #'country_code',
-            #'phone_number',
-            #'authy_id', // Temporary.
-            #'default_factor',
     ];
 
     /**
