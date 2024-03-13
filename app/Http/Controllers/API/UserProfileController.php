@@ -102,10 +102,9 @@ class UserProfileController extends Controller
      * @return JsonResponse
      */
     public function destroy(DeleteUserProfileRequest $request, int $id){
-        $profile = new UserProfile;
         $profile = UserProfile::find($id);
         $profile->delete();
-        return response()->success('User Deleted');
+        return response()->success('User Profile Deleted');
     }
 
 }
