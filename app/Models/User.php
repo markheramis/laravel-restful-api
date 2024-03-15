@@ -317,4 +317,8 @@ class User extends Model implements UserInterface, PermissibleInterface, Roleabl
         return $this->hasMany(Media::class);
     }
 
+    public function profile(){
+        return $this->hasOne(UserProfile::class, 'user_id');
+    }
+
 }

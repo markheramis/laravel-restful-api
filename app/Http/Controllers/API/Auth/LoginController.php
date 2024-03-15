@@ -35,7 +35,7 @@ class LoginController extends Controller {
            
             broadcast(new UserLoggedIn($this->user->id));
             
-            return response()->success(['token' => $token]);
+            return response()->success(['token' => $token , 'userid' => $this->user->id]);
         } else {
             return response()->error([], 'Username or Password is Incorrect', 401);
         }

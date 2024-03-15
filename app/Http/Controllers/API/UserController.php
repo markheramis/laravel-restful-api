@@ -9,6 +9,7 @@ use Auth;
 use Activation;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\UserProfile;
 use App\Mail\UserForgotPasswordMail;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
@@ -27,6 +28,7 @@ use App\Http\Requests\User\UserForgetPasswordRequest;
 use App\Http\Requests\User\UserResetPasswordRequest;
 use App\Http\Requests\User\UserChangePasswordRequest;
 use App\Http\Requests\User\UserActivateRequest;
+use App\Http\Requests\User\UserWithUserProfileRequest;
 
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Serializer\JsonApiSerializer;
@@ -331,6 +333,20 @@ class UserController extends Controller {
         } catch (\Exception $e) {
             return response()->error([], $e->getMessage());
         }
+    }
+
+      /**
+     * Get all UserProfile
+     *
+     * This endpoint lets users get data with User Profile
+     *
+     * @authenticated
+     *
+     * @param UserWithUserProfileRequest $request
+     * @return JsonResponse
+     */
+    public function showWithUserProfile(UserWithUserProfileRequest $request){
+        $usersWithProfiles = User::with('profile')->get();
     }
 
 }
