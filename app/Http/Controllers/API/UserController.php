@@ -347,6 +347,7 @@ class UserController extends Controller {
      */
     public function showWithUserProfile(UserWithUserProfileRequest $request){
         $usersWithProfiles = User::with('profile')->get();
+        return response()->success($usersWithProfiles);
     }
 
 }
