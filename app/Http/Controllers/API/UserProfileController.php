@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\UserProfile;
 
 use App\Http\Requests\UserProfile\ShowUserProfileRequest;
+use App\Http\Requests\UserProfile\ShowAllUserProfileRequest;
 use App\Http\Requests\UserProfile\DeleteUserProfileRequest;
 use App\Http\Requests\UserProfile\UpdateUserProfileRequest;
 use App\Http\Requests\UserProfile\StoreUserProfileRequest;
@@ -19,7 +20,17 @@ use App\Http\Requests\UserProfile\StoreUserProfileRequest;
  */
 class UserProfileController extends Controller
 {
-    public function index($request) {
+
+     /**
+     * Show All User Profile
+     * 
+     * This endpoint allows you to show all user profiles
+     *
+     * @authenticated
+     * @param ShowAllUserProfileRequest $request
+     * @return void
+     */
+    public function index(ShowAllUserProfileRequest $request) {
         $profiles = UserProfile::all();
         return response()->success($profiles);
     }

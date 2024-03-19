@@ -47,7 +47,7 @@ Route::prefix('auth')
                 ->name('api.logout');
         });
 });
-//showWithUserProfile
+
 Route::prefix('user')
     ->middleware(['auth:api'])
     ->group(function () {
@@ -139,6 +139,7 @@ Route::prefix('media')
 Route::prefix('userprofile')
     ->middleware(['auth:api'])
     ->group(function () {
+        Route::get('/', [UserProfileController::class, 'index']);
         Route::post('/', [UserProfileController::class, 'store'])
             ->name('userprofile.store');
         Route::prefix('{userprofile}')->group(function () {
