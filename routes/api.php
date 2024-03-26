@@ -59,6 +59,8 @@ Route::prefix('user')
             ->name('user.password.change');
         Route::get('/profile', [UserController::class, 'showWithUserProfile'])
             ->name('profile.show');
+        Route::get('/profile/{id}', [UserController::class, 'showOneWithUserProfile'])
+            ->name('oneprofile.show');
         Route::prefix('{user}')->group(function () {
             Route::get('/', [UserController::class, 'show'])
                 ->name('user.show');

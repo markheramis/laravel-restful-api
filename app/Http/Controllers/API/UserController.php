@@ -29,6 +29,7 @@ use App\Http\Requests\User\UserResetPasswordRequest;
 use App\Http\Requests\User\UserChangePasswordRequest;
 use App\Http\Requests\User\UserActivateRequest;
 use App\Http\Requests\User\UserWithUserProfileRequest;
+use App\Http\Requests\User\OneUserWithUserProfileRequest;
 
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Serializer\JsonApiSerializer;
@@ -347,6 +348,22 @@ class UserController extends Controller {
      */
     public function showWithUserProfile(UserWithUserProfileRequest $request){
         $usersWithProfiles = User::with('profile')->get();
+        return response()->success($usersWithProfiles);
+    }
+
+       /**
+     * Get One UserProfile
+     *
+     * This endpoint lets users get one data with User Profile
+     *
+     * @authenticated
+     *
+     * @param OneUserWithUserProfileRequest $request
+     * @param integer $userid
+     * @return JsonResponse
+     */
+    public function showOneWithUserProfile(OneUserWithUserProfileRequest $request, int $userid){
+        $usersWithProfiles = User::with('profile')->find($userid);
         return response()->success($usersWithProfiles);
     }
 
