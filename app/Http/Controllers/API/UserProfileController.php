@@ -69,6 +69,7 @@ class UserProfileController extends Controller
         $profile->firstname = $request->firstname;
         $profile->lastname = $request->lastname;
         $profile->middlename = $request->middlename;
+        $profile->position = $request->position;
         $profile->address = $request->address;
         $profile->birthday = $request->birthday;
         $profile->gender = $request->gender;
@@ -94,6 +95,7 @@ class UserProfileController extends Controller
         $profile->firstname = $request->firstname;
         $profile->lastname = $request->lastname;
         $profile->middlename = $request->middlename;
+        $profile->position = $request->position;
         $profile->address = $request->address;
         $profile->birthday = $request->birthday;
         $profile->gender = $request->gender;

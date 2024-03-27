@@ -28,6 +28,7 @@ class StoreUserProfileRequest extends FormRequest
             "firstname"     => ["required", "string"],
             "lastname"      => ["required", "string"],
             "middlename"    => ["required", "string"],
+            "position"      => ["required", "string"],
             "address"       => ["required", "string"],
             "birthday"      => ["required", "date"],
             "gender"        => ["required", "string"],
