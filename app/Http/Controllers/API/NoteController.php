@@ -51,6 +51,7 @@ class NoteController extends Controller
         $note->title = $request->title;
         $note->badge = $request->badge;
         $note->body = $request->body;      
+        $note->created_at = $request->date;      
         $note->save();
         return response()->success($note);
     }

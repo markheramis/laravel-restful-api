@@ -27,6 +27,7 @@ class StoreNoteRequest extends FormRequest
             "title"     => ["required","string"],
             "badge"     => ["nullable","string"],
             "body"      => ["required","string"],
+            "date"      => ["required","date"],
         ];
     }
 }

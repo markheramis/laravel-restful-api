@@ -18,7 +18,8 @@ return new class extends Migration
             $table->string('title');
             $table->string('badge');
             $table->string('body');
-            $table->timestamps();
+            $table->date('created_at');
+            $table->date('updated_at');
         });
     }
 
