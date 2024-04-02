@@ -27,16 +27,11 @@ class UserStoreRequest extends FormRequest
         return [
             "username"                  => ["required", "min:2", "max:255"],
             "email"                     => ["required", "email", "unique:users,email"],
-            "password"                  => ["required", "string"],
+            "password"                  => ["required",  "min:8", "string"],
+            "v_password"                => ["required_with:password", "same:password", "min:8", "max:255"],
             "role"                      => ["nullable", "string"],
             "permissions"               => ["nullable", "array"],
             "activate"                  => ["nullable", "boolean"],
-            
-            //must be removed
-            "first_name"                => ["nullable", "string"],
-            "last_name"                 => ["nullable", "string"],     
-            "phone_number"              => ["nullable", "numeric", "unique:users,phone_number"],
-            "country_code"              => ["nullable", "numeric"],
         ];
     }
 }

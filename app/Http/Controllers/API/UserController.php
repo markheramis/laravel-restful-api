@@ -171,7 +171,7 @@ class UserController extends Controller {
         $role = ($request->has('role')) ? $request->role : 'subscriber';
         $this->attachRole($user, $role);
         $response = fractal($user, new UserTransformer())->toArray();
-        return response()->success($response);
+        return response()->success(['user_id' => $user->id]);
     }
 
     /**

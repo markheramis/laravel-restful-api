@@ -45,6 +45,7 @@ Route::prefix('auth')
                 ->name('api.me');
             Route::post('logout', [LogoutController::class, 'logout'])
                 ->name('api.logout');
+                
         });
 });
 
