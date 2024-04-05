@@ -47,7 +47,7 @@ class UpdateUserProfileRequest extends FormRequest
                 "birthday"      => ["required", "date"],
                 "gender"        => ["required", "string"],
                 "pay"           => ["required", "numeric"],
-                "phone"         => ["required", "string", "unique:user_profiles,phone"],
+                "phone"         => ["required", "string"],
     
             ];  
     }

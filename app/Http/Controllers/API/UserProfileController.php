@@ -89,9 +89,10 @@ class UserProfileController extends Controller
      * @param integer $id
      * @return JsonResponse
      */
-    public function update(UpdateUserProfileRequest $request, int $id){
+    public function update(UpdateUserProfileRequest $request, int $userid){
         $profile = new UserProfile;
-        $profile = UserProfile::find($id);
+        $profile = UserProfile::where('user_id', $userid)->first();
+        
         $profile->firstname = $request->firstname;
         $profile->lastname = $request->lastname;
         $profile->middlename = $request->middlename;
