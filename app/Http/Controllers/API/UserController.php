@@ -233,6 +233,21 @@ class UserController extends Controller {
         return response()->success($response);
     }
 
+     /**
+     * Update a User Password by Admin
+     *
+     * This method allows an admin to reset a user's password without knowing the old password.
+     *
+     * @param int $userId The ID of the user whose password needs to be reset.
+     * @param string $newPassword The new password to set for the user.
+     * @return bool True if the password was successfully updated, false otherwise.
+     */
+    public function resetUserPassword(UserResetPasswordNoOldRequest $request, User $user, int $id): JsonResponse {
+        $user = User::find($id);
+        $user->password =$request->password;
+        return response()->success($user);
+    }
+
     /**
      * Destroy a User
      *

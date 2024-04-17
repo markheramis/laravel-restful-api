@@ -48,7 +48,7 @@ class UserProfileController extends Controller
 
      public function show(ShowUserProfileRequest $request, int $userid) {
         $profile = new UserProfile;
-        $profile = UserProfile::where('user_id', $userid)->get();
+        $profile = UserProfile::where('user_id', $userid)->first();
         return response()->success($profile);
     }
 
