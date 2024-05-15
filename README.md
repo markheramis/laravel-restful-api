@@ -8,6 +8,48 @@
 
 Laravel Restful API is a Restful API project built on top of [Laravel](https://github.com/laravel/laravel) that is focused on REST API and Microservices.
 
+## Prerequisites
+Before you begin, ensure you have met the following requirements:
+- You have installed the latest version of PHP and Composer. Here are the commands to install them:
+  #### Install PHP
+  ```bash
+  sudo apt install php8.2
+  ```
+  #### Install Composer
+  ```bash
+  curl -sS https://getcomposer.org/installer | php
+  sudo mv composer.phar /usr/local/bin/composer
+  sudo chmod +x /usr/local/bin/composer
+  ```
+- You have installed the necessary PHP extensions for Laravel. Here are the commands to install them:
+    - Mbstring PHP Extension: Laravel uses mbstring to handle strings in different character encodings, such as UTF-8.
+      
+      ```bash
+      sudo apt install php8.2-mbstring
+      ```
+    - XML PHP Extension: Laravel uses XML to parse and generate XML documents, such as configuration files and responses to API requests.
+      ```bash
+      sudo apt install php8.2-xml
+      ```
+    - ZIP PHP Extension: Composer requires the ZIP extension to efficiently extract archived dependencies.
+      ```bash
+      sudo apt install php8.2-zip
+      ```
+    - MySQL PHP Extension: This extension is used for connecting to the MySQL database.
+      ```bash
+      sudo apt install php8.2-mysql
+      ```
+    - Redis PHP Extension: This extension provides APIs for connecting to a Redis server.
+      ```bash
+      sudo apt install php8.2-redis
+      ```
+    - BCMath Extensions: These extensions are also required by Laravel.
+      ```bash
+      sudo apt install php8.2-bcmath
+      ```
+- You have a Windows/Mac/Linux machine. The above commands are for a Linux machine. If you’re using Windows or Mac, the installation commands might be different.
+- Docker installation is optional but recommended for development containerization. If you choose to use Docker, please ensure you have it installed on your machine. You can download it from the official Docker website.
+
 ## How to Start
 
 ### The Native Way
